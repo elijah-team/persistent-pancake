@@ -1,7 +1,5 @@
 package antlr;
 
-import java.io.IOException;
-
 /* ANTLR Translator Generator
  * Project led by Terence Parr at http://www.jGuru.com
  * Software rights: http://www.antlr.org/RIGHTS.html
@@ -10,11 +8,13 @@ import java.io.IOException;
  */
 
 import java.util.Enumeration;
-
+import antlr.collections.impl.BitSet;
 import antlr.collections.impl.Vector;
+import java.io.PrintWriter; //SAS: changed for proper text file io
+import java.io.IOException;
+import java.io.FileWriter;
 
 /**Generate P.html, a cross-linked representation of P with or without actions */
-@SuppressWarnings("rawtypes")
 public class HTMLCodeGenerator extends CodeGenerator {
 	/** non-zero if inside syntactic predicate generation */
 	protected int syntacticPredLevel = 0;

@@ -1,21 +1,19 @@
-/*
- * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
- * 
- * The contents of this library are released under the LGPL licence v3, 
- * the GNU Lesser General Public License text was downloaded from
- * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- * 
- */
+// Decompiled by Jad v1.5.8e. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.geocities.com/kpdus/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   ProcedureCall.java
+
 package tripleo.elijah.lang;
 
-import antlr.collections.impl.LList;
 import tripleo.elijah.util.TabbedOutputStream;
+
+import antlr.collections.impl.LList;
 
 // Referenced classes of package pak:
 //			AbstractExpression, ExprListListener, ScopeElement, VariableReference, 
 //			IExpression
 
-public class ProcedureCall extends AbstractBinaryExpression implements
+public class ProcedureCall extends AbstractExpression implements
 		ExprListListener, ScopeElement {
 
 	public ProcedureCall(VariableReference ref) {
@@ -26,12 +24,10 @@ public class ProcedureCall extends AbstractBinaryExpression implements
 		args = s;
 	}
 
-	@Override
 	public boolean isEmpty() {
 		return _args == null;
 	}
 
-	@Override
 	public void change(IExpression e) {
 		if (!isEmpty()) {
 			throw new IllegalStateException("_args!=null");
@@ -41,7 +37,6 @@ public class ProcedureCall extends AbstractBinaryExpression implements
 		}
 	}
 
-	@Override
 	public void print_osi(TabbedOutputStream tos) {
 		try {
 			tos.incr_tabs();

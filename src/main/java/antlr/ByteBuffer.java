@@ -1,7 +1,5 @@
 package antlr;
 
-import java.io.IOException;
-
 /* ANTLR Translator Generator
  * Project led by Terence Parr at http://www.jGuru.com
  * Software rights: http://www.antlr.org/RIGHTS.html
@@ -23,6 +21,7 @@ import java.io.IOException;
  */
 // SAS: added this class to handle Binary input w/ FileInputStream
 import java.io.InputStream;
+import java.io.IOException;
 
 public class ByteBuffer extends InputBuffer{
 

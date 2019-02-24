@@ -3,10 +3,28 @@
 package antlr;
 
 import java.io.InputStream;
+import antlr.TokenStreamException;
+import antlr.TokenStreamIOException;
+import antlr.TokenStreamRecognitionException;
+import antlr.CharStreamException;
+import antlr.CharStreamIOException;
+import antlr.ANTLRException;
 import java.io.Reader;
 import java.util.Hashtable;
-
+import antlr.CharScanner;
+import antlr.InputBuffer;
+import antlr.ByteBuffer;
+import antlr.CharBuffer;
+import antlr.Token;
+import antlr.CommonToken;
+import antlr.RecognitionException;
+import antlr.NoViableAltForCharException;
+import antlr.MismatchedCharException;
+import antlr.TokenStream;
+import antlr.ANTLRHashString;
+import antlr.LexerSharedInputState;
 import antlr.collections.impl.BitSet;
+import antlr.SemanticException;
 
 public class ANTLRLexer extends antlr.CharScanner implements ANTLRTokenTypes, TokenStream
  {
@@ -1608,11 +1626,11 @@ tryAgain:
 	}
 	
 	
-	 private static final long[] _tokenSet_0_data_ = {-9224L, 9223372036854775807L, 0L, 0L};
+	private static final long _tokenSet_0_data_[] = { -9224L, 9223372036854775807L, 0L, 0L };
 	public static final BitSet _tokenSet_0 = new BitSet(_tokenSet_0_data_);
-	 private static final long[] _tokenSet_1_data_ = {-549755813896L, 9223372036854775807L, 0L, 0L};
+	private static final long _tokenSet_1_data_[] = { -549755813896L, 9223372036854775807L, 0L, 0L };
 	public static final BitSet _tokenSet_1 = new BitSet(_tokenSet_1_data_);
-	 private static final long[] _tokenSet_2_data_ = {4294977024L, 0L, 0L};
+	private static final long _tokenSet_2_data_[] = { 4294977024L, 0L, 0L };
 	public static final BitSet _tokenSet_2 = new BitSet(_tokenSet_2_data_);
 	
 	}

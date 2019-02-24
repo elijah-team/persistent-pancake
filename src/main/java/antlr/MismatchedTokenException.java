@@ -1,7 +1,5 @@
 package antlr;
 
-import antlr.collections.AST;
-
 /* ANTLR Translator Generator
  * Project led by Terence Parr at http://www.jGuru.com
  * Software rights: http://www.antlr.org/RIGHTS.html
@@ -10,6 +8,7 @@ import antlr.collections.AST;
  */
 
 import antlr.collections.impl.BitSet;
+import antlr.collections.AST;
 
 public class MismatchedTokenException extends RecognitionException {
     // Token names array for formatting 

@@ -1,11 +1,3 @@
-/*
- * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
- * 
- * The contents of this library are released under the LGPL licence v3, 
- * the GNU Lesser General Public License text was downloaded from
- * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- * 
- */
 package tripleo.elijah;
 
 // $ANTLR 2.7.1: "osc.g" -> "elijahLexer.java"$
@@ -16,7 +8,6 @@ import java.util.Hashtable;
 import antlr.*;
 import antlr.collections.impl.BitSet;
 
-@SuppressWarnings("unused")
 public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 		ElijahTokenTypes, TokenStream {
 	public ElijahLexer(InputStream in) {
@@ -33,60 +24,59 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 						ib)));
 	}
 
-	@SuppressWarnings("deprecation")
 	public ElijahLexer(LexerSharedInputState state) {
 		super(state);
 		ruleNames = _ruleNames;
 		semPredNames = _semPredNames;
 		setupDebugging();
-		literals = new Hashtable<ANTLRHashString, Integer>();
-		literals.put(new ANTLRHashString("block", this), Integer.valueOf(96));
-		literals.put(new ANTLRHashString("class", this), Integer.valueOf(16));
-		literals.put(new ANTLRHashString("procedure", this), Integer.valueOf(55));
-		literals.put(new ANTLRHashString("tagged", this), Integer.valueOf(43));
-		literals.put(new ANTLRHashString("to", this), Integer.valueOf(32));
-		literals.put(new ANTLRHashString("package", this), Integer.valueOf(10));
-		literals.put(new ANTLRHashString("indexing", this), Integer.valueOf(7));
-		literals.put(new ANTLRHashString("iterate", this), Integer.valueOf(31));
-		literals.put(new ANTLRHashString("yield", this), Integer.valueOf(28));
-		literals.put(new ANTLRHashString("import", this), Integer.valueOf(26));
-		literals.put(new ANTLRHashString("dtor", this), Integer.valueOf(24));
-		literals.put(new ANTLRHashString("const", this), Integer.valueOf(35));
-		literals.put(new ANTLRHashString("gc", this), Integer.valueOf(46));
-		literals.put(new ANTLRHashString("local", this), Integer.valueOf(42));
-		literals.put(new ANTLRHashString("while", this), Integer.valueOf(29));
-		literals.put(new ANTLRHashString("namespace", this), Integer.valueOf(12));
-		literals.put(new ANTLRHashString("generic", this), Integer.valueOf(50));
-		literals.put(new ANTLRHashString("ctor", this), Integer.valueOf(22));
-		literals.put(new ANTLRHashString("alias", this), Integer.valueOf(99));
-		literals.put(new ANTLRHashString("type", this), Integer.valueOf(98));
-		literals.put(new ANTLRHashString("do", this), Integer.valueOf(30));
-		literals.put(new ANTLRHashString("in", this), Integer.valueOf(48));
-		literals.put(new ANTLRHashString("pooled", this), Integer.valueOf(44));
-		literals.put(new ANTLRHashString("function", this), Integer.valueOf(53));
-		literals.put(new ANTLRHashString("imports", this), Integer.valueOf(15));
-		literals.put(new ANTLRHashString("once", this), Integer.valueOf(41));
-		literals.put(new ANTLRHashString("closure", this), Integer.valueOf(97));
-		literals.put(new ANTLRHashString("is_a", this), Integer.valueOf(80));
-		literals.put(new ANTLRHashString("elseif", this), Integer.valueOf(39));
-		literals.put(new ANTLRHashString("ref", this), Integer.valueOf(47));
-		literals.put(new ANTLRHashString("from", this), Integer.valueOf(25));
-		literals.put(new ANTLRHashString("typeof", this), Integer.valueOf(40));
-		literals.put(new ANTLRHashString("out", this), Integer.valueOf(49));
-		literals.put(new ANTLRHashString("if", this), Integer.valueOf(37));
-		literals.put(new ANTLRHashString("constructor", this), Integer.valueOf(21));
-		literals.put(new ANTLRHashString("struct", this), Integer.valueOf(100));
-		literals.put(new ANTLRHashString("manual", this), Integer.valueOf(45));
-		literals.put(new ANTLRHashString("construct", this), Integer.valueOf(27));
-		literals.put(new ANTLRHashString("else", this), Integer.valueOf(38));
-		literals.put(new ANTLRHashString("var", this), Integer.valueOf(34));
-		literals.put(new ANTLRHashString("with", this), Integer.valueOf(33));
-		literals.put(new ANTLRHashString("destructor", this), Integer.valueOf(23));
+		literals = new Hashtable();
+		literals.put(new ANTLRHashString("block", this), new Integer(96));
+		literals.put(new ANTLRHashString("class", this), new Integer(16));
+		literals.put(new ANTLRHashString("procedure", this), new Integer(55));
+		literals.put(new ANTLRHashString("tagged", this), new Integer(43));
+		literals.put(new ANTLRHashString("to", this), new Integer(32));
+		literals.put(new ANTLRHashString("package", this), new Integer(10));
+		literals.put(new ANTLRHashString("indexing", this), new Integer(7));
+		literals.put(new ANTLRHashString("iterate", this), new Integer(31));
+		literals.put(new ANTLRHashString("yield", this), new Integer(28));
+		literals.put(new ANTLRHashString("import", this), new Integer(26));
+		literals.put(new ANTLRHashString("dtor", this), new Integer(24));
+		literals.put(new ANTLRHashString("const", this), new Integer(35));
+		literals.put(new ANTLRHashString("gc", this), new Integer(46));
+		literals.put(new ANTLRHashString("local", this), new Integer(42));
+		literals.put(new ANTLRHashString("while", this), new Integer(29));
+		literals.put(new ANTLRHashString("namespace", this), new Integer(12));
+		literals.put(new ANTLRHashString("generic", this), new Integer(50));
+		literals.put(new ANTLRHashString("ctor", this), new Integer(22));
+		literals.put(new ANTLRHashString("alias", this), new Integer(99));
+		literals.put(new ANTLRHashString("type", this), new Integer(98));
+		literals.put(new ANTLRHashString("do", this), new Integer(30));
+		literals.put(new ANTLRHashString("in", this), new Integer(48));
+		literals.put(new ANTLRHashString("pooled", this), new Integer(44));
+		literals.put(new ANTLRHashString("function", this), new Integer(53));
+		literals.put(new ANTLRHashString("imports", this), new Integer(15));
+		literals.put(new ANTLRHashString("once", this), new Integer(41));
+		literals.put(new ANTLRHashString("closure", this), new Integer(97));
+		literals.put(new ANTLRHashString("is_a", this), new Integer(80));
+		literals.put(new ANTLRHashString("elseif", this), new Integer(39));
+		literals.put(new ANTLRHashString("ref", this), new Integer(47));
+		literals.put(new ANTLRHashString("from", this), new Integer(25));
+		literals.put(new ANTLRHashString("typeof", this), new Integer(40));
+		literals.put(new ANTLRHashString("out", this), new Integer(49));
+		literals.put(new ANTLRHashString("if", this), new Integer(37));
+		literals.put(new ANTLRHashString("constructor", this), new Integer(21));
+		literals.put(new ANTLRHashString("struct", this), new Integer(100));
+		literals.put(new ANTLRHashString("manual", this), new Integer(45));
+		literals.put(new ANTLRHashString("construct", this), new Integer(27));
+		literals.put(new ANTLRHashString("else", this), new Integer(38));
+		literals.put(new ANTLRHashString("var", this), new Integer(34));
+		literals.put(new ANTLRHashString("with", this), new Integer(33));
+		literals.put(new ANTLRHashString("destructor", this), new Integer(23));
 		caseSensitiveLiterals = true;
 		setCaseSensitive(true);
 	}
-	
-	private static final String[] _ruleNames = {"mVOCAB", "mWS_",
+
+	private static final String _ruleNames[] = { "mVOCAB", "mWS_",
 			"mTOK_ARROW", "mLPAREN", "mRPAREN", "mLBRACK", "mRBRACK",
 			"mLCURLY", "mRCURLY", "mPLUS", "mMINUS", "mEQUALITY",
 			"mNOT_EQUALS", "mBECOMES", "mGT", "mLT_", "mGTE", "mLTE", "mTIMES",
@@ -97,9 +87,8 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 			"mBXOR_ASSIGN", "mBOR", "mBOR_ASSIGN", "mBAND", "mBAND_ASSIGN",
 			"mSL_COMMENT", "mML_COMMENT", "mCHAR_LITERAL", "mESC", "mTQUOT",
 			"mSTRING_LITERAL", "mHEX_DIGIT", "mIDENT", "mQIDENT", "mNUM_INT",
-			"mEXPONENT", "mFLOAT_SUFFIX",};
+			"mEXPONENT", "mFLOAT_SUFFIX", };
 
-	@Override
 	public Token nextToken() throws TokenStreamException {
 		Token theRetToken = null;
 		tryAgain: for (;;) {
@@ -374,7 +363,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 								_returnToken = makeToken(Token.EOF_TYPE);
 							} else {
 								throw new NoViableAltForCharException(
-										LA(1), getFilename(), getLine());
+										(char) LA(1), getFilename(), getLine());
 							}
 						}
 					}
@@ -456,7 +445,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 						} else if ((LA(1) == '\n')) {
 							match('\n');
 						} else {
-							throw new NoViableAltForCharException(LA(1),
+							throw new NoViableAltForCharException((char) LA(1),
 									getFilename(), getLine());
 						}
 
@@ -465,7 +454,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 					break;
 				}
 				default: {
-					throw new NoViableAltForCharException(LA(1),
+					throw new NoViableAltForCharException((char) LA(1),
 							getFilename(), getLine());
 				}
 				}
@@ -1583,7 +1572,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 							break;
 						}
 						default: {
-							throw new NoViableAltForCharException(LA(1),
+							throw new NoViableAltForCharException((char) LA(1),
 									getFilename(), getLine());
 						}
 						}
@@ -1591,7 +1580,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 					break;
 				}
 				default: {
-					throw new NoViableAltForCharException(LA(1),
+					throw new NoViableAltForCharException((char) LA(1),
 							getFilename(), getLine());
 				}
 				}
@@ -1626,7 +1615,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 					break;
 				}
 				default: {
-					throw new NoViableAltForCharException(LA(1),
+					throw new NoViableAltForCharException((char) LA(1),
 							getFilename(), getLine());
 				}
 				}
@@ -1722,7 +1711,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 				} else if ((_tokenSet_4.member(LA(1)))) {
 					matchNot('\'');
 				} else {
-					throw new NoViableAltForCharException(LA(1),
+					throw new NoViableAltForCharException((char) LA(1),
 							getFilename(), getLine());
 				}
 
@@ -1797,7 +1786,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 									break _loop257;
 								} else {
 									throw new NoViableAltForCharException(
-											LA(1), getFilename(),
+											(char) LA(1), getFilename(),
 											getLine());
 								}
 							}
@@ -1833,14 +1822,14 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 								} else if (((LA(1) >= '\u0003' && LA(1) <= '\u00ff')) && (true) && (true) && (true)) {
 								} else {
 									throw new NoViableAltForCharException(
-											LA(1), getFilename(),
+											(char) LA(1), getFilename(),
 											getLine());
 								}
 
 							}
 						} else if (((LA(1) >= '\u0003' && LA(1) <= '\u00ff')) && (true) && (true) && (true)) {
 						} else {
-							throw new NoViableAltForCharException(LA(1),
+							throw new NoViableAltForCharException((char) LA(1),
 									getFilename(), getLine());
 						}
 
@@ -1863,7 +1852,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 							}
 						} else if (((LA(1) >= '\u0003' && LA(1) <= '\u00ff')) && (true) && (true) && (true)) {
 						} else {
-							throw new NoViableAltForCharException(LA(1),
+							throw new NoViableAltForCharException((char) LA(1),
 									getFilename(), getLine());
 						}
 
@@ -1871,7 +1860,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 					break;
 				}
 				default: {
-					throw new NoViableAltForCharException(LA(1),
+					throw new NoViableAltForCharException((char) LA(1),
 							getFilename(), getLine());
 				}
 				}
@@ -1996,7 +1985,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 					break;
 				}
 				default: {
-					throw new NoViableAltForCharException(LA(1),
+					throw new NoViableAltForCharException((char) LA(1),
 							getFilename(), getLine());
 				}
 				}
@@ -2092,7 +2081,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 					break;
 				}
 				default: {
-					throw new NoViableAltForCharException(LA(1),
+					throw new NoViableAltForCharException((char) LA(1),
 							getFilename(), getLine());
 				}
 				}
@@ -2247,7 +2236,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 										break _loop275;
 									} else {
 										throw new NoViableAltForCharException(
-												LA(1), getFilename(),
+												(char) LA(1), getFilename(),
 												getLine());
 									}
 								}
@@ -2307,7 +2296,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 									}
 									default: {
 										throw new NoViableAltForCharException(
-												LA(1), getFilename(),
+												(char) LA(1), getFilename(),
 												getLine());
 									}
 									}
@@ -2322,7 +2311,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 												break _loop282;
 											} else {
 												throw new NoViableAltForCharException(
-														LA(1),
+														(char) LA(1),
 														getFilename(),
 														getLine());
 											}
@@ -2351,7 +2340,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 												break _loop284;
 											} else {
 												throw new NoViableAltForCharException(
-														LA(1),
+														(char) LA(1),
 														getFilename(),
 														getLine());
 											}
@@ -2394,7 +2383,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 						break;
 					}
 					default: {
-						throw new NoViableAltForCharException(LA(1),
+						throw new NoViableAltForCharException((char) LA(1),
 								getFilename(), getLine());
 					}
 					}
@@ -2413,7 +2402,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 							}
 							default: {
 								throw new NoViableAltForCharException(
-										LA(1), getFilename(), getLine());
+										(char) LA(1), getFilename(), getLine());
 							}
 							}
 						}
@@ -2472,7 +2461,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 							}
 							default: {
 								throw new NoViableAltForCharException(
-										LA(1), getFilename(), getLine());
+										(char) LA(1), getFilename(), getLine());
 							}
 							}
 						}
@@ -2484,7 +2473,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 				break;
 			}
 			default: {
-				throw new NoViableAltForCharException(LA(1),
+				throw new NoViableAltForCharException((char) LA(1),
 						getFilename(), getLine());
 			}
 			}
@@ -2522,7 +2511,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 					break;
 				}
 				default: {
-					throw new NoViableAltForCharException(LA(1),
+					throw new NoViableAltForCharException((char) LA(1),
 							getFilename(), getLine());
 				}
 				}
@@ -2550,7 +2539,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 					break;
 				}
 				default: {
-					throw new NoViableAltForCharException(LA(1),
+					throw new NoViableAltForCharException((char) LA(1),
 							getFilename(), getLine());
 				}
 				}
@@ -2564,7 +2553,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 						if (_cnt300 >= 1) {
 							break _loop300;
 						} else {
-							throw new NoViableAltForCharException(LA(1),
+							throw new NoViableAltForCharException((char) LA(1),
 									getFilename(), getLine());
 						}
 					}
@@ -2613,7 +2602,7 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 				break;
 			}
 			default: {
-				throw new NoViableAltForCharException(LA(1),
+				throw new NoViableAltForCharException((char) LA(1),
 						getFilename(), getLine());
 			}
 			}
@@ -2628,51 +2617,51 @@ public class ElijahLexer extends antlr.debug.DebuggingCharScanner implements
 			fireExitRule(58, _ttype);
 		}
 	}
-	
-	private String[] _semPredNames = {" LA(2)!='/' ", "isDecimal",};
-	
-	private static final long[] _tokenSet_0_data_ = {-4402341478920L, -1L,
-			-1L, -1L, 0L, 0L, 0L, 0L};
+
+	private String _semPredNames[] = { " LA(2)!='/' ", "isDecimal", };
+
+	private static final long _tokenSet_0_data_[] = { -4402341478920L, -1L,
+			-1L, -1L, 0L, 0L, 0L, 0L };
 
 	public static final BitSet _tokenSet_0 = new BitSet(_tokenSet_0_data_);
-	
-	private static final long[] _tokenSet_1_data_ = {288019269919178752L, 0L,
-			0L, 0L, 0L};
+
+	private static final long _tokenSet_1_data_[] = { 288019269919178752L, 0L,
+			0L, 0L, 0L };
 
 	public static final BitSet _tokenSet_1 = new BitSet(_tokenSet_1_data_);
-	
-	private static final long[] _tokenSet_2_data_ = {-9224L, -1L, -1L, -1L,
-			0L, 0L, 0L, 0L};
+
+	private static final long _tokenSet_2_data_[] = { -9224L, -1L, -1L, -1L,
+			0L, 0L, 0L, 0L };
 
 	public static final BitSet _tokenSet_2 = new BitSet(_tokenSet_2_data_);
-	
-	private static final long[] _tokenSet_3_data_ = {-4398046520328L, -1L,
-			-1L, -1L, 0L, 0L, 0L, 0L};
+
+	private static final long _tokenSet_3_data_[] = { -4398046520328L, -1L,
+			-1L, -1L, 0L, 0L, 0L, 0L };
 
 	public static final BitSet _tokenSet_3 = new BitSet(_tokenSet_3_data_);
-	
-	private static final long[] _tokenSet_4_data_ = {-549755813896L,
-			-268435457L, -1L, -1L, 0L, 0L, 0L, 0L};
+
+	private static final long _tokenSet_4_data_[] = { -549755813896L,
+			-268435457L, -1L, -1L, 0L, 0L, 0L, 0L };
 
 	public static final BitSet _tokenSet_4 = new BitSet(_tokenSet_4_data_);
-	
-	private static final long[] _tokenSet_5_data_ = {-17179869192L,
-			-268435457L, -1L, -1L, 0L, 0L, 0L, 0L};
+
+	private static final long _tokenSet_5_data_[] = { -17179869192L,
+			-268435457L, -1L, -1L, 0L, 0L, 0L, 0L };
 
 	public static final BitSet _tokenSet_5 = new BitSet(_tokenSet_5_data_);
-	
-	private static final long[] _tokenSet_6_data_ = {0L, 343597383760L, 0L,
-			0L, 0L};
+
+	private static final long _tokenSet_6_data_[] = { 0L, 343597383760L, 0L,
+			0L, 0L };
 
 	public static final BitSet _tokenSet_6 = new BitSet(_tokenSet_6_data_);
-	
-	private static final long[] _tokenSet_7_data_ = {287948901175001088L,
-			541165879422L, 0L, 0L, 0L};
+
+	private static final long _tokenSet_7_data_[] = { 287948901175001088L,
+			541165879422L, 0L, 0L, 0L };
 
 	public static final BitSet _tokenSet_7 = new BitSet(_tokenSet_7_data_);
-	
-	private static final long[] _tokenSet_8_data_ = {70368744177664L,
-			481036337264L, 0L, 0L, 0L};
+
+	private static final long _tokenSet_8_data_[] = { 70368744177664L,
+			481036337264L, 0L, 0L, 0L };
 
 	public static final BitSet _tokenSet_8 = new BitSet(_tokenSet_8_data_);
 

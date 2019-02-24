@@ -1,31 +1,23 @@
-/*
- * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
- * 
- * The contents of this library are released under the LGPL licence v3, 
- * the GNU Lesser General Public License text was downloaded from
- * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- * 
- */
+// Decompiled by Jad v1.5.8e. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.geocities.com/kpdus/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   Scope.java
+
 package tripleo.elijah.lang;
+
 
 // Referenced classes of package pak2:
 //			StatementClosure, BlockStatement
 
-import antlr.Token;
-
 public interface Scope {
 
-	void statementWrapper(IExpression aExpr);
+	public abstract void statementWrapper(IExpression aExpr);
 
-	void addDocString(Token s);
+	public abstract void addDocString(String s);
 
-	StatementClosure statementClosure();
+	public abstract StatementClosure statementClosure();
 
-	BlockStatement blockStatement();
+	public abstract BlockStatement blockStatement();
 
-	void add(StatementItem aItem);
-	
-	TypeAliasExpression typeAlias();
-	
-	InvariantStatement invariantStatement();
+	public abstract void add(StatementItem aItem);
 }

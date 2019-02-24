@@ -1,7 +1,5 @@
 package antlr;
 
-import java.io.IOException;
-
 /* ANTLR Translator Generator
  * Project led by Terence Parr at http://www.jGuru.com
  * Software rights: http://www.antlr.org/RIGHTS.html
@@ -10,9 +8,10 @@ import java.io.IOException;
  */
 
 import java.io.PrintWriter; // SAS: for proper text i/o
-
-import antlr.collections.impl.BitSet;
+import java.io.IOException;
+import java.io.FileWriter;  // SAS: for proper text i/o
 import antlr.collections.impl.Vector;
+import antlr.collections.impl.BitSet;
 
 /**A generic ANTLR code generator.  All code generators
  * Derive from this class.

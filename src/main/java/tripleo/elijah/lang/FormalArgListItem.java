@@ -1,11 +1,8 @@
-/*
- * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
- * 
- * The contents of this library are released under the LGPL licence v3, 
- * the GNU Lesser General Public License text was downloaded from
- * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- * 
- */
+// Decompiled by Jad v1.5.8e. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.geocities.com/kpdus/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   FormalArgListItem.java
+
 package tripleo.elijah.lang;
 
 // Referenced classes of package pak2:
@@ -14,7 +11,7 @@ package tripleo.elijah.lang;
 public class FormalArgListItem {
 	
 	String name;
-	TypeName tn=new RegularTypeName(); // TODO why make the choice for the program?
+	TypeName tn=new RegularTypeName();
 
 	public TypeName typeName() {
 		return tn;

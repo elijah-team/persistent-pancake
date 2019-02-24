@@ -1,17 +1,10 @@
 /*
- * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
- * 
- * The contents of this library are released under the LGPL licence v3, 
- * the GNU Lesser General Public License text was downloaded from
- * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- * 
- */
-
-/*
  * Created on Sep 2, 2005 2:08:03 PM
  * 
  * $Id$
- * 
+ *
+ * TODO To change the template for this generated file go to
+ * Window - Preferences - Java - Code Style - Code Templates
  */
 package tripleo.elijah.lang;
 
@@ -23,27 +16,17 @@ public interface IExpression {
 
 	void print_osi(TabbedOutputStream tabbedoutputstream) throws IOException;
 
-	ExpressionType getType();
-
-	void set(ExpressionType aIncrement);
-
 	IExpression getLeft();
 
 	void setLeft(IExpression iexpression);
 
-	@Deprecated String repr_();
+	String repr_();
 
-	IExpression UNASSIGNED = new AbstractBinaryExpression() {
+	IExpression UNASSIGNED = new AbstractExpression() {
 	};
 
-//	default boolean is_simple() {
-//		switch(getType()) {
-//		case STRING_LITERAL:
-//			return true;
-//		default:
-//			return false;
-//		}
-//	}
+	ExpressionType getType();
 
-	boolean is_simple();
+	void set(ExpressionType aIncrement);
+
 }

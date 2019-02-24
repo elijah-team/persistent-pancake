@@ -8,6 +8,8 @@ package antlr.collections.impl;
  */
 
 import java.util.Enumeration;
+import java.util.NoSuchElementException;
+import antlr.collections.Enumerator;
 
 public class Vector implements Cloneable {
 	protected Object[] data;
@@ -62,7 +64,7 @@ public class Vector implements Cloneable {
 	}
 	public synchronized void ensureCapacity(int minIndex) {
 		if ( minIndex+1 > data.length ) {
-			Object[] oldData = data;
+			Object oldData[] = data;
 			int n = data.length * 2;
 			if ( minIndex+1 > n ) {
 				n = minIndex+1;

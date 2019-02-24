@@ -1,9 +1,5 @@
 package antlr;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.Writer;
-
 /* ANTLR Translator Generator
  * Project led by Terence Parr at http://www.jGuru.com
  * Software rights: http://www.antlr.org/RIGHTS.html
@@ -15,6 +11,9 @@ import antlr.collections.AST;
 import antlr.collections.ASTEnumeration;
 import antlr.collections.impl.ASTEnumerator;
 import antlr.collections.impl.Vector;
+import java.io.Serializable;
+import java.io.IOException;
+import java.io.Writer;
 
 /**
  * A Child-Sibling Tree.

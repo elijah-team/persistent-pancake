@@ -1,5 +1,21 @@
 package antlr;
 
+/*
+ * ANTLR-generated file resulting from grammar tokdef.g
+ * 
+ * Terence Parr, MageLang Institute
+ * ANTLR Version 2.7.0a2; 1989-1999
+ */
+import antlr.TokenStreamException;
+import antlr.TokenBuffer;
+import antlr.LLkParser;
+import antlr.Token;
+import antlr.TokenStream;
+import antlr.RecognitionException;
+import antlr.NoViableAltException;
+import antlr.MismatchedTokenException;
+import antlr.SemanticException;
+import antlr.ParserSharedInputState;
 import antlr.collections.impl.BitSet;
 public class ANTLRTokdefParser extends antlr.LLkParser
 	   implements ANTLRTokdefParserTokenTypes
@@ -25,9 +41,9 @@ public class ANTLRTokdefParser extends antlr.LLkParser
 		"VOCAB"
 	};
 	
-	 private static final long[] _tokenSet_0_data_ = {2L, 0L};
+	private static final long _tokenSet_0_data_[] = { 2L, 0L };
 	public static final BitSet _tokenSet_0 = new BitSet(_tokenSet_0_data_);
-	 private static final long[] _tokenSet_1_data_ = {50L, 0L};
+	private static final long _tokenSet_1_data_[] = { 50L, 0L };
 	public static final BitSet _tokenSet_1 = new BitSet(_tokenSet_1_data_);
 	
 	

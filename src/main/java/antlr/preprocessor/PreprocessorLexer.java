@@ -3,24 +3,28 @@
 package antlr.preprocessor;
 
 import java.io.InputStream;
-import java.io.Reader;
-import java.util.Hashtable;
-
-import antlr.ANTLRHashString;
-import antlr.ByteBuffer;
-import antlr.CharBuffer;
-import antlr.CharStreamException;
-import antlr.CharStreamIOException;
-import antlr.InputBuffer;
-import antlr.LexerSharedInputState;
-import antlr.NoViableAltForCharException;
-import antlr.RecognitionException;
-import antlr.Token;
-import antlr.TokenStream;
 import antlr.TokenStreamException;
 import antlr.TokenStreamIOException;
 import antlr.TokenStreamRecognitionException;
+import antlr.CharStreamException;
+import antlr.CharStreamIOException;
+import antlr.ANTLRException;
+import java.io.Reader;
+import java.util.Hashtable;
+import antlr.CharScanner;
+import antlr.InputBuffer;
+import antlr.ByteBuffer;
+import antlr.CharBuffer;
+import antlr.Token;
+import antlr.CommonToken;
+import antlr.RecognitionException;
+import antlr.NoViableAltForCharException;
+import antlr.MismatchedCharException;
+import antlr.TokenStream;
+import antlr.ANTLRHashString;
+import antlr.LexerSharedInputState;
 import antlr.collections.impl.BitSet;
+import antlr.SemanticException;
 
 public class PreprocessorLexer extends antlr.CharScanner implements PreprocessorTokenTypes, TokenStream
  {
@@ -36,16 +40,16 @@ public PreprocessorLexer(InputBuffer ib) {
 public PreprocessorLexer(LexerSharedInputState state) {
 	super(state);
 	literals = new Hashtable();
-	literals.put(new ANTLRHashString("catch", this), Integer.valueOf(25));
-	literals.put(new ANTLRHashString("exception", this), Integer.valueOf(24));
-	literals.put(new ANTLRHashString("class", this), Integer.valueOf(7));
-	literals.put(new ANTLRHashString("public", this), Integer.valueOf(17));
-	literals.put(new ANTLRHashString("tokens", this), Integer.valueOf(4));
-	literals.put(new ANTLRHashString("returns", this), Integer.valueOf(20));
-	literals.put(new ANTLRHashString("private", this), Integer.valueOf(16));
-	literals.put(new ANTLRHashString("protected", this), Integer.valueOf(15));
-	literals.put(new ANTLRHashString("throws", this), Integer.valueOf(22));
-	literals.put(new ANTLRHashString("extends", this), Integer.valueOf(9));
+	literals.put(new ANTLRHashString("catch", this), new Integer(25));
+	literals.put(new ANTLRHashString("exception", this), new Integer(24));
+	literals.put(new ANTLRHashString("class", this), new Integer(7));
+	literals.put(new ANTLRHashString("public", this), new Integer(17));
+	literals.put(new ANTLRHashString("tokens", this), new Integer(4));
+	literals.put(new ANTLRHashString("returns", this), new Integer(20));
+	literals.put(new ANTLRHashString("private", this), new Integer(16));
+	literals.put(new ANTLRHashString("protected", this), new Integer(15));
+	literals.put(new ANTLRHashString("throws", this), new Integer(22));
+	literals.put(new ANTLRHashString("extends", this), new Integer(9));
 caseSensitiveLiterals = true;
 setCaseSensitive(true);
 }
@@ -1376,23 +1380,23 @@ tryAgain:
 	}
 	
 	
-	 private static final long[] _tokenSet_0_data_ = {4294977024L, 0L, 0L};
+	private static final long _tokenSet_0_data_[] = { 4294977024L, 0L, 0L };
 	public static final BitSet _tokenSet_0 = new BitSet(_tokenSet_0_data_);
-	 private static final long[] _tokenSet_1_data_ = {-2199023255560L, 9223372036854775807L, 0L, 0L};
+	private static final long _tokenSet_1_data_[] = { -2199023255560L, 9223372036854775807L, 0L, 0L };
 	public static final BitSet _tokenSet_1 = new BitSet(_tokenSet_1_data_);
-	 private static final long[] _tokenSet_2_data_ = {-576462951326679048L, 9223372036854775807L, 0L, 0L};
+	private static final long _tokenSet_2_data_[] = { -576462951326679048L, 9223372036854775807L, 0L, 0L };
 	public static final BitSet _tokenSet_2 = new BitSet(_tokenSet_2_data_);
-	 private static final long[] _tokenSet_3_data_ = {-576460752303423496L, 9223372036854775807L, 0L, 0L};
+	private static final long _tokenSet_3_data_[] = { -576460752303423496L, 9223372036854775807L, 0L, 0L };
 	public static final BitSet _tokenSet_3 = new BitSet(_tokenSet_3_data_);
-	 private static final long[] _tokenSet_4_data_ = {4294977024L, 1152921504606846976L, 0L, 0L};
+	private static final long _tokenSet_4_data_[] = { 4294977024L, 1152921504606846976L, 0L, 0L };
 	public static final BitSet _tokenSet_4 = new BitSet(_tokenSet_4_data_);
-	 private static final long[] _tokenSet_5_data_ = {-576605355262354440L, 8646911284551352319L, 0L, 0L};
+	private static final long _tokenSet_5_data_[] = { -576605355262354440L, 8646911284551352319L, 0L, 0L };
 	public static final BitSet _tokenSet_5 = new BitSet(_tokenSet_5_data_);
-	 private static final long[] _tokenSet_6_data_ = {-549755813896L, 9223372036854775807L, 0L, 0L};
+	private static final long _tokenSet_6_data_[] = { -549755813896L, 9223372036854775807L, 0L, 0L };
 	public static final BitSet _tokenSet_6 = new BitSet(_tokenSet_6_data_);
-	 private static final long[] _tokenSet_7_data_ = {140758963201536L, 576460752303423488L, 0L, 0L};
+	private static final long _tokenSet_7_data_[] = { 140758963201536L, 576460752303423488L, 0L, 0L };
 	public static final BitSet _tokenSet_7 = new BitSet(_tokenSet_7_data_);
-	 private static final long[] _tokenSet_8_data_ = {140741783332352L, 576460752303423488L, 0L, 0L};
+	private static final long _tokenSet_8_data_[] = { 140741783332352L, 576460752303423488L, 0L, 0L };
 	public static final BitSet _tokenSet_8 = new BitSet(_tokenSet_8_data_);
 	
 	}

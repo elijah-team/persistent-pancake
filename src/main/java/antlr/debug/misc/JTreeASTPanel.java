@@ -6,13 +6,11 @@ package antlr.debug.misc;
  *
  * $Id: //depot/code/org.antlr/release/antlr-2.7.1/antlr/debug/misc/JTreeASTPanel.java#1 $
  */
-import java.awt.BorderLayout;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreeModel;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.tree.*;
+import javax.swing.event.*;
 
 public class JTreeASTPanel extends JPanel {
   JTree tree;

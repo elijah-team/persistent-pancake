@@ -8,14 +8,29 @@ package antlr;
  */
  import java.io.InputStream;
 import java.io.Reader;
+import antlr.TokenStreamException;
+import antlr.TokenStreamIOException;
+import antlr.CharStreamException;
+import antlr.CharStreamIOException;
 import java.util.Hashtable;
-
+import antlr.CharScanner;
+import antlr.InputBuffer;
+import antlr.ByteBuffer;
+import antlr.CharBuffer;
+import antlr.Token;
+import antlr.CommonToken;
+import antlr.RecognitionException;
+import antlr.NoViableAltForCharException;
+import antlr.MismatchedCharException;
+import antlr.TokenStream;
+import antlr.ANTLRHashString;
+import antlr.LexerSharedInputState;
 import antlr.collections.impl.BitSet;
 public class ANTLRTokdefLexer extends antlr.CharScanner implements ANTLRTokdefParserTokenTypes, TokenStream
  {
-	 private static final long[] _tokenSet_0_data_ = {-9224L, 9223372036854775807L, 0L, 0L};
+	private static final long _tokenSet_0_data_[] = { -9224L, 9223372036854775807L, 0L, 0L };
 	public static final BitSet _tokenSet_0 = new BitSet(_tokenSet_0_data_);
-	 private static final long[] _tokenSet_1_data_ = {-140737488355336L, 9223372036854775807L, 0L, 0L};
+	private static final long _tokenSet_1_data_[] = { -140737488355336L, 9223372036854775807L, 0L, 0L };
 	public static final BitSet _tokenSet_1 = new BitSet(_tokenSet_1_data_);
 	
 	

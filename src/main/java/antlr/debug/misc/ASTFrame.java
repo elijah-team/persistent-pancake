@@ -1,25 +1,19 @@
 package antlr.debug.misc;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Frame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.JFrame;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreePath;
-
 /* ANTLR Translator Generator
  * Project led by Terence Parr at http://www.jGuru.com
  * Software rights: http://www.antlr.org/RIGHTS.html
  *
  * $Id: //depot/code/org.antlr/release/antlr-2.7.1/antlr/debug/misc/ASTFrame.java#1 $
  */
-import antlr.ASTFactory;
-import antlr.CommonAST;
+
+import antlr.*;
 import antlr.collections.AST;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.tree.*;
 
 public class ASTFrame extends JFrame {
   // The initial width and height of the frame
@@ -32,7 +26,7 @@ public class ASTFrame extends JFrame {
 	  TreePath path = event.getPath();
 	  System.out.println ("Selected: " + 
 		path.getLastPathComponent());
-		Object[] elements = path.getPath();
+	  Object elements[] = path.getPath();
 	  for (int i=0; i<elements.length; i++) {
 		System.out.print ("->" + elements[i]);
 	  }
@@ -57,7 +51,7 @@ public ASTFrame(String lab, AST r) {
 	});
 	setSize(WIDTH, HEIGHT);
 }
-  public static void main(String[] args) {
+  public static void main(String args[]) {
 	// Create the tree nodes
 	ASTFactory factory = new ASTFactory();
 	CommonAST r = (CommonAST)factory.create(0, "ROOT");

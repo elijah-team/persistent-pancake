@@ -1,11 +1,8 @@
-/*
- * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
- * 
- * The contents of this library are released under the LGPL licence v3, 
- * the GNU Lesser General Public License text was downloaded from
- * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- * 
- */
+// Decompiled by Jad v1.5.8e. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.geocities.com/kpdus/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   TypeName.java
+
 package tripleo.elijah.lang;
 
 // Referenced classes of package pak2:
@@ -13,59 +10,58 @@ package tripleo.elijah.lang;
 
 public interface TypeName {
 
-	boolean isNull();
+	public abstract boolean isNull();
 
-	boolean getConstant();
-	void setConstant(boolean flag);
+	public abstract boolean getConstant();
 
-	boolean getReference();
-	void setReference(boolean flag);
+	public abstract void setConstant(boolean flag);
 
-	boolean getOut();
-	void setOut(boolean flag);
+	public abstract boolean getReference();
 
-	boolean getIn();
-	void setIn(boolean flag);
+	public abstract void setReference(boolean flag);
 
-	String getName();
-	void setName(Qualident s);
+	public abstract boolean getOut();
 
-	void set(TypeModifiers aModifiers);
+	public abstract void setOut(boolean flag);
 
-	TypeName typeName(String s);
+	public abstract boolean getIn();
 
-	TypeName typeof(String s);
+	public abstract void setIn(boolean flag);
 
-	TypeName returnValue();
+	public abstract String getName();
 
-	void type(TypeModifiers modifiers);
+	public abstract void setName(String s);
 
-	TypeNameList argList();
+	public abstract void set(TypeModifiers aModifiers);
 
-	// TODO new
-	void addGenericPart(TypeName tn2);
+	public abstract TypeName typeName(String s);
 
-	// TODO new
-	void typeName(Qualident xy);
+	public abstract TypeName typeof(String s);
 
-	// TODO new
-	void typeof(Qualident xyz);
-	
-	void setGeneric(boolean value);
+	public abstract TypeName returnValue();
+
+	public abstract void type(TypeModifiers modifiers);
+
+	public abstract TypeNameList argList();
 
 //	public static final int NORMAL = 0;
+//
 //	public static final int CONST = 1;
+//
 //	public static final int GC = 2;
+//
 //	public static final int TAGGED = 3;
+//
 //	public static final int POOLED = 4;
+//
 //	public static final int MANUAL = 5;
+//
 //	public static final int LOCAL = 6;
+//
 //	public static final int ONCE = 7;
+//
 //	public static final int PROCEDURE = 32;
+//
 //	public static final int FUNCTION = 33;
 
 }
-
-//
-//
-//

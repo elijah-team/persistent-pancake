@@ -1,7 +1,5 @@
 package antlr;
 
-import java.util.Hashtable;
-
 /* ANTLR Translator Generator
  * Project led by Terence Parr at http://www.jGuru.com
  * Software rights: http://www.antlr.org/RIGHTS.html
@@ -10,6 +8,7 @@ import java.util.Hashtable;
  */
 
 import antlr.collections.impl.Vector;
+import java.util.Hashtable;
 
 /**A list of alternatives and info contained in
  * the rule definition.
@@ -28,8 +27,8 @@ public class RuleBlock extends AlternativeBlock {
     // This is a list of AlternativeElement (or subclass)
 
     protected boolean[] lock;	// for analysis; used to avoid infinite loops
-	// 1..k
-	protected Lookahead[] cache;// Each rule can cache it's lookahead computation.
+    // 1..k
+    protected Lookahead cache[];// Each rule can cache it's lookahead computation.
 
     // This cache contains an epsilon
     // imaginary token if the FOLLOW is required.  No
@@ -172,7 +171,7 @@ public class RuleBlock extends AlternativeBlock {
     }
     public String toString() {
 	String s = " FOLLOW={";
-	    Lookahead[] cache = endNode.cache;
+	Lookahead cache[] = endNode.cache;
 	int k = grammar.maxk;
 	boolean allNull = true;
 	for (int j=1; j<=k; j++) {

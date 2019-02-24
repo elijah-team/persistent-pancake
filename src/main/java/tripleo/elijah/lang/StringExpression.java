@@ -1,46 +1,43 @@
-/*
- * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
- * 
- * The contents of this library are released under the LGPL licence v3, 
- * the GNU Lesser General Public License text was downloaded from
- * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- * 
- */
+// Decompiled by Jad v1.5.8e. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.geocities.com/kpdus/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   IExpression.java
+
 package tripleo.elijah.lang;
 
 import java.io.IOException;
 
-import antlr.Token;
 import tripleo.elijah.util.TabbedOutputStream;
 
 public class StringExpression extends AbstractExpression {
 
-public StringExpression(Token g) {
-set(g.getText());
+public StringExpression(String g) {
+set(g);
 }
 
-	public boolean is_simple() {
-		return true;
-	}
-
-	/*@Override*/
 	public  void print_osi(TabbedOutputStream tabbedoutputstream)
 			throws IOException {
 		assert false;
 	}
 
-	@Override
 	public  IExpression getLeft() {
 		assert false;
-		return this;
+		return null;
 	}
 
-	@Override
 	public void setLeft(IExpression iexpression) {
-		throw new IllegalArgumentException("Should use set()");
+		assert false;
 	}
 
-	@Override
+	public  IExpression getRight() {
+		assert false;
+		return null;
+	}
+
+	public  void setRight(IExpression iexpression){
+		assert false;
+	}
+
 	public  String repr_() {return repr_;}
 
 	public void set(String g) {repr_ = g;}

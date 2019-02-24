@@ -1,20 +1,9 @@
-/*
- * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
- * 
- * The contents of this library are released under the LGPL licence v3, 
- * the GNU Lesser General Public License text was downloaded from
- * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- * 
- */
 package tripleo.elijah.lang;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-import tripleo.elijah.gen.ICodeGen;
-import tripleo.elijah.util.TabbedOutputStream;
+import tripleo.elijah.util.*;
 
 
 // Referenced classes of package pak2:
@@ -39,9 +28,8 @@ public class VariableSequence implements BlockMember, StatementItem, FunctionIte
 
 	List<VariableStatement> stmts;
 
-	@Override
 	public void print_osi(TabbedOutputStream aTos) throws IOException {
-//		NotImplementedException.raise();
+		NotImplementedException.raise();
 		//
 		aTos.incr_tabs();
 		aTos.put_string_ln("var");
@@ -53,12 +41,6 @@ public class VariableSequence implements BlockMember, StatementItem, FunctionIte
 
 	public Collection<VariableStatement> items() {
 		return stmts;
-	}
-
-	@Override
-	public void visitGen(ICodeGen visit) {
-		// TODO Auto-generated method stub
-		
 	}
 }
 

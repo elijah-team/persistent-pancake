@@ -1,9 +1,9 @@
 package antlr.debug;
 
-import java.util.Vector;
-
-import antlr.CharStreamException;
 import antlr.InputBuffer;
+import antlr.CharStreamException;
+import java.util.Vector;
+import java.io.IOException;
 
 public class DebuggingInputBuffer extends InputBuffer {
 	private InputBuffer buffer;
