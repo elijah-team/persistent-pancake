@@ -14,34 +14,24 @@
 package tripleo.elijah.gen.nodes;
 
 import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.util.NotImplementedException;
 
 /**
- * @author Tripleo(sb)
+ * @author SBUSER
  *
  */
 public class ReturnAgnNode {
-	
-	private LocalAgnTmpNode _latn;
+
 	public ExpressionNode expr;
 
-	public ReturnAgnNode(IExpression expression) {
+	public ReturnAgnNode(IExpression latn3) {
 		// TODO Auto-generated constructor stub
-		expr = new ExpressionNode(expression);
+		throw new NotImplementedException();
 	}
 
 	public ReturnAgnNode(LocalAgnTmpNode latn3) {
 		// TODO might be wrong
-//		throw new NotImplementedException();
-		this._latn = latn3;
+		throw new NotImplementedException();
 	}
-	
-	public IExpressionNode getExpr() {
-		if (expr != null)
-			return expr;
-		return _latn.getRight();//.getExpr();
-	}
-}
 
-//
-//
-//
+}

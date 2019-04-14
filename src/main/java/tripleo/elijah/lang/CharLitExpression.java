@@ -18,7 +18,7 @@ import antlr.Token;
 import tripleo.elijah.util.TabbedOutputStream;
 
 /**
- * @author Tripleo(sb)
+ * @author SBUSER
  *
  */
 public class CharLitExpression implements IExpression {
@@ -82,10 +82,6 @@ public class CharLitExpression implements IExpression {
 	public String repr_() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public boolean is_simple() {
-		return true;
 	}
 
 }

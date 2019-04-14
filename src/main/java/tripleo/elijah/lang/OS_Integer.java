@@ -14,30 +14,13 @@
  */
 package tripleo.elijah.lang;
 
-public class OS_Integer extends AbstractExpression {
-	
-	@Override
-	public String repr_() {
-		return String.format("Integer (%d)", getValue());
-	}
-	
-	@Override
-	public String toString() {
-		return repr_();
-	}
-	
+public class OS_Integer extends AbstractBinaryExpression {
+
 	private int i;
 
 	public OS_Integer(int i) {
 		// TODO Auto-generated constructor stub
 		this.i = i;
 	}
-	
-	public int getValue() {
-		return i;
-	}
 
-	public boolean is_simple() {
-		return true;
-	}
 }

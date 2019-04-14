@@ -12,10 +12,10 @@
  */
 package tripleo.elijah.lang;
 
-import antlr.Token;
+import tripleo.elijah.Qualident;
 
 /**
- * @author Tripleo(sb)
+ * @author SBUSER
  *
  */
 public class TypeAliasExpression {
@@ -28,15 +28,7 @@ public class TypeAliasExpression {
 		this.x=x;
 		this.y=y;
 	}
-	
-	public void setIdent(Token aToken) {
-		// TODO
-		//x=aToken;
-	}
-	
-	public void setBecomes(Qualident qq) {
-		y=qq;
-	}
+
 }
 
 //

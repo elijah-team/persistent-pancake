@@ -7,14 +7,29 @@
  * 
  */
 /**
- * 
+ * Created Mar 27, 2019 at 2:24:09 PM
+ *
  */
 package tripleo.elijah;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import antlr.Token;
 
 /**
  * @author SBUSER
  *
  */
-public class CharSink {
+public class Qualident {
+
+	public void append(Token r1) {
+		parts.add(r1);		
+	}
+	public void appendDot(Token d1) {
+//		parts.add(d1);
+	}
+	
+	List<Token> parts = new ArrayList<Token>();
 
 }

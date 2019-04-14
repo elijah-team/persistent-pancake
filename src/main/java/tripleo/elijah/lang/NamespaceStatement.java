@@ -13,18 +13,15 @@
 package tripleo.elijah.lang;
 
 import antlr.Token;
-import tripleo.elijah.ProgramClosure;
-import tripleo.elijah.util.NotImplementedException;
 
 /**
- * @author Tripleo(sb)
+ * @author SBUSER
  *
  */
-public class NamespaceStatement implements Scope { // TODO why implement Scope?
+public class NamespaceStatement implements Scope {
 
 	private Token name;
 	private OS_Module parent;
-	private NamespaceTypes type; // TODO implement setter
 
 	public NamespaceStatement(OS_Module module) {
 		this.parent = module;
@@ -42,7 +39,7 @@ public class NamespaceStatement implements Scope { // TODO why implement Scope?
 	}
 
 	@Override
-	public void addDocString(Token s) {
+	public void addDocString(String s) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -64,27 +61,12 @@ public class NamespaceStatement implements Scope { // TODO why implement Scope?
 		// TODO Auto-generated method stub
 		
 	}
-	
-	@Override
-	public TypeAliasExpression typeAlias() {
-		return null;
-	}
-	
-	@Override
-	public InvariantStatement invariantStatement() {
-		return null;
-	}
-	
+
 	public FunctionDef funcDef() {
 		// TODO Auto-generated method stub
-		NotImplementedException.raise();
 		return null;
 	}
-	
-	public ProgramClosure XXX() {
-		NotImplementedException.raise();
-		return null;
-	}
+
 }
 
 //

@@ -13,17 +13,11 @@
 package tripleo.elijah.comp;
 
 /**
- * @author tripleo(sb)
+ * @author SBUSER
  *
  */
-public class StdErrSink implements ErrSink {
-	
-	@Override
-	public void exception(Exception e) {
-		System.err.println((new StringBuilder("exception: ")).append(e)
-				.toString());
-		e.printStackTrace(System.err);
-	}
+public class StdErrSink extends ErrSink {
+
 }
 
 //

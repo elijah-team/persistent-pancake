@@ -15,18 +15,16 @@ package tripleo.elijah.lang;
 import java.io.IOException;
 
 import antlr.Token;
-import com.thoughtworks.xstream.XStream;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.TabbedOutputStream;
 
 /**
- * @author Tripleo(sb)
+ * @author SBUSER
  *
  */
 public class IdentExpression implements IExpression {
 
 	private Token text;
-	public  Attached _a;
 
 	public IdentExpression(Token r1) {
 		this.text = r1;
@@ -35,48 +33,39 @@ public class IdentExpression implements IExpression {
 	@Override
 	public void print_osi(TabbedOutputStream tabbedoutputstream) throws IOException {
 		// TODO Auto-generated method stub
-		XStream x = new XStream(); // TODO context.comp.xstream??
-		x.toXML(this, tabbedoutputstream.getStream());
+		
 	}
 
 	@Override
 	public ExpressionType getType() {
-		return ExpressionType.IDENT;
+		// TODO is this right?
+		return ExpressionType.STRING_LITERAL;
 	}
 
 	@Override
 	public void set(ExpressionType aIncrement) {
-		// log and ignore
-		System.err.println("Trying to set ExpressionType of IdentExpression to "+aIncrement.toString());
+		// TODO Auto-generated method stub
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public IExpression getLeft() {
-		return this;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public void setLeft(IExpression iexpression) {
-		if (iexpression instanceof IdentExpression) {
-			text = ((IdentExpression) iexpression).text;
-		} else {
-			// NOTE was System.err.println
-			throw new IllegalArgumentException("Trying to set left-side of IdentExpression to " + iexpression.toString());
-		}
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public String repr_() {
-		return String.format("IdentExpression(%s %d)", text.getText(), _a.getCode());
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public String getText() {
-		return text.getText();
-	}
-
-	public boolean is_simple() {
-		return true;
-	}
 }
 
 //
