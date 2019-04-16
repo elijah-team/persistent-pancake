@@ -19,10 +19,11 @@ import java.util.List;
 import antlr.Token;
 import tripleo.elijah.lang.ExpressionType;
 import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.TabbedOutputStream;
 
 /**
- * @author Tripleo(sb)
+ * @author SBUSER
  *
  */
 public class Qualident  implements IExpression {
@@ -36,15 +37,14 @@ public class Qualident  implements IExpression {
 	
 	List<Token> parts = new ArrayList<Token>();
 
-	@Override
 	public String toString() {
-		final StringBuilder sb=new StringBuilder();
+		StringBuilder sb=new StringBuilder();
 		for (Token part : parts) {
 			sb.append(part.getText());
 			sb.append('.');
 		}
-		final String s = sb.toString();
-		final String substring = s.substring(0, s.length() - 1);
+		String s = sb.toString();
+		String substring = s.substring(0, s.length() - 1);
 		return substring;
 	}
 	
@@ -55,7 +55,7 @@ public class Qualident  implements IExpression {
 	
 	@Override
 	public ExpressionType getType() {
-		return ExpressionType.QIDENT;
+		return ExpressionType.QUALIDENT;
 	}
 	
 	@Override
@@ -77,10 +77,5 @@ public class Qualident  implements IExpression {
 	@Override
 	public String repr_() {
 		return String.format("Qualident (%s)", toString());
-	}
-	
-	public boolean is_simple() {
-		// TODO Auto-generated method stub
-		return true;  // TODO is this true?
 	}
 }
