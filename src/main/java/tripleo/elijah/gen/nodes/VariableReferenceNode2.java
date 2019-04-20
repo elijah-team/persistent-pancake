@@ -8,34 +8,34 @@
  */
 package tripleo.elijah.gen.nodes;
 
-import tripleo.elijah.gen.CompilerContext;
+import antlr.CommonToken;
+import antlr.Token;
 import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.util.NotImplementedException;
 
 public class VariableReferenceNode2 extends ExpressionNode {
-	private final String _type;
 	private  String _declared;
+	private final String _type;
 	private  boolean _perm;
+	
+//	private final CompilerContext _cctx;
+//	private final VariableReference _varref;
+	
+	/**
+	 * Do not call this
+	 */
+	public VariableReferenceNode2() {
+		throw new IllegalStateException();
+	}
 	
 	public VariableReferenceNode2(String declared, String t, boolean b) {
 		super();
+		final Token ct = new CommonToken();
+		ct.setText(declared);
+		setText(new IdentExpression(ct)); // TODO
 		this._declared = declared;
 		this._perm = b;
 		this._type = t;
-//		final Token ct = new CommonToken();
-//		ct.setText(declared);
-//		setText(new IdentExpression(ct)); // TODO why call this?
-	}
-	
-	@Override
-	public String genText(CompilerContext cctx) {
-		if (getExpr()/*iex*/ == null) {
-			return _declared;
-		} else {
-			NotImplementedException.raise();
-//			return super.genText(cctx);
-		}
-		return super.genText(cctx);
 	}
 	
 	private void setText(IdentExpression identExpression) {
@@ -44,10 +44,16 @@ public class VariableReferenceNode2 extends ExpressionNode {
 		_perm = true;
 	}
 	
-//	public TypeNameNode getType() {
+//	public VariableReferenceNode(CompilerContext cctx, VariableReference varref) {
 //		NotImplementedException.raise();
-//		return null;
+//		this._cctx=cctx;
+//		this._varref=varref;
 //	}
+	
+	public TypeNameNode getType() {
+		NotImplementedException.raise();
+		return null;
+	}
 	
 	public String genText() {
 		if (_perm) return _declared;
