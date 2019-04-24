@@ -35,42 +35,4 @@ public class TypeRef  implements Node {
 	public int getCode() {
 		return _code;
 	}
-	
-	/**
-	 * Returns the type name
-	 *
-	 * @see #genType()
-	 *
-	 * @return the type name as referenced in the code
-	 */
-	public String getName() {
-		return _name;
-	}
-	
-	public String genName() {
-		if (_code == CODE_U64)     return "Z81"; // u64
-		if (_code == CODE_SYS_INT) return "Z80"; // int (SystemInteger)
-		//
-/*
-		if (_code < 100) {
-			if (_is_expanded_type)
-				return String.format("Z%d", _code);
-			else
-				return String.format("Z%d*", _code);
-		}
-*/
-		return String.format("Z%d", _code);
-	}
-	
-	public static boolean is_integer_code(int aCode) {
-		return aCode == CODE_U64 || aCode == CODE_SYS_INT;
-	}
-	
-	public static final int CODE_SYS_INT = 80;
-	public static final int CODE_U64 = 81;
-	
 }
-
-//
-//
-//
