@@ -1,11 +1,3 @@
-/*
- * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
- *
- * The contents of this library are released under the LGPL licence v3,
- * the GNU Lesser General Public License text was downloaded from
- * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- *
- */
 package tripleo.elijah;
 
 import org.junit.Assert;
@@ -17,6 +9,8 @@ import tripleo.elijah.gen.ModuleRef;
 import tripleo.elijah.gen.TypeRef;
 import tripleo.elijah.gen.nodes.*;
 import tripleo.util.buffer.Buffer;
+
+import java.util.List;
 
 import static tripleo.elijah.FindBothSourceFiles.List_of;
 
@@ -34,7 +28,7 @@ public class FactorialDotElijahTest {
 		Assert.assertEquals("vai", argumentNode.getGenName());
 		
 		MethHdrNode mhn=new MethHdrNode(u64, main_k, "factorial_r",
-				List_of(argumentNode), 1000);
+				List.of(argumentNode), 1000);
 		Assert.assertEquals("z100factorial_r", mhn.genName());
 	}
 	
@@ -48,12 +42,12 @@ public class FactorialDotElijahTest {
 		
 		
 		MethHdrNode mhn=new MethHdrNode(u64, main_k, "factorial_r",
-				List_of(new ArgumentNode("i", u64)), 1000);
+				List.of(new ArgumentNode("i", u64)), 1000);
 		CaseHdrNode shn=new CaseHdrNode(ExpressionNodeBuilder.varref("i", mhn, u64));
 
 
 		TmpSSACtxNode tccssan = new TmpSSACtxNode(cctx);
-		LocalAgnTmpNode lamn=new LocalAgnTmpNode(tccssan, ExpressionNodeBuilder.binex(u64,
+		LocalAgnTmpNode lamn=new LocalAgnTmpNode(tccssan, ExpressionNodeBuilder.binex(
 				ExpressionNodeBuilder.varref("n", shn, u64),
 											ExpressionOperators.OP_MINUS,
 											ExpressionNodeBuilder.integer(1)));
@@ -89,24 +83,20 @@ public class FactorialDotElijahTest {
 		CaseHdrNode shn=new CaseHdrNode(ExpressionNodeBuilder.varref("i", mhn, u64));
 
 		TmpSSACtxNode tccssan = new TmpSSACtxNode(cctx);
-		LocalAgnTmpNode lamn=new LocalAgnTmpNode(tccssan, ExpressionNodeBuilder.binex(u64,
+		LocalAgnTmpNode lamn=new LocalAgnTmpNode(tccssan, ExpressionNodeBuilder.binex(
 				ExpressionNodeBuilder.varref("n", shn, u64),
 				ExpressionOperators.OP_MINUS, ExpressionNodeBuilder.integer(1)));
 		Buffer b1 = FindBothSourceFiles.BeginTmpSSACtx(cctx, tccssan, gbn);
-//		Assert.assertEquals("{\n\tu64 ", b1.getText()); // TODO maybe this wll be right in the future.
-		Assert.assertEquals("{\n\tZ81 ", b1.getText());
+		Assert.assertEquals("{\n\tvt1 ", b1.getText());
 		
 		TmpSSACtxNode tccssan2 = new TmpSSACtxNode(cctx);
 		LocalAgnTmpNode latn2=new LocalAgnTmpNode(tccssan2, ExpressionNodeBuilder.fncall(
-				fact_r, List_of(lamn)));
+				"factorial_r", List_of(lamn)));
 		Buffer b2 = FindBothSourceFiles.GenLocalAgn(cctx, latn2, gbn);
 		Assert.assertEquals("{\n" +
 				"\tZ81 vt2 = z100factorial_r(vt1);\n" +
 				"\t", b2.getText());
+		
+		
 	}
-
 }
-
-//
-//
-//
