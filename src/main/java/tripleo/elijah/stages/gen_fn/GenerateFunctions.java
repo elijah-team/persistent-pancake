@@ -150,7 +150,7 @@ public class GenerateFunctions {
 						case PROCEDURE_CALL: {
 							final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, bbe.getType(), bbe.getLeft());
 							int ii = addVariableTableEntry(((IdentExpression)bbe.getLeft()).getText(), tte, gf);
-							int instruction_number = add_i(gf, InstructionName.AGN, List_of(new IntegerIA(ii), new FnCallArgs(expression_to_call(right1, gf), gf)));
+							int instruction_number = add_i(gf, InstructionName.AGN, List_of(new IntegerIA(ii), new FnCallArgs(expression_to_call(right1, gf), gf)), cctx);
 							Instruction instruction = gf.getInstruction(instruction_number);
 							VariableTableEntry vte = gf.getVarTableEntry(ii);
 							vte.addPotentialType(instruction.getIndex(), tte);
@@ -168,7 +168,7 @@ public class GenerateFunctions {
 							if (iiii == null) {
 								iii5 = addIdentTableEntry(right, gf);
 							}
-							int ia1 = add_i(gf, InstructionName.AGN, List_of(iii, iiii));
+							int ia1 = add_i(gf, InstructionName.AGN, List_of(iii, iiii), cctx);
 							VariableTableEntry vte = gf.getVarTableEntry(DeduceTypes2.to_int(iii));
 							vte.addPotentialType(ia1,
 									gf.getVarTableEntry(DeduceTypes2.to_int(iiii/* != null ? iiii :
@@ -265,9 +265,9 @@ public class GenerateFunctions {
 				int i = addTempTableEntry(null, iterNameToken, gf); // TODO deduce later
 				final InstructionArgument ia1 = simplify_expression(loop.getFromPart(), gf);
 				if (ia1 instanceof ConstTableIA)
-					add_i(gf, InstructionName.AGNK, List_of(new IntegerIA(i), ia1));
+					add_i(gf, InstructionName.AGNK, List_of(new IntegerIA(i), ia1), cctx);
 				else
-					add_i(gf, InstructionName.AGN, List_of(new IntegerIA(i), ia1));
+					add_i(gf, InstructionName.AGN, List_of(new IntegerIA(i), ia1), cctx);
 				Label label_top = gf.addLabel("top", true);
 				gf.place(label_top);
 				Label label_bottom = gf.addLabel("bottom"+label_top, false);
@@ -311,7 +311,7 @@ public class GenerateFunctions {
 			break;
 		case NUMERIC:
 			int ci = addConstantTableEntry(null, value, value.getType(), gf);
-			int ii = add_i(gf, InstructionName.AGNK, List_of(new IntegerIA(vte), new ConstTableIA(ci, gf)));
+			int ii = add_i(gf, InstructionName.AGNK, List_of(new IntegerIA(vte), new ConstTableIA(ci, gf)), cctx);
 			VariableTableEntry vte1 = gf.getVarTableEntry(vte);
 			vte1.addPotentialType(ii, gf.getConstTableEntry(ci).type);
 			break;
