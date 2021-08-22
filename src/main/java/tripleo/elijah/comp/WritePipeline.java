@@ -8,8 +8,10 @@
  */
 package tripleo.elijah.comp;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
@@ -70,7 +72,11 @@ public class WritePipeline implements PipelineMember {
 		Multimap<String, Buffer> mb = ArrayListMultimap.create();
 
 		for (GenerateResultItem ab : gr.results()) {
-			mb.put(ab.output, ab.buffer);
+			String output = ab.output;
+
+//			Preconditions.checkNotNull(output);
+
+			mb.put(output, ab.buffer);
 		}
 
 		final File file_prefix = new File("COMP", c.getCompilationNumberString());

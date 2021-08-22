@@ -1969,8 +1969,12 @@ public class DeduceTypes2 {
 								best = DeduceLookupUtils._resolveAlias2((AliasStatement) best, this);
 							} else if (OS_Type.isConcreteType(best)) {
 								throw new NotImplementedException();
-							} else
+							} else if (best == null) {
+								// passthrough
+								break;
+							} else {
 								throw new NotImplementedException();
+							}
 						}
 						if (best == null) {
 							throw new ResolveError(IdentExpression.forString(typeName), lrl);
