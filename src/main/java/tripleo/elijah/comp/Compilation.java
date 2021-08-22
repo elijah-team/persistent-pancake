@@ -24,7 +24,6 @@ import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.lang.Qualident;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijjah.ElijjahLexer;
@@ -57,7 +56,8 @@ public class Compilation {
 	//
 	//
 	//
-	public PipelineLogic pipeline;
+	public PipelineLogic pipelineLogic;
+	private Pipeline pipelines = new Pipeline();
 	//
 	//
 	//
@@ -150,37 +150,19 @@ public class Compilation {
 				if (stage.equals("E")) {
 					// do nothing. job over
 				} else {
-					pipeline = new PipelineLogic(gitlabCIVerbosity());
-					pipeline.verbose = !silent;
+					pipelineLogic = new PipelineLogic(gitlabCIVerbosity());
+					pipelineLogic.verbose = !silent;
 
-					ArrayList<GeneratedNode> lgc = new ArrayList<GeneratedNode>();
+					final DeducePipeline dpl = new DeducePipeline(this);
+					pipelines.add(dpl);
+					final GeneratePipeline gpl = new GeneratePipeline(this, dpl);
+					pipelines.add(gpl);
+					final WritePipeline wpl = new WritePipeline(this, pipelineLogic.gr);
+					pipelines.add(wpl);
 
-					for (final OS_Module module : modules) {
-						if (false) {
-/*
-							new DeduceTypes(module).deduce();
-							for (final OS_Element2 item : module.items()) {
-								if (item instanceof ClassStatement || item instanceof NamespaceStatement) {
-									System.err.println("8001 "+item);
-								}
-							}
-							new TranslateModule(module).translate();
-*/
-//							new ExpandFunctions(module).expand();
-//
-//  	    				final JavaCodeGen visit = new JavaCodeGen();
-//			        		module.visitGen(visit);
-						} else {
-							pipeline.addModule(module);
-						}
-					}
-					pipeline.everythingBeforeGenerate(lgc);
-					pipeline.generate(lgc);
+					pipelines.run();
 
-					pipeline.write_files(this);
-					pipeline.write_buffers(this);
-
-					writeLogs(silent, pipeline.deduceLogs);
+					writeLogs(silent, pipelineLogic.dp.deduceLogs);
 
 					if (ez_file != null)
 						System.out.println(String.format("*** %d errors for %s", errorCount(), ez_file.getFilename()));
