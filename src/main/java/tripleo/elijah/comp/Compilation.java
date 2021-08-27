@@ -167,7 +167,7 @@ public class Compilation {
 						pipelineLogic.write_files(this);
 						pipelineLogic.write_buffers(this);
 
-						writeLogs(silent, pipelineLogic.dp.deduceLogs);
+						writeLogs(silent, pipelineLogic.elLogs);
 
 						if (ez_file != null) {
 							System.out.println(String.format("*** %d errors for %s", errorCount(), ez_file.getFilename()));
