@@ -1576,6 +1576,8 @@ public class DeduceTypes2 {
 
 							gt.node = vte.genType.node;
 
+							vte.genType.copy(gt);
+
 							int y=2;
 						} else
 							throw new NotImplementedException();
