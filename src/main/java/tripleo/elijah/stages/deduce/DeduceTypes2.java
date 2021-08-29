@@ -1535,6 +1535,8 @@ public class DeduceTypes2 {
 
 						pot.genType.ci = modi;
 						pot.genType.node = wlgf.getResult();
+
+						vte.typeDeferred().resolve(pot.genType);
 					}
 
 					// more...
