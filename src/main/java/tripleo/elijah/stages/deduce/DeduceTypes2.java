@@ -2765,6 +2765,7 @@ public class DeduceTypes2 {
 		private long counter;
 		private final String desc;
 		private boolean satisfied;
+		private boolean _printed;
 
 		public PromiseExpectation(ExpectationBase aBase, String aDesc) {
 			base = aBase;
@@ -2778,7 +2779,10 @@ public class DeduceTypes2 {
 		}
 
 		public void fail() {
-			LOG.err(String.format("Expectation (%s, %d) not met", DeduceTypes2.this, counter));
+			if (!_printed) {
+				LOG.err(String.format("Expectation (%s, %d) not met", DeduceTypes2.this, counter));
+				_printed = true;
+			}
 		}
 
 		public boolean isSatisfied() {
