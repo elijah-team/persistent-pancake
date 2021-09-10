@@ -2481,8 +2481,8 @@ public class DeduceTypes2 {
 
 	PromiseExpectations expectations = new PromiseExpectations();
 
-	static class PromiseExpectations {
-		static long counter = 0;
+	class PromiseExpectations {
+		long counter = 0;
 
 		List<PromiseExpectation> exp = new ArrayList<>();
 
