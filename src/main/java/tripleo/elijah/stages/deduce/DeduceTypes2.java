@@ -221,10 +221,12 @@ public class DeduceTypes2 {
 							case USER:
 								vte.genType.typeName = a;
 								try {
-									@NotNull OS_Type rt = resolve_type(a, a.getTypeName().getContext());
-									if (rt.getClassOf().getGenericPart().size() > 0)
-										vte.genType.nonGenericTypeName = a.getTypeName(); // TODO might be wrong
-									dof_uc(vte, rt);
+									@NotNull GenType rt = resolve_type(a, a.getTypeName().getContext());
+									if (rt.resolved != null && rt.resolved.getType() == OS_Type.Type.USER_CLASS) {
+										if (rt.resolved.getClassOf().getGenericPart().size() > 0)
+											vte.genType.nonGenericTypeName = a.getTypeName(); // TODO might be wrong
+										dof_uc(vte, rt.resolved);
+									}
 								} catch (ResolveError aResolveError) {
 									errSink.reportDiagnostic(aResolveError);
 								}
@@ -288,10 +290,12 @@ public class DeduceTypes2 {
 							case USER:
 								b.typeName = a;
 								try {
-									@NotNull OS_Type rt = resolve_type(a, a.getTypeName().getContext());
-									if (rt.getClassOf().getGenericPart().size() > 0)
-										b.nonGenericTypeName = a.getTypeName(); // TODO might be wrong
-									dof_uc(vte, rt);
+									@NotNull GenType rt = resolve_type(a, a.getTypeName().getContext());
+									if (rt.resolved != null && rt.resolved.getType() == OS_Type.Type.USER_CLASS) {
+										if (rt.resolved.getClassOf().getGenericPart().size() > 0)
+											b.nonGenericTypeName = a.getTypeName(); // TODO might be wrong
+										dof_uc(vte, rt.resolved);
+									}
 								} catch (ResolveError aResolveError) {
 									errSink.reportDiagnostic(aResolveError);
 								}
@@ -862,10 +866,10 @@ public class DeduceTypes2 {
 				TypeNameList gp2 = aTyn1.getGenericPart();
 				for (int i = 0; i < gp.size(); i++) {
 					final TypeName typeName = gp2.get(i);
-					@NotNull OS_Type typeName2;
+					@NotNull GenType genType1;
 					try {
-						typeName2 = resolve_type(new OS_Type(typeName), typeName.getContext());
-						clsinv.set(i, gp.get(i), typeName2);
+						genType1 = resolve_type(new OS_Type(typeName), typeName.getContext());
+						clsinv.set(i, gp.get(i), genType1.resolved);
 					} catch (ResolveError aResolveError) {
 						aResolveError.printStackTrace();
 						return null;
@@ -918,10 +922,10 @@ public class DeduceTypes2 {
 				TypeNameList gp2 = aTyn1.getGenericPart();
 				for (int i = 0; i < gp.size(); i++) {
 					final TypeName typeName = gp2.get(i);
-					@NotNull OS_Type typeName2;
+					@NotNull GenType typeName2;
 					try {
 						typeName2 = resolve_type(new OS_Type(typeName), typeName.getContext());
-						clsinv.set(i, gp.get(i), typeName2);
+						clsinv.set(i, gp.get(i), typeName2.resolved);
 					} catch (ResolveError aResolveError) {
 						aResolveError.printStackTrace();
 						return null;
@@ -946,10 +950,10 @@ public class DeduceTypes2 {
 						TypeNameList tngp = tn.getGenericPart();
 						for (int i = 0; i < gp.size(); i++) {
 							final TypeName typeName = tngp.get(i);
-							@NotNull OS_Type typeName2;
+							@NotNull GenType typeName2;
 							try {
 								typeName2 = resolve_type(new OS_Type(typeName), typeName.getContext());
-								clsinv.set(i, gp.get(i), typeName2);
+								clsinv.set(i, gp.get(i), typeName2.resolved);
 							} catch (ResolveError aResolveError) {
 								aResolveError.printStackTrace();
 								return null;
@@ -1336,7 +1340,7 @@ public class DeduceTypes2 {
 						switch (ite.type.getAttached().getType()) {
 						case USER:
 							try {
-								OS_Type xx = resolve_type(ite.type.getAttached(), aFunctionContext);
+								@NotNull GenType xx = resolve_type(ite.type.getAttached(), aFunctionContext);
 								ite.type.setAttached(xx);
 							} catch (ResolveError resolveError) {
 								LOG.info("192 Can't attach type to " + path);
@@ -1386,7 +1390,7 @@ public class DeduceTypes2 {
 									if (ite.type != null && ite.type.getAttached() != null) {
 										if (ite.type.getAttached().getType() == OS_Type.Type.USER) {
 											try {
-												OS_Type xx = resolve_type(ite.type.getAttached(), aFunctionContext);
+												@NotNull GenType xx = resolve_type(ite.type.getAttached(), aFunctionContext);
 												ite.type.setAttached(xx);
 											} catch (ResolveError resolveError) { // TODO double catch
 												LOG.info("210 Can't attach type to "+ite.getIdent());
@@ -1594,7 +1598,7 @@ public class DeduceTypes2 {
 								// README Don't remember enough about the constructors to select a different one
 								@NotNull TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, ty);
 								try {
-									@NotNull OS_Type resolved = resolve_type(ty, tn.getContext());
+									@NotNull GenType resolved = resolve_type(ty, tn.getContext());
 									LOG.err("892 resolved: "+resolved);
 									tte.setAttached(resolved);
 								} catch (ResolveError aResolveError) {
@@ -1670,11 +1674,11 @@ public class DeduceTypes2 {
 				TypeNameList gp2 = aTyn1.getGenericPart();
 				for (int i = 0; i < gp.size(); i++) {
 					final TypeName typeName = gp2.get(i);
-					@NotNull OS_Type typeName2;
+					@NotNull GenType typeName2;
 					try {
 						// TODO transition to GenType
 						typeName2 = resolve_type(new OS_Type(typeName), typeName.getContext());
-						clsinv.set(i, gp.get(i), typeName2);
+						clsinv.set(i, gp.get(i), typeName2.resolved);
 					} catch (ResolveError aResolveError) {
 						aResolveError.printStackTrace();
 					}
@@ -1788,7 +1792,7 @@ public class DeduceTypes2 {
 			dt2.found_element_for_ite(aGeneratedFunction, aIte, aX, aCtx);
 		}
 
-		public OS_Type resolve_type(OS_Type aType, Context aCtx) throws ResolveError {
+		public @NotNull GenType resolve_type(OS_Type aType, Context aCtx) throws ResolveError {
 			return dt2.resolve_type(aType, aCtx);
 		}
 
@@ -1835,12 +1839,14 @@ public class DeduceTypes2 {
 		return dm;
 	}
 
-	@NotNull OS_Type resolve_type(final OS_Type type, final Context ctx) throws ResolveError {
+	@NotNull GenType resolve_type(final OS_Type type, final Context ctx) throws ResolveError {
 		return resolve_type(module, type, ctx);
 	}
 
-	@NotNull
-	/*static*/ OS_Type resolve_type(final OS_Module module, final OS_Type type, final Context ctx) throws ResolveError {
+	/*static*/ @NotNull GenType resolve_type(final OS_Module module, final OS_Type type, final Context ctx) throws ResolveError {
+		GenType R = new GenType();
+		R.typeName = type;
+
 		switch (type.getType()) {
 
 		case BUILT_IN:
@@ -1866,7 +1872,8 @@ public class DeduceTypes2 {
 						if (best == null) {
 							throw new ResolveError(IdentExpression.forString(typeName), lrl);
 						}
-						return new OS_Type((ClassStatement) best);
+						R.resolved = new OS_Type((ClassStatement) best);
+						break;
 					}
 				case String_:
 					{
@@ -1888,7 +1895,8 @@ public class DeduceTypes2 {
 						if (best == null) {
 							throw new ResolveError(IdentExpression.forString(typeName), lrl);
 						}
-						return new OS_Type((ClassStatement) best);
+						R.resolved = new OS_Type((ClassStatement) best);
+						break;
 					}
 				case SystemCharacter:
 					{
@@ -1914,7 +1922,8 @@ public class DeduceTypes2 {
 						if (best == null) {
 							throw new ResolveError(IdentExpression.forString(typeName), lrl);
 						}
-						return new OS_Type((ClassStatement) best);
+						R.resolved = new OS_Type((ClassStatement) best);
+						break;
 					}
 				case Boolean:
 					{
@@ -1923,11 +1932,13 @@ public class DeduceTypes2 {
 							prelude = module;
 						final LookupResultList lrl = prelude.getContext().lookup("Boolean");
 						final OS_Element best = lrl.chooseBest(null);
-						return new OS_Type((ClassStatement) best); // TODO might change to Type
+						R.resolved = new OS_Type((ClassStatement) best); // TODO might change to Type
+						break;
 					}
 				default:
 					throw new IllegalStateException("531 Unexpected value: " + type.getBType());
 				}
+				break;
 			}
 		case USER:
 			{
@@ -1944,15 +1955,15 @@ public class DeduceTypes2 {
 						}
 						if (best == null) {
 							if (tn.asSimpleString().equals("Any"))
-								return new OS_AnyType();
+								/*return*/R.resolved = new OS_AnyType(); // TODO not a class
 							throw new ResolveError(tn1, lrl);
 						}
 
 						if (best instanceof ClassContext.OS_TypeNameElement) {
-							return new OS_GenericTypeNameType((ClassContext.OS_TypeNameElement) best);
-						}
-
-						return new OS_Type((ClassStatement) best);
+							/*return*/R.resolved = new OS_GenericTypeNameType((ClassContext.OS_TypeNameElement) best); // TODO not a class
+						} else
+							R.resolved = new OS_Type((ClassStatement) best);
+						break;
 					}
 				case FUNCTION:
 				case GENERIC:
@@ -1963,13 +1974,14 @@ public class DeduceTypes2 {
 				}
 			}
 		case USER_CLASS:
-			return type;
+			break;
 		case FUNCTION:
-			return type;
+			break;
 		default:
 			throw new IllegalStateException("565 Unexpected value: " + type.getType());
 		}
-//		throw new IllegalStateException("Cant be here.");
+
+		return R;
 	}
 
 	private void do_assign_constant(final BaseGeneratedFunction generatedFunction, final Instruction instruction, final VariableTableEntry vte, final ConstTableIA i2) {
@@ -2516,7 +2528,7 @@ public class DeduceTypes2 {
 						idte.onType(phase, new OnType() {
 							@Override public void typeDeduced(final @NotNull OS_Type ty) {
 								assert ty != null;
-								OS_Type rtype = null;
+								@NotNull GenType rtype = null;
 								try {
 									rtype = resolve_type(ty, ctx);
 								} catch (ResolveError resolveError) {
@@ -2580,7 +2592,7 @@ public class DeduceTypes2 {
 	//							assert false; // TODO this code is never reached
 								final @Nullable OS_Type ty2 = result.typeName/*.getAttached()*/;
 								assert ty2 != null;
-								OS_Type rtype = null;
+								@NotNull GenType rtype = null;
 								try {
 									rtype = resolve_type(ty2, ctx);
 								} catch (ResolveError resolveError) {
@@ -2934,7 +2946,7 @@ public class DeduceTypes2 {
 				OS_Type ty = new OS_Type(typ);
 
 				try {
-					@Nullable OS_Type ty2 = getTY2(typ, ty);
+					@Nullable GenType ty2 = getTY2(typ, ty);
 
 					// no expression or TableEntryIV below
 					if (ty2 != null) {
@@ -2950,14 +2962,15 @@ public class DeduceTypes2 {
 			}
 		}
 
-		@Nullable
-		private OS_Type getTY2(@NotNull TypeName aTyp, @NotNull OS_Type aTy) throws ResolveError {
+		private @Nullable GenType getTY2(@NotNull TypeName aTyp, @NotNull OS_Type aTy) throws ResolveError {
 			if (aTy.getType() != OS_Type.Type.USER) {
 				assert false;
-				return aTy;
+				GenType genType = new GenType();
+				genType.set(aTy);
+				return genType;
 			}
 
-			OS_Type ty2 = null;
+			@Nullable GenType ty2 = null;
 			if (!aTyp.isNull()) {
 				assert aTy.getTypeName() != null;
 				ty2 = resolve_type(aTy, aTy.getTypeName().getContext());
@@ -2968,8 +2981,11 @@ public class DeduceTypes2 {
 				final OS_Type attached = ((VariableTableEntry) bte).type.getAttached();
 				if (attached == null) {
 					type_is_null_and_attached_is_null_vte();
-				} else
-					ty2 = attached;
+					// ty2 will probably be null here
+				} else {
+					ty2 = new GenType();
+					ty2.set(attached);
+				}
 			} else if (bte instanceof IdentTableEntry) {
 				final TypeTableEntry tte = ((IdentTableEntry) bte).type;
 				if (tte != null) {
@@ -2977,8 +2993,11 @@ public class DeduceTypes2 {
 
 					if (attached == null) {
 						type_is_null_and_attached_is_null_ite((IdentTableEntry) bte);
-					} else
-						ty2 = attached;
+						// ty2 will be null here
+					} else {
+						ty2 = new GenType();
+						ty2.set(attached);
+					}
 				}
 			}
 
@@ -3000,7 +3019,7 @@ public class DeduceTypes2 {
 							break;
 						case USER:
 							try {
-								OS_Type ty3 = resolve_type(attached1, attached1.getTypeName().getContext());
+								@NotNull GenType ty3 = resolve_type(attached1, attached1.getTypeName().getContext());
 								// no expression or TableEntryIV below
 								@NotNull TypeTableEntry tte4 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null);
 								// README trying to keep genType up to date
@@ -3100,14 +3119,14 @@ public class DeduceTypes2 {
 
 				try {
 					if (ty.getType() == OS_Type.Type.USER) {
-						@NotNull OS_Type ty2 = resolve_type(ty, ty.getTypeName().getContext());
+						@NotNull GenType ty2 = resolve_type(ty, ty.getTypeName().getContext());
 						OS_Element ele;
 						if (vte.type.genType.resolved == null) {
-							if (ty2.getType() == OS_Type.Type.USER_CLASS) {
-								vte.type.genType.resolved = ty2;
+							if (ty2.resolved.getType() == OS_Type.Type.USER_CLASS) {
+								vte.type.genType.copy(ty2);
 							}
 						}
-						ele = ty2.getElement();
+						ele = ty2.resolved.getElement();
 						LookupResultList lrl = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), DeduceTypes2.this);
 						ele2 = lrl.chooseBest(null);
 					} else
@@ -3152,14 +3171,14 @@ public class DeduceTypes2 {
 
 				try {
 					if (ty.getType() == OS_Type.Type.USER) {
-						@NotNull OS_Type ty2 = resolve_type(ty, ty.getTypeName().getContext());
+						@NotNull GenType ty2 = resolve_type(ty, ty.getTypeName().getContext());
 						OS_Element ele;
 						if (identTableEntry.type.genType.resolved == null) {
-							if (ty2.getType() == OS_Type.Type.USER_CLASS) {
-								identTableEntry.type.genType.resolved = ty2;
+							if (ty2.resolved.getType() == OS_Type.Type.USER_CLASS) {
+								identTableEntry.type.genType.copy(ty2);
 							}
 						}
-						ele = ty2.getElement();
+						ele = ty2.resolved.getElement();
 						LookupResultList lrl = DeduceLookupUtils.lookupExpression(this.ite.getIdent(), ele.getContext(), DeduceTypes2.this);
 						ele2 = lrl.chooseBest(null);
 					} else
@@ -3221,9 +3240,9 @@ public class DeduceTypes2 {
 
 		private void vte_pot_size_is_1_USER_TYPE(VariableTableEntry vte, @Nullable OS_Type aTy) {
 			try {
-				@NotNull OS_Type ty2 = resolve_type(aTy, aTy.getTypeName().getContext());
+				@NotNull GenType ty2 = resolve_type(aTy, aTy.getTypeName().getContext());
 				// TODO ite.setAttached(ty2) ??
-				OS_Element ele = ty2.getElement();
+				OS_Element ele = ty2.resolved.getElement();
 				LookupResultList lrl = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), DeduceTypes2.this);
 				OS_Element best = lrl.chooseBest(null);
 				ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
