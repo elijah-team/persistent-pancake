@@ -322,7 +322,7 @@ public class DeduceTypes2 {
 		ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
 			@Override
 			public void onDone(GeneratedClass result) {
-				aVte.resolveType(result);
+				aVte.resolveTypeToClass(result);
 			}
 		});
 	}
@@ -431,7 +431,7 @@ public class DeduceTypes2 {
 											@Override
 											public void onDone(GeneratedClass result) {
 												vte.type.genType.node = result;
-												vte.resolveType(result);
+												vte.resolveTypeToClass(result);
 											}
 										});
 									}
@@ -1508,7 +1508,7 @@ public class DeduceTypes2 {
 						@Override
 						public void onDone(GeneratedClass result) {
 							genType.node = result;
-							vte.typeDeferred().resolve(genType);
+							vte.resolveType(genType);
 						}
 					});
 				}
@@ -1653,7 +1653,7 @@ public class DeduceTypes2 {
 				best.promise().done(new DoneCallback<GeneratedClass>() {
 					@Override
 					public void onDone(GeneratedClass result) {
-						co.resolveType(result);
+						co.resolveTypeToClass(result);
 					}
 				});
 			}
@@ -1688,7 +1688,7 @@ public class DeduceTypes2 {
 					clsinv.resolvePromise().then(new DoneCallback<GeneratedClass>() {
 						@Override
 						public void onDone(GeneratedClass result) {
-							idte3.resolveType(result);
+							idte3.resolveTypeToClass(result);
 						}
 					});
 				} else if (co instanceof VariableTableEntry) {
@@ -1697,7 +1697,7 @@ public class DeduceTypes2 {
 					clsinv.resolvePromise().then(new DoneCallback<GeneratedClass>() {
 						@Override
 						public void onDone(GeneratedClass result) {
-							vte.resolveType(result);
+							vte.resolveTypeToClass(result);
 						}
 					});
 				}
@@ -1997,7 +1997,7 @@ public class DeduceTypes2 {
 			pte.typePromise().then(new DoneCallback<GenType>() {
 				@Override
 				public void onDone(GenType result) {
-					vte.typeDeferred().resolve(result);
+					vte.resolveType(result);
 				}
 			});
 			if (vte.getResolvedElement() != null) {
@@ -2220,14 +2220,14 @@ public class DeduceTypes2 {
 							forFunction(newFunctionInvocation(fd, pte, invocation, phase), new ForFunction() {
 								@Override
 								public void typeDecided(GenType aType) {
-									if (!vte.typeDeferred().isPending()) {
+									if (!vte.typeDeferred_isPending()) {
 										if (vte.resolvedType() == null) {
 											final ClassInvocation ci = genCI(aType, null);
 											vte.type.genTypeCI(ci);
 											ci.resolvePromise().then(new DoneCallback<GeneratedClass>() {
 												@Override
 												public void onDone(GeneratedClass result) {
-													vte.resolveType(result);
+													vte.resolveTypeToClass(result);
 												}
 											});
 										}
@@ -2388,7 +2388,7 @@ public class DeduceTypes2 {
 									case USER_CLASS:
 										final GenType gt = vte1.genType;
 										gt.resolved = attached;
-										vte1.typeDeferred().resolve(gt);
+										vte1.resolveType(gt);
 										break;
 									default:
 										errSink.reportWarning("Unexpected value: " + attached.getType());
@@ -2421,7 +2421,7 @@ public class DeduceTypes2 {
 											case USER_CLASS:
 												final GenType gt = vte1.genType;
 												gt.resolved = attached;
-												vte1.typeDeferred().resolve(gt);
+												vte1.resolveType(gt);
 												break;
 											default:
 												errSink.reportWarning("2853 Unexpected value: " + attached.getType());
@@ -2445,7 +2445,7 @@ public class DeduceTypes2 {
 									final GenType gt = vte1.genType;
 									final OS_Type attached = vte2.type.getAttached();
 									gt.resolved = attached;
-									vte1.typeDeferred().resolve(gt);
+									vte1.resolveType(gt);
 								}
 //								vte.type = vte2.type;
 //								tte.attached = vte.type.attached;
@@ -3211,7 +3211,7 @@ public class DeduceTypes2 {
 				ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
 					@Override
 					public void onDone(GeneratedClass result) {
-						vte.resolveType(result);
+						vte.resolveTypeToClass(result);
 					}
 				});
 			} catch (ResolveError aResolveError) {
@@ -3244,7 +3244,7 @@ public class DeduceTypes2 {
 		ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
 			@Override
 			public void onDone(GeneratedClass result) {
-				aVte.resolveType(result);
+				aVte.resolveTypeToClass(result);
 			}
 		});
 	}
