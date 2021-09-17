@@ -1526,7 +1526,8 @@ public class DeduceTypes2 {
 						@Override
 						public void onDone(GeneratedClass result) {
 							genType.node = result;
-							vte.resolveType(genType);
+							if (!vte.typePromise().isResolved()) // HACK
+								vte.resolveType(genType);
 						}
 					});
 				}
