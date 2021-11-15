@@ -26,7 +26,6 @@ import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.lang.Qualident;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijjah.ElijjahLexer;
@@ -155,15 +154,16 @@ public class Compilation {
 					if (stage.equals("E")) {
 						// do nothing. job over
 					} else {
-						pipelineLogic = new PipelineLogic(gitlabCIVerbosity());
-						pipelineLogic.verbose = !silent;
-
+						pipelineLogic = new PipelineLogic(silent ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE);
 						final DeducePipeline dpl = new DeducePipeline(this);
 						pipelines.add(dpl);
-						final GeneratePipeline gpl = new GeneratePipeline(this, dpl);
-						pipelines.add(gpl);
-						final WritePipeline wpl = new WritePipeline(this, pipelineLogic.gr);
-						pipelines.add(wpl);
+						if (stage.equals("O")) {
+							final GeneratePipeline gpl = new GeneratePipeline(this, dpl);
+							pipelines.add(gpl);
+							final WritePipeline wpl = new WritePipeline(this, pipelineLogic.gr);
+							pipelines.add(wpl);
+						} else
+							assert stage.equals("D");
 
 						pipelines.run();
 
@@ -173,7 +173,7 @@ public class Compilation {
 						writeLogs(silent, pipelineLogic.elLogs);
 
 						if (ez_file != null) {
-							System.out.println(String.format("*** %d errors for %s", errorCount(), ez_file.getFilename()));
+								System.out.println(String.format("*** %d errors for %s", errorCount(), ez_file.getFilename()));
 						}
 					}
 				}
