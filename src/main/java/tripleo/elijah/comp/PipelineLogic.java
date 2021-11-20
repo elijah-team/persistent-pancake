@@ -146,7 +146,8 @@ public class PipelineLogic {
 //					if (generatedClass.getCode() == 0)
 //						generatedClass.setCode(mod.parent.nextClassCode());
 					for (GeneratedClass generatedClass2 : generatedClass.classMap.values()) {
-						generatedClass2.setCode(mod.parent.nextClassCode());
+						if (generatedClass2.getCode() == 0)
+							generatedClass2.setCode(mod.parent.nextClassCode());
 					}
 					for (GeneratedFunction generatedFunction : generatedClass.functionMap.values()) {
 						for (IdentTableEntry identTableEntry : generatedFunction.idte_list) {
@@ -164,7 +165,8 @@ public class PipelineLogic {
 					if (coded.getCode() == 0)
 						coded.setCode(mod.parent.nextClassCode());
 					for (GeneratedClass generatedClass : generatedNamespace.classMap.values()) {
-						generatedClass.setCode(mod.parent.nextClassCode());
+						if (generatedClass.getCode() == 0)
+							generatedClass.setCode(mod.parent.nextClassCode());
 					}
 					for (GeneratedFunction generatedFunction : generatedNamespace.functionMap.values()) {
 						for (IdentTableEntry identTableEntry : generatedFunction.idte_list) {
