@@ -174,9 +174,10 @@ public class PipelineLogic {
 							}
 						}
 					}
+					break;
 				}
 				default:
-					throw new IllegalStateException();
+					throw new IllegalStateException("Unexpected value: " + coded.getRole());
 				}
 
 			} else {
