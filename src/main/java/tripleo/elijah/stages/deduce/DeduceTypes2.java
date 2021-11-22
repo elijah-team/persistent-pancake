@@ -2914,10 +2914,14 @@ public class DeduceTypes2 {
 				}
 			});
 			@NotNull Runnable runnable = new Runnable() {
+				boolean isDone;
+
 				@Override
 				public void run() {
+					if (isDone) return;
 					final @NotNull List<TypeTableEntry> ll = getPotentialTypesVte((GeneratedFunction) generatedFunction, vte_ia);
 					doLogic(ll);
+					isDone = true;
 				}
 
 				public void doLogic(@NotNull List<TypeTableEntry> potentialTypes) {
