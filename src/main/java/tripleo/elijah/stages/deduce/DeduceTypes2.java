@@ -2012,8 +2012,8 @@ public class DeduceTypes2 {
 						}
 					}
 
-					genCI(genType, genType.nonGenericTypeName);
-//					genType.node = makeNode(genType);
+					//genCI(genType, genType.nonGenericTypeName);
+
 					//
 					// registerClassInvocation does the job of makeNode, so results should be immediately available
 					//
