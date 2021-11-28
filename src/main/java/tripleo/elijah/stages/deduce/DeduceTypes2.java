@@ -2052,6 +2052,8 @@ public class DeduceTypes2 {
 						}
 					}
 				}
+			} else if (vte.type.getAttached() == null && vte.potentialTypes().size() == 0) {
+				int y=2;
 			}
 			{
 				final GenType genType = vte.type.genType;
