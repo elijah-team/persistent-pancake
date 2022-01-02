@@ -203,7 +203,7 @@ public class TestGenFunction {
 			}
 		});
 
-		dp.deduceModule(m, lgc, false, c.gitlabCIVerbosity());
+		dp.deduceModule(m, lgc, c.gitlabCIVerbosity());
 		dp.finish();
 
 		Assert.assertEquals("Not all hooks ran", 4, ran_hooks.size());
@@ -266,7 +266,7 @@ public class TestGenFunction {
 			}
 		}
 
-		dp.deduceModule(m, lgc, false, c.gitlabCIVerbosity());
+		dp.deduceModule(m, lgc, c.gitlabCIVerbosity());
 		dp.finish();
 //		new DeduceTypes2(m).deduceFunctions(lgf);
 
