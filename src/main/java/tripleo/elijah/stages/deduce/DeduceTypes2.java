@@ -215,7 +215,7 @@ public class DeduceTypes2 {
 						//throw new AssertionError();
 						LOG.info("149 non-generic type "+tn1);
 					}
-					gt.genCI(gt, null, DeduceTypes2.this, errSink, phase); // TODO aGenericPart
+					gt.genCI(null, DeduceTypes2.this, errSink, phase); // TODO aGenericPart
 					assert gt.ci != null;
 					genNodeForGenType2(gt);
 				}
@@ -813,7 +813,7 @@ public class DeduceTypes2 {
 			}
 		}
 		if (genType.ci == null) {
-			genType.genCI(genType, genType.nonGenericTypeName, this, errSink, phase);
+			genType.genCI(genType.nonGenericTypeName, this, errSink, phase);
 		}
 		if (genType.node == null) {
 			if (genType.ci instanceof ClassInvocation) {
@@ -1843,7 +1843,7 @@ public class DeduceTypes2 {
 	 * @param aGenType the GenType to modify. doesn't care about  nonGenericTypeName
 	 */
 	public void genCIForGenType2(final GenType aGenType) {
-		aGenType.genCI(aGenType, aGenType.nonGenericTypeName, this, errSink, phase);
+		aGenType.genCI(aGenType.nonGenericTypeName, this, errSink, phase);
 		final IInvocation invocation = aGenType.ci;
 		if (invocation instanceof NamespaceInvocation) {
 			final NamespaceInvocation namespaceInvocation = (NamespaceInvocation) invocation;
@@ -2421,7 +2421,7 @@ public class DeduceTypes2 {
 		}
 
 		public void genCI(final GenType aResult, final TypeName aNonGenericTypeName) {
-			aResult.genCI(aResult, aNonGenericTypeName, dt2, dt2.errSink, dt2.phase);
+			aResult.genCI(aNonGenericTypeName, dt2, dt2.errSink, dt2.phase);
 		}
 
 		public @Nullable ClassInvocation registerClassInvocation(final ClassStatement aClassStatement, final String aS) {
@@ -2677,7 +2677,7 @@ public class DeduceTypes2 {
 						genType.resolved = new OS_Type((ClassStatement) best);
 						// ci, typeName, node
 	//					genType.
-						genType.genCI(genType, null, DeduceTypes2.this, errSink, phase);
+						genType.genCI(null, DeduceTypes2.this, errSink, phase);
 						generatedFunction.addDependentType(genType);
 					}
 				}
@@ -3268,7 +3268,7 @@ public class DeduceTypes2 {
 
 				final @NotNull GenType genType = new GenType(klass);
 				final TypeName typeName = vte.type.genType.nonGenericTypeName;
-				final @Nullable ClassInvocation ci = genType.genCI(genType, typeName, DeduceTypes2.this, errSink, phase);
+				final @Nullable ClassInvocation ci = genType.genCI(typeName, DeduceTypes2.this, errSink, phase);
 //							resolve_vte_for_class(vte, klass);
 				ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
 					@Override
@@ -3361,7 +3361,7 @@ public class DeduceTypes2 {
 		}
 
 		public @NotNull ClassInvocation genCI(@NotNull GenType genType, TypeName typeName) {
-			return genType.genCI(genType, typeName, deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
+			return genType.genCI(typeName, deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
 		}
 
 		public @NotNull ElLog getLOG() {
@@ -3525,7 +3525,7 @@ public class DeduceTypes2 {
 		}
 
 		public ClassInvocation genCI(final GenType aType, final TypeName aGenericTypeName) {
-			return aType.genCI(aType, aGenericTypeName, deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
+			return aType.genCI(aGenericTypeName, deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
 		}
 
 		public OS_Type gt(final GenType aType) {
