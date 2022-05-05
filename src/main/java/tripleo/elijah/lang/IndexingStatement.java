@@ -11,6 +11,7 @@ package tripleo.elijah.lang;
 import antlr.Token;
 import tripleo.elijah.lang.ExpressionList;
 import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.util.NotImplementedException;
 
 /**
  * @author Tripleo
@@ -23,8 +24,8 @@ public class IndexingStatement {
 	private ExpressionList exprs;
 	private final OS_Module parent;
 
-	public IndexingStatement(final OS_Module module) {
-		this.parent = module;
+	public IndexingStatement(final OS_Module aModule) {
+		parent = aModule;
 	}
 
 	public void setName(final Token i1) {
@@ -32,9 +33,16 @@ public class IndexingStatement {
 	}
 
 	public void setExprs(final ExpressionList el) {
-		this.exprs = el;
+		exprs = el;
 	}
 
+/*
+	public void setParent(OS_Module aParent) {
+		parent = aParent;
+	}
+
+	public void setModule(final OS_Module module) { parent = module;}
+*/
 }
 
 //
