@@ -45,7 +45,8 @@ class StageToRuntime {
 		if (stage.equals("D"))
 			return new DStageProcess(ca, aPr);
 
-		return null;
+		throw new IllegalStateException("No stage selected "+stage);
+		//return null;
 	}
 }
 
