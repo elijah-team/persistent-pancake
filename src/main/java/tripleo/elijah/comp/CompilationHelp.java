@@ -98,67 +98,13 @@ final class EmptyProcess implements RuntimeProcess {
 	}
 }
 
-abstract class ODPrim {
-	ProcessRecord pr;
-
-	//public void setPr(final ProcessRecord aPr) {
-	//	pr = aPr;
-	//}
-
-	void part1(final ICompilationAccess ca) {
-		Preconditions.checkNotNull(pr);
-//		assert pr != null;
-
-//--		ca.setPipelineLogic(new PipelineLogic(ca.testSilence()));
-		//if (pr.dpl == null) {  // TODO fix this
-		//	pr.dpl = new DeducePipeline(ca.getCompilation());
-			ca.addPipeline(pr.dpl);
-		//}
-	}
-
-	void part2_O(final ICompilationAccess ca) {
-		Preconditions.checkNotNull(pr);
-		//assert pr != null;
-
-		final Compilation comp = ca.getCompilation();
-
-		final GeneratePipeline gpl = new GeneratePipeline(comp, pr.dpl);
-		ca.addPipeline(gpl);
-		final WritePipeline wpl = new WritePipeline(comp, pr.pipelineLogic.gr);
-		ca.addPipeline(wpl);
-
-		final WriteMesonPipeline wmpl = new WriteMesonPipeline(comp, pr.pipelineLogic.gr, wpl);
-		ca.addPipeline(wmpl);
-	}
-
-	void part2_D(final ICompilationAccess ca) {
-		assert pr.stage.equals("D");
-	}
-
-	void part2(final ICompilationAccess ca) {
-		final String stage = pr.stage;
-
-		if (stage.equals("O")) {
-			part2_O(ca);
-		} else if (stage.equals("D")) {
-			part2_D(ca);
-		} else {
-			throw new IllegalStateException("invalid state");
-		}
-	}
-}
-
 class DStageProcess implements RuntimeProcess {
-	private final ODPrim             prim = new ODPrim() {
-	};
 	private final ICompilationAccess ca;
 	private final ProcessRecord pr;
 
 	public DStageProcess(final ICompilationAccess aCa, final ProcessRecord aPr) {
 		ca = aCa;
 		pr = aPr;
-
-		prim.pr = pr;
 	}
 
 	@Override
@@ -168,7 +114,7 @@ class DStageProcess implements RuntimeProcess {
 
 	@Override
 	public void postProcess() {
-		prim.part2_D(ca);
+		assert pr.stage.equals("D");
 	}
 }
 
@@ -189,26 +135,42 @@ class ProcessRecord {
 }
 
 class OStageProcess implements RuntimeProcess {
-	private final ODPrim        prim = new ODPrim() {
-	};
 	private final ProcessRecord pr;
 	private final ICompilationAccess ca;
 
 	OStageProcess(final ICompilationAccess aCa, final ProcessRecord aPr) {
 		ca = aCa;
 		pr = aPr;
-
-		prim.pr = pr;
 	}
 
 	@Override
 	public void run(final Compilation aCompilation) {
-		prim.part1(ca);
+		Preconditions.checkNotNull(pr);
+//		assert pr != null;
+
+//--		ca.setPipelineLogic(new PipelineLogic(ca.testSilence()));
+		//if (pr.dpl == null) {  // TODO fix this
+		//	pr.dpl = new DeducePipeline(ca.getCompilation());
+		ca.addPipeline(pr.dpl);
+		//}
 	}
 
 	@Override
 	public void postProcess() {
-		prim.part2_O(ca);
+		Preconditions.checkNotNull(pr);
+		//assert pr != null;
+		Preconditions.checkNotNull(pr.pipelineLogic);
+		Preconditions.checkNotNull(pr.pipelineLogic.gr);
+
+		final Compilation comp = ca.getCompilation();
+
+		final GeneratePipeline gpl = new GeneratePipeline(comp, pr.dpl);
+		ca.addPipeline(gpl);
+		final WritePipeline wpl = new WritePipeline(comp, pr.pipelineLogic.gr);
+		ca.addPipeline(wpl);
+
+		final WriteMesonPipeline wmpl = new WriteMesonPipeline(comp, pr.pipelineLogic.gr, wpl);
+		ca.addPipeline(wmpl);
 	}
 }
 
