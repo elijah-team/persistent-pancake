@@ -9,6 +9,8 @@
 package tripleo.elijah.comp;
 
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.stages.logging.ElLog;
 
 import java.util.ArrayList;
@@ -33,7 +35,9 @@ interface ICompilationAccess {
 }
 
 class StageToRuntime {
-	public static RuntimeProcess get(final String stage, final ICompilationAccess ca, final ProcessRecord aPr) {
+	@Contract("_, _, _ -> new")
+	@NotNull
+	public static RuntimeProcess get(final @NotNull String stage, final ICompilationAccess ca, final ProcessRecord aPr) {
 		if (stage.equals("E"))
 			return new EmptyProcess(ca, aPr);
 		if (stage.equals("O"))
