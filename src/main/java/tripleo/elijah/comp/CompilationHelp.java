@@ -52,7 +52,7 @@ class StageToRuntime {
 
 class RuntimeProcesses {
 	private final List<RuntimeProcess> processes = new ArrayList<>();
-	private Compilation comp;
+	private final Compilation          comp;
 
 	public RuntimeProcesses(final Compilation aCompilation) {
 		comp = aCompilation;
