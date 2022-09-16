@@ -59,7 +59,7 @@ class Resolve_Variable_Table_Entry {
 		aConnector.connect(vte, vte.getName());
 	}
 
-	public void action_VAR(@NotNull VariableTableEntry vte) {
+	private void action_VAR(@NotNull VariableTableEntry vte) {
 		if (vte.type.getAttached() == null && vte.potentialTypes.size() == 1) {
 			TypeTableEntry pot = new ArrayList<>(vte.potentialTypes()).get(0);
 			if (pot.getAttached() instanceof OS_FuncExprType) {
@@ -74,7 +74,7 @@ class Resolve_Variable_Table_Entry {
 		}
 	}
 
-	public void action_VAR_potsize_1_other(@NotNull VariableTableEntry vte, @NotNull TypeTableEntry aPot) {
+	private void action_VAR_potsize_1_other(@NotNull VariableTableEntry vte, @NotNull TypeTableEntry aPot) {
 		try {
 			if (aPot.tableEntry instanceof ProcTableEntry) {
 				final @NotNull ProcTableEntry pte1 = (ProcTableEntry) aPot.tableEntry;
@@ -126,7 +126,7 @@ class Resolve_Variable_Table_Entry {
 		}
 	}
 
-	public void action_VAR_pot_1_tableEntry_null(final VariableStatement aVariableStatement) {
+	private void action_VAR_pot_1_tableEntry_null(final VariableStatement aVariableStatement) {
 		final @NotNull IExpression iv = aVariableStatement.initialValue();
 		if (iv != IExpression.UNASSIGNED) {
 			if (iv instanceof ProcedureCallExpression) {
@@ -152,7 +152,7 @@ class Resolve_Variable_Table_Entry {
 			assert false;
 	}
 
-	public void setup_GenType(OS_Element element, @NotNull GenType aGt) {
+	private void setup_GenType(OS_Element element, @NotNull GenType aGt) {
 		if (element instanceof NamespaceStatement) {
 			final @NotNull NamespaceStatement namespaceStatement = (NamespaceStatement) element;
 			aGt.resolvedn = (NamespaceStatement) element;
@@ -219,10 +219,10 @@ class Resolve_Variable_Table_Entry {
 			throw new IllegalStateException("Unknown parent");
 	}
 
-	public void action_VAR_potsize_1_and_FuncExprType(@NotNull VariableTableEntry vte,
-													  @NotNull OS_FuncExprType funcExprType,
-													  @NotNull GenType aGenType,
-													  IExpression aPotentialExpression) {
+	private void action_VAR_potsize_1_and_FuncExprType(@NotNull VariableTableEntry vte,
+													   @NotNull OS_FuncExprType funcExprType,
+													   @NotNull GenType aGenType,
+													   IExpression aPotentialExpression) {
 		aGenType.typeName = funcExprType;
 
 		final @NotNull FuncExpr fe = (FuncExpr) funcExprType.getElement();
@@ -312,7 +312,7 @@ class Resolve_Variable_Table_Entry {
 		}
 	}
 
-	public void action_ARG(@NotNull VariableTableEntry vte) {
+	private void action_ARG(@NotNull VariableTableEntry vte) {
 		TypeTableEntry tte = vte.type;
 		final OS_Type attached = tte.getAttached();
 		if (attached != null) {
@@ -352,7 +352,7 @@ class Resolve_Variable_Table_Entry {
 	 *
 	 * @param aGenType the GenType to modify. must be set to a nonGenericTypeName that is non-null and generic
 	 */
-	public void genCIForGenType(final GenType aGenType) {
+	private void genCIForGenType(final GenType aGenType) {
 		assert aGenType.nonGenericTypeName != null ;//&& ((NormalTypeName) aGenType.nonGenericTypeName).getGenericPart().size() > 0;
 
 		aGenType.genCI(aGenType.nonGenericTypeName, deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
@@ -382,7 +382,7 @@ class Resolve_Variable_Table_Entry {
 	 *
 	 * @param aGenType the GenType to modify. must be set to a nonGenericTypeName that is non-null and generic
 	 */
-	public void genNodeForGenType(final GenType aGenType, IInvocation invocation) {
+	private void genNodeForGenType(final GenType aGenType, IInvocation invocation) {
 		assert aGenType.nonGenericTypeName != null;
 
 //		final IInvocation invocation = aGenType.ci;
@@ -413,7 +413,7 @@ class Resolve_Variable_Table_Entry {
 	 *
 	 * @param aGenType the GenType to modify. doesn;t care about  nonGenericTypeName
 	 */
-	public void genCIForGenType2(final GenType aGenType) {
+	private void genCIForGenType2(final GenType aGenType) {
 		aGenType.genCI(aGenType.nonGenericTypeName, deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
 		final IInvocation invocation = aGenType.ci;
 		if (invocation instanceof NamespaceInvocation) {

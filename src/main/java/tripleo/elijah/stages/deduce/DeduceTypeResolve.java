@@ -27,9 +27,9 @@ import java.util.Map;
  * Created 11/18/21 12:02 PM
  */
 public class DeduceTypeResolve {
-	private final BaseTableEntry bte;
-	private BaseTableEntry backlink;
-	private DeferredObject<GenType, ResolveError, Void> typeResolution = new DeferredObject<GenType, ResolveError, Void>();
+	private final BaseTableEntry                              bte;
+	private       BaseTableEntry                              backlink;
+	private final DeferredObject<GenType, ResolveError, Void> typeResolution = new DeferredObject<GenType, ResolveError, Void>();
 
 	public DeduceTypeResolve(BaseTableEntry aBte) {
 		bte = aBte;

@@ -51,7 +51,7 @@ public class Compilation {
 
 	private final int _compilationNumber;
 	private IO io;
-	private ErrSink eee;
+	private final ErrSink eee;
 	public final List<OS_Module> modules = new ArrayList<OS_Module>();
 	private final Map<String, OS_Module> fn2m = new HashMap<String, OS_Module>();
 	private final Map<String, CompilerInstructions> fn2ci = new HashMap<String, CompilerInstructions>();
@@ -63,7 +63,7 @@ public class Compilation {
 	//
 	//
 	public PipelineLogic pipelineLogic;
-	private Pipeline pipelines = new Pipeline();
+	private final Pipeline pipelines = new Pipeline();
 	//
 	//
 	//
@@ -257,7 +257,7 @@ public class Compilation {
 
 	private void use_internal(final File dir, final boolean do_out, LibraryStatementPart lsp) throws Exception {
 		if (!dir.isDirectory()) {
-			eee.reportError("9997 Not a directory " + dir.toString());
+			eee.reportError("9997 Not a directory " + dir);
 			return;
 		}
 		//

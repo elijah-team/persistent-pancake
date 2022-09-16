@@ -2364,7 +2364,7 @@ public class DeduceTypes2 {
 			return dt2.deferred_member(aParent, aInvocation, aVariableStatement, aIdentTableEntry);
 		}
 
-		public void genCI(final GenType aResult, final TypeName aNonGenericTypeName) {
+		public void genCI(final @NotNull GenType aResult, final TypeName aNonGenericTypeName) {
 			aResult.genCI(aNonGenericTypeName, dt2, dt2.errSink, dt2.phase);
 		}
 
@@ -2974,7 +2974,8 @@ public class DeduceTypes2 {
 			VTE_TypePromises.found_parent(pe, generatedFunction, ((VariableTableEntry) bte), ite, DeduceTypes2.this);
 		}
 
-		private void type_is_null_and_attached_is_null_ite(IdentTableEntry ite) {
+		private void type_is_null_and_attached_is_null_ite(final IdentTableEntry ite) {
+			int y=2;
 //			PromiseExpectation<GenType> pe = promiseExpectation(ite, "Null USER type attached resolved");
 //			ite.typePromise().done(new DoneCallback<GenType>() {
 //				@Override

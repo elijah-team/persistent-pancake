@@ -8,12 +8,15 @@
  */
 package tripleo.elijah.util;
 
+import org.jetbrains.annotations.Contract;
+
 @SuppressWarnings("unused")
 public class NotImplementedException extends RuntimeException {
 public NotImplementedException() {
 	final int y=2;
 }
 
+@Contract(pure = true)
 public static void raise() {
 	final int y=2;
 	

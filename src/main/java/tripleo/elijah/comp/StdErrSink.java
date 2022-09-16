@@ -25,20 +25,19 @@ public class StdErrSink implements ErrSink {
 	@Override
 	public void exception(final Exception e) {
 		_errorCount++;
-		System.err.println((new StringBuilder("exception: ")).append(e)
-				.toString());
+		System.err.println("exception: " + e);
 		e.printStackTrace(System.err);
 	}
 
 	@Override
 	public void reportError(final String s) {
 		_errorCount++;
-		System.err.println(String.format("ERROR: %s", s));
+		System.err.printf("ERROR: %s%n", s);
 	}
 
 	@Override
 	public void reportWarning(final String s) {
-		System.err.println(String.format("WARNING: %s", s));
+		System.err.printf("WARNING: %s%n", s);
 	}
 
 	@Override
@@ -48,7 +47,7 @@ public class StdErrSink implements ErrSink {
 
 	@Override
 	public void info(final String message) {
-		System.err.println(String.format("INFO: %s", message));
+		System.err.printf("INFO: %s%n", message);
 	}
 
 	@Override
