@@ -8,23 +8,21 @@
  */
 package tripleo.elijah.comp;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.ci.LibraryStatementPart;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.gen_c.GenerateC;
-import tripleo.elijah.stages.gen_fn.GenerateFunctions;
-import tripleo.elijah.stages.gen_fn.GeneratePhase;
-import tripleo.elijah.stages.gen_fn.GeneratedClass;
-import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
-import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
-import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.*;
+//import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
+//import tripleo.elijah.stages.gen_generic.OutputFileFactory;
+//import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
 import tripleo.elijah.stages.generate.ElSystem;
 import tripleo.elijah.stages.generate.OutputStrategy;
@@ -38,8 +36,7 @@ import tripleo.util.buffer.TextBuffer;
 import tripleo.util.io.CharSink;
 import tripleo.util.io.FileCharSink;
 
-import java.io.PrintStream;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -57,25 +54,26 @@ public class PipelineLogic {
 	public final DeducePhase dp;
 
 	public GenerateResult gr = new GenerateResult();
-	public List<ElLog> elLogs = new LinkedList<ElLog>();
-	public boolean verbose = true;
+	public List<ElLog> elLogs = new LinkedList<>();
 
-	private final ElLog.Verbosity verbosity;
+	private final List<OS_Module> mods              = new ArrayList<OS_Module>();
 
-	final List<OS_Module> mods = new ArrayList<OS_Module>();
+	private       boolean         postDeduceEnabled = false;
 
-	public boolean postDeduceEnabled = false;
 
-	public PipelineLogic(ElLog.Verbosity aVerbosity) {
-		verbosity = aVerbosity;
-		generatePhase = new GeneratePhase(aVerbosity, this);
-		dp = new DeducePhase(generatePhase, this, verbosity);
+	public PipelineLogic(final @NotNull ICompilationAccess aCa) {
+		verbosity     = aCa.testSilence();
+		generatePhase = new GeneratePhase(verbosity, this);
+		dp            = new DeducePhase(generatePhase, this, verbosity, aCa);
+
+		aCa.setPipelineLogic(this);
 	}
 
-	public void everythingBeforeGenerate(List<GeneratedNode> lgc) {
-		for (OS_Module mod : mods) {
+	public void everythingBeforeGenerate(final List<GeneratedNode> lgc) {
+		for (final OS_Module mod : mods) {
 			run2(mod, mod.entryPoints);
 		}
+
 //		List<List<EntryPoint>> entryPoints = mods.stream().map(mod -> mod.entryPoints).collect(Collectors.toList());
 		dp.finish();
 
@@ -93,24 +91,21 @@ public class PipelineLogic {
 
 	public void generate(List<GeneratedNode> lgc) {
 		final WorkManager wm = new WorkManager();
-		// README use any errSink, they should all be the same
-		for (OS_Module mod : mods) {
-			final GenerateC generateC = new GenerateC(mod, mod.parent.getErrSink(), verbosity, this);
-			final GenerateResult ggr = run3(mod, lgc, wm, generateC);
+
+		for (final OS_Module mod : mods) {
+			// README use any errSink, they should all be the same
+			final ErrSink              errSink = mod.getCompilation().getErrSink();
+
+			final LibraryStatementPart lsp     = mod.getLsp();
+			final CompilerInstructions ci      = lsp.getInstructions();
+			final @Nullable String     lang    = ci.genLang();
+
+			final OutputFileFactoryParams params        = new OutputFileFactoryParams(mod, errSink, verbosity, this);
+			final GenerateFiles           generateFiles = OutputFileFactory.create(lang, params);
+			//final GenerateC               generateC     = new GenerateC(mod, errSink, verbosity, this);
+			final GenerateResult          ggr           = run3(mod, lgc, wm, generateFiles);
 			wm.drain();
 			gr.results().addAll(ggr.results());
-		}
-	}
-
-	public static void debug_buffers(GenerateResult gr, PrintStream stream) {
-		for (GenerateResultItem ab : gr.results()) {
-			stream.println("---------------------------------------------------------------");
-			stream.println(ab.counter);
-			stream.println(ab.ty);
-			stream.println(ab.output);
-			stream.println(ab.node.identityString());
-			stream.println(ab.buffer.getText());
-			stream.println("---------------------------------------------------------------");
 		}
 	}
 
@@ -225,7 +220,7 @@ public class PipelineLogic {
 		return generatePhase.getGenerateFunctions(mod);
 	}
 
-	protected GenerateResult run3(OS_Module mod, List<GeneratedNode> lgc, WorkManager wm, GenerateC ggc) {
+	protected GenerateResult run3(OS_Module mod, @NotNull List<GeneratedNode> lgc, WorkManager wm, GenerateFiles ggc) {
 		GenerateResult gr = new GenerateResult();
 
 		for (GeneratedNode generatedNode : lgc) {
@@ -238,14 +233,14 @@ public class PipelineLogic {
 				if (nc instanceof GeneratedClass) {
 					final GeneratedClass generatedClass = (GeneratedClass) nc;
 
-					final @NotNull Collection<GeneratedNode> gn2 = ggc.constructors_to_list_of_generated_nodes(generatedClass.constructors.values());
+					final @NotNull Collection<GeneratedNode> gn2 = GenerateFiles.constructors_to_list_of_generated_nodes(generatedClass.constructors.values());
 					GenerateResult gr3 = ggc.generateCode(gn2, wm);
 					gr.results().addAll(gr3.results());
 				}
-				final @NotNull Collection<GeneratedNode> gn1 = ggc.functions_to_list_of_generated_nodes(nc.functionMap.values());
+				final @NotNull Collection<GeneratedNode> gn1 = GenerateFiles.functions_to_list_of_generated_nodes(nc.functionMap.values());
 				GenerateResult gr2 = ggc.generateCode(gn1, wm);
 				gr.results().addAll(gr2.results());
-				final @NotNull Collection<GeneratedNode> gn2 = ggc.classes_to_list_of_generated_nodes(nc.classMap.values());
+				final @NotNull Collection<GeneratedNode> gn2 = GenerateFiles.classes_to_list_of_generated_nodes(nc.classMap.values());
 				GenerateResult gr3 = ggc.generateCode(gn2, wm);
 				gr.results().addAll(gr3.results());
 			} else {
