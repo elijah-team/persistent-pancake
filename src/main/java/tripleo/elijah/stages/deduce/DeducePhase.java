@@ -41,16 +41,18 @@ import static tripleo.elijah.util.Helpers.List_of;
  */
 public class DeducePhase {
 
-	private final List<FoundElement> foundElements = new ArrayList<FoundElement>();
-	private final Map<IdentTableEntry, OnType> idte_type_callbacks = new HashMap<IdentTableEntry, OnType>();
-	public @NotNull GeneratedClasses generatedClasses = new GeneratedClasses();
-	public final GeneratePhase generatePhase;
+	public final           GeneratePhase                generatePhase;
+	public final @NotNull  GeneratedClasses             generatedClasses    = new GeneratedClasses();
+	private final          List<FoundElement>           foundElements       = new ArrayList<FoundElement>();
+	private final          Map<IdentTableEntry, OnType> idte_type_callbacks = new HashMap<IdentTableEntry, OnType>();
+	private final          PipelineLogic                pipelineLogic;
+	private final @NotNull ElLog                        LOG;
+	private final @NotNull ICompilationAccess           ca;
 
-	final PipelineLogic pipelineLogic;
-
-	private final @NotNull ElLog LOG;
-
-	public DeducePhase(GeneratePhase aGeneratePhase, PipelineLogic aPipelineLogic, ElLog.Verbosity verbosity) {
+	public DeducePhase(final GeneratePhase aGeneratePhase,
+					   final PipelineLogic aPipelineLogic,
+					   final ElLog.Verbosity verbosity,
+					   final @NotNull ICompilationAccess aca) {
 		generatePhase = aGeneratePhase;
 		pipelineLogic = aPipelineLogic;
 		//
@@ -212,7 +214,8 @@ public class DeducePhase {
 		return nsi;
 	}
 
-	@NotNull List<FunctionMapHook> functionMapHooks = new ArrayList<FunctionMapHook>();
+	@NotNull
+	public List<FunctionMapHook> functionMapHooks = new ArrayList<FunctionMapHook>();
 
 	public void addFunctionMapHook(FunctionMapHook aFunctionMapHook) {
 		functionMapHooks.add(aFunctionMapHook);
@@ -453,7 +456,7 @@ public class DeducePhase {
 
 	public void handleFunctionMapHooks() {
 		for (Map.@NotNull Entry<FunctionDef, Collection<GeneratedFunction>> entry : functionMap.asMap().entrySet()) {
-			for (@NotNull FunctionMapHook functionMapHook : functionMapHooks) {
+			for (@NotNull FunctionMapHook functionMapHook : ca.functionMapHooks()) {
 				if (functionMapHook.matches(entry.getKey())) {
 					functionMapHook.apply(entry.getValue());
 				}
