@@ -17,6 +17,7 @@ import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.comp.ICompilationAccess;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.*;
@@ -55,8 +56,10 @@ public class DeducePhase {
 					   final @NotNull ICompilationAccess aca) {
 		generatePhase = aGeneratePhase;
 		pipelineLogic = aPipelineLogic;
+		ca            = aca;
 		//
-		LOG = new ElLog("(DEDUCE_PHASE)", verbosity, "DeducePhase");
+		LOG 		  = new ElLog("(DEDUCE_PHASE)", verbosity, "DeducePhase");
+		//
 		pipelineLogic.addLog(LOG);
 	}
 
