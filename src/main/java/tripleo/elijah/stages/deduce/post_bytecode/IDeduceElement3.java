@@ -49,5 +49,10 @@
 		DeduceTypes2 deduceTypes2();
 		GeneratedFunction generatedFunction();
 		GenType genType();
-		DeduceElement3_Kind kind();
+		
+		/**
+		 * how is this different from {@link DED.Kind} ??
+		 * @return 
+		 */
+		DeduceElement3_Kind kind(); 
 	}

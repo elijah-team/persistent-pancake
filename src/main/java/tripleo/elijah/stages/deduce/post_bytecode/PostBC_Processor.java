@@ -451,7 +451,7 @@
 				Maybe<OS_Type> r;
        
 				r = new Maybe<>(vte_type_attached, null);
-       
+
 				return r;
 			}
        
@@ -464,8 +464,12 @@
        
 			@Override
 			public DeduceType3 doNoTypeAttached(final ErrSink errSink1) {
-				return null;
+				throw new NotImplementedException();
 			}
+
+//			public IDeduceElement3 doNoTypeAttached(final ErrSink errSink1) {
+//				return new DeduceElement3_VariableTableEntry(vte_type_attached);
+//			}
        
 			@Override
 			protected DeduceTypes2.DeduceClient1 deduceTypes2() {
