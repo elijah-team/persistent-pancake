@@ -55,13 +55,13 @@ public class DeduceTypes2 {
 		this(module, phase, ElLog.Verbosity.VERBOSE);
 	}
 
-	public DeduceTypes2(@NotNull OS_Module module, @NotNull DeducePhase phase, ElLog.Verbosity verbosity) {
-		this.module = module;
-		this.phase = phase;
-		this.errSink = module.getCompilation().getErrSink();
-		this.LOG = new ElLog(module.getFileName(), verbosity, PHASE);
+	public DeduceTypes2(@NotNull OS_Module aModule, @NotNull DeducePhase aDeducePhase, ElLog.Verbosity aVerbosity) {
+		this.module  = aModule;
+		this.phase   = aDeducePhase;
+		this.errSink = aModule.getCompilation().getErrSink();
+		this.LOG     = new ElLog(aModule.getFileName(), aVerbosity, PHASE);
 		//
-		phase.addLog(LOG);
+		aDeducePhase.addLog(LOG);
 	}
 
 	public void deduceFunctions(final @NotNull Iterable<GeneratedNode> lgf) {
@@ -2336,7 +2336,7 @@ public class DeduceTypes2 {
 		return null;
 	}
 
-	static class DeduceClient1 {
+	public static class DeduceClient1 {
 		private final DeduceTypes2 dt2;
 
 		@Contract(pure = true)
@@ -2374,6 +2374,14 @@ public class DeduceTypes2 {
 
 		public void genCIForGenType2(final GenType genType) {
 			dt2.genCIForGenType2(genType);
+		}
+
+		public void LOG_err(String aS) {
+			dt2.LOG.err(aS);
+		}
+
+		public @NotNull ArrayList<TypeTableEntry> getPotentialTypesVte(VariableTableEntry aVte) {
+			return dt2.getPotentialTypesVte(aVte);
 		}
 	}
 
@@ -3304,7 +3312,7 @@ public class DeduceTypes2 {
 	}
 
 	public static class DeduceClient3 {
-		private final DeduceTypes2 deduceTypes2;
+		final DeduceTypes2 deduceTypes2;
 
 		public DeduceClient3(final DeduceTypes2 aDeduceTypes2) {
 			deduceTypes2 = aDeduceTypes2;
