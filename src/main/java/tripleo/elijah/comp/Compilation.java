@@ -187,20 +187,9 @@ public class Compilation {
 		}
 	}
 
-	static class StageToRuntime {
-		public static @NotNull RuntimeProcesses get(final @NotNull String stage, final @NotNull ICompilationAccess aCa, final ProcessRecord aPr) {
-			final RuntimeProcesses rtp = new RuntimeProcesses(aCa.getCompilation());
 
-			if (stage.equals("E"))
-				rtp.add(new EmptyProcess(aCa, aPr));
-			if (stage.equals("O"))
-				rtp.add(new OStageProcess(aCa, aPr));
-			if (stage.equals("D"))
-				rtp.add(new DStageProcess(aCa, aPr));
 
-			return rtp;
-		}
-	}
+
 
 	public static ElLog.Verbosity gitlabCIVerbosity() {
 		final boolean gitlab_ci = isGitlab_ci();
