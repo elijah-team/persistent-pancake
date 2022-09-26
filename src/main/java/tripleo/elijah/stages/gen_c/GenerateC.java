@@ -8,8 +8,6 @@
  */
 package tripleo.elijah.stages.gen_c;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.comp.PipelineLogic;
@@ -20,7 +18,9 @@ import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.CodeGenerator;
+import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
+import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.instructions.ConstTableIA;
 import tripleo.elijah.stages.instructions.FnCallArgs;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -48,7 +48,7 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 /**
  * Created 10/8/20 7:13 AM
  */
-public class GenerateC implements CodeGenerator {
+public class GenerateC implements CodeGenerator, GenerateFiles {
 	private static final String PHASE = "GenerateC";
 	private final ErrSink errSink;
 	private final ElLog LOG;
@@ -60,39 +60,19 @@ public class GenerateC implements CodeGenerator {
 		pipelineLogic.addLog(LOG);
 	}
 
-	@NotNull
-	public static Collection<GeneratedNode> functions_to_list_of_generated_nodes(Collection<GeneratedFunction> generatedFunctions) {
-		return Collections2.transform(generatedFunctions, new Function<GeneratedFunction, GeneratedNode>() {
-			@org.checkerframework.checker.nullness.qual.Nullable
-			@Override
-			public GeneratedNode apply(@org.checkerframework.checker.nullness.qual.Nullable GeneratedFunction input) {
-				return input;
-			}
-		});
+	public GenerateC(final OutputFileFactoryParams aParams) {
+		errSink = aParams.getErrSink();
+
+		final OS_Module       mod           = aParams.getMod();
+		final ElLog.Verbosity verbosity     = aParams.getVerbosity();
+		final PipelineLogic   pipelineLogic = aParams.getPipelineLogic();
+
+		LOG = new ElLog(mod.getFileName(), verbosity, PHASE);
+
+		pipelineLogic.addLog(LOG);
 	}
 
-	@NotNull
-	public static Collection<GeneratedNode> constructors_to_list_of_generated_nodes(Collection<GeneratedConstructor> aGeneratedConstructors) {
-		return Collections2.transform(aGeneratedConstructors, new Function<GeneratedConstructor, GeneratedNode>() {
-			@org.checkerframework.checker.nullness.qual.Nullable
-			@Override
-			public GeneratedNode apply(@org.checkerframework.checker.nullness.qual.Nullable GeneratedConstructor input) {
-				return input;
-			}
-		});
-	}
-
-	@NotNull
-	public static Collection<GeneratedNode> classes_to_list_of_generated_nodes(Collection<GeneratedClass> aGeneratedClasses) {
-		return Collections2.transform(aGeneratedClasses, new Function<GeneratedClass, GeneratedNode>() {
-			@org.checkerframework.checker.nullness.qual.Nullable
-			@Override
-			public GeneratedNode apply(@org.checkerframework.checker.nullness.qual.Nullable GeneratedClass input) {
-				return input;
-			}
-		});
-	}
-
+	@Override
 	public GenerateResult generateCode(final Collection<GeneratedNode> lgn, final WorkManager wm) {
 		GenerateResult gr = new GenerateResult();
 
