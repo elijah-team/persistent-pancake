@@ -1,0 +1,42 @@
+package tripleo.elijah.test_help;
+
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.DefaultCompilationAccess;
+import tripleo.elijah.comp.ICompilationAccess;
+import tripleo.elijah.comp.IO;
+import tripleo.elijah.comp.PipelineLogic;
+import tripleo.elijah.comp.ProcessRecord;
+import tripleo.elijah.comp.StdErrSink;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.stages.gen_generic.GenerateFiles;
+import tripleo.elijah.stages.gen_generic.OutputFileFactory;
+import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
+
+public class Boilerplate {
+	public Compilation comp;
+	public ICompilationAccess aca;
+	public ProcessRecord pr;
+	public PipelineLogic pipelineLogic;
+	public GenerateFiles generateFiles;
+
+	public void get() {
+		comp          = new Compilation(new StdErrSink(), new IO());
+		aca           = new DefaultCompilationAccess(comp);
+		pr            = new ProcessRecord(aca);
+		pipelineLogic = pr.pipelineLogic;
+		//getGenerateFiles(mod);
+	}
+
+	public void getGenerateFiles(final @NotNull OS_Module mod) {
+		generateFiles = OutputFileFactory.create(Compilation.CompilationAlways.defaultPrelude(),
+												 new OutputFileFactoryParams(mod,
+																			 comp.getErrSink(),
+																			 aca.testSilence(),
+																			 pipelineLogic));
+	}
+
+	public OS_Module defaultMod() {
+		return new OS_Module();
+	}
+}

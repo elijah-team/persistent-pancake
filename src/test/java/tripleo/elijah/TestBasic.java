@@ -34,7 +34,7 @@ import static tripleo.elijah.util.Helpers.List_of;
 public class TestBasic {
 
 	@Test
-	public final void testBasicParse() throws IOException {
+	public final void testBasicParse() throws Exception {
 		final List<String> ez_files = Files.readLines(new File("test/basic/ez_files.txt"), Charsets.UTF_8);
 		final List<String> args = new ArrayList<String>();
 		args.addAll(ez_files);
@@ -49,7 +49,7 @@ public class TestBasic {
 
 //	@Test
 	@SuppressWarnings("JUnit3StyleTestMethodInJUnit4Class")
-	public final void testBasic() throws IOException {
+	public final void testBasic() throws Exception {
 		final List<String> ez_files = Files.readLines(new File("test/basic/ez_files.txt"), Charsets.UTF_8);
 		final Map<Integer, Integer> errorCount = new HashMap<Integer, Integer>();
 		int index = 0;
@@ -76,7 +76,7 @@ public class TestBasic {
 	@Ignore
 	@Test
 	@SuppressWarnings("JUnit3StyleTestMethodInJUnit4Class")
-	public final void testBasic_listfolders3() throws IOException {
+	public final void testBasic_listfolders3() throws Exception {
 		String s = "test/basic/listfolders3/listfolders3.ez";
 
 		final ErrSink eee = new StdErrSink();
@@ -91,7 +91,7 @@ public class TestBasic {
 	}
 
 	@Test
-	public final void testBasic_listfolders4() throws IOException {
+	public final void testBasic_listfolders4() throws Exception {
 		String s = "test/basic/listfolders4/listfolders4.ez";
 
 		final ErrSink eee = new StdErrSink();
@@ -106,7 +106,7 @@ public class TestBasic {
 	}
 
 	@Test
-	public final void testBasic_fact1() throws IOException {
+	public final void testBasic_fact1() throws Exception {
 		String s = "test/basic/fact1/main2";
 
 		final ErrSink eee = new StdErrSink();

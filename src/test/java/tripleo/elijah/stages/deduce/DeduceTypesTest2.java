@@ -10,12 +10,8 @@ package tripleo.elijah.stages.deduce;
 
 import org.junit.Assert;
 import org.junit.Test;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
+import tripleo.elijah.comp.*;
 import tripleo.elijah.contexts.FunctionContext;
-import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
@@ -69,12 +65,16 @@ public class DeduceTypesTest2 {
 		//
 		//
 		//
-		final ElLog.Verbosity verbosity1 = c.gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity1);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
-		DeducePhase dp = new DeducePhase(generatePhase, pl, verbosity1);
+		final ElLog.Verbosity verbosity1 = Compilation.gitlabCIVerbosity();
+		//final PipelineLogic pl = new PipelineLogic(verbosity1);
+		//final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
+
+		final ICompilationAccess aca = new DefaultCompilationAccess(c);
+		final ProcessRecord      pr  = new ProcessRecord(aca);
+
+		DeducePhase dp = pr.pipelineLogic.dp; //new DeducePhase(generatePhase, pl, verbosity1, aca);
 		DeduceTypes2 d = dp.deduceModule(mod, dp.generatedClasses, verbosity1);
-//		final DeduceTypes d = new DeduceTypes(mod);
+
 		final GenType x = DeduceLookupUtils.deduceExpression(d, x1, fc);
 		System.out.println(x);
 //		Assert.assertEquals(new OS_Type(BuiltInTypes.SystemInteger).getBType(), x.getBType());
