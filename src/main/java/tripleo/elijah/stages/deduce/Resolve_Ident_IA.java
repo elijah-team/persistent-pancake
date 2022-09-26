@@ -63,7 +63,13 @@ class Resolve_Ident_IA {
 	Context ectx;
 
 	public void action() {
-		final @NotNull List<InstructionArgument> s = generatedFunction._getIdentIAPathList(identIA);
+		DeduceElementIdent dei = new DeduceElementIdent(identIA.getEntry());
+		dei.setDeduceTypes2(this.dc.deduceTypes2, context, generatedFunction);
+		final OS_Element                         el2 = dei.getResolvedElement();
+
+		System.out.println("  70 "+el2);
+
+		final @NotNull List<InstructionArgument> s   = generatedFunction._getIdentIAPathList(identIA);
 
 		ectx = context;
 		el = null;
