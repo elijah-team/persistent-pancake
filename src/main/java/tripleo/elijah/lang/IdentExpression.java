@@ -172,7 +172,7 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 
 	@Override
 	public File getFile() {
-		String filename = token().getFilename();
+		final String filename = token().getFilename();
 		if (filename == null)
 			return null;
 		return new File(filename);
