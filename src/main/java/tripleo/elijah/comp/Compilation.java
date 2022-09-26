@@ -48,19 +48,18 @@ import static tripleo.elijah.nextgen.query.Mode.SUCCESS;
 
 public class Compilation {
 
+	public final  List<OS_Module>                   modules   = new ArrayList<OS_Module>();
+	final         ErrSink                           errSink;
+	final         Map<String, CompilerInstructions> fn2ci     = new HashMap<String, CompilerInstructions>();
+	final         Pipeline                          pipelines = new Pipeline();
 	private final int                               _compilationNumber;
-	private       IO                                io;
-	private final ErrSink                           eee;
-	public final  List<OS_Module>                   modules      = new ArrayList<OS_Module>();
-	private final Map<String, OS_Module>            fn2m         = new HashMap<String, OS_Module>();
-	private final Map<String, CompilerInstructions> fn2ci        = new HashMap<String, CompilerInstructions>();
-	private final Map<String, OS_Package>           _packages    = new HashMap<String, OS_Package>();
-	private       int                               _packageCode = 1;
-	public final  List<CompilerInstructions>        cis          = new ArrayList<CompilerInstructions>();
-
+	private final Map<String, OS_Module>            fn2m      = new HashMap<String, OS_Module>();
+	private final Map<String, OS_Package>           _packages = new HashMap<String, OS_Package>();
+	public        Stages                            stage     = Stages.O; // Output
+	public        boolean                           silent    = false;
 	CompilerInstructions rootCI;
-
-	//
+	boolean              showTree = false;
+	private IO io;
 	//
 	//
 	public PipelineLogic pipelineLogic;
