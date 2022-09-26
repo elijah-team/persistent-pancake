@@ -22,39 +22,39 @@ import static tripleo.elijah.util.Helpers.List_of;
 public class Feb2021 {
 
 	@Test
-	public void testProperty() {
+	public void testProperty() throws Exception {
 		Compilation c = new Compilation(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/property/"));
 	}
 
 	@Test
-	public void testProperty2() {
+	public void testProperty2() throws Exception {
 		Compilation c = new Compilation(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/property2/"));
 	}
 
 	@Test
-	public void testProperty3() {
+	public void testProperty3() throws Exception {
 		Compilation c = new Compilation(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/property3/"));
 	}
 
-	@Ignore
+//	@Ignore
 	@Test
 	@SuppressWarnings("JUnit3StyleTestMethodInJUnit4Class")
-	public void testFunction() {
+	public void testFunction() throws Exception {
 		Compilation c = new Compilation(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/function/"));
 	}
 
-	@Ignore
+//	@Ignore
 	@Test
 	@SuppressWarnings("JUnit3StyleTestMethodInJUnit4Class")
-	public void testHier() {
+	public void testHier() throws Exception {
 		Compilation c = new Compilation(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/hier/"));
