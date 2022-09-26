@@ -2,11 +2,6 @@
   <configuration default="false" name="TestGenFunction.testGenericA" type="JUnit" factoryName="JUnit" singleton="false" nameIsGenerated="true">
     <module name="test" />
     <useClassPathOnly />
-    <extension name="coverage">
-      <pattern>
-        <option name="ENABLED" value="true" />
-      </pattern>
-    </extension>
     <option name="PACKAGE_NAME" value="tripleo.elijah.stages.gen_fn" />
     <option name="MAIN_CLASS_NAME" value="tripleo.elijah.stages.gen_fn.TestGenFunction" />
     <option name="METHOD_NAME" value="testGenericA" />
