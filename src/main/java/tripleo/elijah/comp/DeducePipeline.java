@@ -8,46 +8,44 @@
  */
 package tripleo.elijah.comp;
 
-import tripleo.elijah.lang.OS_Module;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.stages.deduce.pipeline_impl.DeducePipelineImpl;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import tripleo.elijah.stages.gen_generic.GenerateResult;
 
 /**
  * Created 8/21/21 10:10 PM
  */
-public class DeducePipeline implements PipelineMember {
-	private final Compilation c;
-	List<GeneratedNode> lgc = new ArrayList<GeneratedNode>();
+public class DeducePipeline implements PipelineMember, Consumer<Supplier<GenerateResult>> {
+	private final DeducePipelineImpl impl;
 
 	public DeducePipeline(Compilation aCompilation) {
-		c = aCompilation;
+		System.err.println("***** Hit DeducePipeline constructor");
+		impl = new DeducePipelineImpl(aCompilation);
 	}
 
 	@Override
 	public void run() {
-		for (final OS_Module module : c.modules) {
-			if (false) {
-/*
-				new DeduceTypes(module).deduce();
-				for (final OS_Element2 item : module.items()) {
-					if (item instanceof ClassStatement || item instanceof NamespaceStatement) {
-						System.err.println("8001 "+item);
-					}
-				}
-				new TranslateModule(module).translate();
-*/
-//				new ExpandFunctions(module).expand();
-//
-//  			final JavaCodeGen visit = new JavaCodeGen();
-//	       		module.visitGen(visit);
-			} else {
-				c.pipelineLogic.addModule(module);
-			}
-		}
-		c.pipelineLogic.everythingBeforeGenerate(lgc);
-		lgc = c.pipelineLogic.dp.generatedClasses.copy();
+		System.err.println("***** Hit DeducePipeline #run");
+		impl.run();
+	}
+
+	public void setPipelineLogic(final PipelineLogic aPipelineLogic) {
+		System.err.println("***** Hit DeducePipeline #setPipeline");
+		impl.setPipelineLogic(aPipelineLogic);
+	}
+
+	public @NotNull List<GeneratedNode> lgc() {
+		return impl.lgc; // almost caught myself java'ing and returning a Supplier (but how is this *not* correct?)
+	}
+
+	@Override
+	public void accept(Supplier<GenerateResult> t) {
+		
 	}
 }
 
