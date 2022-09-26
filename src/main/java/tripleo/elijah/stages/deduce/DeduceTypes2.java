@@ -32,6 +32,7 @@ import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.instructions.*;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.util.Holder;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkJob;
 import tripleo.elijah.work.WorkList;
@@ -137,6 +138,21 @@ public class DeduceTypes2 {
 			pte_string = aProcTableEntry.getLoggingString(this);
 		}
 		return pte_string;
+	}
+
+	private final List<IDeduceResolvable> _pendingResolves = new ArrayList<>();
+
+	public boolean hasResolvePending(final IDeduceResolvable aResolvable) {
+		final boolean b = _pendingResolves.contains(aResolvable);
+		return b;
+	}
+
+	public void addResolvePending(final IDeduceResolvable aResolvable, final IDeduceElement_old aDeduceElement, final Holder<OS_Element> aHolder) {
+		int y=2;
+
+		assert ! hasResolvePending(aResolvable);
+
+		_pendingResolves.add(aResolvable);
 	}
 
 	interface IElementProcessor {
