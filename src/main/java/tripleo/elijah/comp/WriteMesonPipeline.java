@@ -11,6 +11,7 @@ package tripleo.elijah.comp;
 import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.stages.gen_generic.DoubleLatch;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.util.io.CharSink;
 import tripleo.util.io.FileCharSink;
@@ -22,47 +23,86 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.jdeferred2.Promise;
 
 import static tripleo.elijah.util.Helpers.List_of;
 import static tripleo.elijah.util.Helpers.String_join;
+import tripleo.elijah.util.NotImplementedException;
 
 /**
  * Created 9/13/21 11:58 PM
  */
-public class WriteMesonPipeline implements PipelineMember {
+public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Supplier<GenerateResult>> {
 //	private final File file_prefix;
 //	private final GenerateResult gr;
 
-	private final WritePipeline writePipeline;
-	private final Compilation c;
+	private final WritePipeline            writePipeline;
+	private final Compilation              c;
+	private       Supplier<GenerateResult> grs;
 
-	public WriteMesonPipeline(Compilation aCompilation, GenerateResult aGr, WritePipeline aWritePipeline) {
+	public WriteMesonPipeline(final Compilation aCompilation,
+			final ProcessRecord ignoredAPr, 
+			final Promise<PipelineLogic, Void, Void> ppl, 
+			final WritePipeline aWritePipeline) {
 		c = aCompilation;
 //		gr = aGr;
 		writePipeline = aWritePipeline;
 
 //		file_prefix = new File("COMP", c.getCompilationNumberString());
+
+		ppl.then((x) -> {
+			final GenerateResult ignoredAGr;
+			
+			ignoredAGr = x.gr;
+		});
 	}
 
-	private void write_makefiles() throws IOException {
-		Multimap<CompilerInstructions, String> lsp_outputs = writePipeline.getLspOutputs(); // TODO move this
+	DoubleLatch<Multimap<CompilerInstructions, String>> write_makefiles_latch = new DoubleLatch<>(this::write_makefiles_action);
 
+	private void write_makefiles_action(final Multimap<CompilerInstructions, String> lsp_outputs) {
 		List<String> dep_dirs = new LinkedList<String>();
 
-		write_root(lsp_outputs, dep_dirs);
+		try {
+			write_root(lsp_outputs, dep_dirs);
 
-		for (CompilerInstructions compilerInstructions : lsp_outputs.keySet()) {
-			int y=2;
-			final String sub_dir = compilerInstructions.getName();
-			final Path dpath = getPath(sub_dir);
-			if (dpath.toFile().exists()) {
-				write_lsp(lsp_outputs, compilerInstructions, sub_dir);
+			for (final CompilerInstructions compilerInstructions : lsp_outputs.keySet()) {
+				int y=2;
+
+				final String sub_dir = compilerInstructions.getName();
+				final Path   dpath   = getPath(sub_dir);
+
+				if (dpath.toFile().exists()) {
+					write_lsp(lsp_outputs, compilerInstructions, sub_dir);
+				}
 			}
+
+			write_prelude();
+		} catch (IOException aE) {
+			throw new RuntimeException(aE);
 		}
-		write_prelude();
+
+	}
+
+	public Consumer<Multimap<CompilerInstructions, String>> write_makefiles_consumer() {
+		final Consumer<Multimap<CompilerInstructions, String>> consumer = new Consumer<Multimap<CompilerInstructions, String>>() {
+			@Override
+			public void accept(final Multimap<CompilerInstructions, String> aCompilerInstructionsStringMultimap) {
+				write_makefiles_latch.notify(aCompilerInstructionsStringMultimap);
+			}
+		};
+		return consumer;
+	}
+
+	private void write_makefiles() {
+		//Multimap<CompilerInstructions, String> lsp_outputs = writePipeline.getLspOutputs(); // TODO move this
+
+		//write_makefiles_latch.notify(lsp_outputs);
+		write_makefiles_latch.notify(true);
 	}
 
 	private void write_root(Multimap<CompilerInstructions, String> lsp_outputs, List<String> aDep_dirs) throws IOException {
@@ -170,6 +210,23 @@ public class WriteMesonPipeline implements PipelineMember {
 	@Override
 	public void run() throws Exception {
 		write_makefiles();
+	}
+
+	@Override
+	public void accept(final Supplier<GenerateResult> aGenerateResultSupplier) {
+		final GenerateResult gr = aGenerateResultSupplier.get();
+		grs = aGenerateResultSupplier;
+		int y=2;
+	}
+
+	public Consumer<Supplier<GenerateResult>> consumer() {
+		return new Consumer<Supplier<GenerateResult>>() {
+			@Override
+			public void accept(final Supplier<GenerateResult> aGenerateResultSupplier) {
+				grs = aGenerateResultSupplier;
+				//final GenerateResult gr = aGenerateResultSupplier.get();
+			}
+		};
 	}
 }
 

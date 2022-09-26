@@ -1,31 +1,29 @@
 /*
  * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
- * 
- * The contents of this library are released under the LGPL licence v3, 
+ *
+ * The contents of this library are released under the LGPL licence v3,
  * the GNU Lesser General Public License text was downloaded from
  * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- * 
+ *
  */
 package tripleo.elijah.comp;
 
 import antlr.ANTLRException;
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.subjects.ReplaySubject;
+import io.reactivex.rxjava3.subjects.Subject;
 import org.jetbrains.annotations.NotNull;
+import org.picocontainer.DefaultPicoContainer;
+import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.PicoContainer;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.LibraryStatementPart;
-import tripleo.elijah.comp.functionality.f202.F202;
-import tripleo.elijah.comp.queries.QueryEzFileToModule;
-import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.comp.queries.QuerySourceFileToModule;
 import tripleo.elijah.comp.queries.QuerySourceFileToModuleParams;
-import tripleo.elijah.contexts.ModuleContext;
+import tripleo.elijah.diagnostic.Diagnostic;
+import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
@@ -33,15 +31,14 @@ import tripleo.elijah.lang.Qualident;
 import tripleo.elijah.stages.deduce.FunctionMapHook;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah.util.NotImplementedException;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.io.PrintStream;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import static tripleo.elijah.nextgen.query.Mode.SUCCESS;
@@ -63,132 +60,21 @@ public class Compilation {
 	//
 	//
 	public PipelineLogic pipelineLogic;
-	private final Pipeline pipelines = new Pipeline();
 	//
-	//
-	//
+	private int                _packageCode  = 1;
+	private int                _classCode    = 101;
+	private int                _functionCode = 1001;
+	private OptionsProcessor __op;
 
 	public Compilation(final ErrSink eee, final IO io) {
-		this.eee = eee;
-		this.io  = io;
+		this.errSink            = eee;
+		this.io                 = io;
 		this._compilationNumber = new Random().nextInt(Integer.MAX_VALUE);
 	}
 
-	public void feedCmdLine(final List<String> args) {
-		try {
-			main(args, eee == null ? new StdErrSink() : eee);
-		} catch (Exception aE) {
-			throw new RuntimeException(aE);
-		}
-	}
-
-	public IO getIO() {
-		return io;
-	}
-
-	public void setIO(final IO io) {
-		this.io = io;
-	}
-
 	//
 	//
 	//
-
-	public String stage = "O"; // Output
-
-	public void main(final List<String> args, final ErrSink errSink) throws Exception {
-		boolean do_out = false, silent = false;
-		try {
-			if (args.size() > 0) {
-				final Options options = new Options();
-				options.addOption("s", true, "stage: E: parse; O: output");
-				options.addOption("showtree", false, "show tree");
-				options.addOption("out", false, "make debug files");
-				options.addOption("silent", false, "suppress DeduceType output to console");
-				final CommandLineParser clp = new DefaultParser();
-				final CommandLine cmd = clp.parse(options, args.toArray(new String[args.size()]));
-
-				if (cmd.hasOption("s")) {
-					stage = cmd.getOptionValue('s');
-				}
-				if (cmd.hasOption("showtree")) {
-					showTree = true;
-				}
-				if (cmd.hasOption("out")) {
-					do_out = true;
-				}
-				if (isGitlab_ci() || cmd.hasOption("silent")) {
-					silent = true;
-				}
-
-				CompilerInstructions ez_file = null;
-				final String[] args2 = cmd.getArgs();
-
-				for (int i = 0; i < args2.length; i++) {
-					final String file_name = args2[i];
-					final File f = new File(file_name);
-					final boolean matches2 = Pattern.matches(".+\\.ez$", file_name);
-					if (matches2)
-						add_ci(parseEzFile(f, file_name, eee));
-					else {
-//						eee.reportError("9996 Not an .ez file "+file_name);
-						if (f.isDirectory()) {
-							final List<CompilerInstructions> ezs = searchEzFiles(f);
-							if (ezs.size() > 1) {
-//								eee.reportError("9998 Too many .ez files, using first.");
-								eee.reportError("9997 Too many .ez files, be specific.");
-//								add_ci(ezs.get(0));
-							} else if (ezs.size() == 0) {
-								eee.reportError("9999 No .ez files found.");
-							} else {
-								ez_file = ezs.get(0);
-								add_ci(ez_file);
-							}
-						} else
-							eee.reportError("9995 Not a directory "+f.getAbsolutePath());
-					}
-				}
-
-				rootCI = cis.get(0);
-				System.err.println("130 GEN_LANG: "+ rootCI.genLang());
-				findStdLib("c"); // TODO find a better place for this
-
-				for (final CompilerInstructions ci : cis) {
-					use(ci, do_out);
-				}
-
-				//
-				final ICompilationAccess ca = new DefaultCompilationAccess(this);
-				final ProcessRecord pr = new ProcessRecord(ca);
-				final RuntimeProcesses rt = StageToRuntime.get(stage, ca, pr);
-
-				rt.run();
-				rt.postProcess(pr, ca);
-
-/*
-				if (stage.equals("E")) {
-					// do nothing. job over
-				} else {
-					rt.part1();
-					rt.part2();
-
-					pipelines.run();
-
-					writeLogs(silent, pipelineLogic.elLogs);
-				}
-*/
-			} else {
-				System.err.println("Usage: eljc [--showtree] [-sE|O] <directory or .ez file names>");
-			}
-		} catch (final Exception e) {
-			errSink.exception(e);
-			throw e;
-		}
-	}
-
-
-
-
 
 	public static ElLog.Verbosity gitlabCIVerbosity() {
 		final boolean gitlab_ci = isGitlab_ci();
@@ -199,208 +85,278 @@ public class Compilation {
 		return System.getenv("GITLAB_CI") != null;
 	}
 
-	private List<CompilerInstructions> searchEzFiles(final File directory) {
-		final List<CompilerInstructions> R = new ArrayList<CompilerInstructions>();
-		final FilenameFilter filter = new FilenameFilter() {
+	public String getProjectName() {
+		return rootCI.getName();
+	}
+
+	public void feedCmdLine(final List<String> args) throws Exception {
+		main(args);
+	}
+
+	public IO getIO() {
+		return io;
+	}
+
+	public void setIO(final IO io) {
+		this.io = io;
+	}
+
+	boolean do_out = false;
+
+	public @NotNull Operation<CompilerInstructions> parseEzFile(final File aFile) {
+		try {
+			return ((OptionsProcessor.DefaultOptionsProcessor) __op).parseEzFile1(aFile, aFile.getPath(), this.errSink, this.io, this);
+		} catch (Exception aE) {
+			throw new RuntimeException(aE);
+		}
+	}
+
+	static class MainModule {
+
+		public static @NotNull PicoContainer newContainer() {
+			final MutablePicoContainer pico = new DefaultPicoContainer();
+
+			pico.addComponent(PicoContainer   .class, pico);
+			pico.addComponent(OptionsProcessor.class, new ApacheOptionsProcessor());
+
+			//pico.addComponent(JFrame.class);
+			//pico.addComponent(InfoWindowProvider.class);
+			//pico.addComponent(ShowInfoWindowAction.class);
+			//pico.addComponent(ShowInfoWindowButton.class);
+
+			return pico;
+		}
+	}
+
+	public void main(final @NotNull List<String> args) throws Exception {
+		final PicoContainer pico = MainModule.newContainer();
+
+/*
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override public void run() {
+				MainWindow mainWindow = pico.getComponent(MainWindow.class);
+				mainWindow.show();
+			}
+		});
+*/
+
+		if (args.size() < 1) {
+			System.err.println("Usage: eljc [--showtree] [-sE|O] <directory or .ez file names>");
+			return;
+		}
+
+
+		final OptionsProcessor op = pico.getComponent(OptionsProcessor.class);
+
+		cio = new CompilerInstructionsObserver(this, op);
+		subscribeCI(cio);
+
+		__op = op;
+
+		final Consumer<Boolean> instructionCompleter = new Consumer<Boolean>() {
 			@Override
-			public boolean accept(final File file, final String s) {
-				final boolean matches2 = Pattern.matches(".+\\.ez$", s);
-				return matches2;
+			public void accept(final Boolean aBoolean) {
+				compilerInstructionsSubject.onComplete();
 			}
 		};
-		final String[] list = directory.list(filter);
-		if (list != null) {
-			for (final String file_name : list) {
-				try {
-					final File file = new File(directory, file_name);
-					final CompilerInstructions ezFile = parseEzFile(file, file.toString(), eee);
-					if (ezFile != null)
-						R.add(ezFile);
-					else
-						eee.reportError("9995 ezFile is null "+file.toString());
-				} catch (final Exception e) {
-					eee.exception(e);
+
+		op.run(this, args, io, instructionCompleter);
+	}
+
+	private Observer<CompilerInstructions> cio;
+
+	void hasInstructions(final @NotNull List<CompilerInstructions> cis,
+						 final boolean do_out,
+						 final @NotNull OptionsProcessor op) throws Exception {
+		NotImplementedException.raise();
+
+		assert cis.size() > 0;
+
+		rootCI = cis.get(0);
+		//System.err.println("130 GEN_LANG: " + rootCI.genLang());
+		((OptionsProcessor.DefaultOptionsProcessor) op).findStdLib(CompilationAlways.defaultPrelude(), this, errSink, io); // TODO find a better place for this
+
+		for (final CompilerInstructions ci : cis) {
+			use(ci, do_out);
+		}
+
+		final ICompilationAccess ca = new DefaultCompilationAccess(this);
+		final ProcessRecord      pr = new ProcessRecord(ca);
+		final RuntimeProcesses   rt = StageToRuntime.get(stage, ca, pr);
+
+		rt.run_better();
+	}
+
+
+
+
+
+
+
+
+
+	public void pushItem(CompilerInstructions aci) {
+		compilerInstructionsSubject.onNext(aci);
+	}
+
+
+	public void addPipeline(PipelineMember aPl) {
+		pipelines.add(aPl);
+	}
+
+	class USE {
+		private final Compilation c;
+
+		public USE(final Compilation aCompilation) {
+			c = aCompilation;
+		}
+
+		public void use(final @NotNull CompilerInstructions compilerInstructions, final boolean do_out) throws Exception {
+			final File instruction_dir = new File(compilerInstructions.getFilename()).getParentFile();
+			for (final LibraryStatementPart lsp : compilerInstructions.lsps) {
+				final String dir_name = Helpers.remove_single_quotes_from_string(lsp.getDirName());
+				File         dir;// = new File(dir_name);
+				if (dir_name.equals(".."))
+					dir = instruction_dir/*.getAbsoluteFile()*/.getParentFile();
+				else
+					dir = new File(instruction_dir, dir_name);
+				use_internal(dir, do_out, lsp);
+			}
+			final LibraryStatementPart lsp = new LibraryStatementPart();
+			lsp.setName(Helpers.makeToken("default")); // TODO: make sure this doesn't conflict
+			lsp.setDirName(Helpers.makeToken(String.format("\"%s\"", instruction_dir)));
+			lsp.setInstructions(compilerInstructions);
+			use_internal(instruction_dir, do_out, lsp);
+		}
+
+		private void use_internal(final @NotNull File dir, final boolean do_out, LibraryStatementPart lsp) throws Exception {
+			if (!dir.isDirectory()) {
+				errSink.reportError("9997 Not a directory " + dir);
+				return;
+			}
+			//
+			final FilenameFilter accept_source_files = new FilenameFilter() {
+				@Override
+				public boolean accept(final File directory, final String file_name) {
+					final boolean matches = Pattern.matches(".+\\.elijah$", file_name)
+							|| Pattern.matches(".+\\.elijjah$", file_name);
+					return matches;
+				}
+			};
+			final File[] files = dir.listFiles(accept_source_files);
+			if (files != null) {
+				for (final File file : files) {
+					parseElijjahFile(file, file.toString(), do_out, lsp);
 				}
 			}
 		}
-		return R;
-	}
 
-	private void add_ci(final CompilerInstructions ci) {
-		cis.add(ci);
-	}
+		private Operation2<OS_Module> parseElijjahFile(final @NotNull File f,
+													   final @NotNull String file_name,
+													   final boolean do_out,
+													   final @NotNull LibraryStatementPart lsp) {
+			System.out.printf("   %s%n", f.getAbsolutePath());
 
-	public void use(final CompilerInstructions compilerInstructions, final boolean do_out) throws Exception {
-		final File instruction_dir = new File(compilerInstructions.getFilename()).getParentFile();
-		for (final LibraryStatementPart lsp : compilerInstructions.lsps) {
-			final String dir_name = Helpers.remove_single_quotes_from_string(lsp.getDirName());
-			File dir;// = new File(dir_name);
-			if (dir_name.equals(".."))
-				dir = instruction_dir/*.getAbsoluteFile()*/.getParentFile();
-			else
-				dir = new File(instruction_dir, dir_name);
-			use_internal(dir, do_out, lsp);
-		}
-		final LibraryStatementPart lsp = new LibraryStatementPart();
-		lsp.setName(Helpers.makeToken("default")); // TODO: make sure this doesn't conflict
-		lsp.setDirName(Helpers.makeToken(String.format("\"%s\"", instruction_dir)));
-		lsp.setInstructions(compilerInstructions);
-		use_internal(instruction_dir, do_out, lsp);
-	}
+			if (f.exists()) {
+				final Operation2<OS_Module> m = realParseElijjahFile2(file_name, f, do_out);
 
-	private void use_internal(final File dir, final boolean do_out, LibraryStatementPart lsp) throws Exception {
-		if (!dir.isDirectory()) {
-			eee.reportError("9997 Not a directory " + dir);
-			return;
-		}
-		//
-		final FilenameFilter accept_source_files = new FilenameFilter() {
-			@Override
-			public boolean accept(final File directory, final String file_name) {
-				final boolean matches = Pattern.matches(".+\\.elijah$", file_name)
-						             || Pattern.matches(".+\\.elijjah$", file_name);
-				return matches;
-			}
-		};
-		final File[] files = dir.listFiles(accept_source_files);
-		if (files != null) {
-			for (final File file : files) {
-				parseElijjahFile(file, file.toString(), eee, do_out, lsp);
+				if (m.mode() == SUCCESS) {
+					// TODO we dont know which prelude to find yet
+					final Operation2<OS_Module> pl = findPrelude(CompilationAlways.defaultPrelude());
+
+					// NOTE Go. infectious. tedious. also slightly lazy
+					assert pl.mode() == SUCCESS;
+
+					final OS_Module mm = m.success();
+
+					assert mm.getLsp() == null;
+					assert mm.prelude  == null;
+
+					mm.setLsp(lsp);
+					mm.prelude = pl.success();
+
+					return Operation2.success(mm);
+				} else {
+					final Diagnostic e = new Compilation.UnknownExceptionDiagnostic(m);
+					return Operation2.failure(e);
+				}
+			} else {
+				final Diagnostic e = new Compilation.FileNotFoundDiagnostic(f);
+
+				return Operation2.failure(e);
 			}
 		}
-	}
 
-	private CompilerInstructions parseEzFile(final File f, final String file_name, final ErrSink errSink) throws Exception {
-		System.out.println((String.format("   %s", f.getAbsolutePath())));
-		if (!f.exists()) {
-			errSink.reportError(
-					"File doesn't exist " + f.getAbsolutePath());
-			return null;
-		}
+		public Operation2<OS_Module> realParseElijjahFile2(final String f, final @NotNull File file, final boolean do_out) {
+			final Operation<OS_Module> om;
 
-		final CompilerInstructions m = realParseEzFile(file_name, io.readFile(f), f);
-		{
-			String prelude = m.genLang();
-			System.err.println("230 " + prelude);
-			if (prelude == null) prelude = "c"; // TODO should be java for eljc
-		}
-		return m;
-	}
+			try {
+				om = realParseElijjahFile(f, file, do_out);
+			} catch (Exception aE) {
+				return Operation2.failure(new ExceptionDiagnostic(aE));
+			}
 
-	private void parseElijjahFile(@NotNull final File f,
-								  final String file_name,
-								  final ErrSink errSink,
-								  final boolean do_out,
-								  LibraryStatementPart lsp) throws Exception {
-		System.out.println((String.format("   %s", f.getAbsolutePath())));
-		if (f.exists()) {
-			final OS_Module m = realParseElijjahFile(file_name, f, do_out);
-			m.setLsp(lsp);
-			m.prelude = this.findPrelude("c"); // TODO we dont know which prelude to find yet
-		} else {
-			errSink.reportError(
-					"File doesn't exist " + f.getAbsolutePath()); // TODO getPath?? and use a Diagnostic
-		}
-	}
-
-	public OS_Module realParseElijjahFile(final String f, final File file, final boolean do_out) throws Exception {
-		final String absolutePath = file.getCanonicalFile().toString();
-		if (fn2m.containsKey(absolutePath)) { // don't parse twice
-			return fn2m.get(absolutePath);
-		}
-		final InputStream s = io.readFile(file);
-		try {
-			final Operation<OS_Module> om = parseFile_(f, s, do_out);
-			if (om.mode() != SUCCESS) {
+			switch (om.mode()) {
+			case SUCCESS:
+				return Operation2.success(om.success());
+			case FAILURE:
 				final Exception e = om.failure();
-				assert e != null;
+				errSink.exception(e);
+				return Operation2.failure(new ExceptionDiagnostic(e));
+			default:
+				throw new IllegalStateException("Unexpected value: " + om.mode());
+			}
+		}
 
+		public Operation<OS_Module> realParseElijjahFile(final String f, final @NotNull File file, final boolean do_out) throws Exception {
+			final String absolutePath = file.getCanonicalFile().toString();
+			if (fn2m.containsKey(absolutePath)) { // don't parse twice
+				final OS_Module m = fn2m.get(absolutePath);
+				return Operation.success(m);
+			}
+
+			// tree add something
+
+			final InputStream s = io.readFile(file);
+			try {
+				final Operation<OS_Module> om = parseFile_(f, s, do_out);
+				if (om.mode() != SUCCESS) {
+					final Exception e = om.failure();
+					assert e != null;
+
+					System.err.println(("parser exception: " + e));
+					e.printStackTrace(System.err);
+					s.close();
+					return Operation.failure(e);
+				}
+				final OS_Module R = om.success();
+				fn2m.put(absolutePath, R);
+				s.close();
+				return Operation.success(R);
+			} catch (final ANTLRException e) {
 				System.err.println(("parser exception: " + e));
 				e.printStackTrace(System.err);
 				s.close();
-				return null;
+				return Operation.failure(e);
 			}
-			final OS_Module R = (OS_Module) om.success();
-			fn2m.put(absolutePath, R);
-			s.close();
-			return R;
-		} catch (final ANTLRException e) {
-			System.err.println(("parser exception: " + e));
-			e.printStackTrace(System.err);
-			s.close();
-			return null;
 		}
 	}
 
-	public CompilerInstructions realParseEzFile(final String f, final InputStream s, final File file) throws Exception {
-		final String absolutePath = file.getCanonicalFile().toString();
-		if (fn2ci.containsKey(absolutePath)) { // don't parse twice
-			return fn2ci.get(absolutePath);
-		}
-		try {
-			final Operation<CompilerInstructions> cio = parseEzFile_(f, s);
-			if (cio.mode() != SUCCESS) {
-				final Exception e = cio.failure();
-				assert e != null;
+	final private USE use = new USE(this);
 
-				System.err.println(("parser exception: " + e));
-				e.printStackTrace(System.err);
-				s.close();
-				return null;
-			}
-			final CompilerInstructions R = cio.success();
-			R.setFilename(file.toString());
-			fn2ci.put(absolutePath, R);
-			s.close();
-			return R;
-		} catch (final ANTLRException e) {
-			System.err.println(("parser exception: " + e));
-			e.printStackTrace(System.err);
-			s.close();
-			return null;
-		}
+	public void use(final @NotNull CompilerInstructions compilerInstructions, final boolean do_out) throws Exception {
+		use.use(compilerInstructions, do_out);	// NOTE Rust
 	}
 
-	public static class ModuleBuilder {
-//		private final Compilation compilation;
-		private final OS_Module mod;
-		private boolean _addToCompilation = false;
-		private String _fn = null;
+	@Deprecated
+	public int instructionCount() {
+		return 4; // TODO shim !!!cis.size();
+	}
 
-		public ModuleBuilder(Compilation aCompilation) {
-//			compilation = aCompilation;
-			mod = new OS_Module();
-			mod.setParent(aCompilation);
-		}
-
-		public ModuleBuilder setContext() {
-			final ModuleContext mctx = new ModuleContext(mod);
-			mod.setContext(mctx);
-			return this;
-		}
-
-		public OS_Module build() {
-			if (_addToCompilation) {
-				if (_fn == null) throw new IllegalStateException("Filename not set in ModuleBuilder");
-				mod.getCompilation().addModule(mod, _fn);
-			}
-			return mod;
-		}
-
-		public ModuleBuilder withPrelude(String aPrelude) {
-			mod.prelude = mod.getCompilation().findPrelude("c");
-			return this;
-		}
-
-		public ModuleBuilder withFileName(String aFn) {
-			_fn = aFn;
-			mod.setFileName(aFn);
-			return this;
-		}
-
-		public ModuleBuilder addToCompilation() {
-			_addToCompilation = true;
-			return this;
+	public static class CompilationAlways {
+		@NotNull
+		public static String defaultPrelude() {
+			return "c";
 		}
 	}
 
@@ -413,13 +369,6 @@ public class Compilation {
 		return new QuerySourceFileToModule(qp, this).calculate();
 	}
 
-	private Operation<CompilerInstructions> parseEzFile_(final String f, final InputStream s) throws RecognitionException, TokenStreamException {
-		final QueryEzFileToModuleParams qp = new QueryEzFileToModuleParams(f, s);
-		return new QueryEzFileToModule(qp).calculate();
-	}
-
-	boolean showTree = false;
-
 	public List<ClassStatement> findClass(final String aClassName) {
 		final List<ClassStatement> l = new ArrayList<ClassStatement>();
 		for (final OS_Module module : modules) {
@@ -431,61 +380,36 @@ public class Compilation {
 	}
 
 	public int errorCount() {
-		return eee.errorCount();
+		return errSink.errorCount();
 	}
 
-	public OS_Module findPrelude(final String prelude_name) {
-		final File local_prelude = new File("lib_elijjah/lib-"+prelude_name+"/Prelude.elijjah");
-		if (local_prelude.exists()) {
-			try {
-				return realParseElijjahFile(local_prelude.getName(), local_prelude, false);
-			} catch (final Exception e) {
-				eee.exception(e);
-				return null;
-			}
+	public Operation2<OS_Module> findPrelude(final String prelude_name) {
+		final File local_prelude = new File("lib_elijjah/lib-" + prelude_name + "/Prelude.elijjah");
+
+		if (!(local_prelude.exists())) {
+			return Operation2.failure(new FileNotFoundDiagnostic(local_prelude));
 		}
-		return null;
-	}
 
-	public boolean findStdLib(final String prelude_name) {
-		final File local_stdlib = new File("lib_elijjah/lib-"+prelude_name+"/stdlib.ez");
-		if (local_stdlib.exists()) {
-			try {
-				final CompilerInstructions ci = realParseEzFile(local_stdlib.getName(), io.readFile(local_stdlib), local_stdlib);
-				add_ci(ci);
-				return true;
-			} catch (final Exception e) {
-				eee.exception(e);
-			}
+		try {
+			final Operation2<OS_Module> om = use.realParseElijjahFile2(local_prelude.getName(), local_prelude, false);
+
+			assert om.mode() == SUCCESS;
+
+			return Operation2.success(om.success());
+		} catch (final Exception e) {
+			errSink.exception(e);
+			return Operation2.failure(new ExceptionDiagnostic(e));
 		}
-		return false;
 	}
-
-	//
-	// region MODULE STUFF
-	//
 
 	public void addModule(final OS_Module module, final String fn) {
 		modules.add(module);
 		fn2m.put(fn, module);
 	}
 
-	// endregion
-
-    //
-	// region CLASS AND FUNCTION CODES
 	//
-
-	private int _classCode = 101;
-	private int _functionCode = 1001;
-
-	public int nextClassCode() {
-		return _classCode++;
-	}
-
-	public int nextFunctionCode() {
-		return _functionCode++;
-	}
+	// region MODULE STUFF
+	//
 
 	// endregion
 
@@ -516,6 +440,26 @@ public class Compilation {
 
 	// endregion
 
+	//
+	// region CLASS AND FUNCTION CODES
+	//
+
+	public int nextClassCode() {
+		return _classCode++;
+	}
+
+	public int nextFunctionCode() {
+		return _functionCode++;
+	}
+
+	//
+	// endregion
+	//
+
+	//
+	// region COMPILATION-SHIT
+	//
+
 	public int compilationNumber() {
 		return _compilationNumber;
 	}
@@ -524,14 +468,85 @@ public class Compilation {
 		return String.format("%08x", _compilationNumber);
 	}
 
+	// endregion
+
 	public ErrSink getErrSink() {
-		return eee;
+		return errSink;
 	}
 
 	public void addFunctionMapHook(FunctionMapHook aFunctionMapHook) {
 		pipelineLogic.dp.addFunctionMapHook(aFunctionMapHook);
 	}
 
+	private class UnknownExceptionDiagnostic implements Diagnostic {
+		private final Operation2<OS_Module> m;
+
+		public UnknownExceptionDiagnostic(final Operation2<OS_Module> aM) {
+			m = aM;
+		}
+
+		@Override
+		public String code() {
+			return "9002";
+		}
+
+		@Override
+		public Severity severity() {
+			return Severity.ERROR;
+		}
+
+		@Override
+		public @NotNull Locatable primary() {
+			return null;
+		}
+
+		@Override
+		public @NotNull List<Locatable> secondary() {
+			return null;
+		}
+
+		@Override
+		public void report(final PrintStream stream) {
+			stream.printf("%s Some error %s%n", code(), m.failure());
+		}
+	}
+
+	private class FileNotFoundDiagnostic implements Diagnostic {
+		private final @NotNull File f;
+
+		public FileNotFoundDiagnostic(final @NotNull File aF) {
+			f = aF;
+		}
+
+		@Override
+		public String code() {
+			return "9001";
+		}
+
+		@Override
+		public Severity severity() {
+			return Severity.ERROR;
+		}
+
+		@Override
+		public @NotNull Locatable primary() {
+			return null;
+		}
+
+		@Override
+		public @NotNull List<Locatable> secondary() {
+			return null;
+		}
+
+		@Override
+		public void report(final PrintStream stream) {
+			stream.println(message());
+		}
+
+		private String message() {
+			return "File doesn't exist " + f.getAbsolutePath();
+		}
+	}
 }
 
 //
