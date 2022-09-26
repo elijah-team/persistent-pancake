@@ -44,6 +44,7 @@ public class GenerateResultItem {
 	}
 
 	public Dependency getDependency() {
+		final List<DependencyRef> ds = dependencies();
 		return dependency;
 	}
 

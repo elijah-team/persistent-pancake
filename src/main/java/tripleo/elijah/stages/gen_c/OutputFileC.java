@@ -17,15 +17,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created 9/13/21 10:50 PM
  */
 public class OutputFileC implements IOutputFile {
-	private final String output;
+	private final String              output;
 	private final List<DependencyRef> dependencies = new ArrayList<>();
-	private final List<Dependency> notedDeps = new ArrayList<>();
-	private final List<Buffer> buffers = new ArrayList<>(); // LinkedList??
+	private final List<Dependency>    notedDeps    = new ArrayList<>();
+	private final List<Buffer>        buffers      = new ArrayList<>(); // LinkedList??
 
 	public OutputFileC(String aOutput) {
 		output = aOutput;
@@ -58,16 +60,16 @@ public class OutputFileC implements IOutputFile {
 
 		for (DependencyRef dependencyRaw : dependencies) {
 			CDependencyRef dependency = (CDependencyRef) dependencyRaw;
-			String headerFile = dependency.getHeaderFile();
-			String output = String.format("#include \"%s\"\n", headerFile.substring(1));
+			String         headerFile = dependency.getHeaderFile();
+			String         output     = String.format("#include \"%s\"\n", headerFile.substring(1));
 			sb.append(output);
 		}
 
 		sb.append('\n');
 
 		for (Dependency dependency : wnd) {
-			String resolvedString = ""+dependency.resolved;
-			String output = String.format("//#include \"%s\" // for %s\n", "nothing.h", resolvedString);
+			String resolvedString = "" + dependency.resolved;
+			String output         = String.format("//#include \"%s\" // for %s\n", "nothing.h", resolvedString);
 			sb.append(output);
 		}
 
