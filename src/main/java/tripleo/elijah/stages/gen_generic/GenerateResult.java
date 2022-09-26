@@ -24,12 +24,13 @@ import tripleo.util.buffer.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Created 4/27/21 1:11 AM
  */
 public class GenerateResult {
-	public Map<String, OutputFileC> outputFiles;
+	private Map<String, OutputFileC> outputFiles;
 
 	private int bufferCounter = 0;
 
@@ -59,6 +60,16 @@ public class GenerateResult {
 
 	public void addNamespace(TY ty, GeneratedNamespace aNamespace, Buffer aBuf, LibraryStatementPart aLsp) {
 		add(aBuf, aNamespace, ty, aLsp, aNamespace.getDependency());
+	}
+
+	public void signalDone(final Map<String, OutputFileC> aOutputFiles) {
+		outputFiles = aOutputFiles;
+
+		signalDone();
+	}
+
+	public void outputFiles(final @NotNull Consumer<Map<String, OutputFileC>> cmso) {
+		cmso.accept(outputFiles);
 	}
 
 	public enum TY {
