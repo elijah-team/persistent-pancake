@@ -160,9 +160,77 @@ public class WritePipeline implements PipelineMember, @NotNull Consumer<Supplier
 				write_files();
 				*/
 
-		// TODO flag?
-		write_buffers();
+				// 5. write buffers
+				// TODO flag?
+				try {
+					write_buffers();
+				} catch (FileNotFoundException aE) {
+					throw new RuntimeException(aE);
+				}
+			}
+		});
 	}
+
+//	@Override
+//	public void accept(final Supplier<GenerateResult> aGenerateResultSupplier) {
+//		grs = aGenerateResultSupplier;
+//	}
+
+	//public class AltingBarrierGadget0 implements CSProcess {
+	//	private final AltingChannelInput click;
+	//	private final AltingBarrier      group;
+	//	private final ChannelOutput      configure;
+	//
+	//	public AltingBarrierGadget0(
+	//			AltingChannelInput click, AltingBarrier group, ChannelOutput configure
+	//							   ) {
+	//		this.click     = click;
+	//		this.group     = group;
+	//		this.configure = configure;
+	//	}
+	//
+	//	@Override
+	//	public void run() {
+	//
+	//		final Alternative clickGroup =
+	//				new Alternative(new Guard[]{click, group});
+	//
+	//		final int CLICK = 0, GROUP = 1;
+	//
+	//		int n = 0;
+	//		configure.write(String.valueOf(n));
+	//
+	//		while (true) {
+	//
+	//			configure.write(Color.green);                // pretty
+	//
+	//			while (!click.pending()) {                  // individual work mode
+	//				n++;                                       // work on our own
+	//				configure.write(String.valueOf(n));      // work on our own
+	//			}
+	//			click.read();                               // must consume the click
+	//
+	//			configure.write(Color.red);                 // pretty
+	//
+	//			boolean group = true;                        // group work mode
+	//			while (group) {
+	//				switch (clickGroup.priSelect()) {         // offer to work with the group
+	//				case CLICK:
+	//					click.read();                         // must consume the click
+	//					group = false;                         // back to individual work mode
+	//					break;
+	//				case GROUP:
+	//					n--;                                   // work with the group
+	//					configure.write(String.valueOf(n));  // work with the group
+	//					break;
+	//				}
+	//			}
+	//
+	//		}
+	//
+	//	}
+	//
+	//}
 
 	public void write_files() throws IOException {
 		Multimap<String, Buffer> mb = ArrayListMultimap.create();
@@ -276,7 +344,60 @@ public class WritePipeline implements PipelineMember, @NotNull Consumer<Supplier
 		w.close();
 	}
 
-	private void append_hash(TextBuffer aBuf, String aFilename, ErrSink errSink) throws IOException {
+	static class HashBufferList extends DefaultBuffer {
+		public HashBufferList(final String string) {
+			super(string);
+		}
+	}
+
+
+	/*
+	 * intent: HashBuffer
+	 *  - contains 3 sub-buffers: hash, space, and filename
+	 *  - has all logic to update and present hash
+	 *    - codec: MTL sha2 here
+	 *    - encoding: reg or multihash (hint hint...)
+	 */
+	static class HashBuffer extends DefaultBuffer {
+		private final HashBufferList parent;
+
+		public HashBuffer(final String string) {
+			super(string);
+
+			parent = null;
+		}
+
+		public HashBuffer(final String aFileName, final HashBufferList aHashBufferList, final Executor aExecutor, final ErrSink errSink) {
+			super("");
+
+			String[] y = new String[1];
+			DoubleLatch<String> dl = new DoubleLatch<>(aFilename -> {
+				y[0] = aFilename;
+
+				final HashBuffer outputBuffer = this;
+
+				@Nullable final String hh;
+				try {
+					hh = Helpers.getHashForFilename(aFilename, errSink);
+				} catch (IOException aE) {
+					throw new RuntimeException(aE);
+				}
+
+				if (hh != null) {
+					outputBuffer.append(hh);
+					outputBuffer.append(" ");
+					outputBuffer.append_ln(aFilename);
+				}
+			});
+
+			dl.notify(aFileName);
+
+			parent = aHashBufferList;
+			//parent.setNext(this);
+		}
+	}
+
+	private void append_hash(TextBuffer outputBuffer, String aFilename, ErrSink errSink) throws IOException {
 		@Nullable final String hh = Helpers.getHashForFilename(aFilename, errSink);
 		if (hh != null) {
 			outputBuffer.append(hh);

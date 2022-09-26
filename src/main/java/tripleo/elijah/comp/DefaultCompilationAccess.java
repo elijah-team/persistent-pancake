@@ -6,6 +6,7 @@ import io.reactivex.rxjava3.functions.Consumer;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.functionality.f202.F202;
+import tripleo.elijah.stages.deduce.FunctionMapHook;
 import tripleo.elijah.stages.gen_fn.DeferredObject2;
 import tripleo.elijah.stages.logging.ElLog;
 
@@ -13,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-class DefaultCompilationAccess implements ICompilationAccess {
+public class DefaultCompilationAccess implements ICompilationAccess {
 	protected final Compilation                                compilation;
 	private         DeferredObject2<PipelineLogic, Void, Void> pipelineLogicDeferred = new DeferredObject2<>();
 
@@ -38,12 +39,14 @@ class DefaultCompilationAccess implements ICompilationAccess {
 	public void setPipelineLogic(final PipelineLogic pl) {
 		compilation.pipelineLogic = pl;
 
-		pipelineLogicDeferred.resolve(pl);
+//		pipelineLogicDeferred.resolve(pl);
+
+//		compilation.pr.setGenerateResult(pl.gr);
 	}
 
 	@Override
 	public void addPipeline(final PipelineMember pl) {
-		compilation.pipelines.add(pl);
+		compilation.addPipeline(pl);
 	}
 
 	@Override
@@ -64,10 +67,15 @@ class DefaultCompilationAccess implements ICompilationAccess {
 	public void writeLogs() {
 		final boolean silent = testSilence() == ElLog.Verbosity.SILENT;
 
-		writeLogs(silent, compilation.pipelineLogic.elLogs);
+		__writeLogs(silent, compilation.pipelineLogic.elLogs);
 	}
 
-	private void writeLogs(boolean aSilent, List<ElLog> aLogs) {
+	@Override
+	public List<FunctionMapHook> functionMapHooks() {
+		return compilation.pipelineLogic.dp.functionMapHooks;
+	}
+
+	private void __writeLogs(boolean aSilent, List<ElLog> aLogs) {
 		Multimap<String, ElLog> logMap = ArrayListMultimap.create();
 		if (true || aSilent) {
 			for (ElLog deduceLog : aLogs) {

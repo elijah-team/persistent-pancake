@@ -22,9 +22,13 @@ public class Pipeline {
 	}
 
 	public void run() throws Exception {
-		for (PipelineMember pl : pls) {
+		for (final PipelineMember pl : pls) {
 			pl.run();
 		}
+	}
+
+	public int size() {
+		return pls.size();
 	}
 }
 

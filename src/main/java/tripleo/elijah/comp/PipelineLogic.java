@@ -8,6 +8,12 @@
  */
 package tripleo.elijah.comp;
 
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
@@ -21,10 +27,8 @@ import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.OutputFileFactory;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
-import tripleo.elijah.stages.post_deduce.PostDeduce;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkManager;
-
-import java.util.*;
 
 /**
  * Created 12/30/20 2:14 AM
@@ -36,7 +40,6 @@ public class PipelineLogic {
 	private final List<OS_Module> mods              = new ArrayList<OS_Module>();
 	final GenerateResult  gr                = new GenerateResult();
 	final List<ElLog>     elLogs            = new LinkedList<ElLog>();
-	private       boolean         postDeduceEnabled = false;
 
 /*
 	public PipelineLogic(ElLog.Verbosity aVerbosity) {
@@ -54,24 +57,43 @@ public class PipelineLogic {
 		aCa.setPipelineLogic(this);
 	}
 
-	public void everythingBeforeGenerate(final List<GeneratedNode> lgc) {
-		for (final OS_Module mod : mods) {
+	public final Observer<OS_Module> om = new Observer<OS_Module>() {
+		@Override
+		public void onSubscribe(Disposable d) {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		}
+
+		@Override
+		public void onNext(OS_Module mod) {
+			NotImplementedException.raise();
 			run2(mod, mod.entryPoints);
 		}
 
-//		List<List<EntryPoint>> entryPoints = mods.stream().map(mod -> mod.entryPoints).collect(Collectors.toList());
-		dp.finish();
-
-		dp.generatedClasses.addAll(lgc);
-
-		if (postDeduceEnabled) {
-			for (OS_Module mod : mods) {
-				PostDeduce pd = new PostDeduce(mod.getCompilation().getErrSink(), dp);
-				pd.analyze();
-			}
+		@Override
+		public void onError(Throwable e) {
+			throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 		}
 
-//		elLogs = dp.deduceLogs;
+		@Override
+		public void onComplete() {
+			NotImplementedException.raise();
+
+			dp.finish();
+
+//			dp.generatedClasses.addAll(lgc);
+
+//			elLogs = dp.deduceLogs;
+		}
+	};
+	
+	public void everythingBeforeGenerate(final List<GeneratedNode> lgc) {
+		assert lgc.size() == 0;
+		
+		for (final OS_Module mod : mods) {
+			om.onNext(mod);
+		}
+		
+		om.onComplete();
 	}
 
 	public void generate(List<GeneratedNode> lgc) {

@@ -1,5 +1,6 @@
 package tripleo.elijah.comp;
 
+import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.nextgen.query.Mode;
 
 import static tripleo.elijah.nextgen.query.Mode.FAILURE;
