@@ -21,7 +21,9 @@ import tripleo.elijah.stages.deduce.FoundElement;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
+import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.test_help.Boilerplate;
 
 import java.util.List;
 
@@ -152,10 +154,10 @@ public class TestIdentNormal {
 		FunctionInvocation fi = new FunctionInvocation(fd, pte2, ci, generatePhase);
 //		expect(fd.returnType()).andReturn(null);
 		final FormalArgList formalArgList = new FormalArgList();
-//		expect(fd.fal()).andReturn(formalArgList);
-//		expect(fd.fal()).andReturn(formalArgList);
-//		expect(fd2.returnType()).andReturn(null);
-		GeneratedFunction generatedFunction = generateFunctions.generateFunction(fd, cs, fi);
+////		expect(fd.fal()).andReturn(formalArgList);
+////		expect(fd.fal()).andReturn(formalArgList);
+////		expect(fd2.returnType()).andReturn(null);
+//		GeneratedFunction generatedFunction = generateFunctions.generateFunction(fd, cs, fi);
 
 /*
 		InstructionArgument es = generateFunctions.simplify_expression(e, generatedFunction, ctx2);
