@@ -193,18 +193,9 @@ public class Compilation {
 		rt.run_better();
 	}
 
-
-
-
-
-
-
-
-
 	public void pushItem(CompilerInstructions aci) {
 		compilerInstructionsSubject.onNext(aci);
 	}
-
 
 	public void addPipeline(PipelineMember aPl) {
 		pipelines.add(aPl);
