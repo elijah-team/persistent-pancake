@@ -21,15 +21,13 @@ import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
 
-import java.util.Map;
-
 /**
  * Created 11/18/21 12:02 PM
  */
 public class DeduceTypeResolve {
-	private final BaseTableEntry                              bte;
-	private       BaseTableEntry                              backlink;
+	private final BaseTableEntry bte;
 	private final DeferredObject<GenType, ResolveError, Void> typeResolution = new DeferredObject<GenType, ResolveError, Void>();
+	BaseTableEntry backlink;
 
 	public DeduceTypeResolve(BaseTableEntry aBte) {
 		bte = aBte;
@@ -78,75 +76,7 @@ public class DeduceTypeResolve {
 
 						@Override
 						public void visitVariableStatement(final VariableStatement variableStatement) {
-//							final VariableStatement variableStatement = (VariableStatement) eh.getElement();
-							if (variableStatement.typeName() instanceof NormalTypeName) {
-								final NormalTypeName normalTypeName = (NormalTypeName) variableStatement.typeName();
-								if (normalTypeName.getGenericPart() != null) {
-									final TypeNameList genericPart = normalTypeName.getGenericPart();
-									if (eh instanceof GenericElementHolderWithType) {
-										final GenericElementHolderWithType eh1 = (GenericElementHolderWithType) eh;
-										final DeduceTypes2 dt2 = eh1.getDeduceTypes2();
-										final OS_Type type = eh1.getType();
-
-										genType.nonGenericTypeName = normalTypeName;
-
-										assert normalTypeName == type.getTypeName();
-
-										OS_Type typeName = new OS_Type(normalTypeName);
-										try {
-											final @NotNull GenType resolved = dt2.resolve_type(typeName, variableStatement.getContext());
-											genType.resolved = resolved.resolved;
-										} catch (ResolveError aResolveError) {
-											aResolveError.printStackTrace();
-											assert false;
-										}
-									} else
-										genType.nonGenericTypeName = normalTypeName;
-								} else {
-									if (!normalTypeName.isNull()) {
-										if (eh instanceof GenericElementHolderWithType) {
-											final GenericElementHolderWithType eh1 = (GenericElementHolderWithType) eh;
-											final DeduceTypes2 dt2 = eh1.getDeduceTypes2();
-											final OS_Type type = eh1.getType();
-
-											genType.typeName = new OS_Type(normalTypeName);
-											try {
-												final @NotNull GenType resolved = dt2.resolve_type(genType.typeName, variableStatement.getContext());
-												if (resolved.resolved.getType() == OS_Type.Type.GENERIC_TYPENAME) {
-													backlink.typeResolvePromise().then(new DoneCallback<GenType>() {
-														@Override
-														public void onDone(final GenType result_gt) {
-															((Constructable) backlink).constructablePromise().then(new DoneCallback<ProcTableEntry>() {
-																@Override
-																public void onDone(final ProcTableEntry result_pte) {
-																	final ClassInvocation ci = result_pte.getClassInvocation();
-																	assert ci != null;
-																	final @Nullable Map<TypeName, OS_Type> gp = ci.genericPart;
-																	final TypeName sch = resolved.typeName.getTypeName();
-																	for (Map.Entry<TypeName, OS_Type> entrySet : gp.entrySet()) {
-																		if (entrySet.getKey().equals(sch)) {
-																			genType.resolved = entrySet.getValue();
-																			break;
-																		}
-																	}
-																}
-															});
-														}
-													});
-												} else {
-													genType.resolved = resolved.resolved;
-												}
-											} catch (ResolveError aResolveError) {
-												aResolveError.printStackTrace();
-												assert false;
-											}
-										} else
-											genType.typeName = new OS_Type(normalTypeName);
-									}
-								}
-							} else {
-								throw new IllegalStateException();
-							}
+							new DTR_VariableStatement(DeduceTypeResolve.this, variableStatement).run(eh, genType);
 						}
 
 						@Override
@@ -238,8 +168,6 @@ public class DeduceTypeResolve {
 				}
 			});
 		}
-
-
 	}
 
 	protected void setBacklinkCallback() {
