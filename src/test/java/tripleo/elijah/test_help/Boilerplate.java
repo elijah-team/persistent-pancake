@@ -26,6 +26,10 @@ public class Boilerplate {
 		pr            = new ProcessRecord(aca);
 		pipelineLogic = pr.pipelineLogic;
 		//getGenerateFiles(mod);
+
+		if (module != null) {
+			module.setParent(comp);
+		}
 	}
 
 	public void getGenerateFiles(final @NotNull OS_Module mod) {
@@ -36,7 +40,15 @@ public class Boilerplate {
 																			 pipelineLogic));
 	}
 
+	OS_Module module;
+
 	public OS_Module defaultMod() {
-		return new OS_Module();
+		if (module == null) {
+			module = new OS_Module();
+			if (comp != null)
+				module.setParent(comp);
+		}
+
+		return module;
 	}
 }
