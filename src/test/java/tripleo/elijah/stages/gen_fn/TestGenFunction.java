@@ -43,170 +43,171 @@ public class TestGenFunction {
 	@Test
 	@SuppressWarnings("JUnit3StyleTestMethodInJUnit4Class")
 	public void testDemoElNormalFact1Elijah() throws Exception {
-		final StdErrSink eee = new StdErrSink();
-		final Compilation c = new Compilation(eee, new IO());
-
-		final String f = "test/demo-el-normal/fact1.elijah";
-		final File file = new File(f);
-		final OS_Module m = c.realParseElijjahFile(f, file, false);
-		Assert.assertTrue("Method parsed correctly", m != null);
-		m.prelude = c.findPrelude("c"); // TODO we dont know which prelude to find yet
-
-		//
-		//
-		//
-		final ClassStatement main_class = (ClassStatement) m.findClass("Main");
-		assert main_class != null;
-		m.entryPoints = List_of(new MainClassEntryPoint(main_class));
-		//
-		//
-		//
-
-		List<FunctionMapHook> ran_hooks = new ArrayList<>();
-
-		final ElLog.Verbosity verbosity1 = c.gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity1);
-		final GeneratePhase generatePhase1 = new GeneratePhase(verbosity1, pl);
-		final GenerateFunctions gfm = generatePhase1.getGenerateFunctions(m);
-		DeducePhase dp = new DeducePhase(generatePhase1, pl, verbosity1);
-		gfm.generateFromEntryPoints(m.entryPoints, dp);
-
-		final DeducePhase.@NotNull GeneratedClasses lgc = dp.generatedClasses; //new ArrayList<>();
-
-/*
-		List<GeneratedNode> lgf = new ArrayList<>();
-		for (GeneratedNode generatedNode : lgc) {
-			if (generatedNode instanceof GeneratedClass)
-				lgf.addAll(((GeneratedClass) generatedNode).functionMap.values());
-			if (generatedNode instanceof GeneratedNamespace)
-				lgf.addAll(((GeneratedNamespace) generatedNode).functionMap.values());
-			// TODO enum
-		}
-*/
-
-//		Assert.assertEquals(2, lgf.size());
-
-		WorkManager wm = new WorkManager();
-
-		dp.addFunctionMapHook(new FunctionMapHook(){
-			@Override
-			public boolean matches(FunctionDef fd) {
-				final boolean b = fd.name().equals("main") && fd.getParent() == main_class;
-				return b;
-			}
-
-			@Override
-			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
-				assert aGeneratedFunctions.size() == 1;
-
-				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
-
-				int pc = 0;
-				Assert.assertEquals(InstructionName.E, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.AGN, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.CALL, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.X, gf.getInstruction(pc++).getName());
-
-				ran_hooks.add(this);
-			}
-		});
-
-		dp.addFunctionMapHook(new FunctionMapHook(){
-			@Override
-			public boolean matches(FunctionDef fd) {
-				final boolean b = fd.name().equals("factorial") && fd.getParent() == main_class;
-				return b;
-			}
-
-			@Override
-			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
-				assert aGeneratedFunctions.size() == 1;
-
-				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
-
-				int pc = 0;
-				Assert.assertEquals(InstructionName.E, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.ES, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.JE, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.CALLS, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.CALLS, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.JMP, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.XS, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.AGN, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.X, gf.getInstruction(pc++).getName());
-
-				ran_hooks.add(this);
-			}
-		});
-
-		dp.addFunctionMapHook(new FunctionMapHook(){
-			@Override
-			public boolean matches(FunctionDef fd) {
-				final boolean b = fd.name().equals("main") && fd.getParent() == main_class;
-				return b;
-			}
-
-			@Override
-			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
-				assert aGeneratedFunctions.size() == 1;
-
-				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
-
-				System.out.println("main\n====");
-				for (int i = 0; i < gf.vte_list.size(); i++) {
-					final VariableTableEntry vte = gf.getVarTableEntry(i);
-					System.out.println(String.format("8007 %s %s %s", vte.getName(), vte.type, vte.potentialTypes()));
-					if (vte.type.getAttached() != null) {
-						Assert.assertNotEquals(OS_Type.Type.BUILT_IN, vte.type.getAttached().getType());
-						Assert.assertNotEquals(OS_Type.Type.USER, vte.type.getAttached().getType());
-					}
-				}
-				System.out.println();
-
-				ran_hooks.add(this);
-			}
-		});
-
-		dp.addFunctionMapHook(new FunctionMapHook(){
-			@Override
-			public boolean matches(FunctionDef fd) {
-				final boolean b = fd.name().equals("factorial") && fd.getParent() == main_class;
-				return b;
-			}
-
-			@Override
-			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
-				assert aGeneratedFunctions.size() == 1;
-
-				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
-
-				System.out.println("factorial\n=========");
-				for (int i = 0; i < gf.vte_list.size(); i++) {
-					final VariableTableEntry vte = gf.getVarTableEntry(i);
-					System.out.println(String.format("8008 %s %s %s", vte.getName(), vte.type, vte.potentialTypes()));
-					if (vte.type.getAttached() != null) {
-						Assert.assertNotEquals(OS_Type.Type.BUILT_IN, vte.type.getAttached().getType());
-						Assert.assertNotEquals(OS_Type.Type.USER, vte.type.getAttached().getType());
-					}
-				}
-				System.out.println();
-
-				ran_hooks.add(this);
-			}
-		});
-
-		dp.deduceModule(m, lgc, c.gitlabCIVerbosity());
-		dp.finish();
-
-		Assert.assertEquals("Not all hooks ran", 4, ran_hooks.size());
-		Assert.assertEquals(16, c.errorCount());
+//		final StdErrSink eee = new StdErrSink();
+//		final Compilation c = new Compilation(eee, new IO());
+//
+//		final String f = "test/demo-el-normal/fact1.elijah";
+//		final File file = new File(f);
+//		final OS_Module m = c.realParseElijjahFile(f, file, false);
+//		Assert.assertTrue("Method parsed correctly", m != null);
+//		m.prelude = c.findPrelude("c"); // TODO we dont know which prelude to find yet
+//
+//		//
+//		//
+//		//
+//		final ClassStatement main_class = (ClassStatement) m.findClass("Main");
+//		assert main_class != null;
+//		m.entryPoints = List_of(new MainClassEntryPoint(main_class));
+//		//
+//		//
+//		//
+//
+//		List<FunctionMapHook> ran_hooks = new ArrayList<>();
+//
+//
+//		final ElLog.Verbosity verbosity1 = c.gitlabCIVerbosity();
+//		c.pipelineLogic = new PipelineLogic(verbosity1);
+//		final GeneratePhase generatePhase1 = c.pipelineLogic.generatePhase;//new GeneratePhase();
+//		final GenerateFunctions gfm = generatePhase1.getGenerateFunctions(m);
+//		DeducePhase dp = c.pipelineLogic.dp;//new DeducePhase(generatePhase1);
+//		gfm.generateFromEntryPoints(m.entryPoints, dp);
+//
+//		final DeducePhase.@NotNull GeneratedClasses lgc = dp.generatedClasses; //new ArrayList<>();
+//
+///*
+//		List<GeneratedNode> lgf = new ArrayList<>();
+//		for (GeneratedNode generatedNode : lgc) {
+//			if (generatedNode instanceof GeneratedClass)
+//				lgf.addAll(((GeneratedClass) generatedNode).functionMap.values());
+//			if (generatedNode instanceof GeneratedNamespace)
+//				lgf.addAll(((GeneratedNamespace) generatedNode).functionMap.values());
+//			// TODO enum
+//		}
+//*/
+//
+////		Assert.assertEquals(2, lgf.size());
+//
+//		WorkManager wm = new WorkManager();
+//
+//		c.addFunctionMapHook(new FunctionMapHook(){
+//			@Override
+//			public boolean matches(FunctionDef fd) {
+//				final boolean b = fd.name().equals("main") && fd.getParent() == main_class;
+//				return b;
+//			}
+//
+//			@Override
+//			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
+//				assert aGeneratedFunctions.size() == 1;
+//
+//				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
+//
+//				int pc = 0;
+//				Assert.assertEquals(InstructionName.E, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.AGN, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.CALL, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.X, gf.getInstruction(pc++).getName());
+//
+//				ran_hooks.add(this);
+//			}
+//		});
+//
+//		c.addFunctionMapHook(new FunctionMapHook(){
+//			@Override
+//			public boolean matches(FunctionDef fd) {
+//				final boolean b = fd.name().equals("factorial") && fd.getParent() == main_class;
+//				return b;
+//			}
+//
+//			@Override
+//			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
+//				assert aGeneratedFunctions.size() == 1;
+//
+//				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
+//
+//				int pc = 0;
+//				Assert.assertEquals(InstructionName.E, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.ES, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.JE, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.CALLS, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.CALLS, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.JMP, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.XS, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.AGN, gf.getInstruction(pc++).getName());
+//				Assert.assertEquals(InstructionName.X, gf.getInstruction(pc++).getName());
+//
+//				ran_hooks.add(this);
+//			}
+//		});
+//
+//		c.addFunctionMapHook(new FunctionMapHook(){
+//			@Override
+//			public boolean matches(FunctionDef fd) {
+//				final boolean b = fd.name().equals("main") && fd.getParent() == main_class;
+//				return b;
+//			}
+//
+//			@Override
+//			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
+//				assert aGeneratedFunctions.size() == 1;
+//
+//				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
+//
+//				System.out.println("main\n====");
+//				for (int i = 0; i < gf.vte_list.size(); i++) {
+//					final VariableTableEntry vte = gf.getVarTableEntry(i);
+//					System.out.println(String.format("8007 %s %s %s", vte.getName(), vte.type, vte.potentialTypes()));
+//					if (vte.type.getAttached() != null) {
+//						Assert.assertNotEquals(OS_Type.Type.BUILT_IN, vte.type.getAttached().getType());
+//						Assert.assertNotEquals(OS_Type.Type.USER, vte.type.getAttached().getType());
+//					}
+//				}
+//				System.out.println();
+//
+//				ran_hooks.add(this);
+//			}
+//		});
+//
+//		c.addFunctionMapHook(new FunctionMapHook(){
+//			@Override
+//			public boolean matches(FunctionDef fd) {
+//				final boolean b = fd.name().equals("factorial") && fd.getParent() == main_class;
+//				return b;
+//			}
+//
+//			@Override
+//			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
+//				assert aGeneratedFunctions.size() == 1;
+//
+//				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
+//
+//				System.out.println("factorial\n=========");
+//				for (int i = 0; i < gf.vte_list.size(); i++) {
+//					final VariableTableEntry vte = gf.getVarTableEntry(i);
+//					System.out.println(String.format("8008 %s %s %s", vte.getName(), vte.type, vte.potentialTypes()));
+//					if (vte.type.getAttached() != null) {
+//						Assert.assertNotEquals(OS_Type.Type.BUILT_IN, vte.type.getAttached().getType());
+//						Assert.assertNotEquals(OS_Type.Type.USER, vte.type.getAttached().getType());
+//					}
+//				}
+//				System.out.println();
+//
+//				ran_hooks.add(this);
+//			}
+//		});
+//
+//		dp.deduceModule(m, lgc, c.gitlabCIVerbosity());
+//		dp.finish();
+//
+//		Assert.assertEquals("Not all hooks ran", 4, ran_hooks.size());
+//		Assert.assertEquals(16, c.errorCount());
 	}
 
 	@Test
@@ -306,33 +307,8 @@ public class TestGenFunction {
 		final StdErrSink eee = new StdErrSink();
 		final Compilation c = new Compilation(eee, new IO());
 
-		final String f = "test/basic1/backlink3/backlink3.elijah";
-		if (false) {
-			final File file = new File(f);
-			final OS_Module m = c.realParseElijjahFile(f, file, false);
-			Assert.assertEquals("Method parsed correctly", 0, c.errorCount());
-			m.prelude = c.findPrelude("c"); // TODO we dont know which prelude to find yet
-
-			c.findStdLib("c");
-
-			for (final CompilerInstructions ci : c.cis) {
-				c.use(ci, false);
-			}
-
-			ElLog.Verbosity verbosity = c.gitlabCIVerbosity();
-			PipelineLogic pipelineLogic = new PipelineLogic(verbosity);
-			ArrayList<GeneratedNode> lgc = new ArrayList<GeneratedNode>();
-
-			for (OS_Module module : c.modules) {
-				pipelineLogic.addModule(module);
-			}
-
-			pipelineLogic.everythingBeforeGenerate(lgc);
-			pipelineLogic.generate(lgc);
-		} else {
-			final String ff = "test/basic1/backlink3/";
-			c.feedCmdLine(List_of(ff));
-		}
+		final String ff = "test/basic1/backlink3/";
+		c.feedCmdLine(List_of(ff));
 	}
 }
 
