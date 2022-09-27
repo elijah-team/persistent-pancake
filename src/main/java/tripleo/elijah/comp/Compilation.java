@@ -23,7 +23,6 @@ import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.queries.QuerySourceFileToModule;
 import tripleo.elijah.comp.queries.QuerySourceFileToModuleParams;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
@@ -36,7 +35,6 @@ import tripleo.elijah.util.NotImplementedException;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -61,28 +59,16 @@ public class Compilation {
 	//
 	public PipelineLogic pipelineLogic;
 	//
+	//
 	private int                _packageCode  = 1;
 	private int                _classCode    = 101;
 	private int                _functionCode = 1001;
 	private OptionsProcessor __op;
 
-	public Compilation(final ErrSink eee, final IO io) {
-		this.errSink            = eee;
+	public Compilation(final ErrSink errSink, final IO io) {
+		this.errSink            = errSink;
 		this.io                 = io;
 		this._compilationNumber = new Random().nextInt(Integer.MAX_VALUE);
-	}
-
-	//
-	//
-	//
-
-	public static ElLog.Verbosity gitlabCIVerbosity() {
-		final boolean gitlab_ci = isGitlab_ci();
-		return gitlab_ci ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
-	}
-
-	public static boolean isGitlab_ci() {
-		return System.getenv("GITLAB_CI") != null;
 	}
 
 	public String getProjectName() {
