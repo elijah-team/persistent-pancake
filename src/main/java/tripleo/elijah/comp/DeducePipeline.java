@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
+import tripleo.elijah.util.NotImplementedException;
 
 /**
  * Created 8/21/21 10:10 PM
@@ -45,7 +46,7 @@ public class DeducePipeline implements PipelineMember, Consumer<Supplier<Generat
 
 	@Override
 	public void accept(Supplier<GenerateResult> t) {
-		
+		NotImplementedException.raise();
 	}
 }
 
