@@ -72,7 +72,7 @@ class RuntimeProcesses {
 		processes.add(aProcess);
 	}
 
-	public void postProcess(ProcessRecord pr) {
+	public void postProcess(ProcessRecord pr, final ICompilationAccess aCa) {
 		for (RuntimeProcess runtimeProcess : processes) {
 			System.err.println("***** RuntimeProcess [postProcess] named " + runtimeProcess);
 			runtimeProcess.postProcess();
@@ -94,7 +94,7 @@ class RuntimeProcesses {
 
 		rt.prepare();
 		rt.run();
-		rt.postProcess(pr);
+		rt.postProcess(pr, ca);
 	}
 
 	private void addPipeline(final PipelineMember aPipelineMember) {
