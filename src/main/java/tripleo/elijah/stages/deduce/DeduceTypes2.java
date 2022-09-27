@@ -2451,6 +2451,7 @@ public class DeduceTypes2 {
 
 	@NotNull
 	public GenType resolve_type(final @NotNull OS_Type type, final Context ctx) throws ResolveError {
+		//return ResolveType.resolve_type2(module, type, ctx, LOG, this);
 		return ResolveType.resolve_type(module, type, ctx, LOG, this);
 	}
 

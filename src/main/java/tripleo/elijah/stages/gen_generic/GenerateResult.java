@@ -36,6 +36,14 @@ public class GenerateResult {
 
 	final List<GenerateResultItem> res = new ArrayList<GenerateResultItem>();
 
+	public GenerateResult(/*final Map<String, OutputFileC> aOutputFiles, final int aBufferCounter*/) {
+/*
+		outputFiles   = aOutputFiles;
+		bufferCounter = aBufferCounter;
+*/
+		int y=2;
+	}
+
 	public List<GenerateResultItem> results() {
 		return res;
 	}

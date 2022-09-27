@@ -45,10 +45,27 @@ public class OutputFileC implements IOutputFile {
 
 	@Override
 	public String getOutput() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
-		List<Dependency> wnd = new ArrayList<Dependency>(notedDeps);
-		Iterator<Dependency> iterator = wnd.iterator();
+		final Predicate<Dependency> dependencyPredicate = next -> {
+			for (DependencyRef dependency : dependencies) {
+				if (next.dref == dependency) {
+					return true;
+				}
+			}
+
+			return false;
+		};
+
+		final List<Dependency>     wnd      = notedDeps.stream()
+				.filter(dependencyPredicate)
+				.collect(Collectors.toList());
+
+/*
+		//new ArrayList<Dependency>(notedDeps);
+		final Iterator<Dependency> iterator = wnd.iterator();
+
+		// TODO figure this dumb shht out
 		while (iterator.hasNext()) {
 			Dependency next = iterator.next();
 			for (DependencyRef dependency : dependencies) {
@@ -57,6 +74,9 @@ public class OutputFileC implements IOutputFile {
 				}
 			}
 		}
+*/
+
+		assert wnd.size() == dependencies.size();
 
 		for (DependencyRef dependencyRaw : dependencies) {
 			CDependencyRef dependency = (CDependencyRef) dependencyRaw;
