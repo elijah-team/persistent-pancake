@@ -163,6 +163,12 @@ public class Compilation {
 		op.run(this, args, io, instructionCompleter);
 	}
 
+	private void subscribeCI(final Observer<CompilerInstructions> aCio) {
+		compilerInstructionsSubject.subscribe(aCio);
+	}
+
+	private final Subject<CompilerInstructions> compilerInstructionsSubject = ReplaySubject.<CompilerInstructions>create();
+
 	private Observer<CompilerInstructions> cio;
 
 	void hasInstructions(final @NotNull List<CompilerInstructions> cis,
