@@ -9,10 +9,7 @@
 package tripleo.elijah.stages.gen_fn;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
+import org.junit.Test;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.DotExpression;
@@ -39,9 +36,6 @@ import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.stages.instructions.VariableTableType;
-import tripleo.elijah.stages.logging.ElLog;
-import tripleo.elijah.test_help.Boilerplate;
 
 import java.util.List;
 
@@ -116,21 +110,13 @@ public class TestIdentNormal {
 
 	@Test // TODO just a mess
 	public void test2() {
-		Boilerplate boilerplate = new Boilerplate();
+		final Boilerplate boilerplate = new Boilerplate();
 		boilerplate.get();
-		boilerplate.getGenerateFiles(boilerplate.defaultMod());
+		final OS_Module mod = boilerplate.defaultMod();
+		boilerplate.getGenerateFiles(mod);
 
-//		Compilation comp = new Compilation(new StdErrSink(), new IO());
-//		OS_Module mod = comp.moduleBuilder().build();
-////		FunctionDef fd = mock(FunctionDef.class);
-//		Context ctx2 = mock(Context.class);
-
-//		final ElLog.Verbosity verbosity1 = new Compilation(new StdErrSink(), new IO()).gitlabCIVerbosity();
-//		final PipelineLogic pl = new PipelineLogic(verbosity1);
-//		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
-		DeducePhase phase = boilerplate.pipelineLogic.dp;
-
-//		GenerateFunctions generateFunctions = generatePhase.getGenerateFunctions(mod);
+		final Context ctx2 = mock(Context.class);
+		final DeducePhase phase = boilerplate.pipelineLogic.dp;
 
 		//
 		//
@@ -170,10 +156,14 @@ public class TestIdentNormal {
 		fd.add(seq);
 		fd.add(new StatementWrapper(pce2, ctx1, fd));
 		fd2.scope(new Scope3(fd2));
+
+		final GeneratePhase     generatePhase     = boilerplate.pipelineLogic.generatePhase;
+		final GenerateFunctions generateFunctions = boilerplate.pipelineLogic.generatePhase.getGenerateFunctions(mod);
+
 		fd2.add(new StatementWrapper(pce, ctx2, fd2));
 
 		ClassInvocation ci = new ClassInvocation(cs, null);
-		ci = phase.registerClassInvocation(ci);
+		ci = phase.registerClassInvocation(ci); // FIXME
 		ProcTableEntry pte2 = null;
 		FunctionInvocation fi = new FunctionInvocation(fd, pte2, ci, generatePhase);
 //		expect(fd.returnType()).andReturn(null);

@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.Operation2;
-import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.ClassHeader;
@@ -52,7 +51,7 @@ public class DeduceTypesTest {
 	private GenType x;
 
 	@Before
-	public void setUp() throws ResolveError {
+	public void setUp() {
 		final Boilerplate boilerplate = new Boilerplate();
 		boilerplate.get();
 		boilerplate.getGenerateFiles(boilerplate.defaultMod());
@@ -87,12 +86,7 @@ public class DeduceTypesTest {
 
 		mod.prelude = mod.getCompilation().findPrelude("c").success();
 
-		final Boilerplate boilerplate = new Boilerplate();
-		boilerplate.get();
-		boilerplate.getGenerateFiles(boilerplate.defaultMod());
-
-		final PipelineLogic pl           = boilerplate.pipelineLogic;
-		//final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
+		//final PipelineLogic pl           = boilerplate.pipelineLogic;
 
 
 		final ElLog.Verbosity verbosity     = Compilation.gitlabCIVerbosity();
@@ -121,7 +115,7 @@ public class DeduceTypesTest {
 	 *   It fails because Integer is an interface and not a BUILT_IN
 	 */
 	@Test(expected = ResolveError.class)
-	public void testDeduceIdentExpression1() throws ResolveError {
+	public void testDeduceIdentExpression1() {
 		final BuiltInTypes bi_integer = new OS_Type(BuiltInTypes.SystemInteger).getBType();
 		final BuiltInTypes inferred_t = x.resolved.getBType();
 
