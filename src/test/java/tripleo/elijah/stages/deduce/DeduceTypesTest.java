@@ -8,9 +8,10 @@
  */
 package tripleo.elijah.stages.deduce;
 
+//import org.graalvm.compiler.nodes.NodeView;
+
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.Operation2;
@@ -34,7 +35,6 @@ import tripleo.elijah.nextgen.query.Mode;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.gen_fn.GenerateFunctions;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.test_help.Boilerplate;
@@ -52,12 +52,16 @@ public class DeduceTypesTest {
 
 	@Before
 	public void setUp() throws ResolveError {
-		final Compilation c = new Compilation(new StdErrSink(), new IO());
-		final OS_Module mod = c.moduleBuilder()
-					.setContext()
-					.build();
+		final Boilerplate boilerplate = new Boilerplate();
+		boilerplate.get();
+		boilerplate.getGenerateFiles(boilerplate.defaultMod());
+
+		final OS_Module     mod  = boilerplate.defaultMod();
+		final ModuleContext mctx = new ModuleContext(mod);
+		mod.setContext(mctx);
+
 		final ClassStatement cs = new ClassStatement(mod, mod.getContext());
-		final ClassHeader ch = new ClassHeader(false, List_of());
+		final ClassHeader    ch = new ClassHeader(false, List_of());
 		ch.setName(Helpers.string_to_ident("Test"));
 		cs.setHeader(ch);
 		final FunctionDef fd = cs.funcDef();
@@ -103,6 +107,7 @@ public class DeduceTypesTest {
 		this.x = xxx.genType();
 		System.out.println(this.x);
 	}
+
 	/** TODO This test fails beacause we are comparing a BUILT_IN vs a USER OS_Type.
 	 *   It fails because Integer is an interface and not a BUILT_IN
 	 */
