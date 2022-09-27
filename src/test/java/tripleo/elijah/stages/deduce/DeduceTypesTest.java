@@ -18,9 +18,11 @@ import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.Helpers;
 
 import static tripleo.elijah.util.Helpers.List_of;
@@ -61,27 +63,31 @@ public class DeduceTypesTest {
 		final FunctionContext fc = (FunctionContext) fd.getContext(); // TODO needs to be mocked
 		final IdentExpression x1 = Helpers.string_to_ident("x");
 		x1.setContext(fc);
+
+		mod.prelude = mod.getCompilation().findPrelude("c").success();
+
 		//
-		mod.prelude = mod.getCompilation().findPrelude("c");
 		//
 		//
-		//
-		final ElLog.Verbosity verbosity = mod.getCompilation().gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity, pl);
-		DeducePhase dp = new DeducePhase(generatePhase, pl, verbosity);
-		DeduceTypes2 d = dp.deduceModule(mod, dp.generatedClasses, verbosity);
-//		final DeduceTypes d = new DeduceTypes(mod);
-		this.x = DeduceLookupUtils.deduceExpression(d, x1, fc);
+
+		Boilerplate boilerplate = new Boilerplate();
+		boilerplate.get();
+		boilerplate.getGenerateFiles(boilerplate.defaultMod());
+
+		final PipelineLogic   pl            = boilerplate.pipelineLogic;
+		final DeduceTypes2    deduceTypes2  = new DeduceTypes2(mod, pl.dp);
+
+		this.x = DeduceLookupUtils.deduceExpression(deduceTypes2, x1, fc);
 		System.out.println(this.x);
 	}
+
 	/** TODO This test fails beacause we are comparing a BUILT_IN vs a USER OS_Type.
 	 *   It fails because Integer is an interface and not a BUILT_IN
 	 */
-//	@Test
-//	public void testDeduceIdentExpression1() {
-//		Assert.assertEquals(new OS_Type(BuiltInTypes.SystemInteger).getBType(), x.getBType());
-//	}
+	@Test(expected = ResolveError.class)
+	public void testDeduceIdentExpression1() {
+		Assert.assertEquals(new OS_Type(BuiltInTypes.SystemInteger).getBType(), x.typeName.getBType());
+	}
 	/**
 	 * Now comparing {@link RegularTypeName} to {@link VariableTypeName} works
 	 */
