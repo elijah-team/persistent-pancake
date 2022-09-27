@@ -3,8 +3,6 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.stages.deduce.CantDecideType;
@@ -15,8 +13,6 @@ import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.util.NotImplementedException;
 
-import java.io.PrintStream;
-import java.util.List;
 import java.util.function.Supplier;
 
 public interface PostBC_Processor {
@@ -172,41 +168,10 @@ public interface PostBC_Processor {
 
 			return r;
 		}
-
-		static class ZeroPotentialDiagnostic implements Diagnostic {
-			@Override
-			public String code() {
-				NotImplementedException.raise();
-				return null;
-			}
-
-			@Override
-			public Severity severity() {
-				NotImplementedException.raise();
-				return null;
-			}
-
-			@Override
-			public @NotNull Locatable primary() {
-				NotImplementedException.raise();
-				return null;
-			}
-
-			@Override
-			public @NotNull List<Locatable> secondary() {
-				NotImplementedException.raise();
-				return null;
-			}
-
-			@Override
-			public void report(final PrintStream stream) {
-				NotImplementedException.raise();
-				int y = 2;
-			}
-		}
 	}
+}
 
-	class PostBC_Processor__VTE_SELF extends __PostBC_Processor__VTE {
+	class PostBC_Processor__VTE_SELF extends PostBC_Processor.__PostBC_Processor__VTE {
 		private final VariableTableEntry         variableTableEntry;
 		private final Context                    fd_ctx;
 		private final OS_Type                    vte_type_attached;
@@ -279,7 +244,7 @@ public interface PostBC_Processor {
 		}
 	}
 
-	class PostBC_Processor__VTE_RESULT extends __PostBC_Processor__VTE {
+	class PostBC_Processor__VTE_RESULT extends PostBC_Processor.__PostBC_Processor__VTE {
 		private final VariableTableEntry         variableTableEntry;
 		private final Context                    fd_ctx;
 		private final OS_Type                    vte_type_attached;
@@ -348,7 +313,7 @@ public interface PostBC_Processor {
 		}
 	}
 
-	class PostBC_Processor__VTE_ARG extends __PostBC_Processor__VTE {
+	class PostBC_Processor__VTE_ARG extends PostBC_Processor.__PostBC_Processor__VTE {
 		private final VariableTableEntry         variableTableEntry;
 		private final Context                    fd_ctx;
 		private final OS_Type                    vte_type_attached;
@@ -391,7 +356,7 @@ public interface PostBC_Processor {
 		}
 	}
 
-	class PostBC_Processor__VTE_VAR extends __PostBC_Processor__VTE {
+	class PostBC_Processor__VTE_VAR extends PostBC_Processor.__PostBC_Processor__VTE {
 		private final VariableTableEntry         variableTableEntry;
 		private final Context                    fd_ctx;
 		private final OS_Type                    vte_type_attached;
@@ -434,7 +399,7 @@ public interface PostBC_Processor {
 		}
 	}
 
-	class PostBC_Processor__VTE_TEMP extends __PostBC_Processor__VTE {
+	class PostBC_Processor__VTE_TEMP extends PostBC_Processor.__PostBC_Processor__VTE {
 		private final VariableTableEntry         variableTableEntry;
 		private final Context                    fd_ctx;
 		private final OS_Type                    vte_type_attached;
@@ -487,4 +452,4 @@ public interface PostBC_Processor {
 			return fd_ctx;
 		}
 	}
-}
+//}
