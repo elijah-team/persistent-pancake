@@ -274,11 +274,11 @@ public class Compilation {
 
 					return Operation2.success(mm);
 				} else {
-					final Diagnostic e = new Compilation.UnknownExceptionDiagnostic(m);
+					final Diagnostic e = new UnknownExceptionDiagnostic(m);
 					return Operation2.failure(e);
 				}
 			} else {
-				final Diagnostic e = new Compilation.FileNotFoundDiagnostic(f);
+				final Diagnostic e = new FileNotFoundDiagnostic(f);
 
 				return Operation2.failure(e);
 			}
