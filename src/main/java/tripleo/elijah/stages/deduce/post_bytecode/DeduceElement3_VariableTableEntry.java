@@ -10,16 +10,14 @@ import tripleo.elijah.stages.deduce.post_bytecode.DED.DED_VTE;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
-import tripleo.elijah.stages.instructions.ConstTableIA;
 import tripleo.elijah.stages.instructions.IdentIA;
-import tripleo.elijah.util.NotImplementedException;
 
 public class DeduceElement3_VariableTableEntry implements IDeduceElement3 {
 
 	private final VariableTableEntry principal;
-	private DeduceTypes2 deduceTypes2;
-	private GeneratedFunction generatedfunction;
-	private GenType genType;
+	private       DeduceTypes2       deduceTypes2;
+	private       GeneratedFunction  generatedfunction;
+	private       GenType            genType;
 
 	@Contract(pure = true)
 	public DeduceElement3_VariableTableEntry(final VariableTableEntry aVariableTableEntry) {

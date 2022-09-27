@@ -5,27 +5,24 @@ import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
-import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
-import tripleo.elijah.stages.gen_fn.ConstantTableEntry;
-import tripleo.elijah.stages.gen_fn.IdentTableEntry;
-import tripleo.elijah.stages.gen_fn.VariableTableEntry;
+import tripleo.elijah.stages.gen_fn.*;
 
 class DeduceType3 implements DED {
-	private final OS_Type osType;
-	private final Diagnostic diagnostic;
+	private final OS_Type         osType;
+	private final Diagnostic      diagnostic;
 	private final IDeduceElement3 deduceElement3;
+	private GenType _genType;
 
 	public DeduceType3(final OS_Type aOSType, final Diagnostic aDiagnostic) {
 		deduceElement3 = null;
-		osType = aOSType;
-		diagnostic = aDiagnostic;
+		osType         = aOSType;
+		diagnostic     = aDiagnostic;
 	}
 
 	public DeduceType3(final IDeduceElement3 aDeduceElement3, final OS_Type aOSType, final Diagnostic aDiagnostic1) {
 		deduceElement3 = aDeduceElement3;
-		osType = aOSType;
-		diagnostic = aDiagnostic1;
+		osType         = aOSType;
+		diagnostic     = aDiagnostic1;
 	}
 
 	public static IDeduceElement3 dispatch(final @NotNull VariableTableEntry aVariableTableEntry) {
@@ -59,11 +56,9 @@ class DeduceType3 implements DED {
 		aErrSink.reportDiagnostic(diagnostic);
 	}
 
-	private GenType _genType;
-
 	public GenType getGenType() {
 		if (_genType == null) {
-			_genType = new GenType();
+			_genType          = new GenType();
 			_genType.resolved = osType;
 		}
 

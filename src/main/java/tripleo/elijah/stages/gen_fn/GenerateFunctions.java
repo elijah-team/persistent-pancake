@@ -712,7 +712,7 @@ public class GenerateFunctions {
 
 			gc.createCtor0();
 
-//		klass._a.setCode(nextClassCode());
+//			klass._a.setCode(nextClassCode());
 		}
 
 		private final ElLog LOG;

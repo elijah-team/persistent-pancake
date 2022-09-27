@@ -3,12 +3,8 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 import tripleo.elijah.diagnostic.Diagnostic;
 
 public class Maybe<T> {
-	public final T o;
+	public final T          o;
 	public final Diagnostic exc;
-
-	public boolean isException() {
-		return exc != null;
-	}
 
 	public Maybe(T o, Diagnostic exc) {
 		if (o == null) {
@@ -21,7 +17,11 @@ public class Maybe<T> {
 			}
 		}
 
-		this.o = o;
+		this.o   = o;
 		this.exc = exc;
+	}
+
+	public boolean isException() {
+		return exc != null;
 	}
 }
