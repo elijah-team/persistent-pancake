@@ -91,7 +91,7 @@ public class Compilation {
 
 	public @NotNull Operation<CompilerInstructions> parseEzFile(final File aFile) {
 		try {
-			return ((OptionsProcessor.DefaultOptionsProcessor) __op).parseEzFile1(aFile, aFile.getPath(), this.errSink, this.io, this);
+			return ((OptionsProcessor.DefaultOptionsProcessor) __op).parseEzFile1(aFile, aFile.getPath(), this.errSink, this.io, this); // FIXME
 		} catch (Exception aE) {
 			throw new RuntimeException(aE);
 		}
