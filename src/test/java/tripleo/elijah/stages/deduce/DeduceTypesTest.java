@@ -10,21 +10,38 @@ package tripleo.elijah.stages.deduce;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.IO;
+import tripleo.elijah.comp.Operation2;
 import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassHeader;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.NormalTypeName;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.Qualident;
+import tripleo.elijah.lang.RegularTypeName;
+import tripleo.elijah.lang.Scope3;
+import tripleo.elijah.lang.VariableSequence;
+import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.VariableTypeName;
 import tripleo.elijah.lang2.BuiltInTypes;
+import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.gen_fn.GeneratePhase;
+import tripleo.elijah.stages.gen_fn.GenerateFunctions;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.Helpers;
 
+import static org.easymock.EasyMock.mock;
 import static tripleo.elijah.util.Helpers.List_of;
 
 /**
@@ -46,12 +63,12 @@ public class DeduceTypesTest {
 		cs.setHeader(ch);
 		final FunctionDef fd = cs.funcDef();
 		fd.setName(Helpers.string_to_ident("test"));
-		Scope3 scope3 = new Scope3(fd);
+		final Scope3 scope3 = new Scope3(fd);
 		final VariableSequence vss = scope3.statementClosure().varSeq(fd.getContext());
 		final VariableStatement vs = vss.next();
-		final IdentExpression x = Helpers.string_to_ident("x");
-		x.setContext(fd.getContext());
-		vs.setName(x);
+		final IdentExpression x_ident = Helpers.string_to_ident("x");
+		x_ident.setContext(fd.getContext());
+		vs.setName(x_ident);
 		final Qualident qu = new Qualident();
 		qu.append(Helpers.string_to_ident("Integer"));
 		((NormalTypeName)vs.typeName()).setName(qu);
@@ -66,18 +83,33 @@ public class DeduceTypesTest {
 
 		mod.prelude = mod.getCompilation().findPrelude("c").success();
 
-		//
-		//
-		//
-
-		Boilerplate boilerplate = new Boilerplate();
+		final Boilerplate boilerplate = new Boilerplate();
 		boilerplate.get();
 		boilerplate.getGenerateFiles(boilerplate.defaultMod());
 
-		final PipelineLogic   pl            = boilerplate.pipelineLogic;
-		final DeduceTypes2    deduceTypes2  = new DeduceTypes2(mod, pl.dp);
+		final PipelineLogic pl           = boilerplate.pipelineLogic;
+		//final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
 
-		this.x = DeduceLookupUtils.deduceExpression(deduceTypes2, x1, fc);
+
+		final ElLog.Verbosity verbosity     = Compilation.gitlabCIVerbosity();
+		final DeducePhase     dp            = boilerplate.pr.pipelineLogic.dp;
+		final DeduceTypes2    d             = dp.deduceModule(mod, dp.generatedClasses, verbosity);
+
+		//final @NotNull GenerateFunctions gf = boilerplate.pr.pipelineLogic.generatePhase.getGenerateFunctions(mod);
+
+		final BaseGeneratedFunction bgf = mock(BaseGeneratedFunction.class);
+
+		final IdentTableEntry                ite     = new IdentTableEntry(0, x1, x1.getContext());
+		final DeduceElementIdent             dei     = new DeduceElementIdent(ite);
+		final DeduceElement3_IdentTableEntry de3_ite = (DeduceElement3_IdentTableEntry) ite.getDeduceElement3(d, bgf);
+
+
+		final Operation2<OS_Module> fpl = boilerplate.comp.findPrelude("c");
+		assert fpl.mode() == Mode.SUCCESS;
+		mod.prelude = fpl.success();
+
+		final DeduceElement3_IdentTableEntry xxx = DeduceLookupUtils.deduceExpression2(de3_ite, fc);
+		this.x = xxx.genType();
 		System.out.println(this.x);
 	}
 
@@ -85,9 +117,13 @@ public class DeduceTypesTest {
 	 *   It fails because Integer is an interface and not a BUILT_IN
 	 */
 	@Test(expected = ResolveError.class)
-	public void testDeduceIdentExpression1() {
-		Assert.assertEquals(new OS_Type(BuiltInTypes.SystemInteger).getBType(), x.typeName.getBType());
+	public void testDeduceIdentExpression1() throws ResolveError {
+		final BuiltInTypes bi_integer = new OS_Type(BuiltInTypes.SystemInteger).getBType();
+		final BuiltInTypes inferred_t = x.resolved.getBType();
+
+		Assert.assertEquals(bi_integer, inferred_t);
 	}
+
 	/**
 	 * Now comparing {@link RegularTypeName} to {@link VariableTypeName} works
 	 */
