@@ -20,11 +20,13 @@ import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.gen_c.CReference;
 import tripleo.elijah.stages.gen_c.Emit;
 import tripleo.elijah.stages.gen_c.Generate_Code_For_Method;
+import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.Helpers;
 
 import static org.easymock.EasyMock.*;
@@ -84,6 +86,12 @@ public class GetIdentIAPathTest_ForC {
 		VariableStatement x_vs = new VariableStatement(vsq2);
 		x_vs.setName(x_ident);
 
+		final Boilerplate boilerplate = new Boilerplate();
+		boilerplate.getGenerateFiles(boilerplate.defaultMod());
+
+		final GeneratePhase   generatePhase = boilerplate.pipelineLogic.generatePhase;
+
+
 /*
 		expect(mod.pullPackageName()).andReturn(OS_Package.default_package);
 		mod.add(anyObject(ClassStatement.class));
@@ -91,11 +99,6 @@ public class GetIdentIAPathTest_ForC {
 		ClassStatement el1 = new ClassStatement(mod, null);
 */
 
-		//		el1.add(vsq);
-		//
-		final ElLog.Verbosity verbosity1 = new Compilation(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity1);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
 		GenerateFunctions gen = generatePhase.getGenerateFunctions(mod);
 		Context ctx = mock(Context.class);
 		//
@@ -119,9 +122,11 @@ public class GetIdentIAPathTest_ForC {
 		IdentExpression x_ident = Helpers.string_to_ident("x");
 		@NotNull IdentExpression foo_ident = Helpers.string_to_ident("foo");
 		//
-		final ElLog.Verbosity verbosity1 = new Compilation(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity1);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
+		final Boilerplate boilerplate = new Boilerplate();
+		boilerplate.getGenerateFiles(boilerplate.defaultMod());
+
+		final GeneratePhase   generatePhase = boilerplate.pipelineLogic.generatePhase;
+
 		GenerateFunctions gen = generatePhase.getGenerateFunctions(mod);
 		Context ctx = mock(Context.class);
 		//
@@ -132,11 +137,11 @@ public class GetIdentIAPathTest_ForC {
 		DotExpression expr = new DotExpression(x_ident, foo_ident);
 		InstructionArgument xx = gen.simplify_expression(expr, gf, ctx);
 		//
-/*
-		int ite_index = gf.addIdentTableEntry(foo_ident);
-		IdentTableEntry ite = gf.getIdentTableEntry(ite_index);
-		ite.backlink = new IntegerIA(int_index);
-*/
+
+		//int ite_index = gf.addIdentTableEntry(foo_ident);
+		//IdentTableEntry ite = gf.getIdentTableEntry(ite_index);
+		//ite.backlink = new IntegerIA(int_index);
+
 		VariableSequence vsq = new VariableSequence(null);
 		vsq.setParent(mock(ClassStatement.class));
 		VariableStatement foo_vs = new VariableStatement(vsq);
@@ -200,11 +205,17 @@ public class GetIdentIAPathTest_ForC {
 		//
 		DotExpression expr = new DotExpression(x_ident, foo_ident);
 		//
-		final ElLog.Verbosity verbosity1 = new Compilation(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity1);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
-		GenerateFunctions gen = generatePhase.getGenerateFunctions(mod);
-		InstructionArgument xx = gen.simplify_expression(expr, gf, ctx);
+		final Boilerplate boilerplate = new Boilerplate();
+		boilerplate.getGenerateFiles(boilerplate.defaultMod());
+
+		//final GenerateFiles gfl = boilerplate.generateFiles;
+
+		//final Compilation     compilation   = new Compilation(new StdErrSink(), new IO());
+		//final ElLog.Verbosity verbosity1    = compilation.gitlabCIVerbosity();
+		//final PipelineLogic   pl            = boilerplate.pr.pipelineLogic;
+		final GeneratePhase   generatePhase = boilerplate.pipelineLogic.generatePhase;
+		GenerateFunctions     gen           = generatePhase.getGenerateFunctions(mod);
+		InstructionArgument   xx            = gen.simplify_expression(expr, gf, ctx);
 
 		//
 		// This is the Deduce portion.

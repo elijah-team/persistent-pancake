@@ -2,6 +2,7 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 
 import org.jetbrains.annotations.Contract;
 import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
@@ -9,16 +10,14 @@ import tripleo.elijah.stages.deduce.post_bytecode.DED.DED_VTE;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
-import tripleo.elijah.stages.instructions.ConstTableIA;
 import tripleo.elijah.stages.instructions.IdentIA;
-import tripleo.elijah.util.NotImplementedException;
 
 public class DeduceElement3_VariableTableEntry implements IDeduceElement3 {
 
 	private final VariableTableEntry principal;
-	private DeduceTypes2 deduceTypes2;
-	private GeneratedFunction generatedfunction;
-	private GenType genType;
+	private       DeduceTypes2       deduceTypes2;
+	private       GeneratedFunction  generatedfunction;
+	private       GenType            genType;
 
 	@Contract(pure = true)
 	public DeduceElement3_VariableTableEntry(final VariableTableEntry aVariableTableEntry) {
@@ -37,6 +36,11 @@ public class DeduceElement3_VariableTableEntry implements IDeduceElement3 {
 	@Override
 	public void resolve(final Context aContext, final DeduceTypes2 aDeduceTypes2) {
 		throw new UnsupportedOperationException("Should not be reached");
+	}
+
+	@Override
+	public OS_Element getPrincipal() {
+		return principal.getDeduceElement3().getPrincipal();
 	}
 
 	@Override

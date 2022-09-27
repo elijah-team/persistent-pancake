@@ -60,7 +60,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 		pipelineLogic.addLog(LOG);
 	}
 
-	public GenerateC(final OutputFileFactoryParams aParams) {
+	public GenerateC(final @NotNull OutputFileFactoryParams aParams) {
 		errSink = aParams.getErrSink();
 
 		final OS_Module       mod           = aParams.getMod();

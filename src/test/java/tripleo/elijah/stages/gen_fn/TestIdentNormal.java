@@ -13,7 +13,23 @@ import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.DotExpression;
+import tripleo.elijah.lang.ExpressionBuilder;
+import tripleo.elijah.lang.ExpressionKind;
+import tripleo.elijah.lang.FormalArgList;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IBinaryExpression;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.ProcedureCallExpression;
+import tripleo.elijah.lang.Scope3;
+import tripleo.elijah.lang.StatementWrapper;
+import tripleo.elijah.lang.VariableSequence;
+import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
@@ -21,6 +37,8 @@ import tripleo.elijah.stages.deduce.FoundElement;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
+import tripleo.elijah.test_help.Boilerplate;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.test_help.Boilerplate;
@@ -34,30 +52,32 @@ import static org.easymock.EasyMock.*;
  */
 public class TestIdentNormal {
 
-//	@Test(expected = IllegalStateException.class) // TODO proves nothing
+	@Test(expected = IllegalStateException.class) // TODO proves nothing
 	public void test() {
-		Compilation comp = new Compilation(new StdErrSink(), new IO());
-		OS_Module mod = comp.moduleBuilder().build();
-		FunctionDef fd = mock(FunctionDef.class);
-		Context ctx1 = mock(Context.class);
-		Context ctx2 = mock(Context.class);
 
-		final ElLog.Verbosity verbosity1 = new Compilation(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity1);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
-//		GenerateFunctions generateFunctions = new GenerateFunctions(generatePhase, mod, pl);
-		GenerateFunctions generateFunctions = generatePhase.getGenerateFunctions(mod);
-		GeneratedFunction generatedFunction = new GeneratedFunction(fd);
-		VariableSequence seq = new VariableSequence(ctx1);
-		VariableStatement vs = new VariableStatement(seq);
-		final IdentExpression x = IdentExpression.forString("x");
+		final FunctionDef fd   = mock(FunctionDef.class);
+		final Context ctx1 = mock(Context.class);
+		final Context ctx2 = mock(Context.class);
+
+		final Boilerplate boilerplate = new Boilerplate();
+		boilerplate.get();
+		boilerplate.getGenerateFiles(boilerplate.defaultMod());
+
+		final GeneratePhase   generatePhase = boilerplate.pipelineLogic.generatePhase;
+
+		final GenerateFunctions generateFunctions = new GenerateFunctions(generatePhase, boilerplate.defaultMod(), boilerplate.pipelineLogic);
+
+		final GeneratedFunction generatedFunction = new GeneratedFunction(fd);
+		final VariableSequence  seq = new VariableSequence(ctx1);
+		final VariableStatement vs  = new VariableStatement(seq);
+		final IdentExpression   x   = IdentExpression.forString("x");
 		vs.setName(x);
-		final IdentExpression foo = IdentExpression.forString("foo");
-		ProcedureCallExpression pce = new ProcedureCallExpression();
+		final IdentExpression         foo = IdentExpression.forString("foo");
+		final ProcedureCallExpression pce = new ProcedureCallExpression();
 		pce.setLeft(new DotExpression(x, foo));
 
-		InstructionArgument s = generateFunctions.simplify_expression(pce, generatedFunction, ctx2);
-		@NotNull List<InstructionArgument> l = generatedFunction._getIdentIAPathList(s);
+		final InstructionArgument                s = generateFunctions.simplify_expression(pce, generatedFunction, ctx2);
+		@NotNull final List<InstructionArgument> l = BaseGeneratedFunction._getIdentIAPathList(s);
 		System.out.println(l);
 //      System.out.println(generatedFunction.getIdentIAPathNormal());
 
@@ -65,7 +85,7 @@ public class TestIdentNormal {
 		//
 		//
 
-		LookupResultList lrl = new LookupResultList();
+		final LookupResultList lrl = new LookupResultList();
 		lrl.add("x", 1, vs, ctx2);
 		expect(ctx2.lookup("x")).andReturn(lrl);
 
@@ -75,38 +95,42 @@ public class TestIdentNormal {
 		//
 		//
 
-		IdentIA identIA = new IdentIA(1, generatedFunction);
+		final IdentIA identIA = new IdentIA(1, generatedFunction);
 
-		DeducePhase phase = new DeducePhase(generatePhase, pl, verbosity1);
-		DeduceTypes2 d2 = new DeduceTypes2(mod, phase);
+		final DeducePhase  phase = boilerplate.pr.pipelineLogic.dp;
+		final DeduceTypes2 d2    = new DeduceTypes2(boilerplate.defaultMod(), phase);
 
-		final List<InstructionArgument> ss = generatedFunction._getIdentIAPathList(identIA);
+		final List<InstructionArgument> ss = BaseGeneratedFunction._getIdentIAPathList(identIA);
 		d2.resolveIdentIA2_(ctx2, null, ss/*identIA*/, generatedFunction, new FoundElement(phase) {
 			@Override
-			public void foundElement(OS_Element e) {
+			public void foundElement(final OS_Element e) {
 				System.out.println(e);
 			}
 
 			@Override
 			public void noFoundElement() {
-				int y=2;
+				NotImplementedException.raise();
 			}
 		});
 	}
 
-//	@Test // TODO just a mess
+	@Test // TODO just a mess
 	public void test2() {
-		Compilation comp = new Compilation(new StdErrSink(), new IO());
-		OS_Module mod = comp.moduleBuilder().build();
-//		FunctionDef fd = mock(FunctionDef.class);
-		Context ctx2 = mock(Context.class);
+		Boilerplate boilerplate = new Boilerplate();
+		boilerplate.get();
+		boilerplate.getGenerateFiles(boilerplate.defaultMod());
 
-		final ElLog.Verbosity verbosity1 = new Compilation(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity1);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
-		DeducePhase phase = new DeducePhase(generatePhase, pl, verbosity1);
+//		Compilation comp = new Compilation(new StdErrSink(), new IO());
+//		OS_Module mod = comp.moduleBuilder().build();
+////		FunctionDef fd = mock(FunctionDef.class);
+//		Context ctx2 = mock(Context.class);
 
-		GenerateFunctions generateFunctions = generatePhase.getGenerateFunctions(mod);
+//		final ElLog.Verbosity verbosity1 = new Compilation(new StdErrSink(), new IO()).gitlabCIVerbosity();
+//		final PipelineLogic pl = new PipelineLogic(verbosity1);
+//		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
+		DeducePhase phase = boilerplate.pipelineLogic.dp;
+
+//		GenerateFunctions generateFunctions = generatePhase.getGenerateFunctions(mod);
 
 		//
 		//
@@ -154,10 +178,10 @@ public class TestIdentNormal {
 		FunctionInvocation fi = new FunctionInvocation(fd, pte2, ci, generatePhase);
 //		expect(fd.returnType()).andReturn(null);
 		final FormalArgList formalArgList = new FormalArgList();
-////		expect(fd.fal()).andReturn(formalArgList);
-////		expect(fd.fal()).andReturn(formalArgList);
-////		expect(fd2.returnType()).andReturn(null);
-//		GeneratedFunction generatedFunction = generateFunctions.generateFunction(fd, cs, fi);
+//		expect(fd.fal()).andReturn(formalArgList);
+//		expect(fd.fal()).andReturn(formalArgList);
+//		expect(fd2.returnType()).andReturn(null);
+		GeneratedFunction generatedFunction = generateFunctions.generateFunction(fd, cs, fi);
 
 /*
 		InstructionArgument es = generateFunctions.simplify_expression(e, generatedFunction, ctx2);

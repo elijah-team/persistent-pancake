@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.Operation2;
+import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.ClassHeader;
@@ -85,6 +86,14 @@ public class DeduceTypesTest {
 		x1.setContext(fc);
 
 		mod.prelude = mod.getCompilation().findPrelude("c").success();
+
+		final Boilerplate boilerplate = new Boilerplate();
+		boilerplate.get();
+		boilerplate.getGenerateFiles(boilerplate.defaultMod());
+
+		final PipelineLogic pl           = boilerplate.pipelineLogic;
+		//final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
+
 
 		final ElLog.Verbosity verbosity     = Compilation.gitlabCIVerbosity();
 		final DeducePhase     dp            = boilerplate.pr.pipelineLogic.dp;
