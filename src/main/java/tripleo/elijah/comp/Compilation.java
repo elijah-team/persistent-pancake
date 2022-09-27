@@ -475,74 +475,13 @@ public class Compilation {
 		pipelineLogic.dp.addFunctionMapHook(aFunctionMapHook);
 	}
 
-	private class UnknownExceptionDiagnostic implements Diagnostic {
-		private final Operation2<OS_Module> m;
-
-		public UnknownExceptionDiagnostic(final Operation2<OS_Module> aM) {
-			m = aM;
-		}
-
-		@Override
-		public String code() {
-			return "9002";
-		}
-
-		@Override
-		public Severity severity() {
-			return Severity.ERROR;
-		}
-
-		@Override
-		public @NotNull Locatable primary() {
-			return null;
-		}
-
-		@Override
-		public @NotNull List<Locatable> secondary() {
-			return null;
-		}
-
-		@Override
-		public void report(final PrintStream stream) {
-			stream.printf("%s Some error %s%n", code(), m.failure());
-		}
+	public static ElLog.Verbosity gitlabCIVerbosity() {
+		final boolean gitlab_ci = isGitlab_ci();
+		return gitlab_ci ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
 	}
 
-	private class FileNotFoundDiagnostic implements Diagnostic {
-		private final @NotNull File f;
-
-		public FileNotFoundDiagnostic(final @NotNull File aF) {
-			f = aF;
-		}
-
-		@Override
-		public String code() {
-			return "9001";
-		}
-
-		@Override
-		public Severity severity() {
-			return Severity.ERROR;
-		}
-
-		@Override
-		public @NotNull Locatable primary() {
-			return null;
-		}
-
-		@Override
-		public @NotNull List<Locatable> secondary() {
-			return null;
-		}
-
-		@Override
-		public void report(final PrintStream stream) {
-			stream.println(message());
-		}
-
-		private String message() {
-			return "File doesn't exist " + f.getAbsolutePath();
-		}
+	public static boolean isGitlab_ci() {
+		return System.getenv("GITLAB_CI") != null;
 	}
 }
 
