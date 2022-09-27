@@ -1,6 +1,7 @@
 package tripleo.elijah.stages.deduce.post_bytecode;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
@@ -54,8 +55,12 @@ public class DeduceElement3_IdentTableEntry implements IDeduceElement3 {
 	}
 
 	@Override
-	public GenType genType() {
+	public @NotNull GenType genType() {
+		if (genType == null) {
+			genType = new GenType();
+		}
 		return genType;
+		//return principal.type.genType;
 	}
 
 	@Override
