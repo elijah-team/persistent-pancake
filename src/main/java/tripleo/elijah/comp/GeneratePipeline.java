@@ -10,7 +10,10 @@ package tripleo.elijah.comp;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Contract;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
+import tripleo.elijah.util.NotImplementedException;
 
 /**
  * Created 8/21/21 10:16 PM
@@ -19,6 +22,7 @@ public class GeneratePipeline implements PipelineMember, Consumer<Supplier<Gener
 	private final Compilation    c;
 	private final DeducePipeline dpl;
 
+	@Contract(pure = true)
 	public GeneratePipeline(Compilation aCompilation, DeducePipeline aDpl) {
 		c = aCompilation;
 		dpl = aDpl;
@@ -31,7 +35,7 @@ public class GeneratePipeline implements PipelineMember, Consumer<Supplier<Gener
 
 	@Override
 	public void accept(Supplier<GenerateResult> t) {
-		
+		NotImplementedException.raise();
 	}
 }
 
