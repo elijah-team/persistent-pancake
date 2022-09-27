@@ -3,6 +3,7 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 import org.jetbrains.annotations.Contract;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
@@ -33,6 +34,11 @@ public class DeduceElement3_ConstantTableEntry implements IDeduceElement3 {
 	public void resolve(final IdentIA aIdentIA, final Context aContext, final FoundElement aFoundElement) {
 		// FoundElement is the "disease"
 		deduceTypes2.resolveIdentIA_(aContext, aIdentIA, generatedFunction, aFoundElement);
+	}
+
+	@Override
+	public OS_Element getPrincipal() {
+		return principal.getDeduceElement3().getPrincipal();
 	}
 
 	@Override

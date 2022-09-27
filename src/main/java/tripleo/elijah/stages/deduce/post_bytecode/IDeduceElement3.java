@@ -25,6 +25,7 @@
 	package tripleo.elijah.stages.deduce.post_bytecode;
        
 	import tripleo.elijah.lang.Context;
+	import tripleo.elijah.lang.OS_Element;
 	import tripleo.elijah.stages.deduce.DeduceTypes2;
 	import tripleo.elijah.stages.deduce.FoundElement;
 	import tripleo.elijah.stages.gen_fn.GenType;
@@ -34,7 +35,9 @@
 	public interface IDeduceElement3 {
 		void resolve(IdentIA aIdentIA, Context aContext, FoundElement aFoundElement);
 		void resolve(Context aContext, final DeduceTypes2 dt2);
-       
+
+		OS_Element getPrincipal();
+
 		enum DeduceElement3_Kind {
 			CLASS,
 			NAMESPACE,

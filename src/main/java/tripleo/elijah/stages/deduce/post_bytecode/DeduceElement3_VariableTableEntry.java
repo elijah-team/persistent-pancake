@@ -2,6 +2,7 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 
 import org.jetbrains.annotations.Contract;
 import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
@@ -37,6 +38,11 @@ public class DeduceElement3_VariableTableEntry implements IDeduceElement3 {
 	@Override
 	public void resolve(final Context aContext, final DeduceTypes2 aDeduceTypes2) {
 		throw new UnsupportedOperationException("Should not be reached");
+	}
+
+	@Override
+	public OS_Element getPrincipal() {
+		return principal.getDeduceElement3().getPrincipal();
 	}
 
 	@Override
