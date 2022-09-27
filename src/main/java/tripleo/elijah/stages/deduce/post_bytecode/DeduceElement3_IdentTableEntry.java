@@ -14,10 +14,10 @@ import tripleo.elijah.util.NotImplementedException;
 
 public class DeduceElement3_IdentTableEntry implements IDeduceElement3 {
 
-	private final IdentTableEntry principal;
-	public BaseGeneratedFunction generatedFunction;
-	public DeduceTypes2 deduceTypes2;
-	private GenType genType;
+	public final IdentTableEntry       principal;
+	public       BaseGeneratedFunction generatedFunction;
+	public       DeduceTypes2          deduceTypes2;
+	private      GenType               genType;
 
 	@Contract(pure = true)
 	public DeduceElement3_IdentTableEntry(final IdentTableEntry aIdentTableEntry) {
