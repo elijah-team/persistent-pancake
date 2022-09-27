@@ -2,10 +2,10 @@ package tripleo.elijah.stages.deduce.pipeline_impl;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.DeducePipeline;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,7 @@ public class DeducePipelineImpl {
 
 		assert c.pipelineLogic != null;
 
-		int y = 2;
+		NotImplementedException.raise();
 	}
 
 	public void setPipelineLogic(final PipelineLogic aPipelineLogic) {
@@ -88,7 +88,7 @@ public class DeducePipelineImpl {
 	private class PL_EverythingBeforeGenerate implements PipelineLogicRunnable {
 		@Override
 		public void run(final @NotNull PipelineLogic pipelineLogic) {
-			pipelineLogic.everythingBeforeGenerate(lgc);
+			pipelineLogic.everythingBeforeGenerate(lgc); // FIXME inline
 		}
 	}
 
