@@ -1,4 +1,4 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.diagnostic;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.diagnostic.Diagnostic;
@@ -7,17 +7,17 @@ import tripleo.elijah.diagnostic.Locatable;
 import java.io.PrintStream;
 import java.util.List;
 
-class TooManyEz_BeSpecific implements Diagnostic {
-	final String message = "Too many .ez files, be specific.";
+class TooManyEz_UseFirst implements Diagnostic {
+	final String message = "Too many .ez files, using first.";
 
 	@Override
 	public String code() {
-		return "9997";
+		return "9998";
 	}
 
 	@Override
 	public Severity severity() {
-		return Severity.ERROR;
+		return Severity.WARN;
 	}
 
 	@Override

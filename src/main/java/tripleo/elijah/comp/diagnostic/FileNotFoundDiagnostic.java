@@ -1,4 +1,4 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.diagnostic;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.diagnostic.Diagnostic;
@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
 
-class FileNotFoundDiagnostic implements Diagnostic {
+public class FileNotFoundDiagnostic implements Diagnostic {
 	private final File f;
 
 	public FileNotFoundDiagnostic(final File aLocal_prelude) {
