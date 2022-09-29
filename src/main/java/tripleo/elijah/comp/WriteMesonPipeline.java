@@ -108,7 +108,7 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 	private void write_root(Multimap<CompilerInstructions, String> lsp_outputs, List<String> aDep_dirs) throws IOException {
 		CharSink root_file = c.getIO().openWrite(getPath("meson.build"));
 		try {
-			String project_name = c.rootCI.getName();
+			String project_name = c.getProjectName();
 			String project_string = String.format("project('%s', 'c', version: '1.0.0', meson_version: '>= 0.48.0',)", project_name);
 			root_file.accept(project_string);
 			root_file.accept("\n");
