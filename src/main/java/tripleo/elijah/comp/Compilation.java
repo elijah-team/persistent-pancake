@@ -65,7 +65,7 @@ public class Compilation {
 	private int                _packageCode  = 1;
 	private int                _classCode    = 101;
 	private int                _functionCode = 1001;
-	private OptionsProcessor __op;
+	private CompilationRunner __cr;
 
 	public Compilation(final ErrSink errSink, final IO io) {
 		this.errSink            = errSink;
@@ -139,7 +139,7 @@ public class Compilation {
 		cio = new CompilerInstructionsObserver(this, op);
 		subscribeCI(cio);
 
-		__op = op;
+		final String[] args2 = op.process(this, args);
 
 		final Consumer<Boolean> instructionCompleter = new Consumer<Boolean>() {
 			@Override
