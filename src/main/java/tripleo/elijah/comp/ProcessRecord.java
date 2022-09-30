@@ -21,9 +21,10 @@ public class ProcessRecord {
 		dpl           = new DeducePipeline(ca0);
 	}
 
-		pipelineLogic = new PipelineLogic(ca);
-		dpl           = new DeducePipeline(compilation);
-		stage         = compilation.stage;
+	public void writeLogs(final ICompilationAccess aCa) {
+		final ICompilationAccess ca = aCa;
+
+		ca.getCompilation().stage.writeLogs(ca);
 	}
 
 	public Promise<GenerateResult, Void, Void> generateResultPromise() {
