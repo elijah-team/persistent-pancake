@@ -9,13 +9,17 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ProcessRecord {
-	final        DeducePipeline     dpl;
-	public final PipelineLogic                              pipelineLogic;
-	final        Stages                                     stage;
-	private      DeferredObject<GenerateResult, Void, Void> _pgr;
+	public final  PipelineLogic                              pipelineLogic;
+	final         DeducePipeline                             dpl;
+	//private final ICompilationAccess                         ca;
+	private       DeferredObject<GenerateResult, Void, Void> _pgr;
 
-	public ProcessRecord(final @NotNull ICompilationAccess ca) {
-		final Compilation compilation = ca.getCompilation();
+	public ProcessRecord(final @NotNull ICompilationAccess ca0) {
+		//ca            = ca0;
+
+		pipelineLogic = new PipelineLogic(ca0);
+		dpl           = new DeducePipeline(ca0);
+	}
 
 		pipelineLogic = new PipelineLogic(ca);
 		dpl           = new DeducePipeline(compilation);
