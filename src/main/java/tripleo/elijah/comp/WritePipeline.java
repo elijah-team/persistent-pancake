@@ -130,47 +130,50 @@ public class WritePipeline implements PipelineMember, @NotNull Consumer<Supplier
 
 		final GenerateResult rs = grs.get();
 
-		prom.then(new DoneCallback<GenerateResult>() {
-			@Override
-			public void onDone(final GenerateResult result) {
-				//
-				//
-				//
-
-				// 0. prepare to change to DoubleLatch instead of/an or in addition to Promise
-				assert result == rs;
-
-				// 1. GenerateOutputs with ElSystem
-				st.sys.generateOutputs(result);
-
-				// 2. make output directory
-				// TODO check first
-				boolean made = st.file_prefix.mkdirs();
-
-				// 3. write inputs
-				// TODO ... 1/ output(s) per input and 2/ exceptions ... and 3/ plan
-				//  "plan", effects; input(s), output(s)
-				// TODO flag?
-				try {
-					write_inputs();
-				} catch (IOException aE) {
-					throw new RuntimeException(aE);
-				}
-
-				// 4. write files
-				/*
-				write_files();
-				*/
-
-				// 5. write buffers
-				// TODO flag?
-				try {
-					write_buffers();
-				} catch (FileNotFoundException aE) {
-					throw new RuntimeException(aE);
-				}
-			}
+		prom.then((final GenerateResult result) -> {
+			__int__steps(result, rs);
 		});
+	}
+
+	private void __int__steps(final GenerateResult result, final GenerateResult rs) {
+		//
+		//
+		//
+
+		// 0. prepare to change to DoubleLatch instead of/an or in addition to Promise
+		assert result == rs;
+
+		// 1. GenerateOutputs with ElSystem
+		st.sys.generateOutputs(result);
+
+		// 2. make output directory
+		// TODO check first
+		boolean made = st.file_prefix.mkdirs();
+
+		// 3. write inputs
+		// TODO ... 1/ output(s) per input and 2/ exceptions ... and 3/ plan
+		//  "plan", effects; input(s), output(s)
+		// TODO flag?
+		try {
+			write_inputs();
+		} catch (IOException aE) {
+			throw new RuntimeException(aE);
+		}
+
+		// 4. write files
+		try {
+			write_files();
+		} catch (IOException aE) {
+			throw new RuntimeException(aE);
+		}
+
+		// 5. write buffers
+		// TODO flag?
+		try {
+			write_buffers();
+		} catch (FileNotFoundException aE) {
+			throw new RuntimeException(aE);
+		}
 	}
 
 //	@Override
