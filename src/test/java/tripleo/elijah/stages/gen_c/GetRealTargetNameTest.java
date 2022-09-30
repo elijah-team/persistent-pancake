@@ -9,7 +9,6 @@
 
 package tripleo.elijah.stages.gen_c;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,13 +17,9 @@ import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.lang.OS_Type;
-import tripleo.elijah.lang.RegularTypeName;
-import tripleo.elijah.lang.VariableSequence;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
-import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
 import tripleo.elijah.stages.gen_fn.TypeTableEntry;
@@ -32,7 +27,7 @@ import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.test_help.Boilerplate;
-import tripleo.elijah.util.Helpers;
+import tripleo.elijah.test_help.XX;
 
 import static org.easymock.EasyMock.*;
 
@@ -52,38 +47,11 @@ public class GetRealTargetNameTest {
 		boilerPlate.get();
 	}
 
-	static class XX {
-
-		public IdentExpression ident(final String aX) {
-			final IdentExpression identExpression = Helpers.string_to_ident(aX);
-			return identExpression;
-		}
-
-		public TypeTableEntry regularTypeName_specifyTableEntry(final IdentExpression aIdentExpression,
-																final @NotNull BaseGeneratedFunction aBaseGeneratedFunction,
-																final String aTypeName) {
-			final RegularTypeName typeName = RegularTypeName.makeWithStringTypeName(aTypeName);
-			final OS_Type         type     = new OS_Type(typeName);
-			final TypeTableEntry  tte      = aBaseGeneratedFunction.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, aIdentExpression);
-
-			return tte;
-		}
-
-		public VariableStatement sequenceAndVarNamed(final IdentExpression aIdentExpression) {
-			final VariableSequence  seq   = new VariableSequence();
-			final VariableStatement x_var = new VariableStatement(seq);
-
-			x_var.setName(aIdentExpression);
-
-			return x_var;
-		}
-	}
-
 	@Test // too complicated
 	@SuppressWarnings("JUnit3StyleTestMethodInJUnit4Class")
 	public void testManualXDotFoo() {
-		final XX              xx        = new XX();
-		final IdentExpression x_ident   = xx.ident("x");
+		final XX              xx      = new XX();
+		final IdentExpression x_ident = xx.ident("x");
 		final IdentExpression foo_ident = xx.ident("foo");
 
 		//
