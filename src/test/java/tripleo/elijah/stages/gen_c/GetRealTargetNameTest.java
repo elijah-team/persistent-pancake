@@ -13,10 +13,18 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import tripleo.elijah.comp.*;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.RegularTypeName;
+import tripleo.elijah.lang.VariableSequence;
+import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
 import tripleo.elijah.stages.gen_fn.TypeTableEntry;
@@ -44,73 +52,67 @@ public class GetRealTargetNameTest {
 		boilerPlate.get();
 	}
 
+	static class XX {
+
+		public IdentExpression ident(final String aX) {
+			final IdentExpression identExpression = Helpers.string_to_ident(aX);
+			return identExpression;
+		}
+
+		public TypeTableEntry regularTypeName_specifyTableEntry(final IdentExpression aIdentExpression,
+																final @NotNull BaseGeneratedFunction aBaseGeneratedFunction,
+																final String aTypeName) {
+			final RegularTypeName typeName = RegularTypeName.makeWithStringTypeName(aTypeName);
+			final OS_Type         type     = new OS_Type(typeName);
+			final TypeTableEntry  tte      = aBaseGeneratedFunction.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, aIdentExpression);
+
+			return tte;
+		}
+
+		public VariableStatement sequenceAndVarNamed(final IdentExpression aIdentExpression) {
+			final VariableSequence  seq   = new VariableSequence();
+			final VariableStatement x_var = new VariableStatement(seq);
+
+			x_var.setName(aIdentExpression);
+
+			return x_var;
+		}
+	}
+
 	@Test // too complicated
 	@SuppressWarnings("JUnit3StyleTestMethodInJUnit4Class")
 	public void testManualXDotFoo() {
-		IdentExpression x_ident = Helpers.string_to_ident("x");
-		@NotNull IdentExpression foo_ident = Helpers.string_to_ident("foo");
+		final XX              xx        = new XX();
+		final IdentExpression x_ident   = xx.ident("x");
+		final IdentExpression foo_ident = xx.ident("foo");
+
 		//
 		// create x.foo, where x is a VAR and foo is unknown
 		// neither has type information
 		// GenerateC#getRealTargetName doesn't use type information
 		// TODO but what if foo was a property instead of a member
 		//
-		final RegularTypeName typeName = new RegularTypeName(null);
-		typeName.setName(Helpers.string_to_qualident("X_Type"));
- 		OS_Type type = new OS_Type(typeName);
-		TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, x_ident);
-
-		final VariableSequence seq = new VariableSequence();
-		final VariableStatement x_var = //mock(VariableStatement.class); // can't replay visitGen
-			new VariableStatement(seq);
-
-		x_var.setName(x_ident);
-
-		int int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, x_var);
-		int ite_index = gf.addIdentTableEntry(foo_ident, null);
-		IdentIA ident_ia = new IdentIA(ite_index, gf);
-		final IntegerIA integerIA = new IntegerIA(int_index, gf);
+		final TypeTableEntry    tte       = xx.regularTypeName_specifyTableEntry(x_ident, gf, "X_Type");
+		final VariableStatement x_var     = xx.sequenceAndVarNamed(x_ident);
+		final int               int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, x_var);
+		final int               ite_index = gf.addIdentTableEntry(foo_ident, null);
+		final IdentIA           ident_ia  = new IdentIA(ite_index, gf);
+		final IntegerIA         integerIA = new IntegerIA(int_index, gf);
 		ident_ia.setPrev(integerIA);
 
 		Emit.emitting = false;
 
 		//
 
-
-/*
-		final Compilation        comp          	= new Compilation(new StdErrSink(), new IO());
-		final ICompilationAccess aca           	= new DefaultCompilationAccess(comp);
-		final ProcessRecord      pr  			= new ProcessRecord(aca);
-		final PipelineLogic      pipelineLogic 	= pr.pipelineLogic;
-		final GenerateFiles 	 c             	= OutputFileFactory.create(Compilation.CompilationAlways.defaultPrelude(),
-																		new OutputFileFactoryParams(mod,
-																									  comp.getErrSink(),
-																									  aca.testSilence(),
-																									  pipelineLogic));
-*/
-
-		//
-		//
-		//
-
 		// TODO do we want silent?
 
-		//
-		//
-		//
-
-		final Compilation   comp = boilerPlate.comp;
-
-		//OS_Module mod = new OS_Module(); // hard to mock
-		OS_Module mod = boilerPlate.defaultMod();
+		final OS_Module mod = boilerPlate.defaultMod();
 		mod.setParent(boilerPlate.comp);
 
-		//boilerPlate.getGenerateFiles(mod);
-
-		final DeducePhase phase = boilerPlate.pr.pipelineLogic.dp; //new DeducePhase(null, pipelineLogic, null, aca);
-
+		final DeducePhase  phase        = boilerPlate.getDeducePhase();
 		final DeduceTypes2 deduceTypes2 = new DeduceTypes2(mod, phase);
-		final Context ctx = mock(Context.class);
+		final Context      ctx          = mock(Context.class);
+
 		(gf.getIdentTableEntry(0)).setDeduceTypes2(deduceTypes2, ctx, gf);
 
 		final LookupResultList lrl = new LookupResultList();
@@ -123,7 +125,7 @@ public class GetRealTargetNameTest {
 		replay(ctx);
 
 		final GenType genType = new GenType();
-		genType.typeName = type;
+		genType.typeName = tte.getAttached();
 		integerIA.getEntry().resolveType(genType);
 
 		//
