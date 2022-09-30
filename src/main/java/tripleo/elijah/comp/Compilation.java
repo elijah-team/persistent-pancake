@@ -11,9 +11,12 @@ package tripleo.elijah.comp;
 import antlr.ANTLRException;
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import io.reactivex.rxjava3.subjects.Subject;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.MutablePicoContainer;
@@ -32,13 +35,11 @@ import tripleo.elijah.lang.Qualident;
 import tripleo.elijah.stages.deduce.FunctionMapHook;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
-import tripleo.elijah.util.NotImplementedException;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import static tripleo.elijah.nextgen.query.Mode.SUCCESS;
@@ -135,53 +136,75 @@ public class Compilation {
 
 		final OptionsProcessor op = pico.getComponent(OptionsProcessor.class);
 
-		cio = new CompilerInstructionsObserver(this, op);
+		final CompilerInstructionsObserver cio = new CompilerInstructionsObserver(this, op);
+		_cis._cio = cio;
+
 		subscribeCI(cio);
 
 		final String[] args2 = op.process(this, args);
 
-		final Consumer<Boolean> instructionCompleter = new Consumer<Boolean>() {
-			@Override
-			public void accept(final Boolean aBoolean) {
-				compilerInstructionsSubject.onComplete();
-			}
-		};
-
-		op.run(this, args, io, instructionCompleter);
+		new CompilationRunner(this).doFindCIs(args2, ignored_bool -> {
+//			compilerInstructionsSubject.onComplete();
+			_cis.almostComplete();
+		});
 	}
 
 	private void subscribeCI(final Observer<CompilerInstructions> aCio) {
-		compilerInstructionsSubject.subscribe(aCio);
+		_cis.subscribe(aCio);
 	}
 
-	private final Subject<CompilerInstructions> compilerInstructionsSubject = ReplaySubject.<CompilerInstructions>create();
+	private final CIS _cis = new CIS();
 
-	private Observer<CompilerInstructions> cio;
+	class CIS implements Observer<CompilerInstructions> {
+
+		private final Subject<CompilerInstructions> compilerInstructionsSubject = ReplaySubject.<CompilerInstructions>create();
+		CompilerInstructionsObserver _cio;
+
+		@Override
+		public void onSubscribe(@NonNull final Disposable d) {
+			compilerInstructionsSubject.onSubscribe(d);
+		}
+
+		@Override
+		public void onNext(@NonNull final CompilerInstructions aCompilerInstructions) {
+			compilerInstructionsSubject.onNext(aCompilerInstructions);
+		}
+
+		@Override
+		public void onError(@NonNull final Throwable e) {
+			compilerInstructionsSubject.onError(e);
+		}
+
+		@Override
+		public void onComplete() {
+			throw new IllegalStateException();
+			//compilerInstructionsSubject.onComplete();
+		}
+
+		public void almostComplete() {
+			int y=2;
+			_cio.almostComplete();
+		}
+
+		public void subscribe(final Observer<CompilerInstructions> aCio) {
+			compilerInstructionsSubject.subscribe(aCio);
+		}
+	}
 
 	void hasInstructions(final @NotNull List<CompilerInstructions> cis,
 						 final boolean do_out,
 						 final @NotNull OptionsProcessor op) throws Exception {
-		NotImplementedException.raise();
+		assert cis.size() == 1;
 
-		assert cis.size() > 0;
+		//assert cis.size() > 0;
 
 		rootCI = cis.get(0);
-		//System.err.println("130 GEN_LANG: " + rootCI.genLang());
-		((OptionsProcessor.DefaultOptionsProcessor) op).findStdLib(CompilationAlways.defaultPrelude(), this, errSink, io); // TODO find a better place for this
 
-		for (final CompilerInstructions ci : cis) {
-			use(ci, do_out);
-		}
-
-		final ICompilationAccess ca = new DefaultCompilationAccess(this);
-		final ProcessRecord      pr = new ProcessRecord(ca);
-		final RuntimeProcesses   rt = StageToRuntime.get(stage, ca, pr);
-
-		rt.run_better();
+		new CompilationRunner(this).start(cis.get(0), do_out, op);
 	}
 
 	public void pushItem(CompilerInstructions aci) {
-		compilerInstructionsSubject.onNext(aci);
+		_cis.onNext(aci);
 	}
 
 	public void addPipeline(PipelineMember aPl) {
