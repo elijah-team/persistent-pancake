@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.util.NotImplementedException;
 
 import java.util.Map;
 
@@ -26,12 +27,25 @@ class DTR_VariableStatement {
 
 		final NormalTypeName normalTypeName = (NormalTypeName) typeName1;
 
+		int state = 0;
+
 		if (normalTypeName.getGenericPart() != null) {
-			normalTypeName_notGeneric(eh, genType, normalTypeName);
+			state = 1;
 		} else {
 			if (!normalTypeName.isNull()) {
-				normalTypeName_generic_butNotNull(eh, genType, normalTypeName);
+				state = 2;
 			}
+		}
+
+		switch (state) {
+		case 1:
+			normalTypeName_notGeneric(eh, genType, normalTypeName);
+			break;
+		case 2:
+			normalTypeName_generic_butNotNull(eh, genType, normalTypeName);
+			break;
+		default:
+			throw new IllegalStateException("Unexpected value: " + state);
 		}
 	}
 
@@ -56,6 +70,7 @@ class DTR_VariableStatement {
 				assert false;
 			}
 		} else if (eh instanceof DeduceElement3Holder) {
+			NotImplementedException.raise();
 		} else
 			genType.typeName = new OS_Type(normalTypeName);
 	}
