@@ -56,7 +56,9 @@ public class WritePipeline implements PipelineMember, @NotNull Consumer<Supplier
 	private final Promise<GenerateResult, Void, Void> prom;
 	private Supplier<GenerateResult>                  grs;
 
-	public WritePipeline(Compilation aCompilation, final ProcessRecord aPr, Promise<PipelineLogic, Void, Void> ppl) {
+	public WritePipeline(final @NotNull Compilation aCompilation,
+						 final @NotNull ProcessRecord aPr,
+						 final @NotNull Promise<PipelineLogic, Void, Void> ppl) {
 		st = new WritePipelineSharedState();
 
 		// given

@@ -8,7 +8,10 @@ import tripleo.elijah.util.NotImplementedException;
 
 import java.util.Objects;
 
-public class OutputFileFactory {
+public final class OutputFileFactory {
+	private OutputFileFactory() {
+	}
+
 	@Contract("_, _ -> new")
 	public static @NotNull GenerateFiles create(final @NotNull String lang,
 												final @NotNull OutputFileFactoryParams params) {
