@@ -50,7 +50,6 @@ public class Compilation {
 	final         Map<String, CompilerInstructions> fn2ci     = new HashMap<String, CompilerInstructions>();
 	final         Pipeline                          pipelines = new Pipeline();
 	private final int                               _compilationNumber;
-	private final Map<String, OS_Module>            fn2m      = new HashMap<String, OS_Module>();
 	private final Map<String, OS_Package>           _packages = new HashMap<String, OS_Package>();
 	public        Stages                            stage     = Stages.O; // Output
 	public        boolean                           silent    = false;
@@ -189,11 +188,14 @@ public class Compilation {
 		pipelines.add(aPl);
 	}
 
-	class USE {
+	static class USE {
 		private final Compilation c;
+		private final ErrSink errSink;
 
+		@Contract(pure = true)
 		public USE(final Compilation aCompilation) {
-			c = aCompilation;
+			c       = aCompilation;
+			errSink = c.getErrSink();
 		}
 
 		public void use(final @NotNull CompilerInstructions compilerInstructions, final boolean do_out) throws Exception {
@@ -220,19 +222,39 @@ public class Compilation {
 				return;
 			}
 			//
-			final FilenameFilter accept_source_files = new FilenameFilter() {
-				@Override
-				public boolean accept(final File directory, final String file_name) {
-					final boolean matches = Pattern.matches(".+\\.elijah$", file_name)
-							|| Pattern.matches(".+\\.elijjah$", file_name);
-					return matches;
-				}
-			};
 			final File[] files = dir.listFiles(accept_source_files);
 			if (files != null) {
 				for (final File file : files) {
 					parseElijjahFile(file, file.toString(), do_out, lsp);
 				}
+			}
+		}
+
+		private static final FilenameFilter accept_source_files = new FilenameFilter() {
+			@Override
+			public boolean accept(final File directory, final String file_name) {
+				final boolean matches = Pattern.matches(".+\\.elijah$", file_name)
+						|| Pattern.matches(".+\\.elijjah$", file_name);
+				return matches;
+			}
+		};
+
+		public Operation2<OS_Module> findPrelude(final String prelude_name) {
+			final File local_prelude = new File("lib_elijjah/lib-" + prelude_name + "/Prelude.elijjah");
+
+			if (!(local_prelude.exists())) {
+				return Operation2.failure(new FileNotFoundDiagnostic(local_prelude));
+			}
+
+			try {
+				final Operation2<OS_Module> om = realParseElijjahFile2(local_prelude.getName(), local_prelude, false);
+
+				assert om.mode() == SUCCESS;
+
+				return Operation2.success(om.success());
+			} catch (final Exception e) {
+				errSink.exception(e);
+				return Operation2.failure(new ExceptionDiagnostic(e));
 			}
 		}
 
@@ -243,16 +265,16 @@ public class Compilation {
 			System.out.printf("   %s%n", f.getAbsolutePath());
 
 			if (f.exists()) {
-				final Operation2<OS_Module> m = realParseElijjahFile2(file_name, f, do_out);
+				final Operation2<OS_Module> om = realParseElijjahFile2(file_name, f, do_out);
 
-				if (m.mode() == SUCCESS) {
+				if (om.mode() == SUCCESS) {
 					// TODO we dont know which prelude to find yet
 					final Operation2<OS_Module> pl = findPrelude(CompilationAlways.defaultPrelude());
 
 					// NOTE Go. infectious. tedious. also slightly lazy
 					assert pl.mode() == SUCCESS;
 
-					final OS_Module mm = m.success();
+					final OS_Module mm = om.success();
 
 					assert mm.getLsp() == null;
 					assert mm.prelude  == null;
@@ -262,7 +284,7 @@ public class Compilation {
 
 					return Operation2.success(mm);
 				} else {
-					final Diagnostic e = new UnknownExceptionDiagnostic(m);
+					final Diagnostic e = new UnknownExceptionDiagnostic(om);
 					return Operation2.failure(e);
 				}
 			} else {
@@ -293,12 +315,21 @@ public class Compilation {
 			}
 		}
 
+		private Operation<OS_Module> parseFile_(final String f, final InputStream s, final boolean do_out) throws RecognitionException, TokenStreamException {
+			final QuerySourceFileToModuleParams qp = new QuerySourceFileToModuleParams(s, f, do_out);
+			return new QuerySourceFileToModule(qp, c).calculate();
+		}
+
+		private final Map<String, OS_Module>            fn2m      = new HashMap<String, OS_Module>();
+
 		public Operation<OS_Module> realParseElijjahFile(final String f, final @NotNull File file, final boolean do_out) throws Exception {
 			final String absolutePath = file.getCanonicalFile().toString();
 			if (fn2m.containsKey(absolutePath)) { // don't parse twice
 				final OS_Module m = fn2m.get(absolutePath);
 				return Operation.success(m);
 			}
+
+			final IO io = c.getIO();
 
 			// tree add something
 
@@ -325,6 +356,10 @@ public class Compilation {
 				return Operation.failure(e);
 			}
 		}
+
+		public void addModule(final OS_Module aModule, final String aFn) {
+			fn2m.put(aFn, aModule);
+		}
 	}
 
 	final private USE use = new USE(this);
@@ -349,11 +384,6 @@ public class Compilation {
 		return new ModuleBuilder(this);
 	}
 
-	private Operation<OS_Module> parseFile_(final String f, final InputStream s, final boolean do_out) throws RecognitionException, TokenStreamException {
-		final QuerySourceFileToModuleParams qp = new QuerySourceFileToModuleParams(s, f, do_out);
-		return new QuerySourceFileToModule(qp, this).calculate();
-	}
-
 	public List<ClassStatement> findClass(final String aClassName) {
 		final List<ClassStatement> l = new ArrayList<ClassStatement>();
 		for (final OS_Module module : modules) {
@@ -369,27 +399,12 @@ public class Compilation {
 	}
 
 	public Operation2<OS_Module> findPrelude(final String prelude_name) {
-		final File local_prelude = new File("lib_elijjah/lib-" + prelude_name + "/Prelude.elijjah");
-
-		if (!(local_prelude.exists())) {
-			return Operation2.failure(new FileNotFoundDiagnostic(local_prelude));
-		}
-
-		try {
-			final Operation2<OS_Module> om = use.realParseElijjahFile2(local_prelude.getName(), local_prelude, false);
-
-			assert om.mode() == SUCCESS;
-
-			return Operation2.success(om.success());
-		} catch (final Exception e) {
-			errSink.exception(e);
-			return Operation2.failure(new ExceptionDiagnostic(e));
-		}
+		return use.findPrelude(prelude_name);
 	}
 
 	public void addModule(final OS_Module module, final String fn) {
 		modules.add(module);
-		fn2m.put(fn, module);
+		use.addModule(module, fn);
 	}
 
 	//
