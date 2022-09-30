@@ -88,7 +88,7 @@ public class Compilation {
 		this.io = io;
 	}
 
-	boolean do_out = false;
+	protected boolean do_out = false;
 
 	public @NotNull Operation<CompilerInstructions> parseEzFile(final File aFile) {
 		try {
@@ -106,7 +106,8 @@ public class Compilation {
 			pico.addComponent(PicoContainer   .class, pico);
 			pico.addComponent(OptionsProcessor.class, new ApacheOptionsProcessor());
 
-			//pico.addComponent(JFrame.class);
+			//pico.addComponent(CompilerInstructionsObserver.class); // TODO not yet
+
 			//pico.addComponent(InfoWindowProvider.class);
 			//pico.addComponent(ShowInfoWindowAction.class);
 			//pico.addComponent(ShowInfoWindowButton.class);
@@ -131,7 +132,6 @@ public class Compilation {
 			System.err.println("Usage: eljc [--showtree] [-sE|O] <directory or .ez file names>");
 			return;
 		}
-
 
 		final OptionsProcessor op = pico.getComponent(OptionsProcessor.class);
 
