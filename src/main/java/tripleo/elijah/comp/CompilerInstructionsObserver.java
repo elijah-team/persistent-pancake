@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 class CompilerInstructionsObserver implements Observer<CompilerInstructions> {
+	private final List<CompilerInstructions> l = new ArrayList<>();
 	private final Compilation                compilation;
-	final         List<CompilerInstructions> l = new ArrayList<>();
-	private final OptionsProcessor op;
+	private final OptionsProcessor           op;
 
 	public CompilerInstructionsObserver(final Compilation aCompilation, final OptionsProcessor aOp) {
 		compilation = aCompilation;
@@ -21,13 +21,13 @@ class CompilerInstructionsObserver implements Observer<CompilerInstructions> {
 
 	@Override
 	public void onSubscribe(@NonNull final Disposable d) {
-
+		//Disposable x = d;
+		//NotImplementedException.raise();
 	}
 
 	@Override
 	public void onNext(@NonNull final CompilerInstructions aCompilerInstructions) {
 		l.add(aCompilerInstructions);
-		//NotImplementedException.raise();
 	}
 
 	@Override
@@ -37,9 +37,14 @@ class CompilerInstructionsObserver implements Observer<CompilerInstructions> {
 
 	@Override
 	public void onComplete() {
+		throw new RuntimeException();
+	}
+
+	public void almostComplete() {
 		try {
 			compilation.hasInstructions(l, compilation.do_out, op);
 		} catch (Exception aE) {
+			NotImplementedException.raise();
 			throw new RuntimeException(aE);
 		}
 	}
