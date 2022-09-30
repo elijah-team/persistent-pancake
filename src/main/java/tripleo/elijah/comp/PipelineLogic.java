@@ -257,7 +257,7 @@ public class PipelineLogic {
 
 					final @NotNull Collection<GeneratedNode> gn2 = GenerateFiles.constructors_to_list_of_generated_nodes(generatedClass.constructors.values());
 					GenerateResult gr3 = ggc.generateCode(gn2, wm);
-					gr.results().addAll(gr3.results());
+					gr.additional(gr3);
 				}
 				final @NotNull Collection<GeneratedNode> gn1 = GenerateFiles.functions_to_list_of_generated_nodes(nc.functionMap.values());
 				GenerateResult gr2 = ggc.generateCode(gn1, wm);

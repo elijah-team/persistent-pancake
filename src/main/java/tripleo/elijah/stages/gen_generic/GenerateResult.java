@@ -34,7 +34,7 @@ public class GenerateResult {
 
 	private int bufferCounter = 0;
 
-	final List<GenerateResultItem> res = new ArrayList<GenerateResultItem>();
+	final List<GenerateResultItem> _res = new ArrayList<GenerateResultItem>();
 
 	public GenerateResult(/*final Map<String, OutputFileC> aOutputFiles, final int aBufferCounter*/) {
 /*
@@ -45,12 +45,12 @@ public class GenerateResult {
 	}
 
 	public List<GenerateResultItem> results() {
-		return res;
+		return _res;
 	}
 
 	public void add(Buffer b, GeneratedNode n, TY ty, LibraryStatementPart aLsp, @NotNull Dependency d) {
 		final GenerateResultItem item = new GenerateResultItem(ty, b, n, aLsp, d, ++bufferCounter);
-		res.add(item);
+		_res.add(item);
 //		items.onNext(item);
 	}
 
@@ -78,6 +78,12 @@ public class GenerateResult {
 
 	public void outputFiles(final @NotNull Consumer<Map<String, OutputFileC>> cmso) {
 		cmso.accept(outputFiles);
+	}
+
+	public void additional(final @NotNull GenerateResult aGenerateResult) {
+		// TODO find something better
+		//results()
+		_res.addAll(aGenerateResult.results());
 	}
 
 	public enum TY {
