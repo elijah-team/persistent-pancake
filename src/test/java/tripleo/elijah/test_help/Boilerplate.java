@@ -9,6 +9,7 @@ import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.ProcessRecord;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.OutputFileFactory;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
@@ -50,5 +51,9 @@ public class Boilerplate {
 		}
 
 		return module;
+	}
+
+	public DeducePhase getDeducePhase() {
+		return pr.pipelineLogic.dp;
 	}
 }
