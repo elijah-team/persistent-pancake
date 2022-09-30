@@ -79,7 +79,7 @@ class RuntimeProcesses {
 		}
 
 		System.err.println("***** RuntimeProcess^ [postProcess/writeLogs]");
-		pr.stage.writeLogs(ca);
+		pr.writeLogs(ca);
 	}
 
 	public int size() {
@@ -109,15 +109,15 @@ class RuntimeProcesses {
 	public void run_loser() {
 		if (false) {
 			final PipelineLogic pipelineLogic;
-			final Compilation   comp = null;
-			final Stages stage = null;
+			final Compilation   comp      = null;
+			final Stages        stage     = null;
 			final FakePipelines pipelines = new FakePipelines();
 
 			pipelineLogic = pr.pipelineLogic;
 
 			final DeducePipeline dpl = pr.dpl;
-
 			addPipeline(dpl);
+
 			if (stage == Stages.O) {
 				pr.setGenerateResult(null);
 
@@ -138,7 +138,6 @@ class RuntimeProcesses {
 			ca.writeLogs();
 		}
 	}
-
 }
 
 final class EmptyProcess implements RuntimeProcess {
@@ -169,7 +168,7 @@ class DStageProcess implements RuntimeProcess {
 
 	@Override
 	public void prepare() {
-		assert pr.stage == Stages.D;
+		//assert pr.stage == Stages.D; // FIXME
 	}
 }
 
@@ -210,7 +209,7 @@ class OStageProcess implements RuntimeProcess {
 		
 		final Compilation        comp = ca.getCompilation();
 		
-		final DeducePipeline     dpl  = new DeducePipeline      (comp);
+		final DeducePipeline     dpl  = new DeducePipeline      (ca);
 		final GeneratePipeline   gpl  = new GeneratePipeline	(comp, dpl);
 		final WritePipeline      wpl  = new WritePipeline		(comp, pr, ppl);
 		final WriteMesonPipeline wmpl = new WriteMesonPipeline	(comp, pr, ppl, wpl);
@@ -224,7 +223,6 @@ class OStageProcess implements RuntimeProcess {
 		//Helpers.<Consumer<Supplier<GenerateResult>>>List_of(wpl.consumer(), wmpl.consumer())
 		List_of(wpl.consumer(), wmpl.consumer())
 				.forEach(pr::consumeGenerateResult);
-
 	}
 }
 
