@@ -14,6 +14,9 @@
  */
 package tripleo.elijah.lang;
 
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.util.Helpers;
+
 import java.io.File;
 
 public class RegularTypeName extends AbstractTypeName2 implements NormalTypeName {
@@ -31,6 +34,16 @@ public class RegularTypeName extends AbstractTypeName2 implements NormalTypeName
 	@Deprecated public RegularTypeName() { // TODO remove this
 		super();
 		_ctx = null;
+	}
+
+	/*
+	 * Null context.
+	 * Possibly only for testing.
+	 */
+	public static @NotNull RegularTypeName makeWithStringTypeName(final String aTypeName) {
+		final RegularTypeName R = new RegularTypeName(null);
+		R.setName(Helpers.string_to_qualident(aTypeName));
+		return R;
 	}
 
 	@Override
