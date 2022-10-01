@@ -124,8 +124,11 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 							LookupResultList lrl = tn.getContext().lookup(tn2.getName());
 							OS_Element best = lrl.chooseBest(null);
 							if (best != null) {
-								if (best instanceof AliasStatement)
+								if (best instanceof AliasStatement) {
+									NotImplementedException.raise();
+									assert false;
 									best = DeduceLookupUtils._resolveAlias((AliasStatement) best, null);
+								}
 								assert best instanceof ClassStatement;
 								varTableEntry.varType = ((ClassStatement) best).getOS_Type();
 							} else {

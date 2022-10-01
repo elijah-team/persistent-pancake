@@ -54,33 +54,12 @@ public class DeduceLookupUtils {
 
 	@Nullable
 	public static OS_Element _resolveAlias(final @NotNull AliasStatement aliasStatement, @NotNull DeduceTypes2 deduceTypes2) {
-		LookupResultList lrl2;
-		if (aliasStatement.getExpression() instanceof Qualident) {
-			final IExpression de = Helpers.qualidentToDotExpression2(((Qualident) aliasStatement.getExpression()));
-			if (de instanceof DotExpression) {
-				try {
-					lrl2 = lookup_dot_expression(aliasStatement.getContext(), (DotExpression) de, deduceTypes2);
-				} catch (ResolveError aResolveError) {
-					aResolveError.printStackTrace();
-					lrl2 = new LookupResultList();
-				}
-			} else
-				lrl2 = aliasStatement.getContext().lookup(((IdentExpression) de).getText());
-			return lrl2.chooseBest(null);
+		try {
+			return _resolveAlias2(aliasStatement, deduceTypes2);
+		} catch (ResolveError aE) {
+			aE.printStackTrace();
+			return null;
 		}
-		// TODO what about when DotExpression is not just simple x.y.z? then alias equivalent to val
-		if (aliasStatement.getExpression() instanceof DotExpression) {
-			final IExpression de = aliasStatement.getExpression();
-			try {
-				lrl2 = lookup_dot_expression(aliasStatement.getContext(), (DotExpression) de, deduceTypes2);
-			} catch (ResolveError aResolveError) {
-				aResolveError.printStackTrace();
-				lrl2 = new LookupResultList();
-			}
-			return lrl2.chooseBest(null);
-		}
-		lrl2 = aliasStatement.getContext().lookup(((IdentExpression) aliasStatement.getExpression()).getText());
-		return lrl2.chooseBest(null);
 	}
 
 	@Nullable
