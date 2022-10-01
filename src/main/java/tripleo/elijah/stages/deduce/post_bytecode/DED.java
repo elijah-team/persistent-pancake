@@ -25,6 +25,10 @@ public interface DED {
 		return new DED_TTE(aCte);
 	}
 
+	static DED dispatch(DeduceElement3_VarTableEntry aDeduceElement3_varTableEntry) {
+		return new DED_GC_VTE(aDeduceElement3_varTableEntry);
+	}
+
 	Kind kind();
 
 	enum Kind {
@@ -40,7 +44,7 @@ public interface DED {
 			DED_Kind_GeneratedFunction,
 		 */
 		DED_Kind_Type,
-		DED_Kind_TypeTableEntry
+		DED_Kind_GC_VarTableEntry, DED_Kind_TypeTableEntry
 	}
 
 	class DED_PTE implements DED {
@@ -130,4 +134,17 @@ public interface DED {
 
 	}
 
+	class DED_GC_VTE implements DED {
+		private final DeduceElement3_VarTableEntry deduceElement3_varTableEntry;
+
+		@Contract(pure = true)
+		public DED_GC_VTE(final DeduceElement3_VarTableEntry aDeduceElement3_varTableEntry) {
+			deduceElement3_varTableEntry = aDeduceElement3_varTableEntry;
+		}
+
+		@Override
+		public Kind kind() {
+			return Kind.DED_Kind_GC_VarTableEntry;
+		}
+	}
 }

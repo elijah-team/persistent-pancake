@@ -11,9 +11,11 @@ package tripleo.elijah.stages.gen_fn;
 
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VarTableEntry;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,6 +53,10 @@ public interface GeneratedContainer extends GeneratedNode {
 			parent          = aElement;
 		}
 
+		public DeduceElement3_VarTableEntry getDeduceElement3() {
+			return new DeduceElement3_VarTableEntry(this);
+		}
+
 		public void addPotentialTypes(@NotNull Collection<TypeTableEntry> aPotentialTypes) {
 			potentialTypes.addAll(aPotentialTypes);
 		}
@@ -74,6 +80,17 @@ public interface GeneratedContainer extends GeneratedNode {
 
 		public List<ConnectionPair> connectionPairs = new ArrayList<>();
 
+		public void resolve_varType(final OS_Type aOS_type) {
+			_resolve_varType_Promise.resolve(aOS_type);
+			varType = aOS_type;
+		}
+
+		public void resolve_varType_cb(final DoneCallback<OS_Type> aCallback) {
+			_resolve_varType_Promise.then(aCallback);
+		}
+
+		private DeferredObject<OS_Type, Void, Void> _resolve_varType_Promise = new DeferredObject<>();
+
 		public interface UpdatePotentialTypesCB {
 			void call(final @NotNull GeneratedContainer aGeneratedContainer);
 		}
@@ -94,6 +111,7 @@ public interface GeneratedContainer extends GeneratedNode {
 			public final VariableTableEntry vte;
 			final GeneratedConstructor constructor;
 
+			@Contract(pure = true)
 			public ConnectionPair(final VariableTableEntry aVte, final GeneratedConstructor aConstructor) {
 				vte = aVte;
 				constructor = aConstructor;

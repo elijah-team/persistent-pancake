@@ -60,7 +60,8 @@ public interface IDeduceElement3 {
 		FUNCTION,
 		GEN_FN__VTE,
 		GEN_FN__ITE,
-		GEN_FN__PTE
+		GEN_FN__GC_VTE,
+		GEN_FN__PTE;
 		// ...
 	}
 }

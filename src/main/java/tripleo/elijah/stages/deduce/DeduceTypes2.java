@@ -122,7 +122,7 @@ public class DeduceTypes2 {
 	public void deduceOneClass(final GeneratedClass aGeneratedClass) {
 		for (GeneratedContainer.VarTableEntry entry : aGeneratedClass.varTable) {
 			final OS_Type vt = entry.varType;
-			GenType genType = makeGenTypeFromOSType(vt, aGeneratedClass.ci.genericPart);
+			GenType genType = GenType.makeFromOSType(vt, aGeneratedClass.ci.genericPart, this, phase);
 			if (genType != null)
 				entry.resolve(genType.node);
 			int y=2;
@@ -167,96 +167,6 @@ public class DeduceTypes2 {
 			else
 				ep.hasElement(el);
 		}
-	}
-
-	private GenType makeGenTypeFromOSType(final OS_Type aType, final @Nullable Map<TypeName, OS_Type> aGenericPart) {
-		GenType gt = new GenType();
-		gt.typeName = aType;
-		if (aType.getType() == OS_Type.Type.USER) {
-			final TypeName tn1 = aType.getTypeName();
-			if (tn1.isNull()) return null; // TODO Unknown, needs to resolve somewhere
-
-			assert tn1 instanceof NormalTypeName;
-			final NormalTypeName tn = (NormalTypeName) tn1;
-			final LookupResultList lrl = tn.getContext().lookup(tn.getName());
-			final @Nullable OS_Element el = lrl.chooseBest(null);
-
-			ProcessElement.processElement(el, new IElementProcessor() {
-				@Override
-				public void elementIsNull() {
-					NotImplementedException.raise();
-				}
-
-				@Override
-				public void hasElement(final OS_Element el) {
-					final @Nullable OS_Element best = preprocess(el);
-					if (best == null) return;
-
-					if (best instanceof ClassStatement) {
-						final ClassStatement classStatement = (ClassStatement) best;
-						gt.resolved = classStatement.getOS_Type();
-					} else if (best instanceof ClassContext.OS_TypeNameElement) {
-						final ClassContext.OS_TypeNameElement typeNameElement = (ClassContext.OS_TypeNameElement) best;
-						assert aGenericPart != null;
-						final OS_Type x = aGenericPart.get(typeNameElement.getTypeName());
-						switch (x.getType()) {
-						case USER_CLASS:
-							final ClassStatement classStatement1 = x.getClassOf(); // always a ClassStatement
-
-							// TODO test next 4 (3) lines are copies of above
-							if (classStatement1 != null) {
-								gt.resolved = classStatement1.getOS_Type();
-							}
-							break;
-						case USER:
-							final NormalTypeName tn2 = (NormalTypeName) x.getTypeName();
-							final LookupResultList lrl2 = tn.getContext().lookup(tn2.getName());
-							final @Nullable OS_Element el2 = lrl2.chooseBest(null);
-
-							// TODO test next 4 lines are copies of above
-							if (el2 instanceof ClassStatement) {
-								final ClassStatement classStatement = (ClassStatement) el2;
-								gt.resolved = classStatement.getOS_Type();
-							} else
-								throw new NotImplementedException();
-							break;
-						}
-					} else {
-						LOG.err("143 "+el);
-						throw new NotImplementedException();
-					}
-
-					gotResolved(gt);
-				}
-
-				private void gotResolved(final GenType gt) {
-					if (gt.resolved.getClassOf().getGenericPart().size() != 0) {
-						//throw new AssertionError();
-						LOG.info("149 non-generic type "+tn1);
-					}
-					gt.genCI(null, DeduceTypes2.this, errSink, phase); // TODO aGenericPart
-					assert gt.ci != null;
-					genNodeForGenType2(gt);
-				}
-
-				private OS_Element preprocess(final OS_Element el) {
-					@Nullable OS_Element best = el;
-					try {
-						while (best instanceof AliasStatement) {
-							best = DeduceLookupUtils._resolveAlias2((AliasStatement) best, DeduceTypes2.this);
-						}
-						assert best != null;
-						return best;
-					} catch (ResolveError aResolveError) {
-						LOG.err("152 Can't resolve Alias statement "+best);
-						errSink.reportDiagnostic(aResolveError);
-						return null;
-					}
-				}
-			});
-		} else
-			throw new AssertionError("Not a USER Type");
-		return gt;
 	}
 
 	interface df_helper_i<T> {
@@ -3268,36 +3178,6 @@ public class DeduceTypes2 {
 				aVte.resolveTypeToClass(result);
 			}
 		});
-	}
-
-	/**
-	 * Sets the node for a GenType, invocation must already be set
-	 *
-	 * @param aGenType the GenType to modify.
-	 */
-	public void genNodeForGenType2(final GenType aGenType) {
-//		assert aGenType.nonGenericTypeName != null;
-
-		final IInvocation invocation = aGenType.ci;
-
-		if (invocation instanceof NamespaceInvocation) {
-			final NamespaceInvocation namespaceInvocation = (NamespaceInvocation) invocation;
-			namespaceInvocation.resolveDeferred().then(new DoneCallback<GeneratedNamespace>() {
-				@Override
-				public void onDone(final GeneratedNamespace result) {
-					aGenType.node = result;
-				}
-			});
-		} else if (invocation instanceof ClassInvocation) {
-			final ClassInvocation classInvocation = (ClassInvocation) invocation;
-			classInvocation.resolvePromise().then(new DoneCallback<GeneratedClass>() {
-				@Override
-				public void onDone(final GeneratedClass result) {
-					aGenType.node = result;
-				}
-			});
-		} else
-			throw new IllegalStateException("invalid invocation");
 	}
 
 	static class DeduceClient2 {
