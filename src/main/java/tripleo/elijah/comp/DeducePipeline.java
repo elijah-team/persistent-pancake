@@ -8,6 +8,8 @@
  */
 package tripleo.elijah.comp;
 
+import org.jdeferred2.DoneCallback;
+import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.stages.deduce.pipeline_impl.DeducePipelineImpl;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
@@ -45,9 +47,15 @@ public class DeducePipeline implements PipelineMember, Consumer<Supplier<Generat
 	}
 
 	@Override
-	public void accept(Supplier<GenerateResult> t) {
+	public void accept(final Supplier<GenerateResult> t) {
 		NotImplementedException.raise();
 	}
+
+	public void lgcp(final DoneCallback<List<GeneratedNode>> aListDoneCallback) {
+		_lgcp.then(aListDoneCallback);
+	}
+
+	private final DeferredObject<List<GeneratedNode>, Void, Void> _lgcp = new DeferredObject<>();
 }
 
 //
