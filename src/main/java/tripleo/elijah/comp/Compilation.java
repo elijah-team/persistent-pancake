@@ -77,10 +77,6 @@ public class Compilation {
 		return rootCI.getName();
 	}
 
-	public void feedCmdLine(final List<String> args) throws Exception {
-		main(args);
-	}
-
 	public IO getIO() {
 		return io;
 	}
@@ -117,7 +113,7 @@ public class Compilation {
 		}
 	}
 
-	public void main(final @NotNull List<String> args) throws Exception {
+	public void feedCmdLine(final @NotNull List<String> args) throws Exception {
 		final PicoContainer pico = MainModule.newContainer();
 
 /*
