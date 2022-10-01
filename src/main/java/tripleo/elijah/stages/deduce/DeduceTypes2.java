@@ -124,7 +124,9 @@ public class DeduceTypes2 {
 			GenType genType = GenType.makeFromOSType(vt, aGeneratedClass.ci.genericPart, this, phase, LOG, errSink);
 			if (genType != null)
 				entry.resolve(genType.node);
-			int y=2;
+
+			NotImplementedException.raise();
+
 		}
 	}
 
@@ -154,13 +156,13 @@ public class DeduceTypes2 {
 		_pendingResolves.add(aResolvable);
 	}
 
-	interface IElementProcessor {
+	public interface IElementProcessor {
 		void elementIsNull();
 		void hasElement(OS_Element el);
 	}
 
-	static class ProcessElement {
-		static void processElement(OS_Element el, IElementProcessor ep) {
+	public static class ProcessElement {
+		public static void processElement(OS_Element el, IElementProcessor ep) {
 			if (el == null)
 				ep.elementIsNull();
 			else
