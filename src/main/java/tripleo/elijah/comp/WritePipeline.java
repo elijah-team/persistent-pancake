@@ -518,6 +518,8 @@ public class WritePipeline implements PipelineMember, @NotNull Consumer<Supplier
 		// endregion state
 
 		public void addItem(final @NotNull GenerateResultItem ab) {
+			NotImplementedException.raise();
+
 			// README debugging purposes
 			abs.add(ab);
 
@@ -543,11 +545,13 @@ public class WritePipeline implements PipelineMember, @NotNull Consumer<Supplier
 
 		@Contract(pure = true)
 		public void completeSequence(int y) {
-
+			NotImplementedException.raise();
 		}
 
 		private void ___completeSequence(final @NotNull Map<String, OutputFileC> outputFiles) {
 			final String         prefix         = sharedState.file_prefix.toString();
+
+			NotImplementedException.raise();
 
 			for (final Map.Entry<String, OutputFileC> entry : outputFiles.entrySet()) {
 				final String key = entry.getKey();
@@ -581,6 +585,7 @@ public class WritePipeline implements PipelineMember, @NotNull Consumer<Supplier
 			});
 		}
 
+		@Contract(mutates = "this")
 		public Observer<GenerateResultItem> observer() {
 			if (observer == null) {
 				observer = new Observer<GenerateResultItem>() {
