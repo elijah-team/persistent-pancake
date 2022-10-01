@@ -290,14 +290,13 @@ public class GenType {
 					return resolvedFunction(genType, aGenericTypeName, deduceTypes2, errSink, phase);
 				} else if (genType.resolved.getType() == OS_Type.Type.FUNC_EXPR) {
 					// TODO what to do here?
-					int y=2;
+					NotImplementedException.raise();
 				}
 			}
 			return null;
 		}
 
-		@Nullable
-		private ClassInvocation resolvedFunction(final @NotNull GenType genType, final TypeName aGenericTypeName, final DeduceTypes2 deduceTypes2, final ErrSink errSink, final DeducePhase phase) {
+		private @NotNull ClassInvocation resolvedFunction(final @NotNull GenType genType, final TypeName aGenericTypeName, final DeduceTypes2 deduceTypes2, final ErrSink errSink, final DeducePhase phase) {
 			// TODO what to do here?
 			OS_Element ele = genType.resolved.getElement();
 			ClassStatement best = (ClassStatement) ele.getParent();//genType.resolved.getClassOf();
@@ -315,8 +314,7 @@ public class GenType {
 			return clsinv;
 		}
 
-		@Nullable
-		private ClassInvocation resolvedUserClass(final @NotNull GenType genType, final TypeName aGenericTypeName, final DeducePhase phase, final DeduceTypes2 deduceTypes2, final ErrSink errSink) {
+		private @NotNull ClassInvocation resolvedUserClass(final @NotNull GenType genType, final TypeName aGenericTypeName, final DeducePhase phase, final DeduceTypes2 deduceTypes2, final ErrSink errSink) {
 			ClassStatement best = genType.resolved.getClassOf();
 			@Nullable String constructorName = null; // TODO what to do about this, nothing I guess
 
@@ -332,16 +330,15 @@ public class GenType {
 			return clsinv;
 		}
 
-		@Nullable
-		private ClassInvocation nonGenericTypeName(final @NotNull GenType genType, final DeduceTypes2 deduceTypes2, final ErrSink errSink, final DeducePhase phase) {
+		private @NotNull ClassInvocation nonGenericTypeName(final @NotNull GenType genType, final DeduceTypes2 deduceTypes2, final ErrSink errSink, final DeducePhase phase) {
 			@NotNull NormalTypeName aTyn1 = (NormalTypeName) genType.nonGenericTypeName;
-			@Nullable String constructorName = null; // TODO this comes from nowhere
+			@Nullable String constructorName = null; // FIXME this comes from nowhere
 
 			switch (genType.resolved.getType()) {
 			case GENERIC_TYPENAME:
-				int y=2; // TODO seems to not be necessary
+				// TODO seems to not be necessary
 				assert false;
-				return null;
+				throw new NotImplementedException();
 			case USER_CLASS:
 				ClassStatement best = genType.resolved.getClassOf();
 				//

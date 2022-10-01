@@ -478,10 +478,13 @@ public class DeducePhase {
 							public void onDone(@NotNull GeneratedNamespace result) {
 								GeneratedContainer.@Nullable VarTableEntry v = result.getVariable(deferredMember.getVariableStatement().getName());
 								assert v != null;
+
 								// TODO varType, potentialTypes and _resolved: which?
-								final OS_Type varType = v.varType;
-								final @NotNull GenType genType = new GenType();
-								genType.set(varType);
+								//final OS_Type varType = v.varType;
+
+								v.resolve_varType_cb((varType) -> {
+									final @NotNull GenType genType = new GenType();
+									genType.set(varType);
 
 //								if (deferredMember.getInvocation() instanceof NamespaceInvocation) {
 //									((NamespaceInvocation) deferredMember.getInvocation()).resolveDeferred().done(new DoneCallback<GeneratedNamespace>() {
@@ -492,7 +495,7 @@ public class DeducePhase {
 //									});
 //								}
 
-								deferredMember.externalRefDeferred().resolve(result);
+									deferredMember.externalRefDeferred().resolve(result);
 /*
 								if (genType.resolved == null) {
 									// HACK need to resolve, but this shouldn't be here
@@ -505,6 +508,7 @@ public class DeducePhase {
 								}
 								deferredMember.typeResolved().resolve(genType);
 */
+								});
 							}
 						});
 			} else if (deferredMember.getParent() instanceof ClassStatement) {
