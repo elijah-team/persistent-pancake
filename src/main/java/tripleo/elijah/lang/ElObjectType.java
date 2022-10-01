@@ -20,7 +20,7 @@ public enum ElObjectType {
 	VAR_SEQ,
 	VAR,
 	FORMAL_ARG_LIST_ITEM,
-	MODULE
+	TYPE_NAME_ELEMENT, MODULE
 }
 
 //
