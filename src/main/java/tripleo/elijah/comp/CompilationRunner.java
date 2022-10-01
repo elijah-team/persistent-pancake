@@ -35,8 +35,17 @@ class CompilationRunner {
 	void start(final CompilerInstructions ci, final boolean do_out, final @NotNull OptionsProcessor ignoredOp) throws Exception {
 		NotImplementedException.raise();
 
-		//System.err.println("130 GEN_LANG: " + ci.genLang());
-		findStdLib(Compilation.CompilationAlways.defaultPrelude(), compilation); // TODO find a better place for this
+		// 1. find stdlib
+		//   -- question placement
+		//   -- ...
+		{
+			final Operation<CompilerInstructions> x = findStdLib(Compilation.CompilationAlways.defaultPrelude(), compilation);
+			if (x.mode() == FAILURE) {
+				compilation.errSink.exception(x.failure());
+				return;
+			}
+			logProgress(130, "GEN_LANG: " + x.success().genLang());
+		}
 
 		//for (final CompilerInstructions ci : cis) {
 		compilation.use(ci, do_out);
@@ -264,4 +273,11 @@ class CompilationRunner {
 
 		aInstructionCompleter.accept(true);
 	}
+
+	private void logProgress(final int number, final String text) {
+		if (number == 130) return;
+
+		System.err.println(number + " " + text);
+	}
+
 }
