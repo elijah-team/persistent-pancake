@@ -1,5 +1,6 @@
 package tripleo.elijah.stages.deduce.post_bytecode;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.*;
@@ -76,7 +77,7 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 			if (potentialTypes.size() == 0 && (varTableEntry.varType == null || typeName.isNull())) {
 				__zero_potential(varTableEntry, typeName);
 			} else {
-				System.err.println(String.format("108 %s %s", varTableEntry.nameToken, potentialTypes));
+				noteNonsenseErr(108, String.format("%s %s", varTableEntry.nameToken, potentialTypes));
 
 				if (potentialTypes.size() == 1) {
 					__one_potential(aDeducePhase, varTableEntry, potentialTypes, typeName, ci);
@@ -85,6 +86,14 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 		} catch (STOP stop) {
 			NotImplementedException.raise();
 		}
+	}
+
+	private static void noteNonsense(int code, String message) {
+		System.out.printf("%d %s%n", code, message);
+	}
+
+	private static void noteNonsenseErr(int code, String message) {
+		System.err.printf("%d %s%n", code, message);
 	}
 
 	private static void __one_potential(final DeducePhase aDeducePhase,
@@ -101,7 +110,7 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 			//assert attachedType == OS_Type.Type.USER_CLASS;
 			if (attachedType != OS_Type.Type.USER_CLASS) {
 				final OS_Type att = potentialType.getAttached();
-				System.err.println("105 "+att);
+				noteNonsense(105, ""+att);
 			}
 
 			{
@@ -116,7 +125,7 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 							if (typeEntry.getKey().equals(t)) {
 								final OS_Type v = typeEntry.getValue();
 								potentialType.setAttached(v);
-								assert attachedType == OS_Type.Type.USER_CLASS;
+								assert attachedType == OS_Type.Type.USER_CLASS; // FIXME logical fallacy
 								break;
 							}
 						}
@@ -124,8 +133,6 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 				}
 			}
 
-
-			//
 			if (attachedType == OS_Type.Type.USER_CLASS) {
 				ClassInvocation xci = new ClassInvocation(potentialType.getAttached().getClassOf(), null);
 				{
@@ -143,27 +150,33 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 				potentialType.resolve(wgc.getResult());
 				sc = true;
 			} else {
-				int y=2;
-				System.err.println("177 not a USER_CLASS "+potentialType.getAttached());
+				NotImplementedException.raise();
+				noteNonsense(177, "not a USER_CLASS "+potentialType.getAttached());
 			}
 		}
 		if (potentialType.resolved() != null)
 			varTableEntry.resolve(potentialType.resolved());
 		else
-			System.err.println("114 Can't resolve "+ varTableEntry);
+			noteNonsense(114, "Can't resolve "+ varTableEntry);
 
 		if (!sc)
 			throw new STOP();
 	}
 
+	@Contract("_, null -> fail")
 	private void __zero_potential(final GeneratedContainer.VarTableEntry varTableEntry, final TypeName tn) {
+		Preconditions.checkNotNull(tn);
+		assert tn instanceof NormalTypeName;
+
 		if (tn != null) {
 			if (tn instanceof NormalTypeName) {
 				final NormalTypeName tn2 = (NormalTypeName) tn;
 				__zero_potential__1(varTableEntry, tn2);
-			}
+			} else
+				assert false;
 		} else {
 			// must be unknown
+			assert false;
 		}
 	}
 

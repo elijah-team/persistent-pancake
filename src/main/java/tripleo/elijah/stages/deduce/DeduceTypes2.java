@@ -118,7 +118,7 @@ public class DeduceTypes2 {
 		}
 	}
 
-	public void deduceOneClass(final GeneratedClass aGeneratedClass) {
+	public void deduceOneClass(final @NotNull GeneratedClass aGeneratedClass) {
 		for (GeneratedContainer.VarTableEntry entry : aGeneratedClass.varTable) {
 			final OS_Type vt = entry.varType;
 			GenType genType = GenType.makeFromOSType(vt, aGeneratedClass.ci.genericPart, this, phase, LOG, errSink);
