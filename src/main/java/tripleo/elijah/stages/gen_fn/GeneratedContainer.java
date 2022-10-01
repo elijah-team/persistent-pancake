@@ -29,14 +29,14 @@ public interface GeneratedContainer extends GeneratedNode {
 
 	public class VarTableEntry {
 		public final VariableStatement vs;
-		public final IdentExpression nameToken;
-		public final IExpression initialValue;
-		private final OS_Element parent;
-		public DeferredObject<UpdatePotentialTypesCB, Void, Void> updatePotentialTypesCBPromise = new DeferredObject<>();
-		TypeName typeName;
-		public OS_Type varType;
-		List<TypeTableEntry> potentialTypes = new ArrayList<TypeTableEntry>();
-		private GeneratedNode _resolvedType;
+		public final  IdentExpression                                    nameToken;
+		public final  IExpression                                        initialValue;
+		private final OS_Element                                         parent;
+		public        DeferredObject<UpdatePotentialTypesCB, Void, Void> updatePotentialTypesCBPromise = new DeferredObject<>();
+		public        TypeName                                           typeName;
+		public        OS_Type                                            varType;
+		public        List<TypeTableEntry>                               potentialTypes                = new ArrayList<TypeTableEntry>();
+		private       GeneratedNode                                      _resolvedType;
 
 		public VarTableEntry(final VariableStatement aVs,
 							 final @NotNull IdentExpression aNameToken,
