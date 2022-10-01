@@ -90,8 +90,10 @@ public class WritePipeline implements PipelineMember, @NotNull Consumer<Supplier
 		st.sys.generateOutputs(gr);
 */
 
-		ppl.then((x) -> {
-			NotImplementedException.raise();
+		ppl.then((aPipelineLogic) -> {
+			st.setGr(aPipelineLogic.gr);
+
+			//NotImplementedException.raise();
 		});
 
 		cih = new CompletedItemsHandler(st);
@@ -102,6 +104,9 @@ public class WritePipeline implements PipelineMember, @NotNull Consumer<Supplier
 			NotImplementedException.raise();
 			;
 			Objects.requireNonNull(gr1);
+
+			// FIXME also setGr here ...
+
 			gr1.subscribeCompletedItems(cih.observer());
 		});
 		//st.gr.subscribeCompletedItems(cih.observer());
