@@ -10,6 +10,7 @@ package tripleo.elijah.comp;
 
 import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.stages.gen_generic.DoubleLatch;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
@@ -47,7 +48,7 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 
 	public WriteMesonPipeline(final Compilation aCompilation,
 			final ProcessRecord ignoredAPr, 
-			final Promise<PipelineLogic, Void, Void> ppl, 
+			final @NotNull Promise<PipelineLogic, Void, Void> ppl,
 			final WritePipeline aWritePipeline) {
 		c = aCompilation;
 //		gr = aGr;
@@ -112,7 +113,7 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 		write_makefiles_latch.notify(true);
 	}
 
-	private void write_root(Multimap<CompilerInstructions, String> lsp_outputs, List<String> aDep_dirs) throws IOException {
+	private void write_root(@NotNull Multimap<CompilerInstructions, String> lsp_outputs, List<String> aDep_dirs) throws IOException {
 		CharSink root_file = c.getIO().openWrite(getPath("meson.build"));
 		try {
 			String project_name = c.getProjectName();
@@ -152,7 +153,7 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 				aName);
 	}
 
-	private void write_lsp(Multimap<CompilerInstructions, String> lsp_outputs, CompilerInstructions compilerInstructions, String aSub_dir) throws IOException {
+	private void write_lsp(@NotNull Multimap<CompilerInstructions, String> lsp_outputs, CompilerInstructions compilerInstructions, String aSub_dir) throws IOException {
 		final Path path = FileSystems.getDefault().getPath("COMP",
 				c.getCompilationNumberString(),
 				aSub_dir,
@@ -203,7 +204,7 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 	}
 
 	final Pattern pullPat = Pattern.compile("/[^/]+/(.+)");
-	private String pullFileName(String aFilename) {
+	private @Nullable String pullFileName(String aFilename) {
 		//return aFilename.substring(aFilename.lastIndexOf('/')+1);
 		Matcher x = pullPat.matcher(aFilename);
 		try {
@@ -220,7 +221,7 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 	}
 
 	@Override
-	public void accept(final Supplier<GenerateResult> aGenerateResultSupplier) {
+	public void accept(final @NotNull Supplier<GenerateResult> aGenerateResultSupplier) {
 		final GenerateResult gr = aGenerateResultSupplier.get();
 		grs = aGenerateResultSupplier;
 		int y=2;

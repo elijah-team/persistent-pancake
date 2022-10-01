@@ -176,7 +176,6 @@ public class Compilation {
 		}
 
 		public void almostComplete() {
-			int y=2;
 			_cio.almostComplete();
 		}
 
