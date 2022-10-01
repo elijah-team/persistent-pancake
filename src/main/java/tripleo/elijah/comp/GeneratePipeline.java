@@ -8,10 +8,14 @@
  */
 package tripleo.elijah.comp;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.util.NotImplementedException;
 
@@ -20,22 +24,44 @@ import tripleo.elijah.util.NotImplementedException;
  */
 public class GeneratePipeline implements PipelineMember, Consumer<Supplier<GenerateResult>> {
 	private final Compilation    c;
-	private final DeducePipeline dpl;
 
 	@Contract(pure = true)
-	public GeneratePipeline(Compilation aCompilation, DeducePipeline aDpl) {
+	public GeneratePipeline(Compilation aCompilation, @NotNull DeducePipeline aDpl) {
 		c = aCompilation;
-		dpl = aDpl;
+
+		aDpl.lgcp(new DoneCallback<List<GeneratedNode>>() {
+			@Override
+			public void onDone(final List<GeneratedNode> result) {
+				latch.set(result);
+				latch.run();
+			}
+		});
 	}
+
+	final private GPL latch = new GPL();
 
 	@Override
 	public void run() {
-		c.pipelineLogic.generate(dpl.lgc());
+		NotImplementedException.raise();
 	}
 
 	@Override
 	public void accept(Supplier<GenerateResult> t) {
 		NotImplementedException.raise();
+	}
+
+	private class GPL implements Runnable {
+		private List<GeneratedNode> result;
+
+		@Contract(mutates = "this")
+		public void set(final List<GeneratedNode> aResult) {
+			result = aResult;
+		}
+
+		@Override
+		public void run() {
+			c.pipelineLogic.generate(result);
+		}
 	}
 }
 
