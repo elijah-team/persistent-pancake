@@ -188,13 +188,13 @@ public class Compilation {
 	void hasInstructions(final @NotNull List<CompilerInstructions> cis,
 						 final boolean do_out,
 						 final @NotNull OptionsProcessor op) throws Exception {
-		assert cis.size() == 1;
+		//assert cis.size() == 1;
 
-		//assert cis.size() > 0;
+		assert cis.size() > 0;
 
 		rootCI = cis.get(0);
 
-		new CompilationRunner(this, _cis).start(cis.get(0), do_out, op);
+		new CompilationRunner(this, _cis).start(rootCI, do_out, op);
 	}
 
 	public void pushItem(CompilerInstructions aci) {
