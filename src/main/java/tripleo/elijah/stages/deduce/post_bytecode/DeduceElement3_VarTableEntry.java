@@ -156,7 +156,7 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 			throw new STOP();
 	}
 
-	private static void __zero_potential(final GeneratedContainer.VarTableEntry varTableEntry, final TypeName tn) {
+	private void __zero_potential(final GeneratedContainer.VarTableEntry varTableEntry, final TypeName tn) {
 		if (tn != null) {
 			if (tn instanceof NormalTypeName) {
 				final NormalTypeName tn2 = (NormalTypeName) tn;
