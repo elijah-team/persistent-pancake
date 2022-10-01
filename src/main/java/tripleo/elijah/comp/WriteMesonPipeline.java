@@ -59,6 +59,8 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 			final GenerateResult ignoredAGr;
 			
 			ignoredAGr = x.gr;
+
+			grs = () -> ignoredAGr;
 		});
 	}
 
@@ -223,6 +225,12 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 		return new Consumer<Supplier<GenerateResult>>() {
 			@Override
 			public void accept(final Supplier<GenerateResult> aGenerateResultSupplier) {
+				if (grs != null) {
+					System.err.println("234 grs not null "+grs.getClass().getName());
+					return;
+				}
+
+				assert false;
 				grs = aGenerateResultSupplier;
 				//final GenerateResult gr = aGenerateResultSupplier.get();
 			}
