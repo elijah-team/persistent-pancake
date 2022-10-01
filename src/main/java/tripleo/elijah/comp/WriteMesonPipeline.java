@@ -90,14 +90,19 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 
 	}
 
+	private Consumer<Multimap<CompilerInstructions, String>> _wmc;
+
 	public Consumer<Multimap<CompilerInstructions, String>> write_makefiles_consumer() {
-		final Consumer<Multimap<CompilerInstructions, String>> consumer = new Consumer<Multimap<CompilerInstructions, String>>() {
-			@Override
-			public void accept(final Multimap<CompilerInstructions, String> aCompilerInstructionsStringMultimap) {
-				write_makefiles_latch.notify(aCompilerInstructionsStringMultimap);
-			}
+		if (_wmc != null)
+			return _wmc;
+
+		final Consumer<Multimap<CompilerInstructions, String>> consumer = (aCompilerInstructionsStringMultimap) -> {
+			write_makefiles_latch.notify(aCompilerInstructionsStringMultimap);
 		};
-		return consumer;
+
+		_wmc = consumer;
+
+		return _wmc;
 	}
 
 	private void write_makefiles() {
