@@ -48,9 +48,7 @@ public class Main {
 
 		ls1.addAll(Arrays.asList(args));
 
-		comp.main(ls1);
-
-		//
+		comp.feedCmdLine(ls1);
 
 		if (false) {
 			final StdErrSink errSink = new StdErrSink();
@@ -58,7 +56,7 @@ public class Main {
 			final List<String> ls = new ArrayList<String>();
 			ls.addAll(Arrays.asList(args));
 
-			cc.main(ls/*, new StdErrSink()*/);
+			cc.feedCmdLine(ls/*, new StdErrSink()*/);
 		}
 	}
 
