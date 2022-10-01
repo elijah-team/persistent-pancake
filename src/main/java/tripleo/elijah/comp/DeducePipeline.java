@@ -26,9 +26,9 @@ import tripleo.elijah.util.NotImplementedException;
 public class DeducePipeline implements PipelineMember, Consumer<Supplier<GenerateResult>> {
 	private final DeducePipelineImpl impl;
 
-	public DeducePipeline(Compilation aCompilation) {
+	public DeducePipeline(final @NotNull ICompilationAccess aCa) {
 		System.err.println("***** Hit DeducePipeline constructor");
-		impl = new DeducePipelineImpl(aCompilation);
+		impl = new DeducePipelineImpl(aCa.getCompilation());
 	}
 
 	@Override
