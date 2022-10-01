@@ -8,33 +8,33 @@
  */
 package tripleo.elijah.lang;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.contexts.ClassContext;
 
 /**
  * Created 6/22/21 12:59 AM
  */
-public class DecideElObjectType {
+public enum DecideElObjectType {
+	;
+
+	@Contract(pure = true)
 	@NotNull
-	public static ElObjectType getElObjectType(/*@NotNull*/ OS_Element input) {
-		if (input instanceof ClassStatement)
-			return ElObjectType.CLASS;
-		else if (input instanceof NamespaceStatement)
-			return ElObjectType.NAMESPACE;
-		else if (input instanceof VariableSequence)
-			return ElObjectType.VAR_SEQ;
-		else if (input instanceof VariableStatement)
-			return ElObjectType.VAR;
-		else if (input instanceof ConstructorDef)
-			return ElObjectType.CONSTRUCTOR;
-		else if (input instanceof FunctionDef)
-			return ElObjectType.FUNCTION;
-		else if (input instanceof FormalArgListItem)
-			return ElObjectType.FORMAL_ARG_LIST_ITEM;
-		else if (input instanceof OS_Module)
-			return ElObjectType.MODULE;
+	public static ElObjectType getElObjectType(@NotNull OS_Element input) {
+		// Chain of instanceof checks indicates abstraction failure
+
+		if (input instanceof ClassStatement) return ElObjectType.CLASS;
+		if (input instanceof NamespaceStatement) return ElObjectType.NAMESPACE;
+		if (input instanceof VariableSequence) return ElObjectType.VAR_SEQ;
+		if (input instanceof VariableStatement) return ElObjectType.VAR;
+		if (input instanceof ConstructorDef) return ElObjectType.CONSTRUCTOR;
+		if (input instanceof FunctionDef) return ElObjectType.FUNCTION;
+		if (input instanceof FormalArgListItem) return ElObjectType.FORMAL_ARG_LIST_ITEM;
+		if (input instanceof OS_Module) return ElObjectType.MODULE;
+		if (input instanceof ClassContext.OS_TypeNameElement) return ElObjectType.TYPE_NAME_ELEMENT;
+
 		return ElObjectType.UNKNOWN;
 	}
-
 }
 
 //

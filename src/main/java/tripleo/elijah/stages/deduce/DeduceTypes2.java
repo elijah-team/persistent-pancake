@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.lang.*;
@@ -122,7 +121,7 @@ public class DeduceTypes2 {
 	public void deduceOneClass(final GeneratedClass aGeneratedClass) {
 		for (GeneratedContainer.VarTableEntry entry : aGeneratedClass.varTable) {
 			final OS_Type vt = entry.varType;
-			GenType genType = GenType.makeFromOSType(vt, aGeneratedClass.ci.genericPart, this, phase);
+			GenType genType = GenType.makeFromOSType(vt, aGeneratedClass.ci.genericPart, this, phase, LOG, errSink);
 			if (genType != null)
 				entry.resolve(genType.node);
 			int y=2;
