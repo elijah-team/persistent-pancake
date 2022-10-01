@@ -194,7 +194,18 @@ public class Compilation {
 
 		rootCI = cis.get(0);
 
-		new CompilationRunner(this, _cis).start(rootCI, do_out, op);
+		//assert __cr == null;
+		if (__cr != null) {
+			System.err.println("200 __cr != null");
+			//throw new AssertionError();
+		}
+
+		assert _cis != null; // final; redundant
+
+		if (__cr == null)
+			__cr = new CompilationRunner(this, _cis);
+
+		__cr.start(rootCI, do_out, op);
 	}
 
 	public void pushItem(CompilerInstructions aci) {
