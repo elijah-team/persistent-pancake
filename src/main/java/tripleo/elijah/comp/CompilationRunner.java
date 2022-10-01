@@ -18,21 +18,25 @@ import tripleo.elijah.util.NotImplementedException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import static tripleo.elijah.nextgen.query.Mode.FAILURE;
 import static tripleo.elijah.nextgen.query.Mode.SUCCESS;
 
 class CompilationRunner {
-	private final Compilation compilation;
+	private final Compilation     compilation;
+	private final Compilation.CIS cis;
+	private final CCI             cci;
 
 	@Contract(pure = true)
-	CompilationRunner(final Compilation aCompilation) {
+	CompilationRunner(final Compilation aCompilation, final Compilation.CIS a_cis) {
 		compilation = aCompilation;
+		cis         = a_cis;
+		cci         = new CCI(compilation, a_cis);
 	}
 
 	void start(final CompilerInstructions ci, final boolean do_out, final @NotNull OptionsProcessor ignoredOp) throws Exception {
+		// 0. debugging
 		NotImplementedException.raise();
 
 		// 1. find stdlib
@@ -47,10 +51,10 @@ class CompilationRunner {
 			logProgress(130, "GEN_LANG: " + x.success().genLang());
 		}
 
-		//for (final CompilerInstructions ci : cis) {
+		// 2. process the initial
 		compilation.use(ci, do_out);
-		//}
 
+		// 3. do rest
 		final ICompilationAccess ca = new DefaultCompilationAccess(compilation);
 		final ProcessRecord      pr = new ProcessRecord(ca);
 		final RuntimeProcesses   rt = StageToRuntime.get(compilation.stage, ca, pr);
@@ -58,7 +62,14 @@ class CompilationRunner {
 		rt.run_better();
 	}
 
-	public boolean findStdLib(final String prelude_name, final @NotNull Compilation c) {
+	/*
+	 * Design question:
+	 *   - why push and return?
+	 *     we only want to check error
+	 *     utilize exceptions --> only one usage
+	 *     or inline (esp use of Compilation)
+	 */
+	private @NotNull Operation<CompilerInstructions> findStdLib(final String prelude_name, final @NotNull Compilation c) {
 		final ErrSink errSink = c.getErrSink();
 		final IO      io      = c.getIO();
 
@@ -69,13 +80,18 @@ class CompilationRunner {
 				final Operation<CompilerInstructions> oci = realParseEzFile(local_stdlib.getName(), io.readFile(local_stdlib), local_stdlib, c);
 				if (oci.mode() == SUCCESS) {
 					c.pushItem(oci.success());
-					return true;
+					return oci;
 				}
 			} catch (final Exception e) {
-				errSink.exception(e);
+				return Operation.failure(e);
 			}
 		}
-		return false;
+		//return false;
+		return Operation.failure(new Exception() {
+			public String message() {
+				return "No stdlib found";
+			}
+		});
 	}
 
 	private Operation<CompilerInstructions> parseEzFile_(final String f, final InputStream s) throws RecognitionException, TokenStreamException {
@@ -83,10 +99,10 @@ class CompilationRunner {
 		return new QueryEzFileToModule(qp).calculate();
 	}
 
-	protected void find_cis(final @NotNull String[] args2,
-							final @NotNull Consumer<Maybe<ILazyCompilerInstructions>> cci,
+	protected void find_cis(final @NotNull String @NotNull [] args2,
 							final @NotNull Compilation c,
-							final @NotNull ErrSink errSink, final IO io) {
+							final @NotNull ErrSink errSink,
+							final @NotNull IO io) {
 		CompilerInstructions ez_file;
 		for (int i = 0; i < args2.length; i++) {
 			final String  file_name = args2[i];
@@ -95,26 +111,30 @@ class CompilationRunner {
 			if (matches2) {
 				ILazyCompilerInstructions ilci = ILazyCompilerInstructions.of(f, c);
 				cci.accept(new Maybe<>(ilci, null));
-				//add_ci(parseEzFile(f, file_name, errSink));
 			} else {
-//						eee.reportError("9996 Not an .ez file "+file_name);
+				//errSink.reportError("9996 Not an .ez file "+file_name);
 				if (f.isDirectory()) {
 					final List<CompilerInstructions> ezs = searchEzFiles(f, errSink, io, c);
-					if (ezs.size() > 1) {
-/*
-					final Diagnostic d_toomany = new TooManyEz_UseFirst();
-					add_ci(ezs.get(0));
-*/
-						final Diagnostic                       d_toomany = new TooManyEz_BeSpecific();
-						final Maybe<ILazyCompilerInstructions> m         = new Maybe<>(null, d_toomany);
-						cci.accept(m);
-					} else if (ezs.size() == 0) {
+
+					switch (ezs.size()) {
+					case 0:
 						final Diagnostic                       d_toomany = new TooManyEz_ActuallyNone();
 						final Maybe<ILazyCompilerInstructions> m         = new Maybe<>(null, d_toomany);
 						cci.accept(m);
-					} else {
+						break;
+					case 1:
 						ez_file = ezs.get(0);
 						cci.accept(new Maybe<>(ILazyCompilerInstructions.of(ez_file), null));
+						break;
+					default:
+						//final Diagnostic d_toomany = new TooManyEz_UseFirst();
+						//add_ci(ezs.get(0));
+
+						// more than 1 (negative is not possible)
+						final Diagnostic                       d_toomany2 = new TooManyEz_BeSpecific();
+						final Maybe<ILazyCompilerInstructions> m2         = new Maybe<>(null, d_toomany2);
+						cci.accept(m2);
+						break;
 					}
 				} else
 					errSink.reportError("9995 Not a directory " + f.getAbsolutePath());
@@ -193,13 +213,9 @@ class CompilationRunner {
 		final File file = new File(f);
 
 		try {
-			final Operation<CompilerInstructions> os;
-			os = realParseEzFile(f, io.readFile(file), file, c);
-			return os;
+			return realParseEzFile(f, io.readFile(file), file, c);
 		} catch (FileNotFoundException aE) {
-			final Operation<CompilerInstructions> ofl;
-			ofl = new Operation<CompilerInstructions>(null, aE, FAILURE);
-			return ofl;
+			return Operation.failure(aE);
 		}
 	}
 
@@ -254,24 +270,14 @@ class CompilationRunner {
 		}
 	}
 
-	public void doFindCIs(final String[] args2,
-						  final @NotNull Consumer<Boolean> aInstructionCompleter) {
+	public void doFindCIs(final String[] args2) {
 		final ErrSink errSink1 = compilation.getErrSink();
 		final IO      io       = compilation.getIO();
 
 		// TODO map + "extract"
-		find_cis(args2, mcci -> {
-			if (mcci.isException()) return;
+		find_cis(args2, compilation, errSink1, io);
 
-			final ILazyCompilerInstructions cci = mcci.o;
-			final CompilerInstructions      ci  = cci.get();
-
-			System.err.println("*** " + ci.getName());
-
-			compilation.pushItem(ci);
-		}, compilation, errSink1, io);
-
-		aInstructionCompleter.accept(true);
+		cis.almostComplete();
 	}
 
 	private void logProgress(final int number, final String text) {

@@ -143,10 +143,8 @@ public class Compilation {
 
 		final String[] args2 = op.process(this, args);
 
-		new CompilationRunner(this).doFindCIs(args2, ignored_bool -> {
-//			compilerInstructionsSubject.onComplete();
-			_cis.almostComplete();
-		});
+		__cr = new CompilationRunner(this, _cis);
+		__cr.doFindCIs(args2);
 	}
 
 	private void subscribeCI(final Observer<CompilerInstructions> aCio) {
@@ -200,7 +198,7 @@ public class Compilation {
 
 		rootCI = cis.get(0);
 
-		new CompilationRunner(this).start(cis.get(0), do_out, op);
+		new CompilationRunner(this, _cis).start(cis.get(0), do_out, op);
 	}
 
 	public void pushItem(CompilerInstructions aci) {
