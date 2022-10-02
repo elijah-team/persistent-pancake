@@ -54,6 +54,8 @@ public class DeducePipelineImpl {
 		// TODO make sure you call #setPipelineLogic...
 
 		assert c.pipelineLogic != null;
+
+		setPipelineLogic(c.pipelineLogic);
 	}
 
 	public void setPipelineLogic(final PipelineLogic aPipelineLogic) {

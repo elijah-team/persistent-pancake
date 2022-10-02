@@ -41,14 +41,14 @@ public class DeducePipeline implements PipelineMember, Consumer<Supplier<Generat
 		impl.run();
 	}
 
-	public void setPipelineLogic(final PipelineLogic aPipelineLogic) {
-		logProgress("***** Hit DeducePipeline #setPipeline");
-		impl.setPipelineLogic(aPipelineLogic);
-	}
+	//public void setPipelineLogic(final PipelineLogic aPipelineLogic) {
+	//	logProgress("***** Hit DeducePipeline #setPipeline");
+	//	impl.setPipelineLogic(aPipelineLogic);
+	//}
 
-	public @NotNull List<GeneratedNode> lgc() {
-		return impl.lgc; // almost caught myself java'ing and returning a Supplier (but how is this *not* correct?)
-	}
+	//public @NotNull List<GeneratedNode> lgc() {
+	//	return impl.lgc; // almost caught myself java'ing and returning a Supplier (but how is this *not* correct?)
+	//}
 
 	@Override
 	public void accept(final Supplier<GenerateResult> t) {
@@ -57,6 +57,10 @@ public class DeducePipeline implements PipelineMember, Consumer<Supplier<Generat
 
 	public void lgcp(final DoneCallback<List<GeneratedNode>> aListDoneCallback) {
 		_lgcp.then(aListDoneCallback);
+	}
+
+	public void lgcpdd(final List<GeneratedNode> lgn) {
+		_lgcp.resolve(lgn);
 	}
 
 	private final DeferredObject<List<GeneratedNode>, Void, Void> _lgcp = new DeferredObject<>();

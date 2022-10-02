@@ -242,6 +242,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		}
 		return _de3;
 	}
+
+	public DeduceElementIdent getDeduceElemnt() {
+		return dei;
+	}
 }
 
 //

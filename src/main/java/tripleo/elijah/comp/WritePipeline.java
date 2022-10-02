@@ -543,10 +543,10 @@ public class WritePipeline implements PipelineMember, @NotNull Consumer<Supplier
 			}
 		}
 
-		@Contract(pure = true)
-		public void completeSequence(int y) {
-			NotImplementedException.raise();
-		}
+		//@Contract(pure = true)
+		//public void completeSequence(int y) {
+		//	NotImplementedException.raise();
+		//}
 
 		private void ___completeSequence(final @NotNull Map<String, OutputFileC> outputFiles) {
 			final String         prefix         = sharedState.file_prefix.toString();
@@ -577,11 +577,8 @@ public class WritePipeline implements PipelineMember, @NotNull Consumer<Supplier
 		public void completeSequence() {
 			final @NotNull GenerateResult generateResult = sharedState.getGr();
 
-			generateResult.outputFiles(new Consumer<Map<String, OutputFileC>>() {
-				@Override
-				public void accept(final Map<String, OutputFileC> outputFiles) {
+			generateResult.outputFiles((final Map<String, OutputFileC> outputFiles) -> {
 					___completeSequence(outputFiles);
-				}
 			});
 		}
 

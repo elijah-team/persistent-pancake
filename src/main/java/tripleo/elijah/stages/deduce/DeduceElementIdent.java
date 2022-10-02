@@ -70,7 +70,7 @@ public class DeduceElementIdent implements IDeduceElement_old {
 			deduceTypes2.addResolvePending(identTableEntry, this, holder);
 		}
 
-		if (rp) {
+		if (!rp) { // eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 			final IdentIA identIA = new IdentIA(identTableEntry.getIndex(), generatedFunction);
 
 			deduceTypes2.resolveIdentIA_(context, identIA, generatedFunction, new FoundElement(deduceTypes2.phase) {
@@ -85,7 +85,9 @@ public class DeduceElementIdent implements IDeduceElement_old {
 				}
 			});
 		}
-		return holder.get();
+		final OS_Element R = holder.get();
+		System.err.println("8989 "+(R!=null));
+		return R;
 	}
 }
 
