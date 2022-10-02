@@ -7,21 +7,32 @@ import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
 import tripleo.elijah.stages.deduce.post_bytecode.DED.DED_VTE;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 
 public class DeduceElement3_VariableTableEntry implements IDeduceElement3 {
 
 	private final VariableTableEntry principal;
-	private       DeduceTypes2       deduceTypes2;
-	private       GeneratedFunction  generatedfunction;
-	private       GenType            genType;
+	private DeduceTypes2          deduceTypes2;
+	private BaseGeneratedFunction generatedFunction;
+	private GenType               genType;
 
 	@Contract(pure = true)
 	public DeduceElement3_VariableTableEntry(final VariableTableEntry aVariableTableEntry) {
 		principal = aVariableTableEntry;
+	}
+
+	@Contract(pure = true)
+	public DeduceElement3_VariableTableEntry(final VariableTableEntry aVariableTableEntry, final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction) {
+		principal         = aVariableTableEntry;
+
+
+		deduceTypes2      = aDeduceTypes2;
+		generatedFunction = aGeneratedFunction;
+
+		genType           = new GenType();
 	}
 
 	DeduceElement3_VariableTableEntry(OS_Type vte_type_attached) {

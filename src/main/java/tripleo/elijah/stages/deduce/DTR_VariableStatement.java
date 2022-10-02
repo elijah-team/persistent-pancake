@@ -45,7 +45,9 @@ class DTR_VariableStatement {
 			normalTypeName_generic_butNotNull(eh, genType, normalTypeName);
 			break;
 		default:
-			throw new IllegalStateException("Unexpected value: " + state);
+			//throw new IllegalStateException("Unexpected value: " + state);
+			System.err.println("Unexpected value: " + state);
+			break;
 		}
 	}
 

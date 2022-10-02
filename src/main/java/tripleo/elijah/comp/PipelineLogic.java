@@ -66,6 +66,9 @@ public class PipelineLogic {
 		@Override
 		public void onNext(OS_Module mod) {
 			NotImplementedException.raise();
+
+			//System.err.printf("7070 %s %d%n", mod.getFileName(), mod.entryPoints.size());
+
 			run2(mod, mod.entryPoints);
 		}
 
@@ -86,7 +89,7 @@ public class PipelineLogic {
 		}
 	};
 	
-	public void everythingBeforeGenerate(final List<GeneratedNode> lgc) {
+	public void everythingBeforeGenerate(final @NotNull List<GeneratedNode> lgc) {
 		assert lgc.size() == 0;
 		
 		for (final OS_Module mod : mods) {
@@ -259,12 +262,14 @@ public class PipelineLogic {
 					GenerateResult gr3 = ggc.generateCode(gn2, wm);
 					gr.additional(gr3);
 				}
+
 				final @NotNull Collection<GeneratedNode> gn1 = GenerateFiles.functions_to_list_of_generated_nodes(nc.functionMap.values());
 				GenerateResult gr2 = ggc.generateCode(gn1, wm);
-				gr.results().addAll(gr2.results());
+				gr.additional(gr2);
+
 				final @NotNull Collection<GeneratedNode> gn2 = GenerateFiles.classes_to_list_of_generated_nodes(nc.classMap.values());
 				GenerateResult gr3 = ggc.generateCode(gn2, wm);
-				gr.results().addAll(gr3.results());
+				gr.additional(gr3);
 			} else {
 				System.out.println("2009 " + generatedNode.getClass().getName());
 			}

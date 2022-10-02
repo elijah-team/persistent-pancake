@@ -212,7 +212,8 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 	public IDeduceElement3 getDeduceElement3() {
 		if (_de3 == null) {
 			_de3 = new DeduceElement3_VariableTableEntry(this);
-//			_de3.
+			//_de3.generatedFunction = generatedFunction;
+			//_de3.deduceTypes2 = deduceTypes2;
 		}
 		return _de3;
 	}
