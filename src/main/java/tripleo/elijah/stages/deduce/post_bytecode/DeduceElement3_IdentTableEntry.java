@@ -56,8 +56,8 @@ public class DeduceElement3_IdentTableEntry implements IDeduceElement3 {
 	}
 
 	@Override
-	public GeneratedFunction generatedFunction() {
-		return (GeneratedFunction) generatedFunction;
+	public BaseGeneratedFunction generatedFunction() {
+		return generatedFunction;
 	}
 
 	@Override
