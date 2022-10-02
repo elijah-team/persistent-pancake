@@ -50,8 +50,8 @@ public class DeduceElement3_VariableTableEntry implements IDeduceElement3 {
 	}
 
 	@Override
-	public GeneratedFunction generatedFunction() {
-		return generatedfunction;
+	public BaseGeneratedFunction generatedFunction() {
+		return generatedFunction;
 	}
 
 	@Override

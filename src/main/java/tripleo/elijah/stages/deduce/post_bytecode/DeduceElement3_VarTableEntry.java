@@ -47,7 +47,7 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 	}
 
 	@Override
-	public GeneratedFunction generatedFunction() {
+	public BaseGeneratedFunction generatedFunction() {
 		throw new NotImplementedException();
 		//return null;
 	}
