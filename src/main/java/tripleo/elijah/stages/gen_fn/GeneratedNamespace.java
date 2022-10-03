@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.gen_generic.CodeGenerator;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
-import tripleo.elijah.stages.post_deduce.IPostDeduce;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
 
@@ -94,12 +93,6 @@ public class GeneratedNamespace extends GeneratedContainerNC {
 	public void generateCode(CodeGenerator aCodeGenerator, GenerateResult aGr) {
 		aCodeGenerator.generate_namespace(this, aGr);
 	}
-
-	@Override
-	public void analyzeNode(IPostDeduce aPostDeduce) {
-		aPostDeduce.analyze_namespace(this);
-	}
-
 }
 
 //
