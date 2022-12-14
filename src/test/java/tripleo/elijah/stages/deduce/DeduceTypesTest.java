@@ -11,10 +11,8 @@ package tripleo.elijah.stages.deduce;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
+import tripleo.elijah.comp.*;
+import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.*;
@@ -33,7 +31,7 @@ public class DeduceTypesTest {
 	@Before
 	public void setUp() throws ResolveError {
 		final OS_Module mod = new OS_Module();
-		mod.parent = new Compilation(new StdErrSink(), new IO());
+		mod.parent = new CompilationImpl(new StdErrSink(), new IO());
 		final ModuleContext mctx = new ModuleContext(mod);
 		mod.setContext(mctx);
 		final ClassStatement cs = new ClassStatement(mod, mctx);
@@ -63,7 +61,8 @@ public class DeduceTypesTest {
 		//
 		//
 		final ElLog.Verbosity verbosity = mod.parent.gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity);
+		final AccessBus ab = new AccessBus(mod.parent);
+		final PipelineLogic pl = new PipelineLogic(ab);
 		final GeneratePhase generatePhase = new GeneratePhase(verbosity, pl);
 		DeducePhase dp = new DeducePhase(generatePhase, pl, verbosity);
 		DeduceTypes2 d = dp.deduceModule(mod, verbosity);

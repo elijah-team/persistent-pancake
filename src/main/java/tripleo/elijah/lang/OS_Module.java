@@ -26,8 +26,11 @@ import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.entrypoints.EntryPoint;
+import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.entrypoints.MainClassEntryPoint;
 import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
+import tripleo.elijah.stages.deduce.fluffy.i.FluffyModule;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
@@ -47,7 +50,7 @@ public class OS_Module implements OS_Element, OS_Container {
 	public Compilation parent;
 	private LibraryStatementPart lsp;
 	private String _fileName;
-	public @NotNull List<EntryPoint> entryPoints = new ArrayList<EntryPoint>();
+	public @NotNull EntryPointList entryPoints = new EntryPointList();
 	private IndexingStatement indexingStatement;
 
 	public @org.jetbrains.annotations.Nullable OS_Element findClass(final String className) {
@@ -192,96 +195,12 @@ public class OS_Module implements OS_Element, OS_Container {
 	}
 
 	public void postConstruct() {
-		find_multiple_items();
-		//
-		// FIND ALL ENTRY POINTS (should only be one per module)
-		//
-		for (final ModuleItem item : items) {
-			if (item instanceof ClassStatement) {
-				ClassStatement classStatement = (ClassStatement) item;
-				if (MainClassEntryPoint.isMainClass(classStatement)) {
-					Collection<ClassItem> x = classStatement.findFunction("main");
-					Collection<ClassItem> found = Collections2.filter(x, new Predicate<ClassItem>() {
-						@Override
-						public boolean apply(@org.checkerframework.checker.nullness.qual.Nullable ClassItem input) {
-							assert input != null;
-							FunctionDef fd = (FunctionDef) input;
-							return MainClassEntryPoint.is_main_function_with_no_args(fd);
-						}
-					});
-//					Iterator<ClassStatement> zz = x.stream()
-//							.filter(ci -> ci instanceof FunctionDef)
-//							.filter(fd -> is_main_function_with_no_args((FunctionDef) fd))
-//							.map(found1 -> (ClassStatement) found1.getParent())
-//							.iterator();
+		final FluffyComp fc = getContext().module().getCompilation().getFluffy();
 
-/*
-					List<ClassStatement> entrypoints_stream = x.stream()
-							.filter(ci -> ci instanceof FunctionDef)
-							.filter(fd -> is_main_function_with_no_args((FunctionDef) fd))
-							.map(found1 -> (ClassStatement) found1.getParent())
-							.collect(Collectors.toList());
-*/
+		final FluffyModule fm = fc.module(this);
 
-					final int eps = entryPoints.size();
-					for (ClassItem classItem : found) {
-						entryPoints.add(new MainClassEntryPoint((ClassStatement) classItem.getParent()));
-					}
-					assert entryPoints.size() == eps || entryPoints.size() == eps+1; // TODO this will fail one day
-
-					System.out.println("243 " + entryPoints +" "+ _fileName);
-//					break; // allow for "extend" class
-				}
-			}
-
-
-		}
-	}
-
-	private void find_multiple_items() {
-		Multimap<String, ModuleItem> items_map = ArrayListMultimap.create(items.size(), 1);
-		for (final ModuleItem item : items) {
-			if (!(item instanceof OS_Element2/* && item != anElement*/))
-				continue;
-			final String item_name = ((OS_Element2) item).name();
-			items_map.put(item_name, item);
-		}
-		for (String key : items_map.keys()) {
-			boolean warn = false;
-
-			Collection<ModuleItem> moduleItems = items_map.get(key);
-			if (moduleItems.size() < 2) // README really 1
-				continue;
-
-			Collection<ElObjectType> t = Collections2.transform(moduleItems, new Function<ModuleItem, ElObjectType>() {
-				@Override
-				public ElObjectType apply(@org.checkerframework.checker.nullness.qual.Nullable ModuleItem input) {
-					assert input != null;
-					return DecideElObjectType.getElObjectType(input);
-				}
-			});
-
-			Set<ElObjectType> st = new HashSet<ElObjectType>(t);
-			if (st.size() > 1)
-				warn = true;
-			if (moduleItems.size() > 1)
-				if (moduleItems.iterator().next() instanceof NamespaceStatement && st.size() == 1)
-					;
-				else
-					warn = true;
-
-			//
-			//
-			//
-
-			if (warn) {
-				final String module_name = this.toString(); // TODO print module name or something
-				final String s = String.format(
-						"[Module#add] %s Already has a member by the name of %s",
-						module_name, key);
-				parent.getErrSink().reportWarning(s);
-			}
-		}
+		fm.find_multiple_items(fc);
+		fm.find_all_entry_points();
 	}
 
 	public void setContext(final ModuleContext mctx) {

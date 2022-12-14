@@ -9,4 +9,13 @@ package tripleo.elijah.nextgen.outputstatement;
  */
 public class EG_SyntheticStatement implements EG_Statement {
 
+	@Override
+	public String getText() {
+		return null;
+	}
+
+	@Override
+	public EX_Explanation getExplanation() {
+		return null;
+	}
 }

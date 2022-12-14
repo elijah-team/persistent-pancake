@@ -8,4 +8,13 @@ package tripleo.elijah.nextgen.outputstatement;
  * @author Tripleo Nova
  */
 public class EG_SingleStatement implements EG_Statement {
+	@Override
+	public String getText() {
+		return null;
+	}
+
+	@Override
+	public EX_Explanation getExplanation() {
+		return null;
+	}
 }

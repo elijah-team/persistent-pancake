@@ -26,7 +26,9 @@ import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.lang.Qualident;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.stages.deduce.FunctionMapHook;
+import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.stages.logging.ElLog;
@@ -47,11 +49,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-public class Compilation {
+public abstract class Compilation {
 
 	private final int _compilationNumber;
 	private IO io;
-	private ErrSink eee;
+	private final ErrSink eee;
 	public final List<OS_Module> modules = new ArrayList<OS_Module>();
 	private final Map<String, OS_Module> fn2m = new HashMap<String, OS_Module>();
 	private final Map<String, CompilerInstructions> fn2ci = new HashMap<String, CompilerInstructions>();
@@ -63,7 +65,7 @@ public class Compilation {
 	//
 	//
 	public PipelineLogic pipelineLogic;
-	private Pipeline pipelines = new Pipeline();
+	final Pipeline pipelines = new Pipeline();
 	//
 	//
 	//
@@ -152,17 +154,28 @@ public class Compilation {
 					use(ci, do_out);
 				}
 
+				final AccessBus ab = new AccessBus(this);
+
 				//
 				if (stage.equals("E")) {
 					// do nothing. job over
 				} else {
-					pipelineLogic = new PipelineLogic(silent ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE);
-					final DeducePipeline dpl = new DeducePipeline(this);
-					pipelines.add(dpl);
-					final GeneratePipeline gpl = new GeneratePipeline(this, dpl);
-					pipelines.add(gpl);
-					final WritePipeline wpl = new WritePipeline(this, pipelineLogic.gr);
-					pipelines.add(wpl);
+					//pipelineLogic = new PipelineLogic(silent ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE);
+
+					ab.addPipelineLogic(PipelineLogic::new);
+
+					pipelineLogic = ab.__getPL();
+
+					ab.add(DeducePipeline::new);
+					ab.add(GeneratePipeline::new);
+					ab.add(WritePipeline::new);
+
+					//final DeducePipeline dpl = new DeducePipeline(this);
+					//pipelines.add(dpl);
+//					final GeneratePipeline gpl = new GeneratePipeline(this, dpl);
+//					pipelines.add(gpl);
+//					final WritePipeline wpl = new WritePipeline(this, pipelineLogic.gr);
+//					pipelines.add(wpl);
 
 					pipelines.run();
 
@@ -481,6 +494,19 @@ public class Compilation {
 
 	public void addFunctionMapHook(FunctionMapHook aFunctionMapHook) {
 		pipelineLogic.dp.addFunctionMapHook(aFunctionMapHook);
+	}
+
+	@NotNull
+	public abstract EOT_OutputTree getOutputTree();
+
+	public abstract @NotNull FluffyComp getFluffy();
+
+	public boolean getSilence() {
+		return true; // FIXME fill this in later. dont care now
+	}
+
+	public List<OS_Module> getModules() {
+		return modules;
 	}
 }
 

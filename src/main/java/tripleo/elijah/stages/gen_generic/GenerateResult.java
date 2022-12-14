@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.stages.gen_generic;
 
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
@@ -52,6 +53,10 @@ public class GenerateResult {
 
 	public void addNamespace(TY ty, GeneratedNamespace aNamespace, Buffer aBuf) {
 		add(aBuf, aNamespace, ty);
+	}
+
+	public void additional(@NotNull GenerateResult aGgr) {
+		res.addAll(aGgr.results());
 	}
 
 }

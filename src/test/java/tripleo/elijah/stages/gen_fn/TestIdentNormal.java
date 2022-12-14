@@ -9,10 +9,8 @@
 package tripleo.elijah.stages.gen_fn;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
+import tripleo.elijah.comp.*;
+import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeducePhase;
@@ -34,15 +32,16 @@ public class TestIdentNormal {
 
 //	@Test(expected = IllegalStateException.class) // TODO proves nothing
 	public void test() {
-		Compilation comp = new Compilation(new StdErrSink(), new IO());
+		Compilation comp = new CompilationImpl(new StdErrSink(), new IO());
 		OS_Module mod = new OS_Module();//mock(OS_Module.class);
 		mod.setParent(comp);
 		FunctionDef fd = mock(FunctionDef.class);
 		Context ctx1 = mock(Context.class);
 		Context ctx2 = mock(Context.class);
 
-		final ElLog.Verbosity verbosity1 = new Compilation(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity1);
+		final ElLog.Verbosity verbosity1 = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
+		final AccessBus ab = new AccessBus(comp);
+		final PipelineLogic pl = new PipelineLogic(ab);
 		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
 //		GenerateFunctions generateFunctions = new GenerateFunctions(generatePhase, mod, pl);
 		GenerateFunctions generateFunctions = generatePhase.getGenerateFunctions(mod);
@@ -95,14 +94,15 @@ public class TestIdentNormal {
 
 //	@Test // TODO just a mess
 	public void test2() {
-		Compilation comp = new Compilation(new StdErrSink(), new IO());
+		Compilation comp = new CompilationImpl(new StdErrSink(), new IO());
 		OS_Module mod = new OS_Module();
 		mod.setParent(comp);
 //		FunctionDef fd = mock(FunctionDef.class);
 		Context ctx2 = mock(Context.class);
 
-		final ElLog.Verbosity verbosity1 = new Compilation(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity1);
+		final ElLog.Verbosity verbosity1 = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
+		final AccessBus ab = new AccessBus(comp);
+		final PipelineLogic pl = new PipelineLogic(ab);
 		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
 		DeducePhase phase = new DeducePhase(generatePhase, pl, verbosity1);
 

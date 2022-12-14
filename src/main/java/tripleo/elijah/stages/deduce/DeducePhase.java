@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.entrypoints.EntryPoint;
+import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.gen_fn.*;
@@ -198,7 +199,7 @@ public class DeducePhase {
 
 	public @NotNull DeduceTypes2 deduceModule(@NotNull OS_Module m, @NotNull Iterable<GeneratedNode> lgf, ElLog.Verbosity verbosity) {
 		final @NotNull DeduceTypes2 deduceTypes2 = new DeduceTypes2(m, this, verbosity);
-//		LOG.err("196 DeduceTypes "+deduceTypes2.getFileName());
+		LOG.err("196 DeduceTypes "+deduceTypes2.getFileName());
 		{
 			final ArrayList<GeneratedNode> p = new ArrayList<GeneratedNode>();
 			Iterables.addAll(p, lgf);
@@ -214,7 +215,7 @@ public class DeducePhase {
 	public @NotNull DeduceTypes2 deduceModule(@NotNull OS_Module m, ElLog.Verbosity verbosity) {
 		final @NotNull GenerateFunctions gfm = generatePhase.getGenerateFunctions(m);
 
-		@NotNull List<EntryPoint> epl = m.entryPoints;
+		@NotNull EntryPointList epl = m.entryPoints;
 		gfm.generateFromEntryPoints(epl, this);
 
 		@NotNull GeneratedClasses lgc = generatedClasses;
