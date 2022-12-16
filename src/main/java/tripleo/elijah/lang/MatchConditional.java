@@ -126,8 +126,8 @@ public class MatchConditional implements OS_Element, StatementItem, FunctionItem
 		private final Context ___ctx = new MatchConditionalContext(MatchConditional.this.getContext(), this);
 
 //		private final List<FunctionItem> items = new ArrayList<FunctionItem>();
-		private List<Token> docstrings = null;
-		private IdentExpression matching_expression;
+private final List<Token> docstrings = null;
+        private IdentExpression matching_expression;
 		private Scope3 scope3;
 
 		public void expr(final IdentExpression expr) {

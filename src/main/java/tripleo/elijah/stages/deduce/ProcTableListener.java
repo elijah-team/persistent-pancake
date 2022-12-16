@@ -256,19 +256,19 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 	}
 
 	class E_Is_FunctionDef {
-		private ProcTableEntry pte;
-		private FunctionDef fd;
-		private OS_Element parent;
-		private @Nullable FunctionInvocation fi;
-		private GenType genType;
+        private final ProcTableEntry pte;
+        private final FunctionDef fd;
+        private final OS_Element parent;
+        private @Nullable FunctionInvocation fi;
+        private GenType genType;
 
-		public E_Is_FunctionDef(ProcTableEntry pte, FunctionDef aFd, OS_Element aParent) {
-			this.pte = pte;
-			fd = aFd;
-			parent = aParent;
-		}
+        public E_Is_FunctionDef(ProcTableEntry pte, FunctionDef aFd, OS_Element aParent) {
+            this.pte = pte;
+            fd = aFd;
+            parent = aParent;
+        }
 
-		public @Nullable FunctionInvocation getFi() {
+        public @Nullable FunctionInvocation getFi() {
 			return fi;
 		}
 

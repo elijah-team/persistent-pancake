@@ -10,6 +10,7 @@ package tripleo.elijah.comp;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
@@ -40,7 +41,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 	private final File file_prefix;
 
-	public WritePipeline(AccessBus ab) {
+	public WritePipeline(@NotNull AccessBus ab) {
 		c = ab.getCompilation();
 
 		file_prefix = new File("COMP", c.getCompilationNumberString());

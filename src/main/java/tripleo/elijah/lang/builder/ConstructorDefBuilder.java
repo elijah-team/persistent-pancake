@@ -14,8 +14,8 @@ import tripleo.elijah.lang.*;
  * Created 12/22/20 10:55 PM
  */
 public class ConstructorDefBuilder extends BaseFunctionDefBuilder {
-	private ConstructorDefScope _scope = new ConstructorDefScope();
-	private Context _context;
+	private final ConstructorDefScope _scope = new ConstructorDefScope();
+    private Context _context;
 
 	public ConstructorDefScope scope() {
 		return _scope;

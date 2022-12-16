@@ -17,8 +17,8 @@ import java.util.List;
  * Created 12/22/20 7:59 PM
  */
 public class ClassBuilder {
-	private List<AnnotationClause> annotations = new ArrayList<AnnotationClause>();
-	private ClassTypes _type;
+	private final List<AnnotationClause> annotations = new ArrayList<AnnotationClause>();
+    private ClassTypes _type;
 	private OS_Element _parent;
 	private Context _parent_context;
 	private IdentExpression _name;

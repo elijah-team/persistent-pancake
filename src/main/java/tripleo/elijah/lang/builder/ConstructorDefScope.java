@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class ConstructorDefScope extends BaseFunctionDefScope implements Documentable /*extends FunctionDefScope*/ {
 //	private List<ElBuilder> _items = new ArrayList<ElBuilder>();
-	private List<Token> docstrings = new ArrayList<Token>();
+private final List<Token> docstrings = new ArrayList<Token>();
 
 //	@Override
 //	public Iterable<ElBuilder> items() {

@@ -18,18 +18,18 @@ import java.util.List;
  */
 public class FunctionDefScope extends BaseFunctionDefScope implements Documentable {
 
-	private List<Precondition> prec_list = new ArrayList<Precondition>();
-	private List<Postcondition> postc_list = new ArrayList<Postcondition>();
-	private boolean _isAbstract = false;
+    private final List<Precondition> prec_list = new ArrayList<Precondition>();
+    private final List<Postcondition> postc_list = new ArrayList<Postcondition>();
+    private boolean _isAbstract = false;
 
-	@Override
-	public void yield(IExpression expr) {
-		// TODO add Context and porent
+    @Override
+    public void yield(IExpression expr) {
+        // TODO add Context and porent
 //		add(new StatementWrapper(new YieldExpression(expr), null,null));
-		add(new StatementWrapperBuilder(expr)); // TODO this says nothing about a YieldExpression, which is actually a Statement
-	}
+        add(new StatementWrapperBuilder(expr)); // TODO this says nothing about a YieldExpression, which is actually a Statement
+    }
 
-	// endregion
+    // endregion
 
 	public void addPreCondition(Precondition p) {
 		prec_list.add(p);

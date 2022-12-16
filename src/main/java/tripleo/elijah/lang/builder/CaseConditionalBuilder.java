@@ -20,7 +20,7 @@ public class CaseConditionalBuilder extends ElBuilder {
 	private Context _context;
 	private IExpression expr;
 	private BaseScope baseScope;
-	private List<Part> parts = new ArrayList<Part>();
+    private final List<Part> parts = new ArrayList<Part>();
 
 	class Part {
 		IExpression expr;

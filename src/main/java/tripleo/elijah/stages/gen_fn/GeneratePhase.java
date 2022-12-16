@@ -24,8 +24,8 @@ public class GeneratePhase {
 	public WorkManager wm = new WorkManager();
 
 	Map<OS_Module, GenerateFunctions> generateFunctions = new HashMap<OS_Module, GenerateFunctions>();
-	private ElLog.Verbosity verbosity;
-	private final PipelineLogic pipelineLogic;
+    private final ElLog.Verbosity verbosity;
+    private final PipelineLogic pipelineLogic;
 
 	public GeneratePhase(ElLog.Verbosity aVerbosity, PipelineLogic aPipelineLogic) {
 		verbosity = aVerbosity;

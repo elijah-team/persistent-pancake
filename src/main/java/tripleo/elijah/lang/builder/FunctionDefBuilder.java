@@ -18,18 +18,18 @@ import java.util.List;
  */
 public class FunctionDefBuilder extends BaseFunctionDefBuilder {
 
-	private FunctionDefScope _scope = new FunctionDefScope();
-	private List<FunctionModifiers> _mods = new ArrayList<FunctionModifiers>();
-	private TypeName _returnType;
-	private Context _context;
+    private final FunctionDefScope _scope = new FunctionDefScope();
+    private final List<FunctionModifiers> _mods = new ArrayList<FunctionModifiers>();
+    private TypeName _returnType;
+    private Context _context;
 
-	public FunctionDefScope scope() {
-		return _scope;
-	}
+    public FunctionDefScope scope() {
+        return _scope;
+    }
 
-	public void set(FunctionModifiers aFunctionModifiers) {
-		_mods.add(aFunctionModifiers);
-	}
+    public void set(FunctionModifiers aFunctionModifiers) {
+        _mods.add(aFunctionModifiers);
+    }
 
 	public void setReturnType(TypeName tn) {
 		_returnType = tn;

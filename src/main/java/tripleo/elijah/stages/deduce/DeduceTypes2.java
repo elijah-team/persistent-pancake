@@ -3148,11 +3148,50 @@ public class DeduceTypes2 {
 		return getPotentialTypesVte(generatedFunction.getVarTableEntry(to_int(vte_index)));
 	}
 
+	static class DeduceClient2 {
+		private final DeduceTypes2 deduceTypes2;
+
+		public DeduceClient2(DeduceTypes2 deduceTypes2) {
+			this.deduceTypes2 = deduceTypes2;
+		}
+
+		public @Nullable ClassInvocation registerClassInvocation(@NotNull ClassInvocation ci) {
+			return deduceTypes2.phase.registerClassInvocation(ci);
+		}
+
+		public @NotNull FunctionInvocation newFunctionInvocation(BaseFunctionDef constructorDef, ProcTableEntry pte, @NotNull IInvocation ci) {
+			return deduceTypes2.newFunctionInvocation(constructorDef, pte, ci, deduceTypes2.phase);
+		}
+
+		public NamespaceInvocation registerNamespaceInvocation(NamespaceStatement namespaceStatement) {
+			return deduceTypes2.phase.registerNamespaceInvocation(namespaceStatement);
+		}
+
+		public @Nullable ClassInvocation genCI(@NotNull GenType genType, TypeName typeName) {
+			return deduceTypes2.genCI(genType, typeName);
+		}
+
+		public @NotNull ElLog getLOG() {
+			return deduceTypes2.LOG;
+		}
+	}
+
+	public void register_and_resolve(@NotNull VariableTableEntry aVte, @NotNull ClassStatement aKlass) {
+		@Nullable ClassInvocation ci = new ClassInvocation(aKlass, null);
+		ci = phase.registerClassInvocation(ci);
+		ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
+			@Override
+			public void onDone(GeneratedClass result) {
+				aVte.resolveTypeToClass(result);
+			}
+		});
+	}
+
 	public class FoundParent implements BaseTableEntry.StatusListener {
-		private BaseTableEntry bte;
-		private IdentTableEntry ite;
-		private Context ctx;
-		private BaseGeneratedFunction generatedFunction;
+		private final BaseTableEntry bte;
+		private final IdentTableEntry ite;
+		private final Context ctx;
+		private final BaseGeneratedFunction generatedFunction;
 
 		@Contract(pure = true)
 		public FoundParent(BaseTableEntry aBte, IdentTableEntry aIte, Context aCtx, BaseGeneratedFunction aGeneratedFunction) {
@@ -3502,45 +3541,6 @@ public class DeduceTypes2 {
 			} catch (ResolveError resolveError) {
 				errSink.reportDiagnostic(resolveError);
 			}
-		}
-	}
-
-	public void register_and_resolve(@NotNull VariableTableEntry aVte, @NotNull ClassStatement aKlass) {
-		@Nullable ClassInvocation ci = new ClassInvocation(aKlass, null);
-		ci = phase.registerClassInvocation(ci);
-		ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
-			@Override
-			public void onDone(GeneratedClass result) {
-				aVte.resolveTypeToClass(result);
-			}
-		});
-	}
-
-	static class DeduceClient2 {
-		private DeduceTypes2 deduceTypes2;
-
-		public DeduceClient2(DeduceTypes2 deduceTypes2) {
-			this.deduceTypes2 = deduceTypes2;
-		}
-
-		public @Nullable ClassInvocation registerClassInvocation(@NotNull ClassInvocation ci) {
-			return deduceTypes2.phase.registerClassInvocation(ci);
-		}
-
-		public @NotNull FunctionInvocation newFunctionInvocation(BaseFunctionDef constructorDef, ProcTableEntry pte, @NotNull IInvocation ci) {
-			return deduceTypes2.newFunctionInvocation(constructorDef, pte, ci, deduceTypes2.phase);
-		}
-
-		public NamespaceInvocation registerNamespaceInvocation(NamespaceStatement namespaceStatement) {
-			return deduceTypes2.phase.registerNamespaceInvocation(namespaceStatement);
-		}
-
-		public @Nullable ClassInvocation genCI(@NotNull GenType genType, TypeName typeName) {
-			return deduceTypes2.genCI(genType, typeName);
-		}
-
-		public @NotNull ElLog getLOG() {
-			return deduceTypes2.LOG;
 		}
 	}
 }

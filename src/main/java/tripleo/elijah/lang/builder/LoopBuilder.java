@@ -18,8 +18,8 @@ public class LoopBuilder extends ElBuilder {
 	private IExpression _frompart;
 	private IExpression _topart;
 	private IdentExpression _iterName;
-	private LoopScope _scope = new LoopScope();
-	private Context _context;
+    private final LoopScope _scope = new LoopScope();
+    private Context _context;
 	private IExpression expr;
 
 	public void type(LoopTypes type) {

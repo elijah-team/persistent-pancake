@@ -28,8 +28,8 @@ import java.io.File;
  */
 public class IdentExpression implements IExpression, OS_Element, Resolvable, Locatable {
 
-	private Token text;
-	public  Attached _a;
+	private final Token text;
+    public Attached _a;
 	private OS_Element _resolvedElement;
 
 	public IdentExpression(final Token r1) {

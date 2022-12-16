@@ -23,7 +23,7 @@ abstract class _CommonNC {
 	protected IdentExpression nameToken;
 	protected OS_Package _packageName;
 	List<AnnotationClause> annotations = null;
-	private List<AccessNotation> accesses = new ArrayList<AccessNotation>();
+	private final List<AccessNotation> accesses = new ArrayList<AccessNotation>();
 
 	public void setPackageName(final OS_Package aPackageName) {
 		_packageName = aPackageName;

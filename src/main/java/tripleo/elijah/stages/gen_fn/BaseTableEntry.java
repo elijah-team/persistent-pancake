@@ -26,7 +26,7 @@ public abstract class BaseTableEntry {
 
 	protected OS_Element resolved_element;
 
-	private DeferredObject2<OS_Element, Diagnostic, Void> elementPromise = new DeferredObject2<OS_Element, Diagnostic, Void>();
+	private final DeferredObject2<OS_Element, Diagnostic, Void> elementPromise = new DeferredObject2<OS_Element, Diagnostic, Void>();
 
 	public void elementPromise(DoneCallback<OS_Element> dc, FailCallback<Diagnostic> fc) {
 		if (dc != null)

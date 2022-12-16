@@ -31,8 +31,8 @@ public class CaseConditional implements OS_Element, StatementItem, FunctionItem 
     private final OS_Element parent;
     private IExpression expr;
 	private SingleIdentContext _ctx = null;
-	private HashMap<IExpression, CaseScope> scopes = new LinkedHashMap<IExpression, CaseScope>();
-	private CaseScope default_case_scope = null;
+    private final HashMap<IExpression, CaseScope> scopes = new LinkedHashMap<IExpression, CaseScope>();
+    private CaseScope default_case_scope = null;
 	private CaseContext __ctx = null; // TODO look into removing this
 
 	public CaseConditional(final OS_Element parent, final Context parentContext) {

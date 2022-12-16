@@ -18,13 +18,13 @@ import java.util.List;
  * Created 12/23/20 2:38 AM
  */
 public class NamespaceStatementBuilder extends ElBuilder implements Documentable {
-	private List<AnnotationClause> annotations = new ArrayList<AnnotationClause>();
-	private NamespaceTypes _type;
+	private final List<AnnotationClause> annotations = new ArrayList<AnnotationClause>();
+    private NamespaceTypes _type;
 	private OS_Element _parent;
 	private Context _parent_context;
-	private IdentExpression _name;
-	private NamespaceScope _scope = new NamespaceScope();
-	private Context _context;
+    private IdentExpression _name;
+    private final NamespaceScope _scope = new NamespaceScope();
+    private Context _context;
 
 	public void setType(NamespaceTypes namespaceTypes) {
 		_type = namespaceTypes;

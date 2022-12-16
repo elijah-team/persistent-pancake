@@ -100,7 +100,7 @@ public class ClassContext extends Context {
 	}
 
 	public class OS_TypeNameElement implements OS_Element {
-		private TypeName typeName;
+		private final TypeName typeName;
 
 		public TypeName getTypeName() {
 			return typeName;
