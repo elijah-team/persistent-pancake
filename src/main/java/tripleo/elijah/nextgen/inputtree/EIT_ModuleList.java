@@ -1,6 +1,5 @@
 package tripleo.elijah.nextgen.inputtree;
 
-import com.google.common.base.Predicate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.Coder;
@@ -8,13 +7,7 @@ import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.gen_fn.GNCoded;
-import tripleo.elijah.stages.gen_fn.GenerateFunctions;
-import tripleo.elijah.stages.gen_fn.GeneratedClass;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
-import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
-import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Stupidity;
 import tripleo.elijah.work.WorkManager;
@@ -23,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class EIT_ModuleList {
 	private final List<OS_Module> mods;
@@ -187,13 +181,17 @@ public class EIT_ModuleList {
 		__pl = aPipelineLogic;
 	}
 
+	public Stream<OS_Module> stream() {
+		return mods.stream();
+	}
+
 	private static class _ProcessParams {
-		private final OS_Module         mod;
-		private       PipelineLogic     pipelineLogic;
+		private final OS_Module mod;
+		private PipelineLogic pipelineLogic;
 		private final GenerateFunctions gfm;
 		@NotNull
-		private final EntryPointList                          epl;
-		private final DeducePhase                             deducePhase;
+		private final EntryPointList epl;
+		private final DeducePhase deducePhase;
 //		@NotNull
 //		private final ElLog.Verbosity                         verbosity;
 
