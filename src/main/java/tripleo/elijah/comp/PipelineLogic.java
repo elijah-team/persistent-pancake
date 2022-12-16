@@ -60,6 +60,8 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	}
 
 	public void everythingBeforeGenerate(List<GeneratedNode> lgc) {
+		resolveMods();
+
 		List<PL_Run2> run2_work = mods.stream()
 				.map(mod -> new PL_Run2(mod, mod.entryPoints._getMods(), this::getGenerateFunctions, dp, this))
 				.collect(Collectors.toList());
@@ -86,13 +88,18 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 			wm.drain();
 			gr.results().addAll(ggr.results());
 		}
+
+		__ab.resolveGenerateResult(gr);
+
 	}
 
+/*
 	public void everythingBeforeGenerate() {
 //		resolveMods();
 
 		__ab.resolveGenerateResult(gr);
 	}
+*/
 
 	public void subscribeMods(AccessBus.AB_ModuleListListener l) {
 		__ab.subscribe_moduleList(l);
@@ -102,6 +109,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		__ab.resolveModuleList(mods);
 	}
 
+/*
 	public void generate__new(List<GeneratedNode> lgc) {
 		final WorkManager wm = new WorkManager();
 		// README use any errSink, they should all be the same
@@ -111,9 +119,10 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 
 		__ab.resolveGenerateResult(gr);
 	}
+*/
 
 	protected GenerateResult run3(OS_Module mod, @NotNull List<GeneratedNode> lgc, WorkManager wm, GenerateC ggc) {
-		GenerateResult gr = new GenerateResult();
+		GenerateResult gr2 = new GenerateResult();
 
 		for (GeneratedNode generatedNode : lgc) {
 			if (generatedNode.module() != mod) continue; // README curious
@@ -121,19 +130,21 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 			if (generatedNode instanceof GeneratedContainerNC) {
 				final GeneratedContainerNC nc = (GeneratedContainerNC) generatedNode;
 
-				nc.generateCode(ggc, gr);
+				nc.generateCode(ggc, gr2);
 				final @NotNull Collection<GeneratedNode> gn1 = ggc.functions_to_list_of_generated_nodes(nc.functionMap.values());
-				GenerateResult gr2 = ggc.generateCode(gn1, wm);
-				gr.results().addAll(gr2.results());
+				GenerateResult gr3 = ggc.generateCode(gn1, wm);
+				gr2.results().addAll(gr3.results());
 				final @NotNull Collection<GeneratedNode> gn2 = ggc.classes_to_list_of_generated_nodes(nc.classMap.values());
-				GenerateResult gr3 = ggc.generateCode(gn2, wm);
-				gr.results().addAll(gr3.results());
+				GenerateResult gr4 = ggc.generateCode(gn2, wm);
+				gr2.results().addAll(gr4.results());
 			} else {
 				System.out.println("2009 " + generatedNode.getClass().getName());
 			}
 		}
 
-		return gr;
+//		gr.results().addAll(gr2.results());
+
+		return gr2;
 	}
 
 	public static void debug_buffers(@NotNull GenerateResult gr, PrintStream stream) {
@@ -154,7 +165,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	}
 
 	public void addModule(OS_Module m) {
-//		mods.add(m);
+		mods.add(m);
 	}
 
 	public void resolveCheck(DeducePhase.@NotNull GeneratedClasses lgc) {

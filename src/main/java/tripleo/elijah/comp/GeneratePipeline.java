@@ -18,7 +18,7 @@ import java.util.List;
  * Created 8/21/21 10:16 PM
  */
 public class GeneratePipeline implements PipelineMember, AccessBus.AB_LgcListener {
-//	private final Compilation c;
+	//	private final Compilation c;
 //	private final DeducePipeline dpl;
 	private PipelineLogic pipelineLogic;
 	private List<GeneratedNode> lgc;

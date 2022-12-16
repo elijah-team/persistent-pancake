@@ -29,8 +29,6 @@ import tripleo.elijah.lang.Qualident;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.stages.deduce.FunctionMapHook;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
-import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijjah.ElijjahLexer;
@@ -41,12 +39,7 @@ import tripleo.elijjah.EzParser;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public abstract class Compilation {
@@ -176,6 +169,10 @@ public abstract class Compilation {
 //					pipelines.add(gpl);
 //					final WritePipeline wpl = new WritePipeline(this, pipelineLogic.gr);
 //					pipelines.add(wpl);
+
+
+					modules.stream().forEach(m -> pipelineLogic.addModule(m));
+
 
 					pipelines.run();
 

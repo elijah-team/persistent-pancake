@@ -22,14 +22,7 @@ import tripleo.util.buffer.TextBuffer;
 import tripleo.util.io.CharSink;
 import tripleo.util.io.FileCharSink;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -50,8 +43,6 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	public WritePipeline(AccessBus ab) {
 		c = ab.getCompilation();
 
-		ab.subscribe_GenerateResult(this);
-
 		file_prefix = new File("COMP", c.getCompilationNumberString());
 
 		os = new OutputStrategy();
@@ -61,6 +52,8 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 		sys.verbose = false; // TODO flag? ie CompilationOptions
 		sys.setCompilation(c);
 		sys.setOutputStrategy(os);
+
+		ab.subscribe_GenerateResult(this);
 	}
 
 	@Override
