@@ -90,16 +90,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		}
 
 		__ab.resolveGenerateResult(gr);
-
 	}
-
-/*
-	public void everythingBeforeGenerate() {
-//		resolveMods();
-
-		__ab.resolveGenerateResult(gr);
-	}
-*/
 
 	public void subscribeMods(AccessBus.AB_ModuleListListener l) {
 		__ab.subscribe_moduleList(l);
