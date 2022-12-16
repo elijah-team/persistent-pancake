@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.stages.generate;
 
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
@@ -28,7 +29,7 @@ public class ElSystem {
 	private final Map<GeneratedFunction, String> gfm_map = new HashMap<GeneratedFunction, String>();
 	public boolean verbose = true;
 
-	public void generateOutputs(GenerateResult gr) {
+	public void generateOutputs(@NotNull GenerateResult gr) {
 		final OutputStrategyC outputStrategyC = new OutputStrategyC(this.outputStrategy);
 
 		for (GenerateResultItem ab : gr.results()) {
