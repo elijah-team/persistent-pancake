@@ -9,15 +9,13 @@
 package tripleo.elijah.comp;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.entrypoints.EntryPoint;
+import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.gen_fn.GenerateFunctions;
-import tripleo.elijah.stages.gen_fn.GeneratePhase;
-import tripleo.elijah.stages.gen_fn.GeneratedClass;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
-import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah.stages.gen_c.GenerateC;
+import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
 import tripleo.elijah.stages.logging.ElLog;
@@ -25,8 +23,11 @@ import tripleo.elijah.work.WorkManager;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created 12/30/20 2:14 AM
@@ -56,6 +57,41 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 
 
 		subscribeMods(this);
+	}
+
+	public void everythingBeforeGenerate(List<GeneratedNode> lgc) {
+		List<PL_Run2> run2_work = mods.stream()
+				.map(mod -> new PL_Run2(mod, mod.entryPoints._getMods(), this::getGenerateFunctions, dp, this))
+				.collect(Collectors.toList());
+
+		List<DeducePhase.GeneratedClasses> lgc2 = run2_work.stream()
+				.map(PL_Run2::run2)
+				.collect(Collectors.toList());
+
+//		List<List<EntryPoint>> entryPoints = mods.stream().map(mod -> mod.entryPoints).collect(Collectors.toList());
+
+		lgc2.forEach(dp::finish);
+
+		dp.generatedClasses.addAll(lgc);
+
+//		elLogs = dp.deduceLogs;
+	}
+
+	public void generate(List<GeneratedNode> lgc) {
+		final WorkManager wm = new WorkManager();
+		// README use any errSink, they should all be the same
+		for (OS_Module mod : mods.getMods()) {
+			final GenerateC generateC = new GenerateC(mod, mod.parent.getErrSink(), verbosity, this);
+			final GenerateResult ggr = run3(mod, lgc, wm, generateC);
+			wm.drain();
+			gr.results().addAll(ggr.results());
+		}
+	}
+
+	public void everythingBeforeGenerate() {
+//		resolveMods();
+
+		__ab.resolveGenerateResult(gr);
 	}
 
 	public void subscribeMods(AccessBus.AB_ModuleListListener l) {
@@ -153,7 +189,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		//
 		aModuleList.process__PL(this::getGenerateFunctions, this);
 
-		dp.finish();
+		dp.finish(dp.generatedClasses);
 //		dp.generatedClasses.addAll(lgc);
 	}
 
