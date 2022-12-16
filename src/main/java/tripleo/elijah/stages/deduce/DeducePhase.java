@@ -16,7 +16,6 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
@@ -26,6 +25,7 @@ import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkList;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static tripleo.elijah.util.Helpers.List_of;
@@ -199,7 +199,7 @@ public class DeducePhase {
 
 	public @NotNull DeduceTypes2 deduceModule(@NotNull OS_Module m, @NotNull Iterable<GeneratedNode> lgf, ElLog.Verbosity verbosity) {
 		final @NotNull DeduceTypes2 deduceTypes2 = new DeduceTypes2(m, this, verbosity);
-		LOG.err("196 DeduceTypes "+deduceTypes2.getFileName());
+		LOG.err("196 DeduceTypes " + deduceTypes2.getFileName());
 		{
 			final ArrayList<GeneratedNode> p = new ArrayList<GeneratedNode>();
 			Iterables.addAll(p, lgf);
@@ -300,9 +300,9 @@ public class DeducePhase {
 //		typeDecideds.put(gf, aType);
 	}
 
-	public void finish() {
+	public void finish(@NotNull GeneratedClasses lgc22) {
 		// TODO all GeneratedFunction nodes have a genClass member
-		for (GeneratedNode generatedNode : generatedClasses) {
+		for (GeneratedNode generatedNode : lgc22) {
 			if (generatedNode instanceof GeneratedClass) {
 				final @NotNull GeneratedClass generatedClass = (GeneratedClass) generatedNode;
 				@NotNull Collection<GeneratedFunction> functions = generatedClass.functionMap.values();
@@ -340,7 +340,7 @@ public class DeducePhase {
 */
 		// TODO rewrite with classInvocationMultimap
 		for (ClassStatement classStatement : onclasses.keySet()) {
-			for (GeneratedNode generatedNode : generatedClasses) {
+			for (GeneratedNode generatedNode : lgc22) {
 				if (generatedNode instanceof GeneratedClass) {
 					final @NotNull GeneratedClass generatedClass = (GeneratedClass) generatedNode;
 					if (generatedClass.getKlass() == classStatement) {
@@ -399,7 +399,7 @@ public class DeducePhase {
 				foundElement.doNoFoundElement();
 			}
 		}
-		for (GeneratedNode generatedNode : generatedClasses) {
+		for (GeneratedNode generatedNode : lgc22) {
 			if (generatedNode instanceof GeneratedContainer) {
 				final @NotNull GeneratedContainer generatedContainer = (GeneratedContainer) generatedNode;
 				Collection<ResolvedVariables> x = resolved_variables.get(generatedContainer.getElement());
@@ -416,8 +416,8 @@ public class DeducePhase {
 		@NotNull List<GeneratedClass> gcs = new ArrayList<GeneratedClass>();
 		boolean all_resolve_var_table_entries = false;
 		while (!all_resolve_var_table_entries) {
-			if (generatedClasses.size() == 0) break;
-			for (GeneratedNode generatedNode : generatedClasses.copy()) {
+			if (lgc22.size() == 0) break;
+			for (GeneratedNode generatedNode : lgc22.copy()) {
 				if (generatedNode instanceof GeneratedClass) {
 					final @NotNull GeneratedClass generatedClass = (GeneratedClass) generatedNode;
 					all_resolve_var_table_entries = generatedClass.resolve_var_table_entries(this); // TODO use a while loop to get all classes
