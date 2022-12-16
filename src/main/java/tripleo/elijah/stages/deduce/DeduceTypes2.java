@@ -24,15 +24,7 @@ import tripleo.elijah.lang2.SpecialFunctions;
 import tripleo.elijah.lang2.SpecialVariables;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.gen_fn.*;
-import tripleo.elijah.stages.instructions.ConstTableIA;
-import tripleo.elijah.stages.instructions.FnCallArgs;
-import tripleo.elijah.stages.instructions.IdentIA;
-import tripleo.elijah.stages.instructions.Instruction;
-import tripleo.elijah.stages.instructions.InstructionArgument;
-import tripleo.elijah.stages.instructions.InstructionName;
-import tripleo.elijah.stages.instructions.IntegerIA;
-import tripleo.elijah.stages.instructions.ProcIA;
-import tripleo.elijah.stages.instructions.VariableTableType;
+import tripleo.elijah.stages.instructions.*;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
@@ -115,7 +107,7 @@ public class DeduceTypes2 {
 		return size;
 	}
 
-	public void deduceClasses(final List<GeneratedNode> lgc) {
+	/*public void deduceClasses(final @NotNull List<GeneratedNode> lgc) {
 		for (GeneratedNode generatedNode : lgc) {
 			if (!(generatedNode instanceof GeneratedClass)) continue;
 
@@ -128,10 +120,24 @@ public class DeduceTypes2 {
 				int y=2;
 			}
 		}
+	}*/
+
+	public void deduceClasses(@NotNull List<GeneratedClass> matching_class_list) {
+		for (GeneratedClass generatedClass : matching_class_list) {
+			for (GeneratedContainer.VarTableEntry entry : generatedClass.varTable) {
+				final OS_Type vt = entry.varType;
+				GenType genType = makeGenTypeFromOSType(vt, generatedClass.ci.genericPart);
+				if (genType != null)
+					entry.resolve(genType.node);
+
+				NotImplementedException.raise();
+			}
+		}
 	}
 
 	interface IElementProcessor {
 		void elementIsNull();
+
 		void hasElement(OS_Element el);
 	}
 
