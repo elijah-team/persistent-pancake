@@ -190,6 +190,10 @@ public class EIT_ModuleList {
 		return mods.stream();
 	}
 
+	public void add(OS_Module m) {
+		mods.add(m);
+	}
+
 	private static class _ProcessParams {
 		private final OS_Module mod;
 		private PipelineLogic pipelineLogic;
