@@ -205,10 +205,13 @@ public class DeducePhase {
 			Iterables.addAll(p, lgf);
 			LOG.info("197 lgf.size " + p.size());
 		}
+
 		deduceTypes2.deduceFunctions(lgf);
-		deduceTypes2.deduceClasses(generatedClasses.copy().stream()
-				.filter(c -> c.module() == m)
-				.collect(Collectors.toList()));
+
+		List<GeneratedClass> matching_class_list = generatedClasses.filterClasses(c -> c.module() == m);
+
+		deduceTypes2.deduceClasses(matching_class_list);
+
 		return deduceTypes2;
 	}
 
@@ -565,6 +568,19 @@ public class DeducePhase {
 		public void addAll(List<GeneratedNode> lgc) {
 			// TODO is this method really needed
 			generatedClasses.addAll(lgc);
+		}
+
+		public List<GeneratedClass> filterClasses(Predicate<GeneratedClass> pgc) {
+			return generatedClasses
+					.stream()
+					.filter(x -> {
+						if (x instanceof GeneratedClass) {
+							return pgc.test((GeneratedClass) x);
+						} else
+							return false;
+					})
+					.map(x -> (GeneratedClass) x)
+					.collect(Collectors.toList());
 		}
 	}
 }
