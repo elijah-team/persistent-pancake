@@ -45,4 +45,7 @@ public class EntryPointList {
 		eps.add(aEntryPoint);
 	}
 
+	public List<EntryPoint> _getMods() {
+		return eps;
+	}
 }
