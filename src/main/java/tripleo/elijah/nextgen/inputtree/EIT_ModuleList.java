@@ -35,8 +35,13 @@ public class EIT_ModuleList {
 		for (final OS_Module mod : mods) {
 			final GenerateFunctions gfm = ggf.apply(mod);
 
-			final @NotNull EntryPointList               epl            = mod.entryPoints;
-			final DeducePhase                           deducePhase    = pipelineLogic.dp;
+			final @NotNull EntryPointList epl = mod.entryPoints;
+
+
+			if (epl.size() == 0) continue;
+
+
+			final DeducePhase deducePhase = pipelineLogic.dp;
 			//final DeducePhase.@NotNull GeneratedClasses lgc            = deducePhase.generatedClasses;
 
 			final _ProcessParams plp = new _ProcessParams(mod, pipelineLogic, gfm, epl, deducePhase);

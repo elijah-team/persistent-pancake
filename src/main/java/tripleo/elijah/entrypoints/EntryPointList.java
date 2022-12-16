@@ -48,4 +48,8 @@ public class EntryPointList {
 	public List<EntryPoint> _getMods() {
 		return eps;
 	}
+
+	public int size() {
+		return eps.size();
+	}
 }
