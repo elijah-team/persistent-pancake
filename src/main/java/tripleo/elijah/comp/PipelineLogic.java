@@ -116,6 +116,30 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		__ab.resolveGenerateResult(gr);
 	}
 
+	protected GenerateResult run3(OS_Module mod, @NotNull List<GeneratedNode> lgc, WorkManager wm, GenerateC ggc) {
+		GenerateResult gr = new GenerateResult();
+
+		for (GeneratedNode generatedNode : lgc) {
+			if (generatedNode.module() != mod) continue; // README curious
+
+			if (generatedNode instanceof GeneratedContainerNC) {
+				final GeneratedContainerNC nc = (GeneratedContainerNC) generatedNode;
+
+				nc.generateCode(ggc, gr);
+				final @NotNull Collection<GeneratedNode> gn1 = ggc.functions_to_list_of_generated_nodes(nc.functionMap.values());
+				GenerateResult gr2 = ggc.generateCode(gn1, wm);
+				gr.results().addAll(gr2.results());
+				final @NotNull Collection<GeneratedNode> gn2 = ggc.classes_to_list_of_generated_nodes(nc.classMap.values());
+				GenerateResult gr3 = ggc.generateCode(gn2, wm);
+				gr.results().addAll(gr3.results());
+			} else {
+				System.out.println("2009 " + generatedNode.getClass().getName());
+			}
+		}
+
+		return gr;
+	}
+
 	public static void debug_buffers(@NotNull GenerateResult gr, PrintStream stream) {
 		for (GenerateResultItem ab : gr.results()) {
 			stream.println("---------------------------------------------------------------");
