@@ -217,6 +217,114 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 //		dp.generatedClasses.addAll(lgc);
 	}
 
+	static class PL_Run2 {
+
+		private final OS_Module mod;
+		private final List<EntryPoint> entryPoints;
+		private final DeducePhase dp;
+		private final Function<OS_Module, GenerateFunctions> mapper;
+		private final PipelineLogic pipelineLogic;
+
+		public PL_Run2(OS_Module mod,
+					   List<EntryPoint> entryPoints,
+					   Function<OS_Module, GenerateFunctions> mapper,
+					   DeducePhase dp,
+					   PipelineLogic pipelineLogic) {
+			this.mod = mod;
+			this.entryPoints = entryPoints;
+			this.dp = dp;
+			this.mapper = mapper;
+			this.pipelineLogic = pipelineLogic;
+		}
+
+		protected DeducePhase.@NotNull GeneratedClasses run2() {
+			final @NotNull List<EntryPoint> epl_ = entryPoints;
+			final @NotNull EntryPointList epl = new EntryPointList();
+
+			entryPoints.stream().forEach(epl::add);
+
+			final GenerateFunctions gfm = mapper.apply(mod);
+			gfm.generateFromEntryPoints(epl, pipelineLogic.dp);
+
+//			WorkManager wm = new WorkManager();
+//			WorkList wl = new WorkList();
+
+			DeducePhase.@NotNull GeneratedClasses lgc = dp.generatedClasses;
+			@NotNull List<GeneratedNode> resolved_nodes = new ArrayList<GeneratedNode>();
+
+			for (final GeneratedNode generatedNode : lgc) {
+				if (generatedNode instanceof GeneratedFunction) {
+					@NotNull GeneratedFunction generatedFunction = (GeneratedFunction) generatedNode;
+					if (generatedFunction.getCode() == 0)
+						generatedFunction.setCode(mod.parent.nextFunctionCode());
+				} else if (generatedNode instanceof GeneratedClass) {
+					final @NotNull GeneratedClass generatedClass = (GeneratedClass) generatedNode;
+//				if (generatedClass.getCode() == 0)
+//					generatedClass.setCode(mod.parent.nextClassCode());
+					for (@NotNull GeneratedClass generatedClass2 : generatedClass.classMap.values()) {
+						generatedClass2.setCode(mod.parent.nextClassCode());
+					}
+					for (@NotNull GeneratedFunction generatedFunction : generatedClass.functionMap.values()) {
+						for (@NotNull IdentTableEntry identTableEntry : generatedFunction.idte_list) {
+							if (identTableEntry.isResolved()) {
+								GeneratedNode node = identTableEntry.resolvedType();
+								resolved_nodes.add(node);
+							}
+						}
+					}
+				} else if (generatedNode instanceof GeneratedNamespace) {
+					final @NotNull GeneratedNamespace generatedNamespace = (GeneratedNamespace) generatedNode;
+					if (generatedNamespace.getCode() == 0)
+						generatedNamespace.setCode(mod.parent.nextClassCode());
+					for (@NotNull GeneratedClass generatedClass : generatedNamespace.classMap.values()) {
+						generatedClass.setCode(mod.parent.nextClassCode());
+					}
+					for (@NotNull GeneratedFunction generatedFunction : generatedNamespace.functionMap.values()) {
+						for (@NotNull IdentTableEntry identTableEntry : generatedFunction.idte_list) {
+							if (identTableEntry.isResolved()) {
+								GeneratedNode node = identTableEntry.resolvedType();
+								resolved_nodes.add(node);
+							}
+						}
+					}
+				}
+			}
+
+			for (final GeneratedNode generatedNode : resolved_nodes) {
+				if (generatedNode instanceof GeneratedFunction) {
+					@NotNull GeneratedFunction generatedFunction = (GeneratedFunction) generatedNode;
+					if (generatedFunction.getCode() == 0)
+						generatedFunction.setCode(mod.parent.nextFunctionCode());
+				} else if (generatedNode instanceof GeneratedClass) {
+					final @NotNull GeneratedClass generatedClass = (GeneratedClass) generatedNode;
+					if (generatedClass.getCode() == 0)
+						generatedClass.setCode(mod.parent.nextClassCode());
+				} else if (generatedNode instanceof GeneratedNamespace) {
+					final @NotNull GeneratedNamespace generatedNamespace = (GeneratedNamespace) generatedNode;
+					if (generatedNamespace.getCode() == 0)
+						generatedNamespace.setCode(mod.parent.nextClassCode());
+				}
+			}
+
+			dp.deduceModule(mod, lgc, true, pipelineLogic.getVerbosity());
+
+			pipelineLogic.resolveCheck(lgc);
+
+//		for (final GeneratedNode gn : lgf) {
+//			if (gn instanceof GeneratedFunction) {
+//				GeneratedFunction gf = (GeneratedFunction) gn;
+//				System.out.println("----------------------------------------------------------");
+//				System.out.println(gf.name());
+//				System.out.println("----------------------------------------------------------");
+//				GeneratedFunction.printTables(gf);
+//				System.out.println("----------------------------------------------------------");
+//			}
+//		}
+
+			return lgc;
+		}
+	}
+
 }
 
 //
