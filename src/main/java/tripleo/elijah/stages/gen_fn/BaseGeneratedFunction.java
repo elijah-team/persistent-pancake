@@ -49,25 +49,25 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	private GeneratedContainerNC parent;
     private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();
 
-	public static void printTables(GeneratedFunction gf) {
+	public static void printTables(final GeneratedFunction gf) {
 		System.out.println("VariableTable ");
-		for (VariableTableEntry variableTableEntry : gf.vte_list) {
+		for (final VariableTableEntry variableTableEntry : gf.vte_list) {
 			System.out.println("\t"+variableTableEntry);
 		}
 		System.out.println("ConstantTable ");
-		for (ConstantTableEntry constantTableEntry : gf.cte_list) {
+		for (final ConstantTableEntry constantTableEntry : gf.cte_list) {
 			System.out.println("\t"+constantTableEntry);
 		}
 		System.out.println("ProcTable     ");
-		for (ProcTableEntry procTableEntry : gf.prte_list) {
+		for (final ProcTableEntry procTableEntry : gf.prte_list) {
 			System.out.println("\t"+procTableEntry);
 		}
 		System.out.println("TypeTable     ");
-		for (TypeTableEntry typeTableEntry : gf.tte_list) {
+		for (final TypeTableEntry typeTableEntry : gf.tte_list) {
 			System.out.println("\t"+typeTableEntry);
 		}
 		System.out.println("IdentTable    ");
-		for (IdentTableEntry identTableEntry : gf.idte_list) {
+		for (final IdentTableEntry identTableEntry : gf.idte_list) {
 			System.out.println("\t"+identTableEntry);
 		}
 	}
@@ -77,7 +77,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	//
 
 	public static @NotNull List<InstructionArgument> _getIdentIAPathList(@NotNull InstructionArgument oo) {
-		LinkedList<InstructionArgument> s = new LinkedList<InstructionArgument>();
+		final LinkedList<InstructionArgument> s = new LinkedList<InstructionArgument>();
 		while (oo != null) {
 			if (oo instanceof IntegerIA) {
 				s.addFirst(oo);
@@ -111,7 +111,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 		//
 		// TODO NOT LOOKING UP THINGS, IE PROPERTIES, MEMBERS
 		//
-		List<String> sl = new ArrayList<String>();
+		final List<String> sl = new ArrayList<String>();
 		for (final InstructionArgument ia : s) {
 			final String text;
 			if (ia instanceof IntegerIA) {
@@ -221,7 +221,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 		return newTypeTableEntry(type1, type, null, null);
 	}
 
-	public @NotNull TypeTableEntry newTypeTableEntry(final TypeTableEntry.Type type1, final OS_Type type, TableEntryIV aTableEntryIV) {
+	public @NotNull TypeTableEntry newTypeTableEntry(final TypeTableEntry.Type type1, final OS_Type type, final TableEntryIV aTableEntryIV) {
 		return newTypeTableEntry(type1, type, null, aTableEntryIV);
 	}
 
@@ -229,7 +229,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 		return newTypeTableEntry(type1, type, expression, null);
 	}
 
-	public @NotNull TypeTableEntry newTypeTableEntry(final TypeTableEntry.Type type1, final OS_Type type, final IExpression expression, TableEntryIV aTableEntryIV) {
+	public @NotNull TypeTableEntry newTypeTableEntry(final TypeTableEntry.Type type1, final OS_Type type, final IExpression expression, final TableEntryIV aTableEntryIV) {
 		final TypeTableEntry typeTableEntry = new TypeTableEntry(tte_list.size(), type1, type, expression, aTableEntryIV);
 		typeTableEntry.setAttached(type); // README make sure tio call callback
 		tte_list.add(typeTableEntry);
@@ -278,7 +278,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 
 	public @NotNull InstructionArgument get_assignment_path(@NotNull final IExpression expression,
 															@NotNull final GenerateFunctions generateFunctions,
-															Context context) {
+															final Context context) {
 		switch (expression.getKind()) {
 		case DOT_EXP:
 		{
@@ -290,13 +290,13 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 			throw new NotImplementedException();
 		case PROCEDURE_CALL:
 			{
-				ProcedureCallExpression pce = (ProcedureCallExpression) expression;
+				final ProcedureCallExpression pce = (ProcedureCallExpression) expression;
 				if (pce.getLeft() instanceof IdentExpression) {
 					final IdentExpression identExpression = (IdentExpression) pce.getLeft();
-					int idte_index = addIdentTableEntry(identExpression, identExpression.getContext());
+					final int idte_index = addIdentTableEntry(identExpression, identExpression.getContext());
 					final IdentIA identIA = new IdentIA(idte_index, this);
 					final List<TypeTableEntry> args_types = generateFunctions.get_args_types(pce.getArgs(), this, context);
-					int i = generateFunctions.addProcTableEntry(pce, identIA, args_types, this);
+					final int i = generateFunctions.addProcTableEntry(pce, identIA, args_types, this);
 					return new ProcIA(i, this);
 				}
 				return get_assignment_path(pce.getLeft(), generateFunctions, context); // TODO this looks wrong. what are we supposed to be doing here?
@@ -375,8 +375,8 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	 * @param expression {@link IdentExpression} to test for
 	 * @return IdentTableEntry or null
 	 */
-	public IdentTableEntry getIdentTableEntryFor(IExpression expression) {
-		for (IdentTableEntry identTableEntry : idte_list) {
+	public IdentTableEntry getIdentTableEntryFor(final IExpression expression) {
+		for (final IdentTableEntry identTableEntry : idte_list) {
 			// TODO make this work for Qualidents and DotExpressions
 			if (identTableEntry.getIdent().getText().equals(((IdentExpression) expression).getText()) && identTableEntry.backlink == null) {
 				return identTableEntry;
@@ -395,7 +395,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 		return idte.getIndex();
 	}
 
-	public int addVariableTableEntry(final String name, final VariableTableType vtt, final TypeTableEntry type, OS_Element el) {
+	public int addVariableTableEntry(final String name, final VariableTableType vtt, final TypeTableEntry type, final OS_Element el) {
 		final VariableTableEntry vte = new VariableTableEntry(vte_list.size(), vtt, name, type, el);
 		vte_list.add(vte);
 		return vte.getIndex();
@@ -411,11 +411,11 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 		return code;
 	}
 
-	public void setCode(int aCode) {
+	public void setCode(final int aCode) {
 		code = aCode;
 	}
 
-	public void setParent(GeneratedContainerNC aGeneratedContainerNC) {
+	public void setParent(final GeneratedContainerNC aGeneratedContainerNC) {
 		parent = aGeneratedContainerNC;
 	}
 
@@ -423,7 +423,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 		return parent;
 	}
 
-	public void setClass(@NotNull GeneratedNode aNode) {
+	public void setClass(@NotNull final GeneratedNode aNode) {
 		assert aNode instanceof GeneratedClass || aNode instanceof GeneratedNamespace;
 		genClass = aNode;
 	}

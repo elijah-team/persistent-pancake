@@ -9,7 +9,7 @@ public class EX_SingleElementExplanation implements EX_Explanation {
 	private final @NotNull OS_Element _element;
 
 	@Contract(pure = true)
-	public EX_SingleElementExplanation(OS_Element aElement) {
+	public EX_SingleElementExplanation(final OS_Element aElement) {
 		_element = aElement;
 	}
 

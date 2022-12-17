@@ -25,11 +25,11 @@ public class GenType {
 	public IInvocation ci;
 	public GeneratedNode node;
 
-	public GenType(NamespaceStatement aNamespaceStatement) {
+	public GenType(final NamespaceStatement aNamespaceStatement) {
 		resolvedn = /*new OS_Type*/(aNamespaceStatement);
 	}
 
-	public GenType(ClassStatement aClassStatement) {
+	public GenType(final ClassStatement aClassStatement) {
 		resolved = new OS_Type(aClassStatement);
 	}
 
@@ -37,7 +37,7 @@ public class GenType {
 
 	}
 
-	public void set(OS_Type aType) {
+	public void set(final OS_Type aType) {
 		switch (aType.getType()) {
 		case USER:
 			typeName = aType;
@@ -49,7 +49,7 @@ public class GenType {
 		}
 	}
 
-	public void copy(GenType aGenType) {
+	public void copy(final GenType aGenType) {
 		if (resolvedn == null) resolvedn = aGenType.resolvedn;
 		if (typeName == null) typeName = aGenType.typeName;
 		if (nonGenericTypeName == null) nonGenericTypeName = aGenType.nonGenericTypeName;

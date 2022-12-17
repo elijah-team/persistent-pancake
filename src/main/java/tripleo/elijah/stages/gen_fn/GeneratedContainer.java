@@ -48,11 +48,11 @@ public interface GeneratedContainer extends GeneratedNode {
             parent          = aElement;
         }
 
-        public void addPotentialTypes(@NotNull Collection<TypeTableEntry> aPotentialTypes) {
+        public void addPotentialTypes(@NotNull final Collection<TypeTableEntry> aPotentialTypes) {
             potentialTypes.addAll(aPotentialTypes);
         }
 
-        public void resolve(@NotNull GeneratedNode aResolvedType) {
+        public void resolve(@NotNull final GeneratedNode aResolvedType) {
             _resolvedType = aResolvedType;
         }
 

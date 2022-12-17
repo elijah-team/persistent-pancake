@@ -27,13 +27,13 @@ public class GeneratePhase {
     private final ElLog.Verbosity verbosity;
     private final PipelineLogic pipelineLogic;
 
-	public GeneratePhase(ElLog.Verbosity aVerbosity, PipelineLogic aPipelineLogic) {
+	public GeneratePhase(final ElLog.Verbosity aVerbosity, final PipelineLogic aPipelineLogic) {
 		verbosity = aVerbosity;
 		pipelineLogic = aPipelineLogic;
 	}
 
 	@NotNull
-	public GenerateFunctions getGenerateFunctions(@NotNull OS_Module mod) {
+	public GenerateFunctions getGenerateFunctions(@NotNull final OS_Module mod) {
 		final GenerateFunctions Result;
 		if (generateFunctions.containsKey(mod))
 			Result = generateFunctions.get(mod);

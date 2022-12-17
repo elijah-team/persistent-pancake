@@ -41,7 +41,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 	private final File file_prefix;
 
-	public WritePipeline(@NotNull AccessBus ab) {
+	public WritePipeline(@NotNull final AccessBus ab) {
 		c = ab.getCompilation();
 
 		file_prefix = new File("COMP", c.getCompilationNumberString());
@@ -67,39 +67,39 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	}
 
 	public void write_files() throws IOException {
-		Multimap<String, Buffer> mb = ArrayListMultimap.create();
+		final Multimap<String, Buffer> mb = ArrayListMultimap.create();
 
-		for (GenerateResultItem ab : gr.results()) {
+		for (final GenerateResultItem ab : gr.results()) {
 			mb.put(ab.output, ab.buffer);
 		}
 
 		file_prefix.mkdirs();
-		String prefix = file_prefix.toString();
+		final String prefix = file_prefix.toString();
 
 		// TODO flag?
 		write_inputs(file_prefix);
 
-		for (Map.Entry<String, Collection<Buffer>> entry : mb.asMap().entrySet()) {
+		for (final Map.Entry<String, Collection<Buffer>> entry : mb.asMap().entrySet()) {
 			final String key = entry.getKey();
-			Path path = FileSystems.getDefault().getPath(prefix, key);
+			final Path path = FileSystems.getDefault().getPath(prefix, key);
 //			BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
 
 			path.getParent().toFile().mkdirs();
 
 			// TODO functionality
 			System.out.println("201 Writing path: "+path);
-			CharSink x = c.getIO().openWrite(path);
-			for (Buffer buffer : entry.getValue()) {
+			final CharSink x = c.getIO().openWrite(path);
+			for (final Buffer buffer : entry.getValue()) {
 				x.accept(buffer.getText());
 			}
 			((FileCharSink)x).close();
 		}
 	}
 
-	private void write_inputs(File file_prefix) throws IOException {
+	private void write_inputs(final File file_prefix) throws IOException {
 		final String fn1 = new File(file_prefix, "inputs.txt").toString();
 
-		DefaultBuffer buf = new DefaultBuffer("");
+		final DefaultBuffer buf = new DefaultBuffer("");
 //			FileBackedBuffer buf = new FileBackedBuffer(fn1);
 //			for (OS_Module module : modules) {
 //				final String fn = module.getFileName();
@@ -112,18 +112,18 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 //
 //				append_hash(buf, fn);
 //			}
-		for (File file : c.getIO().recordedreads) {
+		for (final File file : c.getIO().recordedreads) {
 			final String fn = file.toString();
 
 			append_hash(buf, fn, c.getErrSink());
 		}
-		String s = buf.getText();
-		Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fn1, true)));
+		final String s = buf.getText();
+		final Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fn1, true)));
 		w.write(s);
 		w.close();
 	}
 
-	private void append_hash(TextBuffer aBuf, String aFilename, ErrSink errSink) throws IOException {
+	private void append_hash(final TextBuffer aBuf, final String aFilename, final ErrSink errSink) throws IOException {
 		@Nullable final String hh = Helpers.getHashForFilename(aFilename, errSink);
 		if (hh != null) {
 			aBuf.append(hh);
@@ -135,12 +135,12 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	public void write_buffers() throws FileNotFoundException {
 		file_prefix.mkdirs();
 
-		PrintStream db_stream = new PrintStream(new File(file_prefix, "buffers.txt"));
+		final PrintStream db_stream = new PrintStream(new File(file_prefix, "buffers.txt"));
 		PipelineLogic.debug_buffers(gr, db_stream);
 	}
 
 	@Override
-	public void gr_slot(GenerateResult gr) {
+	public void gr_slot(final GenerateResult gr) {
 		this.gr = gr;
 	}
 }

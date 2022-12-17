@@ -49,13 +49,13 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	public DeduceTypes2.PromiseExpectation<String> resolveExpectation;
 
-	public IdentTableEntry(final int index, final IdentExpression ident, Context pc) {
+	public IdentTableEntry(final int index, final IdentExpression ident, final Context pc) {
         this.index  = index;
         this.ident  = ident;
         this.pc     = pc;
         addStatusListener(new StatusListener() {
 			@Override
-			public void onChange(IElementHolder eh, Status newStatus) {
+			public void onChange(final IElementHolder eh, final Status newStatus) {
 				if (newStatus == Status.KNOWN) {
 					setResolvedElement(eh.getElement());
 				}
@@ -90,14 +90,14 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	}
 
 	@Override
-	public void resolveTypeToClass(GeneratedNode gn) {
+	public void resolveTypeToClass(final GeneratedNode gn) {
 		resolvedType = gn;
 		if (type != null) // TODO maybe find a more robust solution to this, like another Promise? or just setType? or onPossiblesResolve?
 			type.resolve(gn); // TODO maybe this obviates the above?
 	}
 
 	@Override
-	public void setGenType(GenType aGenType) {
+	public void setGenType(final GenType aGenType) {
 		if (type != null) {
 			type.genType.copy(aGenType);
 		}
@@ -123,17 +123,17 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		return pc;
 	}
 
-	public void onType(@NotNull DeducePhase phase, OnType callback) {
+	public void onType(@NotNull final DeducePhase phase, final OnType callback) {
 		phase.onType(this, callback);
 	}
 
 	@Override
-	public void setConstructable(ProcTableEntry aPte) {
+	public void setConstructable(final ProcTableEntry aPte) {
 		constructable_pte = aPte;
 	}
 
-	public DeducePath buildDeducePath(BaseGeneratedFunction generatedFunction) {
-		@NotNull List<InstructionArgument> x = generatedFunction._getIdentIAPathList(new IdentIA(index, generatedFunction));
+	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction) {
+		@NotNull final List<InstructionArgument> x = generatedFunction._getIdentIAPathList(new IdentIA(index, generatedFunction));
 		return new DeducePath(this, x);
 	}
 
@@ -153,7 +153,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 			fefiDone.resolve(aGenType);
 	}
 
-	public void onFefiDone(DoneCallback<GenType> aCallback) {
+	public void onFefiDone(final DoneCallback<GenType> aCallback) {
 		fefiDone.then(aCallback);
 	}
 }

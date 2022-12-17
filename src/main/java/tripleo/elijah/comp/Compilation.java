@@ -195,13 +195,13 @@ public abstract class Compilation {
 		return System.getenv("GITLAB_CI") != null;
 	}
 
-	private void writeLogs(boolean aSilent, List<ElLog> aLogs) {
-		Multimap<String, ElLog> logMap = ArrayListMultimap.create();
+	private void writeLogs(final boolean aSilent, final List<ElLog> aLogs) {
+		final Multimap<String, ElLog> logMap = ArrayListMultimap.create();
 		if (true || aSilent) {
-			for (ElLog deduceLog : aLogs) {
+			for (final ElLog deduceLog : aLogs) {
 				logMap.put(deduceLog.getFileName(), deduceLog);
 			}
-			for (Map.Entry<String, Collection<ElLog>> stringCollectionEntry : logMap.asMap().entrySet()) {
+			for (final Map.Entry<String, Collection<ElLog>> stringCollectionEntry : logMap.asMap().entrySet()) {
 				final F202 f202 = new F202(getErrSink(), this);
 				f202.processLogs(stringCollectionEntry.getValue());
 			}
@@ -243,7 +243,7 @@ public abstract class Compilation {
 		final File instruction_dir = new File(compilerInstructions.getFilename()).getParentFile();
 		for (final LibraryStatementPart lsp : compilerInstructions.lsps) {
 			final String dir_name = Helpers.remove_single_quotes_from_string(lsp.getDirName());
-			File dir;// = new File(dir_name);
+			final File dir;// = new File(dir_name);
 			if (dir_name.equals(".."))
 				dir = instruction_dir/*.getAbsoluteFile()*/.getParentFile();
 			else
@@ -257,7 +257,7 @@ public abstract class Compilation {
 		use_internal(instruction_dir, do_out, lsp);
 	}
 
-	private void use_internal(final File dir, final boolean do_out, LibraryStatementPart lsp) throws Exception {
+	private void use_internal(final File dir, final boolean do_out, final LibraryStatementPart lsp) throws Exception {
 		if (!dir.isDirectory()) {
 			eee.reportError("9997 Not a directory " + dir.toString());
 			return;
@@ -300,7 +300,7 @@ public abstract class Compilation {
 								  final String file_name,
 								  final ErrSink errSink,
 								  final boolean do_out,
-								  LibraryStatementPart lsp) throws Exception {
+								  final LibraryStatementPart lsp) throws Exception {
 		System.out.println((String.format("   %s", f.getAbsolutePath())));
 		if (f.exists()) {
 			final OS_Module m = realParseElijjahFile(file_name, f, do_out);
@@ -489,7 +489,7 @@ public abstract class Compilation {
 		return eee;
 	}
 
-	public void addFunctionMapHook(FunctionMapHook aFunctionMapHook) {
+	public void addFunctionMapHook(final FunctionMapHook aFunctionMapHook) {
 		pipelineLogic.dp.addFunctionMapHook(aFunctionMapHook);
 	}
 

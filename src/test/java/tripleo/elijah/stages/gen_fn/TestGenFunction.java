@@ -57,14 +57,14 @@ public class TestGenFunction {
 		//
 		final ClassStatement main_class = (ClassStatement) m.findClass("Main");
 		assert main_class != null;
-		MainClassEntryPoint mainClassEntryPoint = new MainClassEntryPoint(main_class);
+		final MainClassEntryPoint mainClassEntryPoint = new MainClassEntryPoint(main_class);
 		m.entryPoints = new EntryPointList();
 		m.entryPoints.add(mainClassEntryPoint);
 		//
 		//
 		//
 
-		List<FunctionMapHook> ran_hooks = new ArrayList<>();
+		final List<FunctionMapHook> ran_hooks = new ArrayList<>();
 
 
 		final ElLog.Verbosity verbosity1 = c.gitlabCIVerbosity();
@@ -74,7 +74,7 @@ public class TestGenFunction {
 
 		final GeneratePhase generatePhase1 = c.pipelineLogic.generatePhase;//new GeneratePhase();
 		final GenerateFunctions gfm = generatePhase1.getGenerateFunctions(m);
-		DeducePhase dp = c.pipelineLogic.dp;//new DeducePhase(generatePhase1);
+		final DeducePhase dp = c.pipelineLogic.dp;//new DeducePhase(generatePhase1);
 		gfm.generateFromEntryPoints(m.entryPoints, dp);
 
 		final DeducePhase.@NotNull GeneratedClasses lgc = dp.generatedClasses; //new ArrayList<>();
@@ -92,20 +92,20 @@ public class TestGenFunction {
 
 //		Assert.assertEquals(2, lgf.size());
 
-		WorkManager wm = new WorkManager();
+		final WorkManager wm = new WorkManager();
 
 		c.addFunctionMapHook(new FunctionMapHook(){
 			@Override
-			public boolean matches(FunctionDef fd) {
+			public boolean matches(final FunctionDef fd) {
 				final boolean b = fd.name().equals("main") && fd.getParent() == main_class;
 				return b;
 			}
 
 			@Override
-			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
+			public void apply(final Collection<GeneratedFunction> aGeneratedFunctions) {
 				assert aGeneratedFunctions.size() == 1;
 
-				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
+				final GeneratedFunction gf = aGeneratedFunctions.iterator().next();
 
 				int pc = 0;
 				Assert.assertEquals(InstructionName.E, gf.getInstruction(pc++).getName());
@@ -122,16 +122,16 @@ public class TestGenFunction {
 
 		c.addFunctionMapHook(new FunctionMapHook(){
 			@Override
-			public boolean matches(FunctionDef fd) {
+			public boolean matches(final FunctionDef fd) {
 				final boolean b = fd.name().equals("factorial") && fd.getParent() == main_class;
 				return b;
 			}
 
 			@Override
-			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
+			public void apply(final Collection<GeneratedFunction> aGeneratedFunctions) {
 				assert aGeneratedFunctions.size() == 1;
 
-				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
+				final GeneratedFunction gf = aGeneratedFunctions.iterator().next();
 
 				int pc = 0;
 				Assert.assertEquals(InstructionName.E, gf.getInstruction(pc++).getName());
@@ -154,16 +154,16 @@ public class TestGenFunction {
 
 		c.addFunctionMapHook(new FunctionMapHook(){
 			@Override
-			public boolean matches(FunctionDef fd) {
+			public boolean matches(final FunctionDef fd) {
 				final boolean b = fd.name().equals("main") && fd.getParent() == main_class;
 				return b;
 			}
 
 			@Override
-			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
+			public void apply(final Collection<GeneratedFunction> aGeneratedFunctions) {
 				assert aGeneratedFunctions.size() == 1;
 
-				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
+				final GeneratedFunction gf = aGeneratedFunctions.iterator().next();
 
 				System.out.println("main\n====");
 				for (int i = 0; i < gf.vte_list.size(); i++) {
@@ -182,16 +182,16 @@ public class TestGenFunction {
 
 		c.addFunctionMapHook(new FunctionMapHook(){
 			@Override
-			public boolean matches(FunctionDef fd) {
+			public boolean matches(final FunctionDef fd) {
 				final boolean b = fd.name().equals("factorial") && fd.getParent() == main_class;
 				return b;
 			}
 
 			@Override
-			public void apply(Collection<GeneratedFunction> aGeneratedFunctions) {
+			public void apply(final Collection<GeneratedFunction> aGeneratedFunctions) {
 				assert aGeneratedFunctions.size() == 1;
 
-				GeneratedFunction gf = aGeneratedFunctions.iterator().next();
+				final GeneratedFunction gf = aGeneratedFunctions.iterator().next();
 
 				System.out.println("factorial\n=========");
 				for (int i = 0; i < gf.vte_list.size(); i++) {
@@ -250,12 +250,12 @@ public class TestGenFunction {
 		final List<GeneratedNode> lgc = new ArrayList<>();
 		gfm.generateAllTopLevelClasses(lgc);
 
-		DeducePhase dp = new DeducePhase(generatePhase, pl, verbosity1);
+		final DeducePhase dp = new DeducePhase(generatePhase, pl, verbosity1);
 
-		WorkManager wm = new WorkManager();
+		final WorkManager wm = new WorkManager();
 
-		List<GeneratedNode> lgf = new ArrayList<>();
-		for (GeneratedNode generatedNode : lgc) {
+		final List<GeneratedNode> lgf = new ArrayList<>();
+		for (final GeneratedNode generatedNode : lgc) {
 			if (generatedNode instanceof GeneratedClass)
 				lgf.addAll(((GeneratedClass) generatedNode).functionMap.values());
 			if (generatedNode instanceof GeneratedNamespace)
@@ -265,7 +265,7 @@ public class TestGenFunction {
 
 		for (final GeneratedNode gn : lgf) {
 			if (gn instanceof GeneratedFunction) {
-				GeneratedFunction gf = (GeneratedFunction) gn;
+				final GeneratedFunction gf = (GeneratedFunction) gn;
 				for (final Instruction instruction : gf.instructions()) {
 					System.out.println("8100 " + instruction);
 				}
@@ -278,7 +278,7 @@ public class TestGenFunction {
 
 		for (final GeneratedNode gn : lgf) {
 			if (gn instanceof GeneratedFunction) {
-				GeneratedFunction gf = (GeneratedFunction) gn;
+				final GeneratedFunction gf = (GeneratedFunction) gn;
 				System.out.println("----------------------------------------------------------");
 				System.out.println(gf.name());
 				System.out.println("----------------------------------------------------------");
@@ -287,12 +287,12 @@ public class TestGenFunction {
 			}
 		}
 
-		GenerateC ggc = new GenerateC(m, eee, c.gitlabCIVerbosity(), pl);
+		final GenerateC ggc = new GenerateC(m, eee, c.gitlabCIVerbosity(), pl);
 		ggc.generateCode(lgf, wm);
 
-		GenerateResult gr = new GenerateResult();
+		final GenerateResult gr = new GenerateResult();
 
-		for (GeneratedNode generatedNode : lgc) {
+		for (final GeneratedNode generatedNode : lgc) {
 			if (generatedNode instanceof GeneratedClass) {
 				ggc.generate_class((GeneratedClass) generatedNode, gr);
 			} else {

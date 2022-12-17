@@ -15,19 +15,14 @@
 package tripleo.elijah.lang;
 
 import antlr.Token;
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Multimap;
 import org.eclipse.jdt.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.contexts.ModuleContext;
-import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.entrypoints.EntryPointList;
-import tripleo.elijah.entrypoints.MainClassEntryPoint;
 import tripleo.elijah.gen.ICodeGen;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyModule;
@@ -35,9 +30,7 @@ import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 public class OS_Module implements OS_Element, OS_Container {
@@ -212,11 +205,11 @@ public class OS_Module implements OS_Element, OS_Container {
 		throw new NotImplementedException();
 	}
 
-	public void remove(ClassStatement cls) {
+	public void remove(final ClassStatement cls) {
 		items.remove(cls);
 	}
 
-	public void addIndexingStatement(IndexingStatement indexingStatement) {
+	public void addIndexingStatement(final IndexingStatement indexingStatement) {
 		this.indexingStatement = indexingStatement;
 	}
 
@@ -228,7 +221,7 @@ public class OS_Module implements OS_Element, OS_Container {
 		return lsp;
 	}
 
-	public void setLsp(LibraryStatementPart aLsp) {
+	public void setLsp(final LibraryStatementPart aLsp) {
 		lsp = aLsp;
 	}
 

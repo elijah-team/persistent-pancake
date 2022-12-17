@@ -37,7 +37,7 @@ public class ElSystemTest {
 
 	@Test
 	public void generateOutputs() {
-		OutputStrategy os = new OutputStrategy();
+		final OutputStrategy os = new OutputStrategy();
 		os.per(OutputStrategy.Per.PER_CLASS);
 		sys.setOutputStrategy(os);
 		sys.generateOutputs(c.pipelineLogic.gr);

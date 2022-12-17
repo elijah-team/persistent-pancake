@@ -67,7 +67,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 		if (!potentialTypes.containsKey(instructionIndex))
 			potentialTypes.put(instructionIndex, tte);
 		else {
-			TypeTableEntry v = potentialTypes.get(instructionIndex);
+			final TypeTableEntry v = potentialTypes.get(instructionIndex);
 			if (v.getAttached() == null) {
 				v.setAttached(tte.getAttached());
 				type.genType.copy(tte.genType); // README don't lose information
@@ -132,12 +132,12 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 	}
 
 	@Override
-	public void setConstructable(ProcTableEntry aPte) {
+	public void setConstructable(final ProcTableEntry aPte) {
 		constructable_pte = aPte;
 	}
 
 	@Override
-	public void resolveTypeToClass(GeneratedNode aNode) {
+	public void resolveTypeToClass(final GeneratedNode aNode) {
 		_resolvedType = aNode;
 		genType.node = aNode;
 		type.resolve(aNode); // TODO maybe this obviates above
@@ -148,7 +148,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 	}
 
 	@Override
-	public void setGenType(GenType aGenType) {
+	public void setGenType(final GenType aGenType) {
 		genType.copy(aGenType);
 		resolveType(aGenType);
 	}

@@ -26,7 +26,7 @@ public class AccessBus {
 	private final DeferredObject<GenerateResult, Void, Void> generateResultPromise = new DeferredObject<>();
 	private PipelineLogic ____pl;
 
-	public AccessBus(Compilation aC) {
+	public AccessBus(final Compilation aC) {
 		_c = aC;
 	}
 
@@ -34,16 +34,16 @@ public class AccessBus {
 		return _c;
 	}
 
-	public void subscribePipelineLogic(DoneCallback<PipelineLogic> aPipelineLogicDoneCallback) {
+	public void subscribePipelineLogic(final DoneCallback<PipelineLogic> aPipelineLogicDoneCallback) {
 		pipeLineLogicPromise.then(aPipelineLogicDoneCallback);
 	}
 
-	private void resolvePipelineLogic(PipelineLogic pl) {
+	private void resolvePipelineLogic(final PipelineLogic pl) {
 		pipeLineLogicPromise.resolve(pl);
 	}
 
 	@Deprecated
-	public void resolveModuleList(List<OS_Module> aModuleList) {
+	public void resolveModuleList(final List<OS_Module> aModuleList) {
 		resolveModuleList(new EIT_ModuleList(aModuleList)); // TODO
 	}
 
@@ -51,43 +51,43 @@ public class AccessBus {
 		moduleListPromise.resolve(aModuleList);
 	}
 
-	public void resolveGenerateResult(GenerateResult aGenerateResult) {
+	public void resolveGenerateResult(final GenerateResult aGenerateResult) {
 		generateResultPromise.resolve(aGenerateResult);
 	}
 
-	public void resolveLgc(List<GeneratedNode> lgc) {
+	public void resolveLgc(final List<GeneratedNode> lgc) {
 		lgcPromise.resolve(lgc);
 	}
 
 	public void add(final @NotNull Function<AccessBus, PipelineMember> aCr) {
-		PipelineMember x = aCr.apply(this);
+		final PipelineMember x = aCr.apply(this);
 		_c.pipelines.add(x);
 	}
 
 	public void addPipelineLogic(final @NotNull Function<AccessBus, PipelineLogic> aPlr) {
-		PipelineLogic x = aPlr.apply(this);
+		final PipelineLogic x = aPlr.apply(this);
 
 		____pl = x;
 
 		resolvePipelineLogic(x);
 	}
 
-	public void subscribe_lgc(@NotNull AB_LgcListener aLgcListener) {
+	public void subscribe_lgc(@NotNull final AB_LgcListener aLgcListener) {
 		lgcPromise.then(aLgcListener::lgc_slot);
 	}
 
-	public void subscribe_moduleList(@NotNull AB_ModuleListListener aModuleListListener) {
+	public void subscribe_moduleList(@NotNull final AB_ModuleListListener aModuleListListener) {
 		moduleListPromise.then(aModuleListListener::mods_slot);
 	}
 
-	public void subscribe_GenerateResult(@NotNull AB_GenerateResultListener aGenerateResultListener) {
+	public void subscribe_GenerateResult(@NotNull final AB_GenerateResultListener aGenerateResultListener) {
 		generateResultPromise.then(aGenerateResultListener::gr_slot);
 	}
 
-	void doModule(@NotNull List<GeneratedNode> lgc,
-				  WorkManager wm,
-				  @NotNull OS_Module mod,
-				  @NotNull PipelineLogic aPipelineLogic) {
+	void doModule(@NotNull final List<GeneratedNode> lgc,
+				  final WorkManager wm,
+				  @NotNull final OS_Module mod,
+				  @NotNull final PipelineLogic aPipelineLogic) {
 		final ErrSink         errSink   = mod.parent.getErrSink();
 		final ElLog.Verbosity verbosity = aPipelineLogic.getVerbosity();
 
@@ -96,10 +96,10 @@ public class AccessBus {
 		final GenerateResult gr = new GenerateResult();
 
 		{
-			Compilation             ccc = mod.parent;
-			@NotNull EOT_OutputTree cot = ccc.getOutputTree();
+			final Compilation             ccc = mod.parent;
+			@NotNull final EOT_OutputTree cot = ccc.getOutputTree();
 
-			for (GeneratedNode generatedNode : lgc) {
+			for (final GeneratedNode generatedNode : lgc) {
 				if (generatedNode.module() != mod) continue; // README curious
 
 				if (generatedNode instanceof GeneratedContainerNC) {
@@ -110,12 +110,12 @@ public class AccessBus {
 
 					// 2.
 					final @NotNull Collection<GeneratedNode> gn1 = generateC.functions_to_list_of_generated_nodes(nc.functionMap.values());
-					GenerateResult                           gr2 = generateC.generateCode(gn1, wm);
+					final GenerateResult                           gr2 = generateC.generateCode(gn1, wm);
 					gr.additional(gr2);
 
 					// 3.
 					final @NotNull Collection<GeneratedNode> gn2 = generateC.classes_to_list_of_generated_nodes(nc.classMap.values());
-					GenerateResult                           gr3 = generateC.generateCode(gn2, wm);
+					final GenerateResult                           gr3 = generateC.generateCode(gn2, wm);
 					gr.additional(gr3);
 				} else {
 					Stupidity.println_out("2009 " + generatedNode.getClass().getName());

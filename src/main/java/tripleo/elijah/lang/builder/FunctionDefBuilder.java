@@ -27,35 +27,35 @@ public class FunctionDefBuilder extends BaseFunctionDefBuilder {
         return _scope;
     }
 
-    public void set(FunctionModifiers aFunctionModifiers) {
+    public void set(final FunctionModifiers aFunctionModifiers) {
         _mods.add(aFunctionModifiers);
     }
 
-	public void setReturnType(TypeName tn) {
+	public void setReturnType(final TypeName tn) {
 		_returnType = tn;
 	}
 
 	@Override
 	public FunctionDef build() {
-		FunctionDef functionDef = new FunctionDef(_parent, _context);
+		final FunctionDef functionDef = new FunctionDef(_parent, _context);
 		functionDef.setName(_name);
 		functionDef.setFal(mFal == null ? new FormalArgList() : mFal);
 		functionDef.setReturnType(_returnType);
-		for (FunctionModifiers mod : _mods) {
+		for (final FunctionModifiers mod : _mods) {
 			functionDef.set(mod);
 		}
-		for (AnnotationClause a : annotations) {
+		for (final AnnotationClause a : annotations) {
 			functionDef.addAnnotation(a);
 		}
 		if (_scope.isAbstract()) {
 			functionDef.setAbstract(true);
 		}
-		Scope3 scope3 = new Scope3(functionDef);
+		final Scope3 scope3 = new Scope3(functionDef);
 		functionDef.scope(scope3);
-		for (ElBuilder b : _scope.items()) {
+		for (final ElBuilder b : _scope.items()) {
 			b.setParent(functionDef);
 			b.setContext(functionDef.getContext());
-			OS_Element built = b.build();
+			final OS_Element built = b.build();
 			if (!(functionDef.hasItem(built))) // already added by constructor
 				functionDef.add(built);
 		}
@@ -65,7 +65,7 @@ public class FunctionDefBuilder extends BaseFunctionDefBuilder {
 	}
 
 	@Override
-	protected void setContext(Context context) {
+	protected void setContext(final Context context) {
 		_context = context;
 	}
 }

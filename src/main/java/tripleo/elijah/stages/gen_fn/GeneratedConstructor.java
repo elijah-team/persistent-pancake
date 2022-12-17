@@ -27,8 +27,8 @@ public class GeneratedConstructor extends BaseGeneratedFunction {
 		cd = aConstructorDef;
 	}
 
-	public void setFunctionInvocation(FunctionInvocation fi) {
-		GenType genType = new GenType();
+	public void setFunctionInvocation(final FunctionInvocation fi) {
+		final GenType genType = new GenType();
 		genType.ci = fi.getClassInvocation(); // TODO will fail on namespace constructors; next line too
 		genType.resolved = new OS_Type(((ClassInvocation) genType.ci).getKlass());
 		genType.node = this;

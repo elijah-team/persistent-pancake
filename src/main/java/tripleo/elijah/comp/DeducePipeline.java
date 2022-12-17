@@ -53,7 +53,7 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 	public void run() {
 		// TODO move this into a latch and wait for pipelineLogic and modules
 
-		List<OS_Module> ms1 = __ab.getCompilation().getModules();
+		final List<OS_Module> ms1 = __ab.getCompilation().getModules();
 
 //		assert ms1 == ms && ms != null;
 
@@ -80,7 +80,7 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 
 	@Override
 	public void mods_slot(final @NotNull EIT_ModuleList aModuleList) {
-		List<OS_Module> mods = aModuleList.getMods();
+		final List<OS_Module> mods = aModuleList.getMods();
 
 		ms = mods;
 	}

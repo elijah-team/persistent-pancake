@@ -23,15 +23,15 @@ public class WithStatementBuilder extends ElBuilder {
 
     @Override
     protected WithStatement build() {
-        WithStatement withStatement = new WithStatement(_parent);
-        for (VariableSequenceBuilder.Triple triple : _sb.triples) {
-            VariableStatement vs = withStatement.nextVarStmt();
+        final WithStatement withStatement = new WithStatement(_parent);
+        for (final VariableSequenceBuilder.Triple triple : _sb.triples) {
+            final VariableStatement vs = withStatement.nextVarStmt();
             vs.setName(triple._name);
             vs.initial(triple._initial);
             vs.setTypeName(triple._tn);
         }
-		for (ElBuilder builder : _scope.items()) {
-			OS_Element built;
+		for (final ElBuilder builder : _scope.items()) {
+			final OS_Element built;
 			builder.setParent(_parent);
 			builder.setContext(_context);
 			built = builder.build();
@@ -42,7 +42,7 @@ public class WithStatementBuilder extends ElBuilder {
 	}
 
 	@Override
-	protected void setContext(Context context) {
+	protected void setContext(final Context context) {
 		_context = context;
 	}
 

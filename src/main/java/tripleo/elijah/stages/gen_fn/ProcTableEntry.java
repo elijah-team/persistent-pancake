@@ -47,17 +47,17 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 
 		addStatusListener(new StatusListener() {
 			@Override
-			public void onChange(IElementHolder eh, Status newStatus) {
+			public void onChange(final IElementHolder eh, final Status newStatus) {
 				if (newStatus == Status.KNOWN) {
 					setResolvedElement(eh.getElement());
 				}
 			}
 		});
 
-		for (TypeTableEntry tte : args) {
+		for (final TypeTableEntry tte : args) {
 			tte.addSetAttached(new TypeTableEntry.OnSetAttached() {
 				@Override
-				public void onSetAttached(TypeTableEntry aTypeTableEntry) {
+				public void onSetAttached(final TypeTableEntry aTypeTableEntry) {
 					ProcTableEntry.this.onSetAttached();
 				}
 			});
@@ -78,7 +78,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		return args;
 	}
 
-	public void setArgType(int aIndex, OS_Type aType) {
+	public void setArgType(final int aIndex, final OS_Type aType) {
 		args.get(aIndex).setAttached(aType);
 	}
 
@@ -87,7 +87,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		if (args != null) {
 			final int ac = args.size();
 			int acx = 0;
-			for (TypeTableEntry tte : args) {
+			for (final TypeTableEntry tte : args) {
 				if (tte.getAttached() != null)
 					acx++;
 			}
@@ -119,7 +119,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		}
 	}
 
-	public void setClassInvocation(ClassInvocation aClassInvocation) {
+	public void setClassInvocation(final ClassInvocation aClassInvocation) {
 		classInvocation = aClassInvocation;
 	}
 
@@ -127,7 +127,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		return classInvocation;
 	}
 
-	public void setFunctionInvocation(FunctionInvocation aFunctionInvocation) {
+	public void setFunctionInvocation(final FunctionInvocation aFunctionInvocation) {
 		if (functionInvocation != aFunctionInvocation) {
 			functionInvocation = aFunctionInvocation;
 			onFunctionInvocations.reset();

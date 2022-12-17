@@ -33,7 +33,7 @@ public class GeneratedClass extends GeneratedContainerNC {
 	public ClassInvocation ci;
 	private boolean resolve_var_table_entries_already = false;
 
-	public GeneratedClass(ClassStatement klass, OS_Module module) {
+	public GeneratedClass(final ClassStatement klass, final OS_Module module) {
 		this.klass = klass;
 		this.module = module;
 	}
@@ -42,22 +42,22 @@ public class GeneratedClass extends GeneratedContainerNC {
 		return klass.getGenericPart().size() > 0;
 	}
 
-	public void addAccessNotation(AccessNotation an) {
+	public void addAccessNotation(final AccessNotation an) {
 		throw new NotImplementedException();
 	}
 
 	public void createCtor0() {
 		// TODO implement me
-		FunctionDef fd = new FunctionDef(klass, klass.getContext());
+		final FunctionDef fd = new FunctionDef(klass, klass.getContext());
 		fd.setName(Helpers.string_to_ident("<ctor$0>"));
-		Scope3 scope3 = new Scope3(fd);
+		final Scope3 scope3 = new Scope3(fd);
 		fd.scope(scope3);
-		for (VarTableEntry varTableEntry : varTable) {
+		for (final VarTableEntry varTableEntry : varTable) {
 			if (varTableEntry.initialValue != IExpression.UNASSIGNED) {
-				IExpression left = varTableEntry.nameToken;
-				IExpression right = varTableEntry.initialValue;
+				final IExpression left = varTableEntry.nameToken;
+				final IExpression right = varTableEntry.initialValue;
 
-				IExpression e = ExpressionBuilder.build(left, ExpressionKind.ASSIGNMENT, right);
+				final IExpression e = ExpressionBuilder.build(left, ExpressionKind.ASSIGNMENT, right);
 				scope3.add(new StatementWrapper(e, fd.getContext(), fd));
 			} else {
 				if (getPragma("auto_construct")) {
@@ -67,13 +67,13 @@ public class GeneratedClass extends GeneratedContainerNC {
 		}
 	}
 
-	private boolean getPragma(String auto_construct) { // TODO this should be part of Context
+	private boolean getPragma(final String auto_construct) { // TODO this should be part of Context
 		return false;
 	}
 
 	@NotNull
 	public String getName() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(klass.getName());
 		if (ci.genericPart != null) {
 			sb.append("[");
@@ -85,9 +85,9 @@ public class GeneratedClass extends GeneratedContainerNC {
 	}
 
 	@NotNull
-	private String getNameHelper(Map<TypeName, OS_Type> aGenericPart) {
-		List<String> ls = new ArrayList<String>();
-		for (Map.Entry<TypeName, OS_Type> entry : aGenericPart.entrySet()) { // TODO Is this guaranteed to be in order?
+	private String getNameHelper(final Map<TypeName, OS_Type> aGenericPart) {
+		final List<String> ls = new ArrayList<String>();
+		for (final Map.Entry<TypeName, OS_Type> entry : aGenericPart.entrySet()) { // TODO Is this guaranteed to be in order?
 			final OS_Type value = entry.getValue(); // This can be another ClassInvocation using GenType
 			final String name = value.getClassOf().getName();
 			ls.add(name); // TODO Could be nested generics
@@ -95,7 +95,7 @@ public class GeneratedClass extends GeneratedContainerNC {
 		return Helpers.String_join(", ", ls);
 	}
 
-	public void addConstructor(ConstructorDef aConstructorDef, @NotNull GeneratedConstructor aGeneratedFunction) {
+	public void addConstructor(final ConstructorDef aConstructorDef, @NotNull final GeneratedConstructor aGeneratedFunction) {
 		constructors.put(aConstructorDef, aGeneratedFunction);
 	}
 
@@ -113,19 +113,19 @@ public class GeneratedClass extends GeneratedContainerNC {
         return module;
     }
 
-	public boolean resolve_var_table_entries(DeducePhase aDeducePhase) {
+	public boolean resolve_var_table_entries(final DeducePhase aDeducePhase) {
 		boolean Result = false;
 
 		if (resolve_var_table_entries_already) return true;
 
-		for (VarTableEntry varTableEntry : varTable) {
+		for (final VarTableEntry varTableEntry : varTable) {
 			if (varTableEntry.potentialTypes.size() == 0 && varTableEntry.varType == null) {
 				final TypeName tn = varTableEntry.typeName;
 				if (tn != null) {
 					if (tn instanceof NormalTypeName) {
 						final NormalTypeName tn2 = (NormalTypeName) tn;
 						if (!tn.isNull()) {
-							LookupResultList lrl = tn.getContext().lookup(tn2.getName());
+							final LookupResultList lrl = tn.getContext().lookup(tn2.getName());
 							OS_Element best = lrl.chooseBest(null);
 							if (best != null) {
 								if (best instanceof AliasStatement)
@@ -143,15 +143,15 @@ public class GeneratedClass extends GeneratedContainerNC {
 			} else {
 				System.err.println(String.format("108 %s %s", this, varTableEntry.potentialTypes));
 				if (varTableEntry.potentialTypes.size() == 1) {
-					TypeTableEntry varType1 = varTableEntry.potentialTypes.get(0);
+					final TypeTableEntry varType1 = varTableEntry.potentialTypes.get(0);
 					if (varType1.resolved() == null) {
 						assert varType1.getAttached() != null;
 						assert varType1.getAttached().getType() == OS_Type.Type.USER_CLASS;
 						//
 						ClassInvocation xci = new ClassInvocation(varType1.getAttached().getClassOf(), null);
 						xci = aDeducePhase.registerClassInvocation(xci);
-						@NotNull GenerateFunctions gf = aDeducePhase.generatePhase.getGenerateFunctions(xci.getKlass().getContext().module());
-						WlGenerateClass wgc = new WlGenerateClass(gf, xci, aDeducePhase.generatedClasses);
+						@NotNull final GenerateFunctions gf = aDeducePhase.generatePhase.getGenerateFunctions(xci.getKlass().getContext().module());
+						final WlGenerateClass wgc = new WlGenerateClass(gf, xci, aDeducePhase.generatedClasses);
 						wgc.run(null); // !
 						varType1.resolve(wgc.getResult());
 						Result = true;
@@ -174,7 +174,7 @@ public class GeneratedClass extends GeneratedContainerNC {
 	}
 
 	@Override
-	public void generateCode(CodeGenerator aCodeGenerator, GenerateResult aGr) {
+	public void generateCode(final CodeGenerator aCodeGenerator, final GenerateResult aGr) {
 		aCodeGenerator.generate_class(this, aGr);
 	}
 

@@ -31,7 +31,7 @@ private final List<Token> docstrings = new ArrayList<Token>();
 //	}
 
 	@Override
-	public void addDocString(Token s1) {
+	public void addDocString(final Token s1) {
 		docstrings.add(s1);
 	}
 
@@ -46,12 +46,12 @@ private final List<Token> docstrings = new ArrayList<Token>();
 	}
 
 	@Override
-	public void statementWrapper(IExpression expr) {
+	public void statementWrapper(final IExpression expr) {
 		add(new StatementWrapperBuilder(expr));
 	}
 
 	@Override
-	public void yield(IExpression expr) {
+	public void yield(final IExpression expr) {
 		throw new NotImplementedException();
 	}
 }

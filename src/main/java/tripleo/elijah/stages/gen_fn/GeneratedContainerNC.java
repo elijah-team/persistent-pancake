@@ -33,26 +33,26 @@ public abstract class GeneratedContainerNC extends AbstractDependencyTracker imp
 
 	public List<VarTableEntry> varTable = new ArrayList<VarTableEntry>();
 
-	public void addVarTableEntry(AccessNotation an, VariableStatement vs) {
+	public void addVarTableEntry(final AccessNotation an, final VariableStatement vs) {
 		// TODO dont ignore AccessNotation
 		varTable.add(new VarTableEntry(vs, vs.getNameToken(), vs.initialValue(), vs.typeName(), vs.getParent().getParent()));
 	}
 
 	@Override
 	@Nullable
-	public VarTableEntry getVariable(String aVarName) {
-		for (VarTableEntry varTableEntry : varTable) {
+	public VarTableEntry getVariable(final String aVarName) {
+		for (final VarTableEntry varTableEntry : varTable) {
 			if (varTableEntry.nameToken.getText().equals(aVarName))
 				return varTableEntry;
 		}
 		return null;
 	}
 
-	public void addClass(ClassStatement aClassStatement, GeneratedClass aGeneratedClass) {
+	public void addClass(final ClassStatement aClassStatement, final GeneratedClass aGeneratedClass) {
 		classMap.put(aClassStatement, aGeneratedClass);
 	}
 
-	public void addFunction(FunctionDef functionDef, GeneratedFunction generatedFunction) {
+	public void addFunction(final FunctionDef functionDef, final GeneratedFunction generatedFunction) {
 		if (functionMap.containsKey(functionDef))
 			throw new IllegalStateException("Function already generated"); // TODO do better than this
 		functionMap.put(functionDef, generatedFunction);
@@ -65,7 +65,7 @@ public abstract class GeneratedContainerNC extends AbstractDependencyTracker imp
 	 *
 	 * @return null if no such key exists
 	 */
-	public GeneratedFunction getFunction(FunctionDef fd) {
+	public GeneratedFunction getFunction(final FunctionDef fd) {
 		return functionMap.get(fd);
 	}
 
@@ -73,7 +73,7 @@ public abstract class GeneratedContainerNC extends AbstractDependencyTracker imp
 		return code;
 	}
 
-	public void setCode(int aCode) {
+	public void setCode(final int aCode) {
 		code = aCode;
 	}
 

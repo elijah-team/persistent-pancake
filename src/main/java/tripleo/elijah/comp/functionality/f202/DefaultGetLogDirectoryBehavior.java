@@ -18,7 +18,7 @@ import java.io.File;
 public class DefaultGetLogDirectoryBehavior implements GetLogDirectoryBehavior {
 	private final Compilation c;
 
-	public DefaultGetLogDirectoryBehavior(Compilation aCompilation) {
+	public DefaultGetLogDirectoryBehavior(final Compilation aCompilation) {
 		c = aCompilation;
 	}
 

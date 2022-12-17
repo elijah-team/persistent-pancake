@@ -23,21 +23,21 @@ public class Feb2021 {
 
 	@Test
 	public void testProperty() {
-		Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/property/"));
 	}
 
 	@Test
 	public void testFunction() {
-		Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/function/"));
 	}
 
 	@Test
 	public void testHier() {
-		Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/hier/"));
 	}

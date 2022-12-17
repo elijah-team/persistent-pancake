@@ -23,7 +23,7 @@ public class EIT_ModuleList {
 	private PipelineLogic __pl;
 
 	@Contract(pure = true)
-	public EIT_ModuleList(List<OS_Module> aMods) {
+	public EIT_ModuleList(final List<OS_Module> aMods) {
 		mods = aMods;
 	}
 
@@ -31,7 +31,7 @@ public class EIT_ModuleList {
 		return mods;
 	}
 
-	public void process__PL(final Function<OS_Module, GenerateFunctions> ggf, PipelineLogic pipelineLogic) {
+	public void process__PL(final Function<OS_Module, GenerateFunctions> ggf, final PipelineLogic pipelineLogic) {
 		for (final OS_Module mod : mods) {
 			final GenerateFunctions gfm = ggf.apply(mod);
 
@@ -58,9 +58,9 @@ public class EIT_ModuleList {
 
 //		assert lgc.size() == 0;
 
-		int size = plp.getLgc().size();
+		final int size = plp.getLgc().size();
 		if (size != 0) {
-			int y = 2;
+			final int y = 2;
 			Stupidity.println_err(String.format("lgc.size() != 0: %d", size));
 		}
 
@@ -96,7 +96,7 @@ public class EIT_ModuleList {
 //			}
 	}
 
-	private void ________NONO_processByEntryPoint(DeducePhase.@NotNull GeneratedClasses lgc, List<GeneratedNode> resolved_nodes, OS_Module mod) {
+	private void ________NONO_processByEntryPoint(final DeducePhase.@NotNull GeneratedClasses lgc, final List<GeneratedNode> resolved_nodes, final OS_Module mod) {
 		for (final GeneratedNode generatedNode : lgc) {
 			if (generatedNode instanceof GNCoded) {
 				final GNCoded coded = (GNCoded) generatedNode;
@@ -113,15 +113,15 @@ public class EIT_ModuleList {
 						final GeneratedClass generatedClass = (GeneratedClass) generatedNode;
 						//						if (generatedClass.getCode() == 0)
 						//							generatedClass.setCode(mod.parent.nextClassCode());
-						for (GeneratedClass generatedClass2 : generatedClass.classMap.values()) {
+						for (final GeneratedClass generatedClass2 : generatedClass.classMap.values()) {
 							if (generatedClass2.getCode() == 0) {
 								generatedClass2.setCode(mod.parent.nextClassCode());
 							}
 						}
-						for (GeneratedFunction generatedFunction : generatedClass.functionMap.values()) {
-							for (IdentTableEntry identTableEntry : generatedFunction.idte_list) {
+						for (final GeneratedFunction generatedFunction : generatedClass.functionMap.values()) {
+							for (final IdentTableEntry identTableEntry : generatedFunction.idte_list) {
 								if (identTableEntry.isResolved()) {
-									GeneratedNode node = identTableEntry.resolvedType();
+									final GeneratedNode node = identTableEntry.resolvedType();
 									resolved_nodes.add(node);
 								}
 							}
@@ -133,15 +133,15 @@ public class EIT_ModuleList {
 						if (coded.getCode() == 0) {
 							coded.setCode(mod.parent.nextClassCode());
 						}
-						for (GeneratedClass generatedClass : generatedNamespace.classMap.values()) {
+						for (final GeneratedClass generatedClass : generatedNamespace.classMap.values()) {
 							if (generatedClass.getCode() == 0) {
 								generatedClass.setCode(mod.parent.nextClassCode());
 							}
 						}
-						for (GeneratedFunction generatedFunction : generatedNamespace.functionMap.values()) {
-							for (IdentTableEntry identTableEntry : generatedFunction.idte_list) {
+						for (final GeneratedFunction generatedFunction : generatedNamespace.functionMap.values()) {
+							for (final IdentTableEntry identTableEntry : generatedFunction.idte_list) {
 								if (identTableEntry.isResolved()) {
-									GeneratedNode node = identTableEntry.resolvedType();
+									final GeneratedNode node = identTableEntry.resolvedType();
 									resolved_nodes.add(node);
 								}
 							}
@@ -182,7 +182,7 @@ public class EIT_ModuleList {
 		}
 	}
 
-	public void _set_PL(PipelineLogic aPipelineLogic) {
+	public void _set_PL(final PipelineLogic aPipelineLogic) {
 		__pl = aPipelineLogic;
 	}
 
@@ -190,7 +190,7 @@ public class EIT_ModuleList {
 		return mods.stream();
 	}
 
-	public void add(OS_Module m) {
+	public void add(final OS_Module m) {
 		mods.add(m);
 	}
 
@@ -204,11 +204,11 @@ public class EIT_ModuleList {
 //		@NotNull
 //		private final ElLog.Verbosity                         verbosity;
 
-		private _ProcessParams(@NotNull OS_Module aModule,
-							   @NotNull PipelineLogic aPipelineLogic,
-							   @NotNull GenerateFunctions aGenerateFunctions,
-							   @NotNull EntryPointList aEntryPointList,
-							   @NotNull DeducePhase aDeducePhase) {
+		private _ProcessParams(@NotNull final OS_Module aModule,
+							   @NotNull final PipelineLogic aPipelineLogic,
+							   @NotNull final GenerateFunctions aGenerateFunctions,
+							   @NotNull final EntryPointList aEntryPointList,
+							   @NotNull final DeducePhase aDeducePhase) {
 			mod = aModule;
 			pipelineLogic = aPipelineLogic;
 			gfm = aGenerateFunctions;

@@ -31,11 +31,11 @@ public abstract class AbstractDependencyTracker implements DependencyTracker {
         return dependentFunctions;
     }
 
-	public void addDependentType(@NotNull GenType aType) {
+	public void addDependentType(@NotNull final GenType aType) {
 		dependentTypes.add(aType);
 	}
 
-	public void addDependentFunction(@NotNull FunctionInvocation aFunction) {
+	public void addDependentFunction(@NotNull final FunctionInvocation aFunction) {
 		dependentFunctions.add(aFunction);
 	}
 }

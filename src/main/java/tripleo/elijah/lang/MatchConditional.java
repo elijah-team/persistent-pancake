@@ -116,7 +116,7 @@ public class MatchConditional implements OS_Element, StatementItem, FunctionItem
 		Iterable<? extends FunctionItem> getItems();
 
 		@Override
-		default void visitGen(ICodeGen visit) {
+		default void visitGen(final ICodeGen visit) {
 			visit.visitMC1(this);
 		}
 	}
@@ -155,8 +155,8 @@ private final List<Token> docstrings = null;
 
 		@Override
 		public List<FunctionItem> getItems() {
-			List<FunctionItem> collection = new ArrayList<FunctionItem>();
-			for (OS_Element element : scope3.items()) {
+			final List<FunctionItem> collection = new ArrayList<FunctionItem>();
+			for (final OS_Element element : scope3.items()) {
 				if (element instanceof FunctionItem)
 					collection.add((FunctionItem) element);
 			}
@@ -169,7 +169,7 @@ private final List<Token> docstrings = null;
 			return MatchConditional.this;
 		}
 
-		public void scope(Scope3 sco) {
+		public void scope(final Scope3 sco) {
 			scope3=sco;
 		}
 	}
@@ -207,8 +207,8 @@ private final List<Token> docstrings = null;
 
 		@Override
 		public List<FunctionItem> getItems() {
-			List<FunctionItem> collection = new ArrayList<FunctionItem>();
-			for (OS_Element element : scope3.items()) {
+			final List<FunctionItem> collection = new ArrayList<FunctionItem>();
+			for (final OS_Element element : scope3.items()) {
 				if (element instanceof FunctionItem)
 					collection.add((FunctionItem) element);
 			}
@@ -226,7 +226,7 @@ private final List<Token> docstrings = null;
 			return MatchConditional.this;
 		}
 
-		public void scope(Scope3 sco) {
+		public void scope(final Scope3 sco) {
 			scope3 = sco;
 		}
 	}
@@ -262,8 +262,8 @@ private final List<Token> docstrings = null;
 
 		@Override
 		public List<FunctionItem> getItems() {
-			List<FunctionItem> collection = new ArrayList<FunctionItem>();
-			for (OS_Element element : scope3.items()) {
+			final List<FunctionItem> collection = new ArrayList<FunctionItem>();
+			for (final OS_Element element : scope3.items()) {
 				if (element instanceof FunctionItem)
 					collection.add((FunctionItem) element);
 			}
@@ -293,7 +293,7 @@ private final List<Token> docstrings = null;
 			return MatchConditional.this;
 		}
 
-		public void scope(Scope3 sco) {
+		public void scope(final Scope3 sco) {
 			scope3 = sco;
 		}
 	}
