@@ -104,35 +104,35 @@ public abstract class Compilation {
 			final CommandLineParser clp = new DefaultParser();
 			final CommandLine cmd = clp.parse(options, args.toArray(new String[args.size()]));
 
-				if (cmd.hasOption("s")) {
-					stage = cmd.getOptionValue('s');
-				}
-				if (cmd.hasOption("showtree")) {
-					showTree = true;
-				}
-				if (cmd.hasOption("out")) {
-					do_out = true;
-				}
-				if (isGitlab_ci() || cmd.hasOption("silent")) {
-					silent = true;
-				}
+			if (cmd.hasOption("s")) {
+				stage = cmd.getOptionValue('s');
+			}
+			if (cmd.hasOption("showtree")) {
+				showTree = true;
+			}
+			if (cmd.hasOption("out")) {
+				do_out = true;
+			}
+			if (isGitlab_ci() || cmd.hasOption("silent")) {
+				silent = true;
+			}
 
-				CompilerInstructions ez_file = null;
-				final String[] args2 = cmd.getArgs();
+			CompilerInstructions ez_file = null;
+			final String[] args2 = cmd.getArgs();
 
-				for (int i = 0; i < args2.length; i++) {
-					final String file_name = args2[i];
-					final File f = new File(file_name);
-					final boolean matches2 = Pattern.matches(".+\\.ez$", file_name);
-					if (matches2)
-						add_ci(parseEzFile(f, file_name, eee));
-					else {
+			for (int i = 0; i < args2.length; i++) {
+				final String file_name = args2[i];
+				final File f = new File(file_name);
+				final boolean matches2 = Pattern.matches(".+\\.ez$", file_name);
+				if (matches2)
+					add_ci(parseEzFile(f, file_name, eee));
+				else {
 //						eee.reportError("9996 Not an .ez file "+file_name);
-						if (f.isDirectory()) {
-							final List<CompilerInstructions> ezs = searchEzFiles(f);
-							if (ezs.size() > 1) {
+					if (f.isDirectory()) {
+						final List<CompilerInstructions> ezs = searchEzFiles(f);
+						if (ezs.size() > 1) {
 //								eee.reportError("9998 Too many .ez files, using first.");
-								eee.reportError("9997 Too many .ez files, be specific.");
+							eee.reportError("9997 Too many .ez files, be specific.");
 //								add_ci(ezs.get(0));
 						} else if (ezs.size() == 0) {
 							eee.reportError("9999 No .ez files found.");
@@ -148,28 +148,28 @@ public abstract class Compilation {
 			System.err.println("130 GEN_LANG: " + cis.get(0).genLang());
 			findStdLib("c"); // TODO find a better place for this
 
-				for (final CompilerInstructions ci : cis) {
-					use(ci, do_out);
-				}
+			for (final CompilerInstructions ci : cis) {
+				use(ci, do_out);
+			}
 
-				final AccessBus ab = new AccessBus(this);
+			final AccessBus ab = new AccessBus(this);
 
 			if (stage.equals("E")) {
 				// do nothing. job over
 			} else {
 				ab.addPipelineLogic(PipelineLogic::new);
 
-					pipelineLogic = ab.__getPL();
+				pipelineLogic = ab.__getPL();
 
-					ab.add(DeducePipeline::new);
-					ab.add(GeneratePipeline::new);
-					ab.add(WritePipeline::new);
-
-
-					modules.stream().forEach(m -> pipelineLogic.addModule(m));
+				ab.add(DeducePipeline::new);
+				ab.add(GeneratePipeline::new);
+				ab.add(WritePipeline::new);
 
 
-					pipelines.run();
+				modules.stream().forEach(m -> pipelineLogic.addModule(m));
+
+
+				pipelines.run();
 
 				writeLogs(silent, pipelineLogic.elLogs);
 			}
