@@ -132,8 +132,6 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 			}
 		}
 
-//		gr.results().addAll(gr2.results());
-
 		return gr2;
 	}
 

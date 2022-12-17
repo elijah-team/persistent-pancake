@@ -89,15 +89,20 @@ public abstract class Compilation {
 
 	public void main(final List<String> args, final ErrSink errSink) {
 		boolean do_out = false, silent = false;
+
+		if (args.size() <= 0) {
+			System.err.println("Usage: eljc [--showtree] [-sE|O] <directory or .ez file names>");
+			return;
+		}
+
 		try {
-			if (args.size() > 0) {
-				final Options options = new Options();
-				options.addOption("s", true, "stage: E: parse; O: output");
-				options.addOption("showtree", false, "show tree");
-				options.addOption("out", false, "make debug files");
-				options.addOption("silent", false, "suppress DeduceType output to console");
-				final CommandLineParser clp = new DefaultParser();
-				final CommandLine cmd = clp.parse(options, args.toArray(new String[args.size()]));
+			final Options options = new Options();
+			options.addOption("s", true, "stage: E: parse; O: output");
+			options.addOption("showtree", false, "show tree");
+			options.addOption("out", false, "make debug files");
+			options.addOption("silent", false, "suppress DeduceType output to console");
+			final CommandLineParser clp = new DefaultParser();
+			final CommandLine cmd = clp.parse(options, args.toArray(new String[args.size()]));
 
 				if (cmd.hasOption("s")) {
 					stage = cmd.getOptionValue('s');
@@ -129,19 +134,19 @@ public abstract class Compilation {
 //								eee.reportError("9998 Too many .ez files, using first.");
 								eee.reportError("9997 Too many .ez files, be specific.");
 //								add_ci(ezs.get(0));
-							} else if (ezs.size() == 0) {
-								eee.reportError("9999 No .ez files found.");
-							} else {
-								ez_file = ezs.get(0);
-								add_ci(ez_file);
-							}
-						} else
-							eee.reportError("9995 Not a directory "+f.getAbsolutePath());
-					}
+						} else if (ezs.size() == 0) {
+							eee.reportError("9999 No .ez files found.");
+						} else {
+							ez_file = ezs.get(0);
+							add_ci(ez_file);
+						}
+					} else
+						eee.reportError("9995 Not a directory " + f.getAbsolutePath());
 				}
+			}
 
-				System.err.println("130 GEN_LANG: "+cis.get(0).genLang());
-				findStdLib("c"); // TODO find a better place for this
+			System.err.println("130 GEN_LANG: " + cis.get(0).genLang());
+			findStdLib("c"); // TODO find a better place for this
 
 				for (final CompilerInstructions ci : cis) {
 					use(ci, do_out);
@@ -149,13 +154,10 @@ public abstract class Compilation {
 
 				final AccessBus ab = new AccessBus(this);
 
-				//
-				if (stage.equals("E")) {
-					// do nothing. job over
-				} else {
-					//pipelineLogic = new PipelineLogic(silent ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE);
-
-					ab.addPipelineLogic(PipelineLogic::new);
+			if (stage.equals("E")) {
+				// do nothing. job over
+			} else {
+				ab.addPipelineLogic(PipelineLogic::new);
 
 					pipelineLogic = ab.__getPL();
 
@@ -163,26 +165,18 @@ public abstract class Compilation {
 					ab.add(GeneratePipeline::new);
 					ab.add(WritePipeline::new);
 
-					//final DeducePipeline dpl = new DeducePipeline(this);
-					//pipelines.add(dpl);
-//					final GeneratePipeline gpl = new GeneratePipeline(this, dpl);
-//					pipelines.add(gpl);
-//					final WritePipeline wpl = new WritePipeline(this, pipelineLogic.gr);
-//					pipelines.add(wpl);
-
 
 					modules.stream().forEach(m -> pipelineLogic.addModule(m));
 
 
 					pipelines.run();
 
-					writeLogs(silent, pipelineLogic.elLogs);
-				}
-			} else {
-				System.err.println("Usage: eljc [--showtree] [-sE|O] <directory or .ez file names>");
+				writeLogs(silent, pipelineLogic.elLogs);
 			}
-		} catch (final Exception e) {
-			errSink.exception(e);
+//		} catch (ParseException e) {
+//			errSink.exception(e);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
