@@ -22,6 +22,7 @@ import tripleo.elijah.Out;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.functionality.f202.F202;
+import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
@@ -499,6 +500,56 @@ public abstract class Compilation {
 	public List<OS_Module> getModules() {
 		return modules;
 	}
+
+	public ModuleBuilder moduleBuilder() {
+		return new ModuleBuilder(this);
+	}
+
+	public static class ModuleBuilder {
+		// private final Compilation compilation;
+		private final OS_Module mod;
+		private boolean _addToCompilation = false;
+		private String _fn = null;
+
+		public ModuleBuilder(Compilation aCompilation) {
+//          compilation = aCompilation;
+			mod = new OS_Module();
+			mod.setParent(aCompilation);
+		}
+
+		public ModuleBuilder setContext() {
+			final ModuleContext mctx = new ModuleContext(mod);
+			mod.setContext(mctx);
+			return this;
+		}
+
+		public OS_Module build() {
+			if (_addToCompilation) {
+				if (_fn == null)
+					throw new IllegalStateException("Filename not set in ModuleBuilder");
+
+				mod.getCompilation().addModule(mod, _fn);
+			}
+			return mod;
+		}
+
+		public ModuleBuilder withPrelude(String aPrelude) {
+			mod.prelude = mod.getCompilation().findPrelude("c");
+			return this;
+		}
+
+		public ModuleBuilder withFileName(String aFn) {
+			_fn = aFn;
+			mod.setFileName(aFn);
+			return this;
+		}
+
+		public ModuleBuilder addToCompilation() {
+			_addToCompilation = true;
+			return this;
+		}
+	}
+
 }
 
 //
