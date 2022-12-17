@@ -236,11 +236,6 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		}
 
 		protected DeducePhase.@NotNull GeneratedClasses run2() {
-			final @NotNull List<EntryPoint> epl_ = entryPoints;
-			final @NotNull EntryPointList epl = new EntryPointList();
-
-			entryPoints.stream().forEach(epl::add);
-
 			final GenerateFunctions gfm = mapper.apply(mod);
 			gfm.generateFromEntryPoints(epl, pipelineLogic.dp);
 

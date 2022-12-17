@@ -14,10 +14,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.entrypoints.ArbitraryFunctionEntryPoint;
 import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.entrypoints.EntryPointList;
-import tripleo.elijah.entrypoints.MainClassEntryPoint;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.lang2.SpecialFunctions;
@@ -28,7 +26,6 @@ import tripleo.elijah.stages.instructions.*;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.work.WorkList;
 import tripleo.elijah.work.WorkManager;
 import tripleo.util.range.Range;
 
@@ -158,13 +155,22 @@ public class GenerateFunctions {
 		return Result;
 	}
 
+	@Deprecated
+	public void generateFromEntryPoints(List<EntryPoint> entryPoints, DeducePhase dp) {
+		@NotNull EntryPointList epl = new EntryPointList();
+
+		entryPoints.stream().forEach(epl::add);
+
+		generateFromEntryPoints(epl, dp);
+	}
+
 	class Generate_Item {
 		void generate_alias_statement(AliasStatement as) {
 			throw new NotImplementedException();
 		}
 
 		private void generate_case_conditional(CaseConditional cc) {
-			int y=2;
+			int y = 2;
 			LOG.err("Skip CaseConditional for now");
 //			throw new NotImplementedException();
 		}
