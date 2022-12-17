@@ -67,14 +67,14 @@ public class TestGenFunction {
 		final List<FunctionMapHook> ran_hooks = new ArrayList<>();
 
 
-		final ElLog.Verbosity verbosity1 = c.gitlabCIVerbosity();
-
 		final AccessBus ab = new AccessBus(c);
-		c.pipelineLogic = new PipelineLogic(ab);
+		ab.addPipelineLogic(PipelineLogic::new);
 
-		final GeneratePhase generatePhase1 = c.pipelineLogic.generatePhase;//new GeneratePhase();
+		c.pipelineLogic = ab.__getPL();
+
+		final @NotNull GeneratePhase generatePhase1 = c.pipelineLogic.generatePhase;//new GeneratePhase();
 		final GenerateFunctions gfm = generatePhase1.getGenerateFunctions(m);
-		final DeducePhase dp = c.pipelineLogic.dp;//new DeducePhase(generatePhase1);
+		final @NotNull DeducePhase dp = c.pipelineLogic.dp;//new DeducePhase(generatePhase1);
 		gfm.generateFromEntryPoints(m.entryPoints, dp);
 
 		final DeducePhase.@NotNull GeneratedClasses lgc = dp.generatedClasses; //new ArrayList<>();
