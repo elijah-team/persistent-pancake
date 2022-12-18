@@ -223,6 +223,10 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 			}
 		});
 	}
+
+	public OS_Type getOS_Type() {
+		return new OS_Type(this); // TODO to cache or not to cache??
+	}
 }
 
 //

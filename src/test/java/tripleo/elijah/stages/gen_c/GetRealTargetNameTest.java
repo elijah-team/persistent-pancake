@@ -62,7 +62,7 @@ public class GetRealTargetNameTest {
 		final GenerateC c = new GenerateC(mod, new StdErrSink(), ElLog.Verbosity.SILENT, pl); // TODO do we want silent?
 		//
 		Emit.emitting = false;
-		final String x = c.getRealTargetName(gf, ident_ia);
+		final String x = c.getRealTargetName(gf, ident_ia, Generate_Code_For_Method.AOG.GET, null); // TODO is null correct?
 		Assert.assertEquals("vvx->vmfoo", x);
 	}
 }

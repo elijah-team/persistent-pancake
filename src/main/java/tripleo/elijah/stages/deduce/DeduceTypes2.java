@@ -135,6 +135,14 @@ public class DeduceTypes2 {
 		}
 	}
 
+	public DeducePhase _phase() {
+		return phase;
+	}
+
+	public ErrSink _errSink() {
+		return errSink;
+	}
+
 	interface IElementProcessor {
 		void elementIsNull();
 
@@ -1092,7 +1100,8 @@ public class DeduceTypes2 {
 		return null;
 	}
 
-	@Nullable ClassInvocation genCI(@NotNull final GenType genType, final TypeName aGenericTypeName) {
+	@Nullable
+	public ClassInvocation genCI(@NotNull final GenType genType, final TypeName aGenericTypeName) {
 		if (genType.nonGenericTypeName != null) {
 			@NotNull final NormalTypeName aTyn1 = (NormalTypeName) genType.nonGenericTypeName;
 			@Nullable final String constructorName = null; // TODO this comes from nowhere
@@ -1906,17 +1915,19 @@ public class DeduceTypes2 {
 		return dm;
 	}
 
-	@NotNull GenType resolve_type(final @NotNull OS_Type type, final Context ctx) throws ResolveError {
+	@NotNull
+	public GenType resolve_type(final @NotNull OS_Type type, final Context ctx) throws ResolveError {
 		return resolve_type(module, type, ctx);
 	}
 
-	/*static*/ @NotNull GenType resolve_type(final OS_Module module, final @NotNull OS_Type type, final Context ctx) throws ResolveError {
+	/*static*/
+	@NotNull GenType resolve_type(final OS_Module module, final @NotNull OS_Type type, final Context ctx) throws ResolveError {
 		@NotNull final GenType R = new GenType();
 		R.typeName = type;
 
 		switch (type.getType()) {
 
-		case BUILT_IN:
+			case BUILT_IN:
 			{
 				switch (type.getBType()) {
 				case SystemInteger:
@@ -3437,6 +3448,69 @@ public class DeduceTypes2 {
 			}
 		}
 	}
+
+	public static class ClassInvocationMake {
+		public static ClassInvocation withGenericPart(ClassStatement best,
+													  String constructorName,
+													  NormalTypeName aTyn1,
+													  DeduceTypes2 dt2,
+													  final ErrSink aErrSink) {
+			@NotNull GenericPart genericPart = new GenericPart(best, aTyn1);
+
+			@Nullable ClassInvocation clsinv = new ClassInvocation(best, constructorName);
+
+			if (genericPart.hasGenericPart()) {
+				final @NotNull List<TypeName> gp = best.getGenericPart();
+				final @NotNull TypeNameList gp2 = genericPart.getGenericPartFromTypeName();
+
+				for (int i = 0; i < gp.size(); i++) {
+					final TypeName typeName = gp2.get(i);
+					@NotNull GenType typeName2;
+					try {
+						typeName2 = dt2.resolve_type(new OS_Type(typeName), typeName.getContext());
+						// TODO transition to GenType
+						clsinv.set(i, gp.get(i), typeName2.resolved);
+					} catch (ResolveError aResolveError) {
+//						aResolveError.printStackTrace();
+						aErrSink.reportDiagnostic(aResolveError);
+					}
+				}
+			}
+			return clsinv;
+		}
+	}
+
+	static class GenericPart {
+		private final ClassStatement classStatement;
+		private final TypeName genericTypeName;
+
+		@Contract(pure = true)
+		public GenericPart(final ClassStatement aClassStatement, final TypeName aGenericTypeName) {
+			classStatement = aClassStatement;
+			genericTypeName = aGenericTypeName;
+		}
+
+		@Contract(pure = true)
+		public boolean hasGenericPart() {
+			return classStatement.getGenericPart().size() > 0;
+		}
+
+		@Contract(pure = true)
+		private NormalTypeName getGenericTypeName() {
+			assert genericTypeName != null;
+			assert genericTypeName instanceof NormalTypeName;
+
+			return (NormalTypeName) genericTypeName;
+		}
+
+		@Contract(pure = true)
+		public TypeNameList getGenericPartFromTypeName() {
+			final NormalTypeName ntn = getGenericTypeName();
+			return ntn.getGenericPart();
+		}
+	}
+
+
 }
 
 //

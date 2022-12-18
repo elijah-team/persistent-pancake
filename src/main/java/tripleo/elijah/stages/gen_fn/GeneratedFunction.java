@@ -8,19 +8,16 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
-import org.jdeferred2.Promise;
-import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.BaseFunctionDef;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.FunctionDef;
-import tripleo.elijah.lang.OS_Type;
 
 /**
  * Created 6/27/21 9:40 AM
  */
-public class GeneratedFunction extends BaseGeneratedFunction {
+public class GeneratedFunction extends BaseGeneratedFunction implements GNCoded {
 	public final @Nullable FunctionDef fd;
 
 	public GeneratedFunction(final @Nullable FunctionDef functionDef) {
@@ -33,7 +30,8 @@ public class GeneratedFunction extends BaseGeneratedFunction {
 
 	@Override
 	public String toString() {
-		return String.format("<GeneratedFunction %s>", fd);
+		String pte_string = fd.getArgs().toString(); // TODO wanted PTE.getLoggingString
+		return String.format("<GeneratedFunction %s %s %s>", fd.getParent(), fd.name(), pte_string);
 	}
 
 	public String name() {
@@ -60,9 +58,13 @@ public class GeneratedFunction extends BaseGeneratedFunction {
 
 	@Override
 	public String identityString() {
-		return ""+fd;
+		return "" + fd;
 	}
 
+	@Override
+	public Role getRole() {
+		return Role.FUNCTION;
+	}
 }
 
 //

@@ -14,7 +14,9 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.stages.deduce.DeducePath;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
@@ -156,6 +158,19 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	public void onFefiDone(final DoneCallback<GenType> aCallback) {
 		fefiDone.then(aCallback);
 	}
+
+	public InstructionArgument getBacklink() {
+		return backlink;
+	}
+
+	public void makeType(final BaseGeneratedFunction aGeneratedFunction, final TypeTableEntry.Type aType, final OS_Type aOS_Type) {
+		type = aGeneratedFunction.newTypeTableEntry(aType, aOS_Type, getIdent(), this);
+	}
+
+	public void makeType(final BaseGeneratedFunction aGeneratedFunction, final TypeTableEntry.Type aType, final IExpression aExpression) {
+		type = aGeneratedFunction.newTypeTableEntry(aType, null, aExpression, this);
+	}
+
 }
 
 //
