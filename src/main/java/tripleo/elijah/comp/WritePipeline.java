@@ -10,8 +10,14 @@ package tripleo.elijah.comp;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.nextgen.inputtree.EIT_Input;
+import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
+import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
 import tripleo.elijah.stages.generate.ElSystem;
@@ -26,8 +32,16 @@ import tripleo.util.io.FileCharSink;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
+import static tripleo.elijah.util.Helpers.List_of;
 
 /**
  * Created 8/21/21 10:19 PM
@@ -73,11 +87,25 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 			mb.put(ab.output, ab.buffer);
 		}
 
-		file_prefix.mkdirs();
-		final String prefix = file_prefix.toString();
+		final List<EOT_OutputFile> leof = new ArrayList<>();
+		for (final GenerateResultItem ab : gr.results()) {
+			final List<EIT_Input> inputs = List_of(new EIT_ModuleInput(ab.node.module(), c));
+			final EG_CompoundStatement seq = new EG_CompoundStatement();
+			final EOT_OutputFile eof = new EOT_OutputFile(c, inputs, ab.output, EOT_OutputType.SOURCES, seq);
+			leof.add(eof);
+		}
+
+		final File fn1 = choose_dir_name();
+
+		__rest(mb, fn1); //file_prefix);
+	}
+
+	private void __rest(final Multimap<String, Buffer> mb, final File aFile_prefix) throws IOException {
+		aFile_prefix.mkdirs();
+		final String prefix = aFile_prefix.toString();
 
 		// TODO flag?
-		write_inputs(file_prefix);
+		write_inputs(aFile_prefix);
 
 		for (final Map.Entry<String, Collection<Buffer>> entry : mb.asMap().entrySet()) {
 			final String key = entry.getKey();
@@ -97,8 +125,6 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	}
 
 	private void write_inputs(final File file_prefix) throws IOException {
-		final String fn1 = new File(file_prefix, "inputs.txt").toString();
-
 		final DefaultBuffer buf = new DefaultBuffer("");
 //			FileBackedBuffer buf = new FileBackedBuffer(fn1);
 //			for (OS_Module module : modules) {
@@ -112,15 +138,77 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 //
 //				append_hash(buf, fn);
 //			}
-		for (final File file : c.getIO().recordedreads) {
+
+		final List<File> recordedreads = c.getIO().recordedreads;
+		final List<String> recordedread_filenames = recordedreads.stream()
+				.map(file -> file.toString())
+				.collect(Collectors.toList());
+
+		for (final File file : recordedreads) {
 			final String fn = file.toString();
 
 			append_hash(buf, fn, c.getErrSink());
 		}
+
+		final File fn1 = new File(file_prefix, "inputs.txt");
 		final String s = buf.getText();
-		final Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fn1, true)));
+		final Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file_prefix, true)));
 		w.write(s);
 		w.close();
+	}
+
+	private File choose_dir_name() {
+		final List<File> recordedreads = c.getIO().recordedreads;
+		final List<String> recordedread_filenames = recordedreads.stream()
+				.map(file -> file.toString())
+				.collect(Collectors.toList());
+
+//		for (final File file : recordedreads) {
+//			final String fn = file.toString();
+//
+//			append_hash(buf, fn, c.getErrSink());
+//		}
+
+		// TODO can't use stream because of exception
+//		recordedread_filenames
+//				.forEach(fn -> append_hash(buf, fn, c.getErrSink()));
+
+		final DigestUtils digestUtils = new DigestUtils(SHA_256);
+
+		final StringBuilder sb1 = new StringBuilder();
+
+//		Map<String, Integer> unSortedMap = getUnSortedMap();
+//		// LinkedHashMap preserves the ordering of elements in which they are inserted
+//
+//		LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
+//		unSortedMap.entrySet()
+//				.stream()
+//				.sorted(Map.Entry.comparingByKey())
+//				.forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+
+		recordedread_filenames
+				.stream()
+				.sorted().map(digestUtils::digestAsHex)
+				.forEach(sha256 -> sb1.append(sha256));
+
+//		final byte[] c_name0 = digestUtils.digest(sb1.toString());
+//		final String c_name = Base36.toBase36(c_name0);
+		final String c_name = digestUtils.digestAsHex(sb1.toString());
+
+		//
+
+		final LocalDateTime instance = LocalDateTime.now();
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_hh.mm.ss");
+
+		final String date = formatter.format(instance); //15-02-2022 12:43
+
+		final File fn00 = new File("COMP", c_name);
+		final File fn0 = new File(fn00, date);
+		fn0.mkdirs();
+
+		final String fn1 = new File(fn0, "inputs.txt").toString();
+//		final String fn1 = new File(file_prefix, "inputs.txt").toString();
+		return fn0;
 	}
 
 	private void append_hash(final TextBuffer aBuf, final String aFilename, final ErrSink errSink) throws IOException {
