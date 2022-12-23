@@ -160,7 +160,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	private File choose_dir_name() {
 		final List<File> recordedreads = c.getIO().recordedreads;
 		final List<String> recordedread_filenames = recordedreads.stream()
-				.map(file -> file.toString())
+				.map(File::toString)
 				.collect(Collectors.toList());
 
 //		for (final File file : recordedreads) {
