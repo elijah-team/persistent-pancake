@@ -1464,10 +1464,37 @@ public class GenerateC implements CodeGenerator {
 		LOG.info("932 " + path);
 		String s = Helpers.String_join("->", ls);
 		LOG.info("933 " + s);
-		if (identTableEntry.getResolvedElement() instanceof ConstructorDef || identTableEntry.getResolvedElement() instanceof PropertyStatement || value != null)
+		if (identTableEntry.getResolvedElement() instanceof ConstructorDef || identTableEntry.getResolvedElement() instanceof PropertyStatement || value != null) {
 			return path;
-		else
+		} else {
 			return s;
+		}
+	}
+
+	public GenerateResult resultsFromNodes(final List<GeneratedNode> aNodes, final WorkManager wm) {
+		final GenerateC ggc = this;
+
+		final GenerateResult gr2 = new GenerateResult();
+
+		for (final GeneratedNode generatedNode : aNodes) {
+//			if (generatedNode.module() != mod) continue; // README curious
+
+			if (generatedNode instanceof GeneratedContainerNC) {
+				final GeneratedContainerNC nc = (GeneratedContainerNC) generatedNode;
+
+				nc.generateCode(ggc, gr2);
+				final @NotNull Collection<GeneratedNode> gn1 = ggc.functions_to_list_of_generated_nodes(nc.functionMap.values());
+				final GenerateResult gr3 = ggc.generateCode(gn1, wm);
+				gr2.results().addAll(gr3.results());
+				final @NotNull Collection<GeneratedNode> gn2 = ggc.classes_to_list_of_generated_nodes(nc.classMap.values());
+				final GenerateResult gr4 = ggc.generateCode(gn2, wm);
+				gr2.results().addAll(gr4.results());
+			} else {
+				System.out.println("2009 " + generatedNode.getClass().getName());
+			}
+		}
+
+		return gr2;
 	}
 
 	static class WlGenerateFunctionC implements WorkJob {

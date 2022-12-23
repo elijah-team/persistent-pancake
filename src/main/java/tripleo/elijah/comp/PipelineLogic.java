@@ -22,7 +22,6 @@ import tripleo.elijah.work.WorkManager;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -112,25 +111,11 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 */
 
 	protected GenerateResult run3(final OS_Module mod, @NotNull final List<GeneratedNode> lgc, final WorkManager wm, final GenerateC ggc) {
-		final GenerateResult gr2 = new GenerateResult();
+		final List<GeneratedNode> nodes = lgc.stream()
+				.filter(aGeneratedNode -> aGeneratedNode.module() == mod)
+				.collect(Collectors.toList());
 
-		for (final GeneratedNode generatedNode : lgc) {
-			if (generatedNode.module() != mod) continue; // README curious
-
-			if (generatedNode instanceof GeneratedContainerNC) {
-				final GeneratedContainerNC nc = (GeneratedContainerNC) generatedNode;
-
-				nc.generateCode(ggc, gr2);
-				final @NotNull Collection<GeneratedNode> gn1 = ggc.functions_to_list_of_generated_nodes(nc.functionMap.values());
-				final GenerateResult gr3 = ggc.generateCode(gn1, wm);
-				gr2.results().addAll(gr3.results());
-				final @NotNull Collection<GeneratedNode> gn2 = ggc.classes_to_list_of_generated_nodes(nc.classMap.values());
-				final GenerateResult gr4 = ggc.generateCode(gn2, wm);
-				gr2.results().addAll(gr4.results());
-			} else {
-				System.out.println("2009 " + generatedNode.getClass().getName());
-			}
-		}
+		final GenerateResult gr2 = ggc.resultsFromNodes(nodes, wm);
 
 		return gr2;
 	}
