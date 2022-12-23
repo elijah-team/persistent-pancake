@@ -7,7 +7,8 @@ import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.GenerateFunctions;
+import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Stupidity;
 import tripleo.elijah.work.WorkManager;
@@ -55,7 +56,7 @@ public class EIT_ModuleList {
 
 		plp.pipelineLogic = __pl;
 
-		final List<GeneratedNode>                   resolved_nodes = new ArrayList<GeneratedNode>();
+		final List<GeneratedNode> resolved_nodes = new ArrayList<GeneratedNode>();
 
 //		assert lgc.size() == 0;
 
@@ -69,17 +70,13 @@ public class EIT_ModuleList {
 
 		//assert lgc.size() == epl.size(); //hmm
 
-		if (false) {
-			________NONO_processByEntryPoint(plp.getLgc(), resolved_nodes, plp.getMod());
-		} else {
-			final Coder coder = new Coder();
+		final Coder coder = new Coder();
 
-			for (final GeneratedNode generatedNode : plp.getLgc()) {
-				coder.codeNodes(plp.getMod(), resolved_nodes, generatedNode);
-			}
-
-			resolved_nodes.forEach(generatedNode -> coder.codeNode(generatedNode, plp.getMod()));
+		for (final GeneratedNode generatedNode : plp.getLgc()) {
+			coder.codeNodes(plp.getMod(), resolved_nodes, generatedNode);
 		}
+
+		resolved_nodes.forEach(generatedNode -> coder.codeNode(generatedNode, plp.getMod()));
 
 		plp.deduceModule();
 
@@ -95,92 +92,6 @@ public class EIT_ModuleList {
 //					System.out.println("----------------------------------------------------------");
 //				}
 //			}
-	}
-
-	private void ________NONO_processByEntryPoint(final DeducePhase.@NotNull GeneratedClasses lgc, final List<GeneratedNode> resolved_nodes, final OS_Module mod) {
-		for (final GeneratedNode generatedNode : lgc) {
-			if (generatedNode instanceof GNCoded) {
-				final GNCoded coded = (GNCoded) generatedNode;
-
-				switch (coded.getRole()) {
-					case FUNCTION: {
-						//						GeneratedFunction generatedFunction = (GeneratedFunction) generatedNode;
-						if (coded.getCode() == 0) {
-							coded.setCode(mod.parent.nextFunctionCode());
-						}
-						break;
-					}
-					case CLASS: {
-						final GeneratedClass generatedClass = (GeneratedClass) generatedNode;
-						//						if (generatedClass.getCode() == 0)
-						//							generatedClass.setCode(mod.parent.nextClassCode());
-						for (final GeneratedClass generatedClass2 : generatedClass.classMap.values()) {
-							if (generatedClass2.getCode() == 0) {
-								generatedClass2.setCode(mod.parent.nextClassCode());
-							}
-						}
-						for (final GeneratedFunction generatedFunction : generatedClass.functionMap.values()) {
-							for (final IdentTableEntry identTableEntry : generatedFunction.idte_list) {
-								if (identTableEntry.isResolved()) {
-									final GeneratedNode node = identTableEntry.resolvedType();
-									resolved_nodes.add(node);
-								}
-							}
-						}
-						break;
-					}
-					case NAMESPACE: {
-						final GeneratedNamespace generatedNamespace = (GeneratedNamespace) generatedNode;
-						if (coded.getCode() == 0) {
-							coded.setCode(mod.parent.nextClassCode());
-						}
-						for (final GeneratedClass generatedClass : generatedNamespace.classMap.values()) {
-							if (generatedClass.getCode() == 0) {
-								generatedClass.setCode(mod.parent.nextClassCode());
-							}
-						}
-						for (final GeneratedFunction generatedFunction : generatedNamespace.functionMap.values()) {
-							for (final IdentTableEntry identTableEntry : generatedFunction.idte_list) {
-								if (identTableEntry.isResolved()) {
-									final GeneratedNode node = identTableEntry.resolvedType();
-									resolved_nodes.add(node);
-								}
-							}
-						}
-						break;
-					}
-					default:
-						throw new IllegalStateException("Unexpected value: " + coded.getRole());
-				}
-
-			} else {
-				throw new IllegalStateException("node must be coded");
-			}
-		}
-
-
-		for (final GeneratedNode generatedNode : resolved_nodes) {
-			if (generatedNode instanceof GNCoded) {
-				final GNCoded coded = (GNCoded) generatedNode;
-				final int     code;
-				if (coded.getCode() == 0) {
-					switch (coded.getRole()) {
-						case FUNCTION:
-							code = mod.parent.nextFunctionCode();
-							break;
-						case NAMESPACE:
-						case CLASS:
-							code = mod.parent.nextClassCode();
-							break;
-						default:
-							throw new IllegalStateException("Invalid coded role");
-					}
-					coded.setCode(code);
-				}
-			} else {
-				throw new IllegalStateException("node is not coded");
-			}
-		}
 	}
 
 	public void _set_PL(final PipelineLogic aPipelineLogic) {
