@@ -152,9 +152,9 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 		final File fn1 = new File(file_prefix, "inputs.txt");
 		final String s = buf.getText();
-		final Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file_prefix, true)));
-		w.write(s);
-		w.close();
+		try (Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fn1, true)))) {
+			w.write(s);
+		}
 	}
 
 	private File choose_dir_name() {
