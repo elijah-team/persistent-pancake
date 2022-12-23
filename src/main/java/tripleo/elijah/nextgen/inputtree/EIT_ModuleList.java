@@ -33,13 +33,14 @@ public class EIT_ModuleList {
 
 	public void process__PL(final Function<OS_Module, GenerateFunctions> ggf, final PipelineLogic pipelineLogic) {
 		for (final OS_Module mod : mods) {
-			final GenerateFunctions gfm = ggf.apply(mod);
-
 			final @NotNull EntryPointList epl = mod.entryPoints;
 
+			if (epl.size() == 0) {
+				continue;
+			}
 
-			if (epl.size() == 0) continue;
 
+			final GenerateFunctions gfm = ggf.apply(mod);
 
 			final DeducePhase deducePhase = pipelineLogic.dp;
 			//final DeducePhase.@NotNull GeneratedClasses lgc            = deducePhase.generatedClasses;
@@ -50,7 +51,7 @@ public class EIT_ModuleList {
 		}
 	}
 
-	private void __process__PL__each(final _ProcessParams plp) {
+	private void __process__PL__each(final @NotNull _ProcessParams plp) {
 
 		plp.pipelineLogic = __pl;
 
