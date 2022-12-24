@@ -18,6 +18,9 @@ import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.logging.ElLog;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Created 9/10/21 3:42 AM
  */
@@ -187,19 +190,42 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 		// TODO lookupVariableStatement?
 		//  we really want DeduceVariableStatement < DeduceElement (with type/promise)
 		@Nullable final InstructionArgument vte_ia = generatedFunction.vte_lookup(variableStatement.getName());
-		assert vte_ia != null;
-		final @NotNull VariableTableEntry variableTableEntry = ((IntegerIA) vte_ia).getEntry();
-		variableTableEntry.typePromise().then(new DoneCallback<GenType>() {
-			@Override
-			public void onDone(@NotNull final GenType result) {
-				assert result.resolved.getClassOf() == fd.getParent();
 
-				@NotNull final E_Is_FunctionDef e_Is_FunctionDef = new E_Is_FunctionDef(pte, fd, fd.getParent()).invoke(variableTableEntry.type.genType.nonGenericTypeName);
-				@Nullable final FunctionInvocation fi1 = e_Is_FunctionDef.getFi();
-				final GenType genType1 = e_Is_FunctionDef.getGenType();
-				finish(co, depTracker, fi1, genType1);
+		if (vte_ia != null) {
+			final @NotNull VariableTableEntry variableTableEntry = ((IntegerIA) vte_ia).getEntry();
+			variableTableEntry.typePromise().then(new DoneCallback<GenType>() {
+				@Override
+				public void onDone(@NotNull final GenType result) {
+					assert result.resolved.getClassOf() == fd.getParent();
+
+					@NotNull final E_Is_FunctionDef e_Is_FunctionDef = new E_Is_FunctionDef(pte, fd, fd.getParent()).invoke(variableTableEntry.type.genType.nonGenericTypeName);
+					@Nullable final FunctionInvocation fi1 = e_Is_FunctionDef.getFi();
+					final GenType genType1 = e_Is_FunctionDef.getGenType();
+					finish(co, depTracker, fi1, genType1);
+				}
+			});
+		} else {
+			final List<IdentTableEntry> entries = generatedFunction.idte_list
+					.stream()
+					.filter(ite -> ite.getIdent().getText().equals(variableStatement.getName()))
+					.collect(Collectors.toList());
+
+			if (entries.size() == 1) {
+				final IdentTableEntry identTableEntry = entries.get(0);
+
+				identTableEntry.typePromise().then(new DoneCallback<GenType>() {
+					@Override
+					public void onDone(@NotNull final GenType result) {
+						assert result.resolved.getClassOf() == fd.getParent();
+
+						@NotNull final E_Is_FunctionDef e_Is_FunctionDef = new E_Is_FunctionDef(pte, fd, fd.getParent()).invoke(identTableEntry.type.genType.nonGenericTypeName);
+						@Nullable final FunctionInvocation fi1 = e_Is_FunctionDef.getFi();
+						final GenType genType1 = e_Is_FunctionDef.getGenType();
+						finish(co, depTracker, fi1, genType1);
+					}
+				});
 			}
-		});
+		}
 	}
 
 	private void resolved_element_pte_FunctionDef_FormalArgListItem(final Constructable co, final ProcTableEntry pte, final AbstractDependencyTracker depTracker, @NotNull final FunctionDef fd, final FormalArgListItem parent) {
