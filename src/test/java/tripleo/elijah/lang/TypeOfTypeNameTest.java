@@ -11,7 +11,6 @@ package tripleo.elijah.lang;
 import org.junit.Assert;
 import org.junit.Test;
 import tripleo.elijah.comp.*;
-import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
@@ -59,6 +58,7 @@ public class TypeOfTypeNameTest {
 		//
 		expect(mod.getFileName()).andReturn("foo.elijah");
 		expect(c.getErrSink()).andReturn(e);
+		expect(c.getSilence()).andReturn(true);
 		expect(mod.getCompilation()).andReturn(c);
 		expect(ctx.lookup(var_x.getName())).andReturn(lrl);
 		replay(ctx, mod, c);
@@ -66,7 +66,7 @@ public class TypeOfTypeNameTest {
 		//
 		// VERIFY EXPECTATIONS
 		//
-		final ElLog.Verbosity verbosity1 = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity1 = c.gitlabCIVerbosity();
 		final AccessBus ab = new AccessBus(c);
 		final PipelineLogic pl = new PipelineLogic(ab);
 		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
@@ -113,6 +113,7 @@ public class TypeOfTypeNameTest {
 		//
 		expect(mod.getFileName()).andReturn("foo.elijah");
 		expect(mod.getCompilation()).andReturn(c);
+		expect(c.getSilence()).andReturn(true);
 		expect(c.getErrSink()).andReturn(e);
 		expect(ctx.lookup("x")).andReturn(lrl);
 		replay(ctx, mod, c);
@@ -120,7 +121,7 @@ public class TypeOfTypeNameTest {
 		//
 		// VERIFY EXPECTATIONS
 		//
-		final ElLog.Verbosity verbosity1 = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity1 = c.gitlabCIVerbosity();
 		final AccessBus ab = new AccessBus(c);
 		final PipelineLogic pl = new PipelineLogic(ab);
 		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
@@ -250,8 +251,12 @@ public class TypeOfTypeNameTest {
 		//
 		// SET UP EXPECTATIONS
 		//
+		expect(mod.parent.getSilence()).andReturn(true); //ElLog.Verbosity.SILENT); // TODO is this *really* correct
+		expect(mod.parent.getSilence()).andReturn(true); //ElLog.Verbosity.SILENT); // TODO is this *really* correct
+		expect(mod.parent.getSilence()).andReturn(true); //ElLog.Verbosity.SILENT); // TODO is this *really* correct
+
 //		OS_Module mod = mock(OS_Module.class);
-		final ElLog.Verbosity verbosity1 = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity1 = mod.parent.gitlabCIVerbosity();
 		final AccessBus ab = new AccessBus(mod.parent);
 		final PipelineLogic pl = new PipelineLogic(ab);
 		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
@@ -262,13 +267,14 @@ public class TypeOfTypeNameTest {
 		expect(ctx.lookup(typeNameString1)).andReturn(lrl2);
 //		expect(ctx.lookup("SystemInteger")).andReturn(lrl3);
 		replay(ctx);
+		replay(mod.parent);
 
 		//
 		// VERIFY EXPECTATIONS
 		//
 		final TypeName tn = t.resolve(ctx, deduceTypes2);
 //		System.out.println(tn);
-		verify(ctx);
+		verify(ctx, mod.parent);
 		Assert.assertEquals(typeNameString, tn.toString());
 	}
 
