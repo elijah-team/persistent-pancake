@@ -11,6 +11,7 @@ package tripleo.elijah.stages.gen_fn;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jdeferred2.DoneCallback;
+import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.Context;
@@ -98,12 +99,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 			type.resolve(gn); // TODO maybe this obviates the above?
 	}
 
-	@Override
-	public void setGenType(final GenType aGenType) {
-		if (type != null) {
-			type.genType.copy(aGenType);
-		}
-	}
+	private final DeferredObject<GenType, Void, Void> _typeDeferred = new DeferredObject<>();
 
 	public boolean isResolved() {
 		return resolvedType != null;
@@ -171,6 +167,20 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		type = aGeneratedFunction.newTypeTableEntry(aType, null, aExpression, this);
 	}
 
+	@Override
+	public void setGenType(final GenType aGenType) {
+		if (type != null) {
+			type.genType.copy(aGenType);
+		}
+
+		if (!_typeDeferred.isResolved()) {
+			_typeDeferred.resolve(aGenType);
+		}
+	}
+
+	public Promise<GenType, Void, Void> typePromise() {
+		return _typeDeferred.promise();
+	}
 }
 
 //
