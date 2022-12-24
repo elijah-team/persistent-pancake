@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.BaseFunctionDef;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.stages.deduce.ClassInvocation;
+import tripleo.elijah.stages.deduce.NamespaceInvocation;
 
 /**
  * Created 6/27/21 9:40 AM
@@ -30,18 +32,79 @@ public class GeneratedFunction extends BaseGeneratedFunction implements GNCoded 
 	//
 
 	@Override
+	@NotNull
 	public String toString() {
 		assert fd != null;
-		final String pte_string = fd.getArgs().toString(); // TODO wanted PTE.getLoggingString
 
-		final Promise<GeneratedClass, Void, Void> resolvePromise = fi.getClassInvocation().resolvePromise();
-		if (resolvePromise.isResolved()) {
-			final GeneratedClass[] parent = new GeneratedClass[1];
-			resolvePromise.then(gc -> parent[0] = gc);
-			return String.format("<GeneratedFunction %d %s %s %s>", getCode(), parent[0], fd.name(), pte_string);
-		} else {
-			return String.format("<GeneratedFunction %s %s %s>", fd.getParent(), fd.name(), pte_string);
+		String R = null;
+
+		String pte_string = null; //// = fd.getArgs().toString(); // TODO wanted PTE.getLoggingString
+
+
+		ClassInvocation classInvocation = null; //// = fi.getClassInvocation();
+		NamespaceInvocation namespaceInvocation = null; //// = fi.getNamespaceInvocation();
+
+		Promise<GeneratedClass, Void, Void> crp;
+		Promise<GeneratedNamespace, Void, Void> nsrp;
+
+
+		// README if classInvocation or namespaceInvocation is resolved then use that to return string...
+
+		short state = 0;
+		while (state != 5) {
+			switch (state) {
+				case 0:
+					classInvocation = fi.getClassInvocation();
+					namespaceInvocation = fi.getNamespaceInvocation();
+					pte_string = fd.getArgs().toString(); // TODO wanted PTE.getLoggingString
+
+					state = 1;
+					break;
+				case 1:
+					if (classInvocation != null) {
+						state = 2;
+						break;
+					} else if (namespaceInvocation != null) {
+						state = 3;
+						break;
+					} else {
+						state = 4;
+					}
+					break;
+				case 2:
+					crp = classInvocation.resolvePromise();
+					if (crp.isResolved()) {
+						final GeneratedClass[] parent = new GeneratedClass[1];
+						crp.then(gc -> parent[0] = gc);
+						R = String.format("<GeneratedFunction %d %s %s %s>", getCode(), parent[0], fd.name(), pte_string);
+						state = 5;
+					} else {
+						state = 4;
+					}
+					break;
+				case 3:
+					nsrp = namespaceInvocation.resolveDeferred();
+					if (nsrp.isResolved()) {
+						final GeneratedNamespace[] parent = new GeneratedNamespace[1];
+						nsrp.then(gc -> parent[0] = gc);
+						R = String.format("<GeneratedFunction %d %s %s %s>", getCode(), parent[0], fd.name(), pte_string);
+						state = 5;
+					} else {
+						state = 4;
+					}
+					break;
+				case 4:
+					R = String.format("<GeneratedFunction %s %s %s>", fd.getParent(), fd.name(), pte_string);
+					break;
+				case 5:
+					break;
+				default:
+					throw new IllegalStateException("Invalid state in #toString");
+			}
 		}
+
+		// ... otherwise use parsetree parent
+		return R;
 	}
 
 	public String name() {
