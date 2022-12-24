@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
+import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.BaseFunctionDef;
@@ -30,8 +31,17 @@ public class GeneratedFunction extends BaseGeneratedFunction implements GNCoded 
 
 	@Override
 	public String toString() {
-		String pte_string = fd.getArgs().toString(); // TODO wanted PTE.getLoggingString
-		return String.format("<GeneratedFunction %s %s %s>", fd.getParent(), fd.name(), pte_string);
+		assert fd != null;
+		final String pte_string = fd.getArgs().toString(); // TODO wanted PTE.getLoggingString
+
+		final Promise<GeneratedClass, Void, Void> resolvePromise = fi.getClassInvocation().resolvePromise();
+		if (resolvePromise.isResolved()) {
+			final GeneratedClass[] parent = new GeneratedClass[1];
+			resolvePromise.then(gc -> parent[0] = gc);
+			return String.format("<GeneratedFunction %d %s %s %s>", getCode(), parent[0], fd.name(), pte_string);
+		} else {
+			return String.format("<GeneratedFunction %s %s %s>", fd.getParent(), fd.name(), pte_string);
+		}
 	}
 
 	public String name() {

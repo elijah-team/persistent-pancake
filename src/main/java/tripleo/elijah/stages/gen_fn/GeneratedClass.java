@@ -311,6 +311,10 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 			varTableEntry.updatePotentialTypesCBPromise.resolve(varTableEntry.updatePotentialTypesCB);
 		}
 	}
+
+	public String toString() {
+		return String.format("<GeneratedClass %d %s>", getCode(), getName()); // TODO package, full-name
+	}
 }
 
 //
