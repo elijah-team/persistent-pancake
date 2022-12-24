@@ -208,7 +208,7 @@ public class DeducePhase {
 
 		deduceTypes2.deduceFunctions(lgf);
 
-		final List<GeneratedClass> matching_class_list = generatedClasses.filterClasses(c -> c.module() == m);
+		final List<GeneratedClass> matching_class_list = generatedClasses.filterClassesByModule(m);
 
 		deduceTypes2.deduceClasses(matching_class_list);
 
@@ -576,11 +576,16 @@ public class DeducePhase {
 					.filter(x -> {
 						if (x instanceof GeneratedClass) {
 							return pgc.test((GeneratedClass) x);
-						} else
+						} else {
 							return false;
+						}
 					})
 					.map(x -> (GeneratedClass) x)
 					.collect(Collectors.toList());
+		}
+
+		public List<GeneratedClass> filterClassesByModule(final OS_Module aModule) {
+			return filterClasses(c -> c.module() == aModule);
 		}
 	}
 }
