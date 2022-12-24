@@ -110,7 +110,10 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	}
 */
 
-	protected GenerateResult run3(final OS_Module mod, @NotNull final List<GeneratedNode> lgc, final WorkManager wm, final GenerateC ggc) {
+	protected GenerateResult run3(final @NotNull OS_Module mod,
+	                              final @NotNull List<GeneratedNode> lgc,
+	                              final @NotNull WorkManager wm,
+	                              final @NotNull GenerateC ggc) {
 		final List<GeneratedNode> nodes = lgc.stream()
 				.filter(aGeneratedNode -> aGeneratedNode.module() == mod)
 				.collect(Collectors.toList());
