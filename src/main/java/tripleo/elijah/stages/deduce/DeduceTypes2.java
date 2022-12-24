@@ -69,6 +69,14 @@ public class DeduceTypes2 {
 				deduceOneFunction(generatedFunction, phase);
 			}
 		}
+
+/*
+		lgf.stream()
+				.filter(generatedNode -> generatedNode instanceof GeneratedFunction)
+				.map(x -> (GeneratedFunction) x)
+				.forEach(generatedFunction -> deduceOneFunction(generatedFunction, phase));
+*/
+
 		@NotNull List<GeneratedNode> generatedClasses = (phase.generatedClasses.copy());
 		// TODO consider using reactive here
 		int size;

@@ -210,6 +210,8 @@ public class DeducePhase {
 
 		final List<GeneratedClass> matching_class_list = generatedClasses.filterClassesByModule(m);
 
+//		assert matching_class_list.size() == generatedClasses.size();
+
 		deduceTypes2.deduceClasses(matching_class_list);
 
 		return deduceTypes2;
