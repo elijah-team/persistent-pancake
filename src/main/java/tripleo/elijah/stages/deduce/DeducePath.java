@@ -18,7 +18,13 @@ import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.OS_Element;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.GenericElementHolderWithIntegerIA;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
@@ -67,7 +73,7 @@ public class DeducePath {
 				el = vte.getResolvedElement();
 				assert el != null;
 				// set this to set resolved_elements of remaining entries
-				vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
+				vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolderWithIntegerIA(el, (IntegerIA) ias.get(aIndex)));
 			} else if (ia2 instanceof IdentIA) {
 				@NotNull final IdentTableEntry identTableEntry = ((IdentIA) ia2).getEntry();
 				el = identTableEntry.getResolvedElement();
@@ -78,7 +84,8 @@ public class DeducePath {
 //				}
 				assert el != null;
 				if (aIndex == 0)
-					identTableEntry.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el)); // TODO why reset status to same value??
+					if (identTableEntry.getResolvedElement() != el)
+						identTableEntry.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
 			} else if (ia2 instanceof ProcIA) {
 				final @NotNull ProcTableEntry procTableEntry = ((ProcIA) ia2).getEntry();
 				el = procTableEntry.getResolvedElement(); // .expression?

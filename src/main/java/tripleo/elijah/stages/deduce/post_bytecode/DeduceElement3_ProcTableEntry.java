@@ -11,14 +11,14 @@ import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.Instruction;
 
 public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
-    private final ProcTableEntry principal;
-    private final DeduceTypes2 deduceTypes2;
+    private final ProcTableEntry        principal;
+    private final DeduceTypes2          deduceTypes2;
     private final BaseGeneratedFunction generatedFunction;
-    private Instruction instruction;
+    private       Instruction           instruction;
 
     public DeduceElement3_ProcTableEntry(final ProcTableEntry aProcTableEntry, final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction) {
-        principal = aProcTableEntry;
-        deduceTypes2 = aDeduceTypes2;
+        principal         = aProcTableEntry;
+        deduceTypes2      = aDeduceTypes2;
         generatedFunction = aGeneratedFunction;
     }
 

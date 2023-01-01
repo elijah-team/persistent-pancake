@@ -10,8 +10,8 @@ package tripleo.elijah.stages.deduce;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang.IdentExpression;
@@ -79,7 +79,7 @@ public class ResolveError extends Exception implements Diagnostic {
 
 	@Override
 	public void report(@NotNull final PrintStream stream) {
-		stream.println(String.format("---[%s]---: %s", code(), message()));
+		stream.printf("---[%s]---: %s%n", code(), message());
 		// linecache.print(primary);
 		for (final Locatable sec : secondary()) {
 			//linecache.print(sec)

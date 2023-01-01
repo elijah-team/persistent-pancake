@@ -12,10 +12,15 @@ import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.IElementHolder;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 
 public class PTE_Zero {
-    private final ProcTableEntry procTableEntry;
+    private final ProcTableEntry                                   procTableEntry;
     private final DeferredObject<IElementHolder, Diagnostic, Void> _foundCounstructorDef2Promise = new DeferredObject<>();
 
     public PTE_Zero(final ProcTableEntry aProcTableEntry) {
@@ -29,7 +34,7 @@ public class PTE_Zero {
         @NotNull final BaseFunctionDef ele = constructorDef.getFD();
 
         try {
-            final LookupResultList lrl = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), deduceTypes2);
+            final LookupResultList     lrl  = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), deduceTypes2);
             @Nullable final OS_Element best = lrl.chooseBest(null);
             ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
         } catch (final ResolveError aResolveError) {
@@ -48,7 +53,7 @@ public class PTE_Zero {
         @NotNull final BaseFunctionDef ele = constructorDef.getFD();
 
         try {
-            final LookupResultList lrl = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), deduceTypes2);
+            final LookupResultList     lrl  = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), deduceTypes2);
             @Nullable final OS_Element best = lrl.chooseBest(null);
 //            ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
             final GenericElementHolder elementHolder = new GenericElementHolder(best);

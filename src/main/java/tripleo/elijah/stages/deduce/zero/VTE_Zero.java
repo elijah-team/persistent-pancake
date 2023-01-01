@@ -4,13 +4,28 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.lang.*;
-import tripleo.elijah.stages.deduce.*;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.stages.deduce.ClassInvocation;
+import tripleo.elijah.stages.deduce.DeduceLookupUtils;
+import tripleo.elijah.stages.deduce.DeducePhase;
+import tripleo.elijah.stages.deduce.DeduceTypes2;
+import tripleo.elijah.stages.deduce.ResolveError;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.util.Stupidity;
 
 public class VTE_Zero {
-    private final VariableTableEntry vte;
+    private final VariableTableEntry  vte;
     private final Zero_PotentialTypes _pt = new Zero_PotentialTypes();
 
     public VTE_Zero(final VariableTableEntry aVariableTableEntry) {
@@ -44,8 +59,8 @@ public class VTE_Zero {
         try {
             @NotNull final GenType ty2 = deduceTypes2.resolve_type(aTy, aTy.getTypeName().getContext());
             // TODO ite.setAttached(ty2) ??
-            final OS_Element ele = ty2.resolved.getElement();
-            final LookupResultList lrl = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), deduceTypes2);
+            final OS_Element           ele  = ty2.resolved.getElement();
+            final LookupResultList     lrl  = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), deduceTypes2);
             @Nullable final OS_Element best = lrl.chooseBest(null);
             ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
 //									ite.setResolvedElement(best);
@@ -59,8 +74,8 @@ public class VTE_Zero {
     }
 
     private void vte_pot_size_is_1_USER_CLASS_TYPE(@NotNull final VariableTableEntry vte, @Nullable final OS_Type aTy, final @NotNull DeduceTypes2 deduceTypes2, final IdentTableEntry ite, final ErrSink errSink, final DeducePhase phase) {
-        final ClassStatement klass = aTy.getClassOf();
-        @Nullable LookupResultList lrl = null;
+        final ClassStatement       klass = aTy.getClassOf();
+        @Nullable LookupResultList lrl   = null;
         try {
             lrl = DeduceLookupUtils.lookupExpression(ite.getIdent(), klass.getContext(), deduceTypes2);
             @Nullable final OS_Element best = lrl.chooseBest(null);
@@ -68,9 +83,9 @@ public class VTE_Zero {
             assert best != null;
             ite.setResolvedElement(best);
 
-            final @NotNull GenType genType = new GenType(klass);
-            final TypeName typeName = vte.type.genType.nonGenericTypeName;
-            final @Nullable ClassInvocation ci = genType.genCI(typeName, deduceTypes2, errSink, phase);
+            final @NotNull GenType          genType  = new GenType(klass);
+            final TypeName                  typeName = vte.type.genType.nonGenericTypeName;
+            final @Nullable ClassInvocation ci       = genType.genCI(typeName, deduceTypes2, errSink, phase);
 //							resolve_vte_for_class(vte, klass);
             ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
                 @Override

@@ -1,14 +1,18 @@
 package tripleo.elijah.stages.deduce.fluffy.i;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Multimap;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.DecideElObjectType;
+import tripleo.elijah.lang.ElObjectType;
+import tripleo.elijah.lang.ModuleItem;
+import tripleo.elijah.lang.NamespaceStatement;
+import tripleo.elijah.lang.OS_Element2;
+import tripleo.elijah.lang.OS_Module;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public interface FluffyComp {
 	default void find_multiple_items(final OS_Module aModule) {
@@ -26,13 +30,10 @@ public interface FluffyComp {
 			if (moduleItems.size() < 2) // README really 1
 				continue;
 
-			final Collection<ElObjectType> t = Collections2.transform(moduleItems, new Function<ModuleItem, ElObjectType>() {
-				@Override
-				public ElObjectType apply(@org.checkerframework.checker.nullness.qual.Nullable final ModuleItem input) {
-					assert input != null;
-					return DecideElObjectType.getElObjectType(input);
-				}
-			});
+			final Collection<ElObjectType> t = moduleItems
+			  .stream()
+			  .map((final ModuleItem input) -> DecideElObjectType.getElObjectType(input))
+			  .collect(Collectors.toList());
 
 			final Set<ElObjectType> st = new HashSet<ElObjectType>(t);
 			if (st.size() > 1)

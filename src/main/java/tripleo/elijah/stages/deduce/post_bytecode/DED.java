@@ -2,133 +2,137 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.ConstantTableEntry;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 
 public interface DED {
 
-    static DED dispatch(final ConstantTableEntry aCte) {
-        return new DED_CTE(aCte);
-    }
+	static DED dispatch(final ConstantTableEntry aCte) {
+		return new DED_CTE(aCte);
+	}
 
-    static DED dispatch(final IdentTableEntry aIte) {
-        return new DED_ITE(aIte);
-    }
+	static DED dispatch(final IdentTableEntry aIte) {
+		return new DED_ITE(aIte);
+	}
 
-    static DED dispatch(final VariableTableEntry aVte) {
-        return new DED_VTE(aVte);
-    }
+	static DED dispatch(final VariableTableEntry aVte) {
+		return new DED_VTE(aVte);
+	}
 
-    static DED dispatch(final ProcTableEntry aPte) {
-        return new DED_PTE(aPte);
-    }
+	static DED dispatch(final ProcTableEntry aPte) {
+		return new DED_PTE(aPte);
+	}
 
-    static DED dispatch(final TypeTableEntry aCte) {
-        return new DED_TTE(aCte);
-    }
+	static DED dispatch(final TypeTableEntry aCte) {
+		return new DED_TTE(aCte);
+	}
 
-    Kind kind();
+	Kind kind();
 
-    enum Kind {
-        DED_Kind_GeneratedFunction,
-        DED_Kind_ProcTableEntry,
-        DED_Kind_IdentTableEntry,
-        DED_Kind_VariableTableEntry,
-        DED_Kind_ConstantTableEntry,
-        /*
-            DED_Kind_GeneratedFunction,
-            DED_Kind_GeneratedFunction,
-            DED_Kind_GeneratedFunction,
-            DED_Kind_GeneratedFunction,
-         */
-        DED_Kind_Type,
-        DED_Kind_TypeTableEntry
-    }
+	enum Kind {
+		DED_Kind_GeneratedFunction,
+		DED_Kind_ProcTableEntry,
+		DED_Kind_IdentTableEntry,
+		DED_Kind_VariableTableEntry,
+		DED_Kind_ConstantTableEntry,
+		/*
+			DED_Kind_GeneratedFunction,
+			DED_Kind_GeneratedFunction,
+			DED_Kind_GeneratedFunction,
+			DED_Kind_GeneratedFunction,
+		 */
+		DED_Kind_Type,
+		DED_Kind_TypeTableEntry
+	}
 
-    class DED_PTE implements DED {
+	class DED_PTE implements DED {
 
-        private final ProcTableEntry principal;
+		private final ProcTableEntry principal;
 
-        public DED_PTE(final ProcTableEntry aPte) {
-            principal = aPte;
-        }
+		public DED_PTE(final ProcTableEntry aPte) {
+			principal = aPte;
+		}
 
-        @Override
-        public @NotNull Kind kind() {
-            return Kind.DED_Kind_ProcTableEntry;
-        }
+		@Override
+		public @NotNull Kind kind() {
+			return Kind.DED_Kind_ProcTableEntry;
+		}
 
-    }
+	}
 
-    class DED_TTE implements DED {
+	class DED_TTE implements DED {
 
-        private final TypeTableEntry principal;
+		private final TypeTableEntry principal;
 
-        public DED_TTE(final TypeTableEntry aTte) {
-            principal = aTte;
-        }
+		public DED_TTE(final TypeTableEntry aTte) {
+			principal = aTte;
+		}
 
-        @Override
-        public Kind kind() {
-            return Kind.DED_Kind_TypeTableEntry;
-        }
+		@Override
+		public Kind kind() {
+			return Kind.DED_Kind_TypeTableEntry;
+		}
 
-    }
+	}
 
-    class DED_CTE implements DED {
+	class DED_CTE implements DED {
 
-        private final ConstantTableEntry constantTableEntry;
+		private final ConstantTableEntry constantTableEntry;
 
-        @Contract(pure = true)
-        public DED_CTE(final ConstantTableEntry aConstantTableEntry) {
-            constantTableEntry = aConstantTableEntry;
-        }
+		@Contract(pure = true)
+		public DED_CTE(final ConstantTableEntry aConstantTableEntry) {
+			constantTableEntry = aConstantTableEntry;
+		}
 
-        public ConstantTableEntry getConstantTableEntry() {
-            return constantTableEntry;
-        }
+		public ConstantTableEntry getConstantTableEntry() {
+			return constantTableEntry;
+		}
 
-        @Override
-        public DED.Kind kind() {
-            return DED.Kind.DED_Kind_ConstantTableEntry;
-        }
-    }
+		@Override
+		public DED.Kind kind() {
+			return DED.Kind.DED_Kind_ConstantTableEntry;
+		}
+	}
 
-    class DED_ITE implements DED {
+	class DED_ITE implements DED {
 
-        private final IdentTableEntry identTableEntry;
+		private final IdentTableEntry identTableEntry;
 
-        public DED_ITE(final IdentTableEntry aIdentTableEntry) {
-            identTableEntry = aIdentTableEntry;
-        }
+		public DED_ITE(final IdentTableEntry aIdentTableEntry) {
+			identTableEntry = aIdentTableEntry;
+		}
 
-        public IdentTableEntry getIdentTableEntry() {
-            return identTableEntry;
-        }
+		public IdentTableEntry getIdentTableEntry() {
+			return identTableEntry;
+		}
 
-        @Override
-        public Kind kind() {
-            return Kind.DED_Kind_IdentTableEntry;
-        }
+		@Override
+		public Kind kind() {
+			return Kind.DED_Kind_IdentTableEntry;
+		}
 
-    }
+	}
 
-    class DED_VTE implements DED {
+	class DED_VTE implements DED {
 
-        private final VariableTableEntry variableTableEntry;
+		private final VariableTableEntry variableTableEntry;
 
-        public DED_VTE(final VariableTableEntry aVariableTableEntry) {
-            variableTableEntry = aVariableTableEntry;
-        }
+		public DED_VTE(final VariableTableEntry aVariableTableEntry) {
+			variableTableEntry = aVariableTableEntry;
+		}
 
-        public VariableTableEntry getVariableTableEntry() {
-            return variableTableEntry;
-        }
+		public VariableTableEntry getVariableTableEntry() {
+			return variableTableEntry;
+		}
 
-        @Override
-        public Kind kind() {
-            return Kind.DED_Kind_VariableTableEntry;
-        }
+		@Override
+		public Kind kind() {
+			return Kind.DED_Kind_VariableTableEntry;
+		}
 
-    }
+	}
 
 }

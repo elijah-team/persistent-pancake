@@ -33,35 +33,35 @@ import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.instructions.IdentIA;
 
 public interface IDeduceElement3 {
-    void resolve(IdentIA aIdentIA, Context aContext, FoundElement aFoundElement);
+	void resolve(IdentIA aIdentIA, Context aContext, FoundElement aFoundElement);
 
-    void resolve(Context aContext, final DeduceTypes2 dt2);
+	void resolve(Context aContext, final DeduceTypes2 dt2);
 
-    OS_Element getPrincipal();
+	OS_Element getPrincipal();
 
-    DED elementDiscriminator();
+	DED elementDiscriminator();
 
-    DeduceTypes2 deduceTypes2();
+	DeduceTypes2 deduceTypes2();
 
-    BaseGeneratedFunction generatedFunction();
+	BaseGeneratedFunction generatedFunction();
 
-    GenType genType();
+	GenType genType();
 
-    /**
-     * how is this different from {@link DED.Kind} ??
-     *
-     * @return
-     */
-    DeduceElement3_Kind kind();
+	/**
+	 * how is this different from {@link DED.Kind} ??
+	 *
+	 * @return
+	 */
+	DeduceElement3_Kind kind();
 
-    enum DeduceElement3_Kind {
-        CLASS,
-        NAMESPACE,
-        FUNCTION,
-        GEN_FN__VTE,
-        GEN_FN__ITE,
-        GEN_FN__CTE,
-        GEN_FN__PTE
-        // ...
-    }
+	enum DeduceElement3_Kind {
+		CLASS,
+		NAMESPACE,
+		FUNCTION,
+		GEN_FN__VTE,
+		GEN_FN__ITE,
+		GEN_FN__CTE,
+		GEN_FN__PTE
+		// ...
+	}
 }
