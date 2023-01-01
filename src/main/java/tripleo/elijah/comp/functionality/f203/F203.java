@@ -7,8 +7,8 @@ import tripleo.elijah.comp.ErrSink;
 import java.io.File;
 
 public class F203 {
-	private final ErrSink errSink;
-	ChooseDirectoryNameBehavior cdn;
+	final         ChooseDirectoryNameBehavior cdn;
+	private final ErrSink                     errSink;
 
 	@Contract(pure = true)
 	public F203(final ErrSink aErrSink, final Compilation c) {

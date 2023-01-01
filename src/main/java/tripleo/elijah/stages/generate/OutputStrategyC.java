@@ -11,8 +11,16 @@ package tripleo.elijah.stages.generate;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.LibraryStatementPart;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.DecideElObjectType;
+import tripleo.elijah.lang.ElObjectType;
+import tripleo.elijah.lang.NamespaceStatement;
+import tripleo.elijah.lang.NamespaceTypes;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
@@ -103,7 +111,7 @@ public class OutputStrategyC {
 		return aFilename;
 	}
 
-	public String nameForFunction(final GeneratedFunction generatedFunction, final GenerateResult.TY aTy) {
+	public String nameForFunction(final @NotNull GeneratedFunction generatedFunction, final GenerateResult.TY aTy) {
 		GeneratedNode c = generatedFunction.getGenClass();
 		if (c == null) c = generatedFunction.getParent(); // TODO fixme
 		if (c instanceof GeneratedClass)
@@ -113,10 +121,10 @@ public class OutputStrategyC {
 		return null;
 	}
 
-	public String nameForClass(final GeneratedClass generatedClass, final GenerateResult.TY aTy) {
+	public @NotNull String nameForClass(final GeneratedClass generatedClass, final GenerateResult.TY aTy) {
 		if (generatedClass.module().isPrelude()) {
 			// We are dealing with the Prelude
-			final StringBuilder sb = new StringBuilder();
+			final @NotNull StringBuilder sb = new StringBuilder();
 			sb.append("/Prelude/");
 			sb.append("Prelude");
 			appendExtension(aTy, sb);
@@ -188,17 +196,26 @@ public class OutputStrategyC {
 
 	public void appendExtension(final GenerateResult.TY aTy, final StringBuilder aSb) {
 		switch (aTy) {
-		case IMPL:
-			aSb.append(".c");
-			break;
-		case PRIVATE_HEADER:
-			aSb.append("_Priv.h");
-		case HEADER:
-			aSb.append(".h");
-			break;
+			case IMPL:
+				aSb.append(".c");
+				break;
+			case PRIVATE_HEADER:
+				aSb.append("_Priv.h");
+			case HEADER:
+				aSb.append(".h");
+				break;
 		}
 	}
 
+	public String nameForConstructor(final GeneratedConstructor generatedConstructor, final GenerateResult.@NotNull TY aTy) {
+		GeneratedNode c = generatedConstructor.getGenClass();
+		if (c == null) c = generatedConstructor.getParent(); // TODO fixme
+		if (c instanceof GeneratedClass)
+			return nameForClass((GeneratedClass) c, aTy);
+		else if (c instanceof GeneratedNamespace)
+			return nameForNamespace((GeneratedNamespace) c, aTy);
+		return null;
+	}
 }
 
 //

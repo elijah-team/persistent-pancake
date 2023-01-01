@@ -22,21 +22,21 @@ import static tripleo.elijah.util.Helpers.List_of;
 public class Feb2021 {
 
 	@Test
-	public void testProperty() {
+	public void testProperty() throws Exception {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/property/"));
 	}
 
 	@Test
-	public void testFunction() {
+	public void testFunction() throws Exception {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/function/"));
 	}
 
 	@Test
-	public void testHier() {
+	public void testHier() throws Exception {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/hier/"));

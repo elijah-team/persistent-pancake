@@ -14,15 +14,20 @@ import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.gen_c.GenerateC;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.GenerateFunctions;
+import tripleo.elijah.stages.gen_fn.GeneratePhase;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
+import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
+import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.work.WorkManager;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,25 +40,24 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	public final  DeducePhase   dp;
 	private final AccessBus     __ab;
 
-	public GenerateResult gr     = new GenerateResult();
-	public List<ElLog>    elLogs = new LinkedList<ElLog>();
+	public final GenerateResult gr = new GenerateResult();
 
 	private final ElLog.Verbosity verbosity;
 
 	private final List<OS_Module> __mods_BACKING = new ArrayList<OS_Module>();
 	final         EIT_ModuleList  mods           = new EIT_ModuleList(__mods_BACKING);
 
-	public PipelineLogic(final AccessBus ab) {
-		__ab = ab;
+	public PipelineLogic(final AccessBus iab) {
+		__ab = iab; // we're watching you
 
-		final boolean         sil     = ab.getCompilation().getSilence();
-		final ElLog.Verbosity silence = sil ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
+		final boolean sil = __ab.getCompilation().getSilence();
 
-		verbosity = silence;
+		verbosity     = sil ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
 		generatePhase = new GeneratePhase(verbosity, this);
-		dp = new DeducePhase(generatePhase, this, verbosity);
+		dp            = new DeducePhase(generatePhase, this, verbosity);
 
-
+		// FIXME examine if this is necessary and possibly or actually elsewhere
+		//  and/or just another section
 		subscribeMods(this);
 	}
 
@@ -70,19 +74,20 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 
 //		List<List<EntryPoint>> entryPoints = mods.stream().map(mod -> mod.entryPoints).collect(Collectors.toList());
 
-		lgc2.forEach(dp::finish);
+//		lgc2.forEach(dp::finish);
 
 		dp.generatedClasses.addAll(lgc);
 
 //		elLogs = dp.deduceLogs;
 	}
 
-	public void generate(final List<GeneratedNode> lgc) {
+	public void generate(final List<GeneratedNode> lgc, final ErrSink aErrSink) {
 		final WorkManager wm = new WorkManager();
-		// README use any errSink, they should all be the same
-		for (final OS_Module mod : mods.getMods()) {
-			final GenerateC generateC = new GenerateC(mod, mod.parent.getErrSink(), verbosity, this);
-			final GenerateResult ggr = run3(mod, lgc, wm, generateC);
+
+		for (final @NotNull OS_Module mod : mods.getMods()) {
+			final OutputFileFactoryParams p         = new OutputFileFactoryParams(mod, aErrSink, verbosity, this);
+			final GenerateC               generateC = new GenerateC(p);
+			final GenerateResult          ggr       = run3(mod, lgc, wm, generateC);
 			wm.drain();
 			gr.results().addAll(ggr.results());
 		}
@@ -95,7 +100,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	}
 
 	public void resolveMods() {
-		__ab.resolveModuleList(mods);
+//		__ab.resolveModuleList(mods);
 	}
 
 /*
@@ -185,7 +190,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	}
 
 	public void addLog(final ElLog aLog) {
-		elLogs.add(aLog);
+		__ab.getCompilation().elLogs.add(aLog);
 	}
 
 	@Override

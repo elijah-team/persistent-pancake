@@ -22,12 +22,18 @@
 
     <dependencies>
 
+        <!-- https://search.maven.org/artifact/io.reactivex.rxjava3/rxjava/3.1.0/jar -->
+        <dependency>
+            <groupId>io.reactivex.rxjava3</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
         <dependency>
             <groupId>me.friwi</groupId>
             <artifactId>jcefmaven</artifactId>
             <version>105.3.36</version>
         </dependency>
-
 
 
         <!-- https://mvnrepository.com/artifact/org.reactivestreams/reactive-streams -->
@@ -105,11 +111,13 @@
 
 
         <!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
+        <!--
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
             <version>1.4.11.1</version>
         </dependency>
+        -->
 
         <!-- https://mvnrepository.com/artifact/org.apache.bcel/bcel -->
         <!--

@@ -22,24 +22,24 @@ import static tripleo.elijah.util.Helpers.List_of;
 public class ClassInstantiationTest {
 
 	@Test
-	public void classInstantiation() {
-		final String f = "test/basic1/class_instantiation/";
+	public void classInstantiation() throws Exception {
+		final String      f = "test/basic1/class_instantiation/";
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of(f));
 	}
 
 	@Test
-	public void classInstantiation2() {
-		final String f = "test/basic1/class_instantiation2/";
+	public void classInstantiation2() throws Exception {
+		final String      f = "test/basic1/class_instantiation2/";
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of(f));
 	}
 
 	@Test
-	public void classInstantiation3() {
-		final String f = "test/basic1/class_instantiation3/";
+	public void classInstantiation3() throws Exception {
+		final String      f = "test/basic1/class_instantiation3/";
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of(f));

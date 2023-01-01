@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.stages.instructions;
 
+import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.stages.gen_fn.*;
 
@@ -32,7 +33,7 @@ public class IdentIA implements InstructionArgument, Constructable {
 	}
 
 	public void setPrev(final InstructionArgument ia) {
-		gf.getIdentTableEntry(id).backlink = ia;
+		gf.getIdentTableEntry(id).setBacklink(ia);
 	}
 
 	@Override
@@ -64,6 +65,11 @@ public class IdentIA implements InstructionArgument, Constructable {
 	@Override
 	public void setGenType(final GenType aGenType) {
 		getEntry().setGenType(aGenType);
+	}
+
+	@Override
+	public Promise<ProcTableEntry, Void, Void> constructablePromise() {
+		return getEntry().constructablePromise();
 	}
 }
 

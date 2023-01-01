@@ -17,19 +17,23 @@ import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.gen_fn.*;
 
+import java.util.List;
+
+import static tripleo.elijah.util.Helpers.List_of;
+
 /**
  * Created 1/21/21 9:04 PM
  */
 public class FunctionInvocation {
-	private final BaseFunctionDef fd;
-	public final ProcTableEntry pte;
-	private ClassInvocation classInvocation;
-	private NamespaceInvocation namespaceInvocation;
-	private final DeferredObject<BaseGeneratedFunction, Void, Void> generateDeferred = new DeferredObject<tripleo.elijah.stages.gen_fn.BaseGeneratedFunction, Void, Void>();
-	private @Nullable BaseGeneratedFunction _generated = null;
+	public final      ProcTableEntry                                    pte;
+	private final     BaseFunctionDef                                   fd;
+	private final     DeferredObject<BaseGeneratedFunction, Void, Void> generateDeferred = new DeferredObject<tripleo.elijah.stages.gen_fn.BaseGeneratedFunction, Void, Void>();
+	private           ClassInvocation                                   classInvocation;
+	private           NamespaceInvocation                               namespaceInvocation;
+	private @Nullable BaseGeneratedFunction                             _generated       = null;
 
 	public FunctionInvocation(final BaseFunctionDef aFunctionDef, final ProcTableEntry aProcTableEntry, @NotNull final IInvocation invocation, final GeneratePhase phase) {
-		this.fd = aFunctionDef;
+		this.fd  = aFunctionDef;
 		this.pte = aProcTableEntry;
 		assert invocation != null;
 		invocation.setForFunctionInvocation(this);
@@ -125,6 +129,22 @@ public class FunctionInvocation {
 
 	public void setGenerated(final BaseGeneratedFunction aGeneratedFunction) {
 		_generated = aGeneratedFunction;
+	}
+
+	public List<TypeTableEntry> getArgs() {
+		if (pte == null)
+			return List_of();
+		return pte.args;
+	}
+
+	public boolean sameAs(final @NotNull FunctionInvocation aFunctionInvocation) {
+		if (fd != aFunctionInvocation.fd) return false;
+		if (pte != aFunctionInvocation.pte) return false;
+		if (classInvocation != aFunctionInvocation.classInvocation) return false;
+		if (namespaceInvocation != aFunctionInvocation.namespaceInvocation) return false;
+		if (_generated != aFunctionInvocation._generated) return false;
+
+		return true;
 	}
 }
 

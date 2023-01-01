@@ -23,7 +23,7 @@ import java.io.File;
 
 public class NumericExpression implements IExpression, Locatable {
 
-	int carrier;
+	final   int   carrier;
 	private Token n;
 
 	public NumericExpression(final int aCarrier) {
@@ -31,7 +31,7 @@ public class NumericExpression implements IExpression, Locatable {
 	}
 
 	public NumericExpression(final @NotNull Token n) {
-		this.n = n;
+		this.n  = n;
 		carrier = Integer.parseInt(n.getText());
 	}
 

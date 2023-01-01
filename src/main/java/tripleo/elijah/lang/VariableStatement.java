@@ -9,8 +9,9 @@
 package tripleo.elijah.lang;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.diagnostic.Locatable;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,14 +69,11 @@ public class VariableStatement implements OS_Element, @NotNull Locatable {
 		return initialValue;
 	}
 
-	@Override
-	public void visitGen(final ICodeGen visit) {
-		visit.visitVariableStatement(this);
-	}
+	@Nullable List<AnnotationClause> annotations = null;
 
 	@Override
-	public OS_Element getParent() {
-		return _parent;
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitVariableStatement(this);
 	}
 
 	@Override
@@ -85,7 +83,10 @@ public class VariableStatement implements OS_Element, @NotNull Locatable {
 
 	// region annotations
 
-	List<AnnotationClause> annotations = null;
+	@Override
+	public OS_Element getParent() {
+		return _parent;
+	}
 
 	public void addAnnotation(final AnnotationClause a) {
 		if (annotations == null)

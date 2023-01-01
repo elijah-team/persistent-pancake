@@ -49,8 +49,8 @@ public class DeduceTypesTest {
 		vs.setName(x);
 		final Qualident qu = new Qualident();
 		qu.append(Helpers.string_to_ident("Integer"));
-		((NormalTypeName)vs.typeName()).setName(qu);
-		((NormalTypeName)vs.typeName()).setContext(fd.getContext());
+		((NormalTypeName) vs.typeName()).setName(qu);
+		((NormalTypeName) vs.typeName()).setContext(fd.getContext());
 		fd.scope(scope3);
 		fd.postConstruct();
 		cs.postConstruct();
@@ -59,16 +59,16 @@ public class DeduceTypesTest {
 		final IdentExpression x1 = Helpers.string_to_ident("x");
 		x1.setContext(fc);
 		//
-		mod.prelude = mod.parent.findPrelude("c");
+		mod.prelude = mod.parent.findPrelude("c").success();
 		//
 		//
 		//
-		final ElLog.Verbosity verbosity = mod.parent.gitlabCIVerbosity();
-		final AccessBus ab = new AccessBus(mod.parent);
-		final PipelineLogic pl = new PipelineLogic(ab);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity, pl);
-		final DeducePhase dp = new DeducePhase(generatePhase, pl, verbosity);
-		final DeduceTypes2 d = dp.deduceModule(mod, verbosity);
+		final ElLog.Verbosity verbosity     = mod.parent.gitlabCIVerbosity();
+		final AccessBus       ab            = new AccessBus(mod.parent);
+		final PipelineLogic   pl            = new PipelineLogic(ab);
+		final GeneratePhase   generatePhase = new GeneratePhase(verbosity, pl);
+		final DeducePhase     dp            = new DeducePhase(generatePhase, pl, verbosity);
+		final DeduceTypes2    d             = dp.deduceModule(mod, verbosity);
 //		final DeduceTypes d = new DeduceTypes(mod);
 		this.x = DeduceLookupUtils.deduceExpression(d, x1, fc);
 		System.out.println(this.x);

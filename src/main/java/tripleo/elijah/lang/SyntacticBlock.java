@@ -12,9 +12,10 @@ import antlr.Token;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.contexts.SyntacticBlockContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,17 +26,17 @@ import java.util.List;
  */
 public class SyntacticBlock implements OS_Element, OS_Container, FunctionItem, StatementItem {
 
-	private final List<FunctionItem> _items = new ArrayList<FunctionItem>();
-	private final OS_Element _parent;
-	private SyntacticBlockContext ctx;
-	private Scope3 scope3;
+	private final List<FunctionItem>    _items = new ArrayList<FunctionItem>();
+	private final OS_Element            _parent;
+	private       SyntacticBlockContext ctx;
+	private       Scope3                scope3;
 
 	public SyntacticBlock(final OS_Element aParent) {
 		_parent = aParent;
 	}
 
 	@Override
-	public void visitGen(final ICodeGen visit) {
+	public void visitGen(final @NotNull ElElementVisitor visit) {
 		visit.visitSyntacticBlock(this);
 	}
 
