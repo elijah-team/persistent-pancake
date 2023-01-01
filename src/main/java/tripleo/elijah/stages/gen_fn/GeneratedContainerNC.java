@@ -19,7 +19,11 @@ import tripleo.elijah.stages.deduce.FunctionMapDeferred;
 import tripleo.elijah.stages.gen_generic.CodeGenerator;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created 3/16/21 10:45 AM
@@ -50,17 +54,17 @@ public abstract class GeneratedContainerNC extends AbstractDependencyTracker imp
 		return null;
 	}
 
-	public void addClass(ClassStatement aClassStatement, GeneratedClass aGeneratedClass) {
+	public void addClass(final ClassStatement aClassStatement, final GeneratedClass aGeneratedClass) {
 		classMap.put(aClassStatement, aGeneratedClass);
 	}
 
-	public void addFunction(FunctionDef functionDef, GeneratedFunction generatedFunction) {
+	public void addFunction(final FunctionDef functionDef, final GeneratedFunction generatedFunction) {
 		if (functionMap.containsKey(functionDef))
 			throw new IllegalStateException("Function already generated"); // TODO there can be overloads, although we don't handle that yet
 		functionMap.put(functionDef, generatedFunction);
 		{
 			final Collection<FunctionMapDeferred> deferreds = functionMapDeferreds.get(functionDef);
-			for (FunctionMapDeferred deferred : deferreds) {
+			for (final FunctionMapDeferred deferred : deferreds) {
 				deferred.onNotify(generatedFunction);
 			}
 		}
@@ -76,13 +80,13 @@ public abstract class GeneratedContainerNC extends AbstractDependencyTracker imp
 	 * @param fd the function searching for
 	 * @return null if no such key exists
 	 */
-	public GeneratedFunction getFunction(FunctionDef fd) {
+	public GeneratedFunction getFunction(final FunctionDef fd) {
 		return functionMap.get(fd);
 	}
 
 	public abstract void generateCode(CodeGenerator aGgc, GenerateResult aGr);
 
-	public void setCode(int aCode) {
+	public void setCode(final int aCode) {
 		code = aCode;
 	}
 

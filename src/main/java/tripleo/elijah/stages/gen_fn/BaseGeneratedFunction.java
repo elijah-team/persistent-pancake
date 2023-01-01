@@ -13,15 +13,40 @@ import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.*;
-import tripleo.elijah.stages.deduce.*;
-import tripleo.elijah.stages.instructions.*;
+import tripleo.elijah.lang.BaseFunctionDef;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.DotExpression;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.ProcedureCallExpression;
+import tripleo.elijah.stages.deduce.DeduceElement;
+import tripleo.elijah.stages.deduce.DeduceTypes2;
+import tripleo.elijah.stages.deduce.FoundElement;
+import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.stages.deduce.OnGenClass;
+import tripleo.elijah.stages.instructions.ConstTableIA;
+import tripleo.elijah.stages.instructions.FnCallArgs;
+import tripleo.elijah.stages.instructions.IdentIA;
+import tripleo.elijah.stages.instructions.Instruction;
+import tripleo.elijah.stages.instructions.InstructionArgument;
+import tripleo.elijah.stages.instructions.InstructionName;
+import tripleo.elijah.stages.instructions.IntegerIA;
+import tripleo.elijah.stages.instructions.Label;
+import tripleo.elijah.stages.instructions.ProcIA;
+import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Holder;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.util.range.Range;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 
@@ -53,25 +78,25 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	// region Ident-IA
 	//
 
-	public static void printTables(GeneratedFunction gf) {
+	public static void printTables(final GeneratedFunction gf) {
 		tripleo.elijah.util.Stupidity.println_out("VariableTable ");
-		for (VariableTableEntry variableTableEntry : gf.vte_list) {
+		for (final VariableTableEntry variableTableEntry : gf.vte_list) {
 			tripleo.elijah.util.Stupidity.println_out("\t" + variableTableEntry);
 		}
 		tripleo.elijah.util.Stupidity.println_out("ConstantTable ");
-		for (ConstantTableEntry constantTableEntry : gf.cte_list) {
+		for (final ConstantTableEntry constantTableEntry : gf.cte_list) {
 			tripleo.elijah.util.Stupidity.println_out("\t" + constantTableEntry);
 		}
 		tripleo.elijah.util.Stupidity.println_out("ProcTable     ");
-		for (ProcTableEntry procTableEntry : gf.prte_list) {
+		for (final ProcTableEntry procTableEntry : gf.prte_list) {
 			tripleo.elijah.util.Stupidity.println_out("\t" + procTableEntry);
 		}
 		tripleo.elijah.util.Stupidity.println_out("TypeTable     ");
-		for (TypeTableEntry typeTableEntry : gf.tte_list) {
+		for (final TypeTableEntry typeTableEntry : gf.tte_list) {
 			tripleo.elijah.util.Stupidity.println_out("\t" + typeTableEntry);
 		}
 		tripleo.elijah.util.Stupidity.println_out("IdentTable    ");
-		for (IdentTableEntry identTableEntry : gf.idte_list) {
+		for (final IdentTableEntry identTableEntry : gf.idte_list) {
 			tripleo.elijah.util.Stupidity.println_out("\t" + identTableEntry);
 		}
 	}

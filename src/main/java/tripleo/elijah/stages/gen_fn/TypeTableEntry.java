@@ -23,25 +23,27 @@ import java.util.List;
  * Created 9/12/20 10:26 PM
  */
 public class TypeTableEntry {
-	final int index;
-	public final Type lifetime;
-	public final TableEntryIV tableEntry;
+	@NotNull
+	public final  Type                lifetime;
 	@Nullable
-	private OS_Type attached;
-	public final GenType genType = new GenType();
-	public final IExpression expression;
-	private final List<OnSetAttached> osacbs = new ArrayList<OnSetAttached>();
+	public final  TableEntryIV        tableEntry;
+	public final  GenType             genType = new GenType();
+	public final  IExpression         expression;
+	final         int                 index;
+	private final List<OnSetAttached> osacbs  = new ArrayList<OnSetAttached>();
+	@Nullable
+	private       OS_Type             attached;
 
 	public interface OnSetAttached {
 		void onSetAttached(TypeTableEntry aTypeTableEntry);
 	}
 
 	public TypeTableEntry(final int index,
-						  final Type lifetime,
-						  @Nullable final OS_Type aAttached,
-						  final IExpression expression,
-						  final TableEntryIV aTableEntryIV) {
-		this.index = index;
+	                      @NotNull final Type lifetime,
+	                      @Nullable final OS_Type aAttached,
+	                      final IExpression expression,
+	                      @Nullable final TableEntryIV aTableEntryIV) {
+		this.index    = index;
 		this.lifetime = lifetime;
 		if (aAttached == null || (aAttached.getType() == OS_Type.Type.USER && aAttached.getTypeName() == null)) {
 			attached = null;
