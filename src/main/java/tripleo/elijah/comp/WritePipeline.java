@@ -16,6 +16,8 @@ import tripleo.elijah.comp.functionality.f203.F203;
 import tripleo.elijah.nextgen.inputtree.EIT_Input;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
 import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
+import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
+import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
@@ -95,9 +97,19 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 		final List<EOT_OutputFile> leof = new ArrayList<>();
 		for (final GenerateResultItem ab : gr.results()) {
-			final List<EIT_Input>      inputs = List_of(new EIT_ModuleInput(ab.node.module(), c));
-			final EG_CompoundStatement seq    = new EG_CompoundStatement(null, null, null, false, null);
-			final EOT_OutputFile       eof    = new EOT_OutputFile(c, inputs, ab.output, EOT_OutputType.SOURCES, seq);
+			final List<EIT_Input> inputs = List_of(new EIT_ModuleInput(ab.node.module(), c));
+
+			final EG_SingleStatement beginning   = new EG_SingleStatement("", new EX_Explanation() {
+			});
+			final EG_SingleStatement middle      = new EG_SingleStatement(ab.output, new EX_Explanation() {
+			});
+			final EG_SingleStatement ending      = new EG_SingleStatement("", new EX_Explanation() {
+			});
+			final EX_Explanation     explanation = new EX_Explanation() {
+			};
+
+			final EG_CompoundStatement seq = new EG_CompoundStatement(beginning, ending, middle, false, explanation);
+			final EOT_OutputFile       eof = new EOT_OutputFile(c, inputs, ab.output, EOT_OutputType.SOURCES, seq);
 			leof.add(eof);
 		}
 

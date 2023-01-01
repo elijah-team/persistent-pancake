@@ -99,7 +99,7 @@ class CompilationRunner {
 	private void logProgress(final int number, final String text) {
 		if (number == 130) return;
 
-		System.err.println(number + " " + text);
+		System.err.println("" + number + " " + text);
 	}
 
 	public Operation<CompilerInstructions> realParseEzFile(final String f,

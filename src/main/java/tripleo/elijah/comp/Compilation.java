@@ -8,33 +8,18 @@
  */
 package tripleo.elijah.comp;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.regex.Pattern;
-
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
 import antlr.ANTLRException;
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import io.reactivex.rxjava3.subjects.Subject;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.Out;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.LibraryStatementPart;
@@ -45,7 +30,6 @@ import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.comp.queries.QuerySourceFileToModule;
 import tripleo.elijah.comp.queries.QuerySourceFileToModuleParams;
-import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
@@ -64,6 +48,19 @@ import tripleo.elijjah.ElijjahLexer;
 import tripleo.elijjah.ElijjahParser;
 import tripleo.elijjah.EzLexer;
 import tripleo.elijjah.EzParser;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.regex.Pattern;
 
 public abstract class Compilation {
 
@@ -125,16 +122,17 @@ public abstract class Compilation {
 
 		rootCI = cis.get(0);
 
-		//assert __cr == null;
 		if (__cr != null) {
 			System.err.println("200 __cr != null");
 			//throw new AssertionError();
 		}
 
+/*
 		assert _cis != null; // final; redundant
 
 		if (__cr == null)
 			__cr = new CompilationRunner(this, _cis);
+*/
 
 		__cr.start(rootCI, do_out, op);
 	}
@@ -197,69 +195,72 @@ public abstract class Compilation {
 			__cr = new CompilationRunner(this, _cis);
 			__cr.doFindCIs(args2);
 
-			CompilerInstructions ez_file = null;
+//			CompilerInstructions ez_file = null;
+//
+//			for (int i = 0; i < args2.length; i++) {
+//				final String  file_name = args2[i];
+//				final File    f         = new File(file_name);
+//				final boolean matches2  = Pattern.matches(".+\\.ez$", file_name);
+//				if (matches2)
+//					add_ci(parseEzFile(f, file_name, eee));
+//				else {
+////						eee.reportError("9996 Not an .ez file "+file_name);
+//					if (f.isDirectory()) {
+//						final List<CompilerInstructions> ezs = searchEzFiles(f);
+//						if (ezs.size() > 1) {
+////								eee.reportError("9998 Too many .ez files, using first.");
+//							eee.reportError("9997 Too many .ez files, be specific.");
+////								add_ci(ezs.get(0));
+//						} else if (ezs.size() == 0) {
+//							eee.reportError("9999 No .ez files found.");
+//						} else {
+//							ez_file = ezs.get(0);
+//							add_ci(ez_file);
+//						}
+//					} else
+//						eee.reportError("9995 Not a directory " + f.getAbsolutePath());
+//				}
+//			}
+//
+//			System.err.println("130 GEN_LANG: " + cis.get(0).genLang());
+//			findStdLib("c"); // TODO find a better place for this
+//
+//			for (final CompilerInstructions ci : cis) {
+//				use(ci, do_out);
+//			}
+//
+//			ab = new AccessBus(this);
+//
+//			if (stage == Stages.E) {
+//				// do nothing. job over
+//			} else {
+//				ab.addPipelineLogic(PipelineLogic::new);
+//
+////					ab.subscribePipelineLogic(xx -> pipelineLogic = xx);
+//				pipelineLogic = ab.__getPL();
+//
+//				ab.add(DeducePipeline::new);
+//				ab.add(GeneratePipeline::new);
+//				ab.add(WritePipeline::new);
+////					ab.add(WriteMesonPipeline::new);
+//
+//
+//				modules.stream().forEach(m -> pipelineLogic.addModule(m));
+//
+//
+//				pipelines.run();
+//
+//				writeLogs(silent, elLogs);
+//			}
 
-			for (int i = 0; i < args2.length; i++) {
-				final String  file_name = args2[i];
-				final File    f         = new File(file_name);
-				final boolean matches2  = Pattern.matches(".+\\.ez$", file_name);
-				if (matches2)
-					add_ci(parseEzFile(f, file_name, eee));
-				else {
-//						eee.reportError("9996 Not an .ez file "+file_name);
-					if (f.isDirectory()) {
-						final List<CompilerInstructions> ezs = searchEzFiles(f);
-						if (ezs.size() > 1) {
-//								eee.reportError("9998 Too many .ez files, using first.");
-							eee.reportError("9997 Too many .ez files, be specific.");
-//								add_ci(ezs.get(0));
-						} else if (ezs.size() == 0) {
-							eee.reportError("9999 No .ez files found.");
-						} else {
-							ez_file = ezs.get(0);
-							add_ci(ez_file);
-						}
-					} else
-						eee.reportError("9995 Not a directory " + f.getAbsolutePath());
-				}
-			}
-
-			System.err.println("130 GEN_LANG: " + cis.get(0).genLang());
-			findStdLib("c"); // TODO find a better place for this
-
-			for (final CompilerInstructions ci : cis) {
-				use(ci, do_out);
-			}
-
-			ab = new AccessBus(this);
-
-			if (stage == Stages.E) {
-				// do nothing. job over
-			} else {
-				ab.addPipelineLogic(PipelineLogic::new);
-
-//					ab.subscribePipelineLogic(xx -> pipelineLogic = xx);
-				pipelineLogic = ab.__getPL();
-
-				ab.add(DeducePipeline::new);
-				ab.add(GeneratePipeline::new);
-				ab.add(WritePipeline::new);
-//					ab.add(WriteMesonPipeline::new);
-
-
-				modules.stream().forEach(m -> pipelineLogic.addModule(m));
-
-
-				pipelines.run();
-
-				writeLogs(silent, elLogs);
-			}
+//			ab =
 		} catch (final Exception e) {
 			errSink.exception(e);
 			throw new RuntimeException(e);
 		}
 
-		return ab;
+		return null;
+//		return ab;
 	}
 
 	private void subscribeCI(final Observer<CompilerInstructions> aCio) {
@@ -386,7 +387,7 @@ public abstract class Compilation {
 //		}
 //	}
 
-	private void writeLogs(final boolean aSilent, final @NotNull List<ElLog> aLogs) {
+	void writeLogs(final boolean aSilent, final @NotNull List<ElLog> aLogs) {
 		final Multimap<String, ElLog> logMap = ArrayListMultimap.create();
 		if (true || aSilent) {
 			for (final ElLog deduceLog : aLogs) {

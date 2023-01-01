@@ -18,14 +18,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static tripleo.elijah.util.Helpers.List_of;
-
 interface RuntimeProcess {
 	void run(final Compilation aCompilation);
 
 	void postProcess();
 
-	void prepare();
+	void prepare() throws Exception;
 }
 
 //interface ICompilationAccess {
@@ -74,7 +72,7 @@ class RuntimeProcesses {
 		return processes.size();
 	}
 
-	public void run_better() {
+	public void run_better() throws Exception {
 		// do nothing. job over
 		if (ca.getCompilation().stage == Stages.E) return;
 
@@ -85,7 +83,7 @@ class RuntimeProcesses {
 		rt.postProcess(pr);
 	}
 
-	public void prepare() {
+	public void prepare() throws Exception {
 		for (RuntimeProcess runtimeProcess : processes) {
 			System.err.println("***** RuntimeProcess [prepare] named " + runtimeProcess);
 			runtimeProcess.prepare();
@@ -224,7 +222,7 @@ class OStageProcess implements RuntimeProcess {
 	}
 
 	@Override
-	public void prepare() {
+	public void prepare() throws Exception {
 		Preconditions.checkNotNull(pr);
 
 		Preconditions.checkNotNull(pr.pipelineLogic);
@@ -244,20 +242,32 @@ class OStageProcess implements RuntimeProcess {
 		ab.add(WritePipeline::new);
 //		ab.add(WriteMesonPipeline::new);
 
-		final DeducePipeline     dpl  = new DeducePipeline(ab);
-		final GeneratePipeline   gpl  = new GeneratePipeline(ab);
-		final WritePipeline      wpl  = new WritePipeline(ab);
-		final WriteMesonPipeline wmpl = new WriteMesonPipeline(comp, pr, ppl, wpl);
-
-		List_of(dpl, gpl, wpl, wmpl)
-		  .forEach(ca::addPipeline);
-
-		pr.setGenerateResult(pr.pipelineLogic.gr);
+//		final DeducePipeline     dpl  = new DeducePipeline(ab);
+//		final GeneratePipeline   gpl  = new GeneratePipeline(ab);
+//		final WritePipeline      wpl  = new WritePipeline(ab);
+//		final WriteMesonPipeline wmpl = new WriteMesonPipeline(comp, pr, ppl, wpl);
+//
+//		List_of(dpl, gpl, wpl, wmpl)
+//		  .forEach(ca::addPipeline);
+//
+//		pr.setGenerateResult(pr.pipelineLogic.gr);
 
 		// NOTE Java needs help!
 		//Helpers.<Consumer<Supplier<GenerateResult>>>List_of(wpl.consumer(), wmpl.consumer())
-		List_of(wpl.consumer(), wmpl.consumer())
-		  .forEach(pr::consumeGenerateResult);
+//		List_of(wpl.consumer(), wmpl.consumer())
+//		  .forEach(pr::consumeGenerateResult);
+
+		ppl.then(pl -> {
+			comp.modules.stream().forEach(m -> pl.addModule(m));
+
+			try {
+				comp.pipelines.run();
+			} catch (Exception aE) {
+				throw new RuntimeException(aE); // TODO fucking lambdas
+			}
+
+			comp.writeLogs(comp.silent, comp.elLogs);
+		});
 	}
 }
 

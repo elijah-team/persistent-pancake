@@ -50,7 +50,7 @@ public class OS_Type {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(type, type_of_type, etype.hashCode(), ttype.hashCode());
+		return Objects.hash(type, type_of_type, etype, ttype);
 	}
 
 	public ClassStatement getClassOf() {

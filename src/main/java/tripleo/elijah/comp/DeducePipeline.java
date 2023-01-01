@@ -61,8 +61,8 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 			pipelineLogic.addModule(module);
 		}
 
-/*
-//		System.err.println(ms.size());
+		if (ms != null) System.err.println(ms.size());
+		System.err.println(ms1.size());
 
 		final EIT_ModuleList eml = new EIT_ModuleList(ms1);
 
@@ -74,14 +74,12 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 //			assert lgc.size() == ms.size();
 		}
 
-		lgc = pipelineLogic.dp.generatedClasses.copy();
-*/
-
-		__ab.resolveModuleList(pipelineLogic.mods);
+//		__ab.resolveModuleList(pipelineLogic.mods);
 
 		lgc = pipelineLogic.dp.generatedClasses.copy();
 		pipelineLogic.everythingBeforeGenerate(lgc);
 
+//		if (lgc.size() > 0)
 		__ab.resolveLgc(lgc);
 	}
 

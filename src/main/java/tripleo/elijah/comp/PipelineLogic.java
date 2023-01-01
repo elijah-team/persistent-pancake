@@ -28,7 +28,6 @@ import tripleo.elijah.work.WorkManager;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -52,9 +51,8 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		__ab = iab; // we're watching you
 
 		final boolean         sil     = __ab.getCompilation().getSilence();
-		final ElLog.Verbosity silence = sil ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
 
-		verbosity     = silence;
+		verbosity     = sil ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
 		generatePhase = new GeneratePhase(verbosity, this);
 		dp            = new DeducePhase(generatePhase, this, verbosity);
 
@@ -102,7 +100,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	}
 
 	public void resolveMods() {
-		__ab.resolveModuleList(mods);
+//		__ab.resolveModuleList(mods);
 	}
 
 /*

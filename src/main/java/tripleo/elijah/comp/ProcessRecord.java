@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 public class ProcessRecord {
 	public final PipelineLogic                              pipelineLogic;
 	AccessBus ab;
-	private      DeferredObject<GenerateResult, Void, Void> _pgr;
+	private final DeferredObject<GenerateResult, Void, Void> _pgr = new DeferredObject<>();
 
 	public ProcessRecord(final @NotNull ICompilationAccess ca0) {
 		ab = new AccessBus(ca0.getCompilation());
@@ -41,9 +41,6 @@ public class ProcessRecord {
 	}
 
 	public Promise<GenerateResult, Void, Void> generateResultPromise() {
-		if (_pgr == null) {
-			_pgr = new DeferredObject<>();
-		}
 		return _pgr;
 	}
 }
