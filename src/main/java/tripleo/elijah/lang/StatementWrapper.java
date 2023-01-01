@@ -1,6 +1,6 @@
 package tripleo.elijah.lang;
 
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 
 public class StatementWrapper implements StatementItem, FunctionItem, OS_Element {
 
@@ -36,10 +36,10 @@ public class StatementWrapper implements StatementItem, FunctionItem, OS_Element
         return expr;
     }
 
-    @Override
-    public void visitGen(final ICodeGen visit) {
-        visit.visitStatementWrapper(this);
-    }
+	@Override
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitStatementWrapper(this);
+	}
 
 }
 

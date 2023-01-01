@@ -104,12 +104,12 @@ public class EIT_ModuleList {
 	}
 
 	private static class _ProcessParams {
-		private final OS_Module mod;
-		private PipelineLogic pipelineLogic;
+		private final OS_Module         mod;
+		private final PipelineLogic     pipelineLogic;
 		private final GenerateFunctions gfm;
 		@NotNull
-		private final EntryPointList epl;
-		private final DeducePhase deducePhase;
+		private final EntryPointList    epl;
+		private final DeducePhase       deducePhase;
 //		@NotNull
 //		private final ElLog.Verbosity                         verbosity;
 

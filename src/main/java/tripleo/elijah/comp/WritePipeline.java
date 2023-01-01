@@ -29,13 +29,22 @@ import tripleo.util.buffer.TextBuffer;
 import tripleo.util.io.CharSink;
 import tripleo.util.io.FileCharSink;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.Writer;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static tripleo.elijah.util.Helpers.List_of;
@@ -86,9 +95,9 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 		final List<EOT_OutputFile> leof = new ArrayList<>();
 		for (final GenerateResultItem ab : gr.results()) {
-			final List<EIT_Input> inputs = List_of(new EIT_ModuleInput(ab.node.module(), c));
-			final EG_CompoundStatement seq = new EG_CompoundStatement();
-			final EOT_OutputFile eof = new EOT_OutputFile(c, inputs, ab.output, EOT_OutputType.SOURCES, seq);
+			final List<EIT_Input>      inputs = List_of(new EIT_ModuleInput(ab.node.module(), c));
+			final EG_CompoundStatement seq    = new EG_CompoundStatement(null, null, null, false, null);
+			final EOT_OutputFile       eof    = new EOT_OutputFile(c, inputs, ab.output, EOT_OutputType.SOURCES, seq);
 			leof.add(eof);
 		}
 
@@ -121,7 +130,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 			// TODO functionality
 			System.out.println("201 Writing path: "+path);
 			final CharSink x = c.getIO().openWrite(path);
-			for (final Buffer buffer : entry.getValue()) {
+			for (final @NotNull Buffer buffer : entry.getValue()) {
 				x.accept(buffer.getText());
 			}
 			((FileCharSink)x).close();
@@ -148,7 +157,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 				.map(file -> file.toString())
 				.collect(Collectors.toList());
 
-		for (final File file : recordedreads) {
+		for (final @NotNull File file : recordedreads) {
 			final String fn = file.toString();
 
 			append_hash(buf, fn, c.getErrSink());
@@ -156,7 +165,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 		final File fn1 = new File(file_prefix, "inputs.txt");
 		final String s = buf.getText();
-		try (Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fn1, true)))) {
+		try (final Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fn1, true)))) {
 			w.write(s);
 		}
 	}
@@ -180,6 +189,23 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	@Override
 	public void gr_slot(final GenerateResult gr) {
 		this.gr = gr;
+	}
+
+	public Consumer<Supplier<GenerateResult>> consumer() {
+		return new Consumer<Supplier<GenerateResult>>() {
+			@Override
+			public void accept(final Supplier<GenerateResult> aGenerateResultSupplier) {
+//				if (grs != null) {
+//					System.err.println("234 grs not null "+grs.getClass().getName());
+//					return;
+//				}
+//
+//				assert false;
+//				grs = aGenerateResultSupplier;
+//				//final GenerateResult gr = aGenerateResultSupplier.get();
+				int y = 2;
+			}
+		};
 	}
 }
 

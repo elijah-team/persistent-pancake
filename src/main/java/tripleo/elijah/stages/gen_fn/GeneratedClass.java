@@ -22,14 +22,14 @@ import java.util.*;
  * Created 10/29/20 4:26 AM
  */
 public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
-	private final OS_Module module;
-	private final ClassStatement klass;
-	public Map<ConstructorDef, GeneratedConstructor> constructors = new HashMap<ConstructorDef, GeneratedConstructor>();
-	public ClassInvocation ci;
-	private boolean resolve_var_table_entries_already = false;
+	public final  Map<ConstructorDef, GeneratedConstructor> constructors                      = new HashMap<ConstructorDef, GeneratedConstructor>();
+	private final OS_Module                                 module;
+	private final ClassStatement                            klass;
+	public        ClassInvocation                           ci;
+	private       boolean                                   resolve_var_table_entries_already = false;
 
-	public GeneratedClass(ClassStatement klass, OS_Module module) {
-		this.klass = klass;
+	public GeneratedClass(final ClassStatement klass, final OS_Module module) {
+		this.klass  = klass;
 		this.module = module;
 	}
 
@@ -37,22 +37,22 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 		return klass.getGenericPart().size() > 0;
 	}
 
-	public void addAccessNotation(AccessNotation an) {
+	public void addAccessNotation(final AccessNotation an) {
 		throw new NotImplementedException();
 	}
 
 	public void createCtor0() {
 		// TODO implement me
-		FunctionDef fd = new FunctionDef(klass, klass.getContext());
+		final FunctionDef fd = new FunctionDef(klass, klass.getContext());
 		fd.setName(Helpers.string_to_ident("<ctor$0>"));
-		Scope3 scope3 = new Scope3(fd);
+		final Scope3 scope3 = new Scope3(fd);
 		fd.scope(scope3);
-		for (VarTableEntry varTableEntry : varTable) {
+		for (final VarTableEntry varTableEntry : varTable) {
 			if (varTableEntry.initialValue != IExpression.UNASSIGNED) {
-				IExpression left = varTableEntry.nameToken;
-				IExpression right = varTableEntry.initialValue;
+				final IExpression left  = varTableEntry.nameToken;
+				final IExpression right = varTableEntry.initialValue;
 
-				IExpression e = ExpressionBuilder.build(left, ExpressionKind.ASSIGNMENT, right);
+				final IExpression e = ExpressionBuilder.build(left, ExpressionKind.ASSIGNMENT, right);
 				scope3.add(new StatementWrapper(e, fd.getContext(), fd));
 			} else {
 				if (getPragma("auto_construct")) {
@@ -62,13 +62,13 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 		}
 	}
 
-	private boolean getPragma(String auto_construct) { // TODO this should be part of Context
+	private boolean getPragma(final String auto_construct) { // TODO this should be part of Context
 		return false;
 	}
 
 	@NotNull
 	public String getName() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(klass.getName());
 		if (ci.genericPart != null) {
 			sb.append("[");
@@ -80,17 +80,17 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 	}
 
 	@NotNull
-	private String getNameHelper(Map<TypeName, OS_Type> aGenericPart) {
-		List<String> ls = new ArrayList<String>();
-		for (Map.Entry<TypeName, OS_Type> entry : aGenericPart.entrySet()) { // TODO Is this guaranteed to be in order?
+	private String getNameHelper(final Map<TypeName, OS_Type> aGenericPart) {
+		final List<String> ls = new ArrayList<String>();
+		for (final Map.Entry<TypeName, OS_Type> entry : aGenericPart.entrySet()) { // TODO Is this guaranteed to be in order?
 			final OS_Type value = entry.getValue(); // This can be another ClassInvocation using GenType
-			final String name = value.getClassOf().getName();
+			final String  name  = value.getClassOf().getName();
 			ls.add(name); // TODO Could be nested generics
 		}
 		return Helpers.String_join(", ", ls);
 	}
 
-	public void addConstructor(ConstructorDef aConstructorDef, @NotNull GeneratedConstructor aGeneratedFunction) {
+	public void addConstructor(final ConstructorDef aConstructorDef, @NotNull final GeneratedConstructor aGeneratedFunction) {
 		constructors.put(aConstructorDef, aGeneratedFunction);
 	}
 
@@ -108,20 +108,20 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
         return module;
     }
 
-	public boolean resolve_var_table_entries(DeducePhase aDeducePhase) {
+	public boolean resolve_var_table_entries(final @NotNull DeducePhase aDeducePhase) {
 		boolean Result = false;
 
 		if (resolve_var_table_entries_already) return true;
 
-		for (VarTableEntry varTableEntry : varTable) {
+		for (final VarTableEntry varTableEntry : varTable) {
 			if (varTableEntry.potentialTypes.size() == 0 && (varTableEntry.varType == null || varTableEntry.typeName.isNull())) {
 				final TypeName tn = varTableEntry.typeName;
 				if (tn != null) {
 					if (tn instanceof NormalTypeName) {
 						final NormalTypeName tn2 = (NormalTypeName) tn;
 						if (!tn.isNull()) {
-							LookupResultList lrl = tn.getContext().lookup(tn2.getName());
-							OS_Element best = lrl.chooseBest(null);
+							final LookupResultList lrl  = tn.getContext().lookup(tn2.getName());
+							OS_Element             best = lrl.chooseBest(null);
 							if (best != null) {
 								if (best instanceof AliasStatement)
 									best = DeduceLookupUtils._resolveAlias((AliasStatement) best, null);
@@ -138,7 +138,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 			} else {
 				tripleo.elijah.util.Stupidity.println_err(String.format("108 %s %s", varTableEntry.nameToken, varTableEntry.potentialTypes));
 				if (varTableEntry.potentialTypes.size() == 1) {
-					TypeTableEntry potentialType = varTableEntry.potentialTypes.get(0);
+					final TypeTableEntry potentialType = varTableEntry.potentialTypes.get(0);
 					if (potentialType.resolved() == null) {
 						assert potentialType.getAttached() != null;
 //						assert potentialType.getAttached().getType() == OS_Type.Type.USER_CLASS;
@@ -148,7 +148,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 						if (potentialType.getAttached().getType() != OS_Type.Type.USER_CLASS) {
 							final TypeName t = potentialType.getAttached().getTypeName();
 							if (ci.genericPart != null) {
-								for (Map.Entry<TypeName, OS_Type> typeEntry : ci.genericPart.entrySet()) {
+								for (final Map.Entry<TypeName, OS_Type> typeEntry : ci.genericPart.entrySet()) {
 									if (typeEntry.getKey().equals(t)) {
 										final OS_Type v = typeEntry.getValue();
 										potentialType.setAttached(v);
@@ -162,21 +162,21 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 						if (potentialType.getAttached().getType() == OS_Type.Type.USER_CLASS) {
 							ClassInvocation xci = new ClassInvocation(potentialType.getAttached().getClassOf(), null);
 							{
-								for (Map.Entry<TypeName, OS_Type> entry : xci.genericPart.entrySet()) {
+								for (final Map.Entry<TypeName, OS_Type> entry : xci.genericPart.entrySet()) {
 									if (entry.getKey().equals(varTableEntry.typeName)) {
 										xci.genericPart.put(entry.getKey(), varTableEntry.varType);
 									}
 								}
 							}
 							xci = aDeducePhase.registerClassInvocation(xci);
-							@NotNull GenerateFunctions gf = aDeducePhase.generatePhase.getGenerateFunctions(xci.getKlass().getContext().module());
-							WlGenerateClass wgc = new WlGenerateClass(gf, xci, aDeducePhase.generatedClasses);
+							@NotNull final GenerateFunctions gf  = aDeducePhase.generatePhase.getGenerateFunctions(xci.getKlass().getContext().module());
+							final WlGenerateClass            wgc = new WlGenerateClass(gf, xci, aDeducePhase.generatedClasses);
 							wgc.run(null); // !
 							potentialType.genType.ci = xci; // just for completeness
 							potentialType.resolve(wgc.getResult());
 							Result = true;
 						} else {
-							int y = 2;
+							final int y = 2;
 							tripleo.elijah.util.Stupidity.println_err("177 not a USER_CLASS " + potentialType.getAttached());
 						}
 					}
@@ -199,7 +199,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 	}
 
 	@Override
-	public void generateCode(CodeGenerator aCodeGenerator, GenerateResult aGr) {
+	public void generateCode(final CodeGenerator aCodeGenerator, final GenerateResult aGr) {
 		aCodeGenerator.generate_class(this, aGr);
 	}
 
@@ -214,11 +214,11 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 	}
 
 	public void fixupUserClasses(final DeduceTypes2 aDeduceTypes2, final Context aContext) {
-		for (VarTableEntry varTableEntry : varTable) {
+		for (final VarTableEntry varTableEntry : varTable) {
 			varTableEntry.updatePotentialTypesCB = new VarTableEntry.UpdatePotentialTypesCB() {
 				@Override
 				public void call(final @NotNull GeneratedContainer aGeneratedContainer) {
-					List<GenType> potentialTypes = getPotentialTypes();
+					final List<GenType> potentialTypes = getPotentialTypes();
 					//
 
 					//
@@ -227,12 +227,12 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 					if (potentialTypes.size() == 2) {
 						final ClassStatement resolvedClass1 = potentialTypes.get(0).resolved.getClassOf();
 						final ClassStatement resolvedClass2 = potentialTypes.get(1).resolved.getClassOf();
-						final OS_Module prelude = resolvedClass1.getContext().module().prelude;
+						final OS_Module      prelude        = resolvedClass1.getContext().module().prelude;
 
 						// TODO might not work when we split up prelude
 						//  Thats why I was testing for package name before
 						if (resolvedClass1.getContext().module() == prelude
-								&& resolvedClass2.getContext().module() == prelude) {
+						  && resolvedClass2.getContext().module() == prelude) {
 							// Favor String over ConstString
 							if (resolvedClass1.name().equals("ConstString") && resolvedClass2.name().equals("String")) {
 								potentialTypes.remove(0);
@@ -251,13 +251,13 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 									if (genType.resolved instanceof OS_GenericTypeNameType) {
 										final ClassInvocation xxci = ((GeneratedClass) aGeneratedContainer).ci;
 //											xxxci = ci;
-										for (Map.Entry<TypeName, OS_Type> entry : xxci.genericPart.entrySet()) {
+										for (final Map.@NotNull Entry<TypeName, OS_Type> entry : xxci.genericPart.entrySet()) {
 											if (entry.getKey().equals(t.getTypeName())) {
 												varTableEntry.varType = entry.getValue();
 											}
 										}
 									}
-								} catch (ResolveError aResolveError) {
+								} catch (final ResolveError aResolveError) {
 									aResolveError.printStackTrace();
 									assert false;
 								}
@@ -268,9 +268,9 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 
 				@NotNull
 				public List<GenType> getPotentialTypes() {
-					List<GenType> potentialTypes = new ArrayList<>();
-					for (TypeTableEntry potentialType : varTableEntry.potentialTypes) {
-						int y = 2;
+					final List<GenType> potentialTypes = new ArrayList<>();
+					for (final TypeTableEntry potentialType : varTableEntry.potentialTypes) {
+						final int              y = 2;
 						final @NotNull GenType genType;
 						try {
 							if (potentialType.genType.typeName == null) {
@@ -297,18 +297,20 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 							}
 							genType.genCIForGenType2(aDeduceTypes2);
 							potentialTypes.add(genType);
-						} catch (ResolveError aResolveError) {
+						} catch (final ResolveError aResolveError) {
 							aResolveError.printStackTrace();
 							assert false; // TODO
 						}
 					}
 					//
-					Set<GenType> set = new HashSet<>(potentialTypes);
+					final Set<GenType> set = new HashSet<>(potentialTypes);
 //					final Set<GenType> s = Collections.unmodifiableSet(set);
 					return new ArrayList<>(set);
 				}
 			};
-			varTableEntry.updatePotentialTypesCBPromise.resolve(varTableEntry.updatePotentialTypesCB);
+			if (!varTableEntry.updatePotentialTypesCBPromise.isResolved()) {
+				varTableEntry.updatePotentialTypesCBPromise.resolve(varTableEntry.updatePotentialTypesCB);
+			}
 		}
 	}
 

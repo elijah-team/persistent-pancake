@@ -8,8 +8,9 @@
  */
 package tripleo.elijah.lang;
 
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.contexts.IfConditionalContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +38,9 @@ public class IfConditional implements StatementItem, FunctionItem, OS_Element {
 		this._ctx = new IfConditionalContext(ifExpression._ctx, this, true);
 		this._parent = ifExpression._parent;
 	}
-	
+
 	@Override
-	public void visitGen(final ICodeGen visit) {
+	public void visitGen(final ElElementVisitor visit) {
 		visit.visitIfConditional(this);
 	}
 
@@ -64,7 +65,7 @@ public class IfConditional implements StatementItem, FunctionItem, OS_Element {
 	}
 
 	public IfConditional elseif() {
-		final IfConditional elseifpart = new IfConditional(this);
+		final @NotNull IfConditional elseifpart = new IfConditional(this);
 		parts.add(elseifpart);
 		return elseifpart;
 	}

@@ -23,7 +23,7 @@ import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.entrypoints.EntryPointList;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyModule;
 import tripleo.elijah.util.NotImplementedException;
@@ -35,21 +35,20 @@ import java.util.Stack;
 
 public class OS_Module implements OS_Element, OS_Container {
 
-	private final Stack<Qualident> packageNames_q = new Stack<Qualident>();
-	public @NotNull List<ModuleItem> items = new ArrayList<ModuleItem>();
-	public @NotNull Attached _a = new Attached();
-	public OS_Module prelude;
+	public final @NotNull                      List<ModuleItem>     items          = new ArrayList<ModuleItem>();
+	public final @NotNull                      Attached             _a             = new Attached();
+	public final @NotNull                      EntryPointList       entryPoints    = new EntryPointList();
+	private final                              Stack<Qualident>     packageNames_q = new Stack<Qualident>();
+	public @org.jetbrains.annotations.Nullable OS_Module            prelude;
+	public                                     Compilation          parent;
+	private                                    LibraryStatementPart lsp;
+	private                                    String               _fileName;
+	private                                    IndexingStatement    indexingStatement;
 
-	public Compilation parent;
-	private LibraryStatementPart lsp;
-	private String _fileName;
-	public @NotNull EntryPointList entryPoints = new EntryPointList();
-	private IndexingStatement indexingStatement;
-
-	public @org.jetbrains.annotations.Nullable OS_Element findClass(final String className) {
+	public @org.jetbrains.annotations.Nullable OS_Element findClass(final String aClassName) {
 		for (final ModuleItem item : items) {
 			if (item instanceof ClassStatement) {
-				if (((ClassStatement) item).getName().equals(className))
+				if (((ClassStatement) item).getName().equals(aClassName))
 					return item;
 			}
 		}
@@ -86,7 +85,7 @@ public class OS_Module implements OS_Element, OS_Container {
 	public @NotNull List<OS_Element2> items() {
 		final Collection<ModuleItem> c = Collections2.filter(getItems(), new Predicate<ModuleItem>() {
 			@Override
-			public boolean apply(@org.checkerframework.checker.nullness.qual.Nullable final ModuleItem input) {
+			public boolean apply(@org.jetbrains.annotations.Nullable final ModuleItem input) {
 				final boolean b = input instanceof OS_Element2;
 				return b;
 			}
@@ -128,7 +127,7 @@ public class OS_Module implements OS_Element, OS_Container {
 //	}
 
 	@Override
-	public void visitGen(final @NotNull ICodeGen visit) {
+	public void visitGen(final @NotNull ElElementVisitor visit) {
 		visit.addModule(this); // visitModule
 	}
 

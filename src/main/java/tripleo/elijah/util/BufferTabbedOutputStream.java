@@ -18,9 +18,9 @@ import tripleo.util.buffer.TextBuffer;
 public class BufferTabbedOutputStream  {
 
 	int tabwidth = 0;
-	private boolean do_tabs = false;
-	TextBuffer b = new DefaultBuffer("");
-	private boolean _closed = false;
+	final   TextBuffer b       = new DefaultBuffer("");
+	private boolean    do_tabs = false;
+	private boolean    _closed = false;
 
 	public Buffer getBuffer() {
 		return b;

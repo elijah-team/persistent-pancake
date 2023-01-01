@@ -8,11 +8,16 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang2.BuiltInTypes;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
+import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
 
@@ -23,17 +28,18 @@ import java.util.Stack;
  * Created 3/7/21 1:13 AM
  */
 public class DeduceLookupUtils {
-	public static LookupResultList lookupExpression(final @NotNull IExpression left, final @NotNull Context ctx, @NotNull final DeduceTypes2 deduceTypes2) throws ResolveError {
+	public static LookupResultList lookupExpression(final @NotNull IExpression left,
+	                                                final @NotNull Context ctx,
+	                                                final @NotNull DeduceTypes2 deduceTypes2) throws ResolveError {
 		switch (left.getKind()) {
-		case QIDENT:
-			final IExpression de = Helpers.qualidentToDotExpression2((Qualident) left);
-			return lookupExpression(de, ctx, deduceTypes2)/*lookup_dot_expression(ctx, de)*/;
-		case DOT_EXP:
-			return lookup_dot_expression(ctx, (DotExpression) left, deduceTypes2);
-		case IDENT:
-			{
+			case QIDENT:
+				final IExpression de = Helpers.qualidentToDotExpression2((Qualident) left);
+				return lookupExpression(de, ctx, deduceTypes2)/*lookup_dot_expression(ctx, de)*/;
+			case DOT_EXP:
+				return lookup_dot_expression(ctx, (DotExpression) left, deduceTypes2);
+			case IDENT: {
 				final @NotNull IdentExpression ident = (IdentExpression) left;
-				final LookupResultList lrl = ctx.lookup(ident.getText());
+				final LookupResultList         lrl   = ctx.lookup(ident.getText());
 				if (lrl.results().size() == 0) {
 					throw new ResolveError(ident,  lrl);
 				}
@@ -174,14 +180,16 @@ public class DeduceLookupUtils {
 	/**
 	 * Try to find the type of a ProcedureCall. Will either be a constructor or function call, most likely
 	 *
-	 * @param pce the procedure call
-	 * @param ctx the context to use for lookup
+	 * @param pce          the procedure call
+	 * @param ctx          the context to use for lookup
 	 * @param deduceTypes2
 	 * @return the deduced type or {@code null}. Do not {@code pce.setType}
 	 */
-	private static @Nullable GenType deduceProcedureCall(final @NotNull ProcedureCallExpression pce, final @NotNull Context ctx, @NotNull final DeduceTypes2 deduceTypes2) {
-		@Nullable final GenType result = new GenType();
-		boolean finished = false;
+	private static @Nullable GenType deduceProcedureCall(final @NotNull ProcedureCallExpression pce,
+	                                                     final @NotNull Context ctx,
+	                                                     final @NotNull DeduceTypes2 deduceTypes2) {
+		@Nullable final GenType result   = new GenType();
+		boolean                 finished = false;
 		System.err.println("979 During deduceProcedureCall " + pce);
 		@Nullable OS_Element best = null;
 		try {
@@ -193,7 +201,7 @@ public class DeduceLookupUtils {
 			if (best != null) {
 				final int y = 2;
 				if (best instanceof ClassStatement) {
-					result.resolved = new OS_Type((ClassStatement) best);
+					result.resolved = ((ClassStatement) best).getOS_Type();
 				} else if (best instanceof FunctionDef) {
 					final @Nullable FunctionDef fd = (FunctionDef) best;
 					if (fd.returnType() != null && !fd.returnType().isNull()) {
@@ -219,72 +227,72 @@ public class DeduceLookupUtils {
 
 	private static @Nullable GenType deduceIdentExpression(@NotNull final DeduceTypes2 aDeduceTypes2, final @NotNull IdentExpression ident, final @NotNull Context ctx) throws ResolveError {
 		@Nullable GenType result = null;
-		@Nullable GenType R = new GenType();
+		@Nullable GenType R      = new GenType();
 
 		// is this right?
-		final LookupResultList lrl = ctx.lookup(ident.getText());
-		@Nullable OS_Element best = lrl.chooseBest(null);
+		final LookupResultList lrl  = ctx.lookup(ident.getText());
+		@Nullable OS_Element   best = lrl.chooseBest(null);
 		while (best instanceof AliasStatement) {
 			best = _resolveAlias2((AliasStatement) best, aDeduceTypes2);
 		}
 		if (best instanceof ClassStatement) {
-			R.resolved = new OS_Type((ClassStatement) best);
-			result = R;
+			R.resolved = ((ClassStatement) best).getOS_Type();
+			result     = R;
 		} else {
 			switch (DecideElObjectType.getElObjectType(best)) {
-			case VAR:
-				final @Nullable VariableStatement vs = (VariableStatement) best;
-				if (!vs.typeName().isNull()) {
-					try {
-						@Nullable final OS_Module lets_hope_we_dont_need_this = null;
-						@NotNull final GenType ty = aDeduceTypes2.resolve_type(lets_hope_we_dont_need_this, new OS_Type(vs.typeName()), ctx);
-						result = ty;
-					} catch (final ResolveError aResolveError) {
-						// TODO This is the cheap way to do it
-						//  Ideally, we would propagate this up the call chain all the way to lookupExpression
-						aResolveError.printStackTrace();
+				case VAR:
+					final @Nullable VariableStatement vs = (VariableStatement) best;
+					if (!vs.typeName().isNull()) {
+						try {
+							@Nullable final OS_Module lets_hope_we_dont_need_this = null;
+							@NotNull final GenType    ty                          = aDeduceTypes2.resolve_type(lets_hope_we_dont_need_this, new OS_Type(vs.typeName()), ctx);
+							result = ty;
+						} catch (final ResolveError aResolveError) {
+							// TODO This is the cheap way to do it
+							//  Ideally, we would propagate this up the call chain all the way to lookupExpression
+							aResolveError.printStackTrace();
+						}
+						if (result == null) {
+							R.typeName = new OS_Type(vs.typeName());
+							result     = R;
+						}
+					} else if (vs.initialValue() == IExpression.UNASSIGNED) {
+						R.typeName = new OS_UnknownType(vs);
+//				return deduceExpression(vs.initialValue(), ctx); // infinite recursion
+					} else {
+						R = deduceExpression(aDeduceTypes2, vs.initialValue(), vs.getContext());
 					}
 					if (result == null) {
-						R.typeName = new OS_Type(vs.typeName());
 						result = R;
 					}
-				} else if (vs.initialValue() == IExpression.UNASSIGNED) {
-					R.typeName = new OS_UnknownType(vs);
-//				return deduceExpression(vs.initialValue(), ctx); // infinite recursion
-				} else {
-					R = deduceExpression(aDeduceTypes2, vs.initialValue(), vs.getContext());
-				}
-				if (result == null) {
+					break;
+				case FUNCTION:
+					final @NotNull FunctionDef functionDef = (FunctionDef) best;
+					R.resolved = functionDef.getOS_Type();
 					result = R;
-				}
-				break;
-			case FUNCTION:
-				final @NotNull FunctionDef functionDef = (FunctionDef) best;
-				R.resolved = new OS_FuncType(functionDef);
-				result = R;
-				break;
-			case FORMAL_ARG_LIST_ITEM:
-				final @NotNull FormalArgListItem fali = (FormalArgListItem) best;
-				if (!fali.typeName().isNull()) {
-					try {
-						@Nullable final OS_Module lets_hope_we_dont_need_this = null;
-						@NotNull final GenType ty = aDeduceTypes2.resolve_type(lets_hope_we_dont_need_this, new OS_Type(fali.typeName()), ctx);
-						result = ty;
-					} catch (final ResolveError aResolveError) {
-						// TODO This is the cheap way to do it
-						//  Ideally, we would propagate this up the call chain all the way to lookupExpression
-						aResolveError.printStackTrace();
+					break;
+				case FORMAL_ARG_LIST_ITEM:
+					final @NotNull FormalArgListItem fali = (FormalArgListItem) best;
+					if (!fali.typeName().isNull()) {
+						try {
+							@Nullable final OS_Module lets_hope_we_dont_need_this = null;
+							@NotNull final GenType    ty                          = aDeduceTypes2.resolve_type(lets_hope_we_dont_need_this, new OS_Type(fali.typeName()), ctx);
+							result = ty;
+						} catch (final ResolveError aResolveError) {
+							// TODO This is the cheap way to do it
+							//  Ideally, we would propagate this up the call chain all the way to lookupExpression
+							aResolveError.printStackTrace();
+						}
+						if (result == null) {
+							R.typeName = new OS_Type(fali.typeName());
+						}
+					} else {
+						R.typeName = new OS_UnknownType(fali);
 					}
 					if (result == null) {
-						R.typeName = new OS_Type(fali.typeName());
+						result = R;
 					}
-				} else {
-					R.typeName = new OS_UnknownType(fali);
-				}
-				if (result == null) {
-					result = R;
-				}
-				break;
+					break;
 			}
 			if (result == null) {
 				throw new ResolveError(ident, lrl);
@@ -295,26 +303,130 @@ public class DeduceLookupUtils {
 
 	static @Nullable OS_Element lookup(@NotNull final IExpression expression, @NotNull final Context ctx, @NotNull final DeduceTypes2 deduceTypes2) throws ResolveError {
 		switch (expression.getKind()) {
-		case IDENT:
-			final LookupResultList lrl = ctx.lookup(((IdentExpression)expression).getText());
-			@Nullable final OS_Element best = lrl.chooseBest(null);
-			return best;
-		case PROCEDURE_CALL:
-			final LookupResultList lrl2 = lookupExpression(expression.getLeft(), ctx, deduceTypes2);
-			@Nullable final OS_Element best2 = lrl2.chooseBest(null);
-			return best2;
-		case DOT_EXP:
-			final LookupResultList lrl3 = lookupExpression(expression, ctx, deduceTypes2);
-			@Nullable final OS_Element best3 = lrl3.chooseBest(null);
-			return best3;
+			case IDENT:
+				final LookupResultList lrl = ctx.lookup(((IdentExpression) expression).getText());
+				@Nullable final OS_Element best = lrl.chooseBest(null);
+				return best;
+			case PROCEDURE_CALL:
+				final LookupResultList lrl2 = lookupExpression(expression.getLeft(), ctx, deduceTypes2);
+				@Nullable final OS_Element best2 = lrl2.chooseBest(null);
+				return best2;
+			case DOT_EXP:
+				final LookupResultList lrl3 = lookupExpression(expression, ctx, deduceTypes2);
+				@Nullable final OS_Element best3 = lrl3.chooseBest(null);
+				return best3;
 //		default:
 //			System.err.println("1242 "+expression);
 //			throw new NotImplementedException();
-		default:
-			throw new IllegalStateException("1242 Unexpected value: " + expression.getKind());
+			default:
+				throw new IllegalStateException("1242 Unexpected value: " + expression.getKind());
+		}
+	}
+
+	@Contract("_, _ -> param1")
+	public static @NotNull DeduceElement3_IdentTableEntry deduceExpression2(final @NotNull DeduceElement3_IdentTableEntry de3_ite, final FunctionContext aFc) {
+		final IdentExpression    identExpression = de3_ite.principal.getIdent();
+		final IdentTableEntry    ite             = new IdentTableEntry(0, identExpression, identExpression.getContext());
+		final DeduceElementIdent dei             = new DeduceElementIdent(ite);
+
+		try {
+			deduceIdentExpression2(de3_ite);
+		} catch (final ResolveError aE) {
+			throw new RuntimeException(aE);
+		}
+
+		return de3_ite;
+}
+
+	private static void deduceIdentExpression2(final @NotNull IDeduceElement3 aDeduceElement3) throws ResolveError {
+		@Nullable GenType result = null;
+		@Nullable GenType R      = aDeduceElement3.genType();
+
+		final @NotNull DeduceTypes2 dt2 = aDeduceElement3.deduceTypes2();
+		//assert dt2 == aDeduceTypes2;
+
+		final @NotNull IdentExpression ident = ((DeduceElement3_IdentTableEntry) aDeduceElement3).principal.getIdent();
+		final Context                  ctx   = ident.getContext();
+
+		// is this right?
+		final LookupResultList lrl  = ctx.lookup(ident.getText());
+		@Nullable OS_Element   best = lrl.chooseBest(null);
+		while (best instanceof AliasStatement) {
+			best = _resolveAlias2((AliasStatement) best, dt2);
+		}
+		if (best instanceof ClassStatement) {
+			R.resolved = ((ClassStatement) best).getOS_Type();
+			result     = R;
+		} else {
+			switch (DecideElObjectType.getElObjectType(best)) {
+				case VAR:
+					final @Nullable VariableStatement vs = (VariableStatement) best;
+					if (!vs.typeName().isNull()) {
+						try {
+							@Nullable final OS_Module lets_hope_we_dont_need_this = null;
+							@NotNull final GenType    ty                          = dt2.resolve_type(lets_hope_we_dont_need_this, new OS_Type(vs.typeName()), ctx);
+							result = ty;
+						} catch (final ResolveError aResolveError) {
+							// TODO This is the cheap way to do it
+							//  Ideally, we would propagate this up the call chain all the way to lookupExpression
+							aResolveError.printStackTrace();
+						}
+						if (result == null) {
+							R.typeName = new OS_Type(vs.typeName());
+							result     = R;
+						}
+					} else if (vs.initialValue() == IExpression.UNASSIGNED) {
+						R.typeName = new OS_UnknownType(vs);
+//				return deduceExpression(vs.initialValue(), ctx); // infinite recursion
+					} else {
+						final @NotNull IExpression initialValue = vs.initialValue();
+						if (initialValue.getKind() == ExpressionKind.PROCEDURE_CALL) {
+							final Context                 vsContext = vs.getContext();
+							final ProcedureCallExpression pce       = (ProcedureCallExpression) initialValue;
+							R = deduceExpression(dt2, pce, vsContext);
+						} else {
+							R = deduceExpression(dt2, initialValue, vs.getContext());
+						}
+					}
+					if (result == null) {
+						result = R;
+					}
+					break;
+				case FUNCTION:
+					final @NotNull FunctionDef functionDef = (FunctionDef) best;
+					R.resolved = functionDef.getOS_Type();
+					result = R;
+					break;
+				case FORMAL_ARG_LIST_ITEM:
+					final @NotNull FormalArgListItem fali = (FormalArgListItem) best;
+					if (!fali.typeName().isNull()) {
+						try {
+							@Nullable final OS_Module lets_hope_we_dont_need_this = null;
+							@NotNull final GenType    ty                          = dt2.resolve_type(lets_hope_we_dont_need_this, new OS_Type(fali.typeName()), ctx);
+							result = ty;
+						} catch (final ResolveError aResolveError) {
+							// TODO This is the cheap way to do it
+							//  Ideally, we would propagate this up the call chain all the way to lookupExpression
+							aResolveError.printStackTrace();
+						}
+						if (result == null) {
+							R.typeName = new OS_Type(fali.typeName());
+						}
+					} else {
+						R.typeName = new OS_UnknownType(fali);
+					}
+					if (result == null) {
+						result = R;
+					}
+					break;
+			}
+			if (result == null) {
+				throw new ResolveError(ident, lrl);
+			}
 		}
 	}
 }
+
 
 //
 //

@@ -4,8 +4,18 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.*;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.util.NotImplementedException;
 
@@ -16,14 +26,14 @@ class Assign_type_to_idte {
     private final Context aFunctionContext;
     private final Context aContext;
 
-    @Contract(pure = true)
-    public Assign_type_to_idte(DeduceTypes2 aDeduceTypes2, IdentTableEntry ite, BaseGeneratedFunction generatedFunction, Context aFunctionContext, Context aContext) {
-        this.aDeduceTypes2 = aDeduceTypes2;
-        this.ite = ite;
-        this.generatedFunction = generatedFunction;
-        this.aFunctionContext = aFunctionContext;
-        this.aContext = aContext;
-    }
+	@Contract(pure = true)
+	public Assign_type_to_idte(final DeduceTypes2 aDeduceTypes2, final IdentTableEntry ite, final BaseGeneratedFunction generatedFunction, final Context aFunctionContext, final Context aContext) {
+		this.aDeduceTypes2     = aDeduceTypes2;
+		this.ite               = ite;
+		this.generatedFunction = generatedFunction;
+		this.aFunctionContext  = aFunctionContext;
+		this.aContext          = aContext;
+	}
 
     public void run() {
         if (!ite.hasResolvedElement()) {
@@ -37,11 +47,11 @@ class Assign_type_to_idte {
         final String path;
         private final @NotNull IdentIA ident_a;
 
-        public ATTI_FoundElement(@NotNull IdentIA ident_a) {
-            super(aDeduceTypes2.phase);
-            this.ident_a = ident_a;
-            path = generatedFunction.getIdentIAPathNormal(ident_a);
-        }
+	    public ATTI_FoundElement(@NotNull final IdentIA ident_a) {
+		    super(aDeduceTypes2.phase);
+		    this.ident_a = ident_a;
+		    path         = generatedFunction.getIdentIAPathNormal(ident_a);
+	    }
 
         @Override
         public void foundElement(final OS_Element x) {
@@ -67,17 +77,17 @@ class Assign_type_to_idte {
             }
         }
 
-        private void __ite_has_type(OS_Element x) {
-            if (ite.hasResolvedElement())
-                return;
+	    private void __ite_has_type(final OS_Element x) {
+		    if (ite.hasResolvedElement())
+			    return;
 
-            @Nullable LookupResultList lrl = null;
-            IdentExpression iteIdent = ite.getIdent();
+		    @Nullable LookupResultList lrl      = null;
+		    final IdentExpression      iteIdent = ite.getIdent();
 
-            try {
-                lrl = DeduceLookupUtils.lookupExpression(iteIdent, aFunctionContext, aDeduceTypes2);
-                @Nullable final OS_Element best = lrl.chooseBest(null);
-                if (best != null) {
+		    try {
+			    lrl = DeduceLookupUtils.lookupExpression(iteIdent, aFunctionContext, aDeduceTypes2);
+			    @Nullable final OS_Element best = lrl.chooseBest(null);
+			    if (best != null) {
                     // TODO how does best relate to x??
                     ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(x));
 

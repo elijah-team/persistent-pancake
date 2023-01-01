@@ -26,11 +26,11 @@ public class GeneratedConstructor extends BaseGeneratedFunction {
 		cd = aConstructorDef;
 	}
 
-	public void setFunctionInvocation(FunctionInvocation fi) {
-		GenType genType = new GenType();
-		genType.ci = fi.getClassInvocation(); // TODO will fail on namespace constructors; next line too
+	public void setFunctionInvocation(final FunctionInvocation fi) {
+		final GenType genType = new GenType();
+		genType.ci       = fi.getClassInvocation(); // TODO will fail on namespace constructors; next line too
 		genType.resolved = (((ClassInvocation) genType.ci).getKlass()).getOS_Type();
-		genType.node = this;
+		genType.node     = this;
 		typeDeferred().resolve(genType);
 	}
 

@@ -26,8 +26,8 @@ public class DeduceTypesTest2 {
 	public void testDeduceIdentExpression() throws ResolveError {
 		final OS_Module mod = new OS_Module();
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
-		mod.parent = c;
-		mod.prelude = mod.parent.findPrelude("c");
+		mod.parent  = c;
+		mod.prelude = mod.parent.findPrelude("c").success();
 		final ModuleContext mctx = new ModuleContext(mod);
 		mod.setContext(mctx);
 		final ClassStatement cs = new ClassStatement(mod, mctx);

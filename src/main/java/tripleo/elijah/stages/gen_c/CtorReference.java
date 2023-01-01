@@ -11,7 +11,11 @@ package tripleo.elijah.stages.gen_c;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.stages.deduce.ClassInvocation;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
+import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
@@ -29,10 +33,10 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
  */
 public class CtorReference {
 
-	private String ctorName = "";
-	private List<String> args;
-	List<CReference.Reference> refs = new ArrayList<CReference.Reference>();
-	private GeneratedNode _resolved;
+	final   List<CReference.Reference> refs     = new ArrayList<CReference.Reference>();
+	private String                     ctorName = "";
+	private List<String>               args;
+	private GeneratedNode              _resolved;
 
 	void addRef(final String text, final CReference.Ref type) {
 		refs.add(new CReference.Reference(text, type));
@@ -131,16 +135,16 @@ public class CtorReference {
 				case CONSTRUCTOR: {
 					final String s = sb.toString();
 					text = String.format("%s(%s", ref.text, s);
-					sb = new StringBuilder();
+					sb   = new StringBuilder();
 					open = true;
 					if (!s.equals("")) needs_comma = true;
 					sb.append(text);
 					break;
 				}
-				case PROPERTY: {
+				case PROPERTY_GET: {
 					final String s = sb.toString();
 					text = String.format("%s(%s", ref.text, s);
-					sb = new StringBuilder();
+					sb   = new StringBuilder();
 					open = true;
 					if (!s.equals("")) needs_comma = true;
 					sb.append(text);
