@@ -81,14 +81,6 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 //		elLogs = dp.deduceLogs;
 	}
 
-	public void resolveMods() {
-//		__ab.resolveModuleList(mods);
-	}
-
-	public void subscribeMods(final AccessBus.AB_ModuleListListener l) {
-		__ab.subscribe_moduleList(l);
-	}
-
 	public void generate(final List<GeneratedNode> lgc, final ErrSink aErrSink) {
 		final WorkManager wm = new WorkManager();
 
@@ -101,6 +93,14 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		}
 
 		__ab.resolveGenerateResult(gr);
+	}
+
+	public void subscribeMods(final AccessBus.AB_ModuleListListener l) {
+		__ab.subscribe_moduleList(l);
+	}
+
+	public void resolveMods() {
+//		__ab.resolveModuleList(mods);
 	}
 
 /*

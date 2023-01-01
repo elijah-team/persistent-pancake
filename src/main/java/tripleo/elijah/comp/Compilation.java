@@ -74,11 +74,12 @@ public abstract class Compilation {
 	private final Map<String, OS_Module>            fn2m      = new HashMap<String, OS_Module>();
 	private final Map<String, OS_Package>           _packages = new HashMap<String, OS_Package>();
 	private final CIS                               _cis      = new CIS();
-	final private USE                  use           = new USE(this);
+
 	//
 	//
 	//
 	public        PipelineLogic        pipelineLogic;
+	final private USE                  use           = new USE(this);
 	//
 	//
 	//
@@ -98,15 +99,6 @@ public abstract class Compilation {
 		this._compilationNumber = new Random().nextInt(Integer.MAX_VALUE);
 	}
 
-	public static ElLog.Verbosity gitlabCIVerbosity() {
-		final boolean gitlab_ci = isGitlab_ci();
-		return gitlab_ci ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
-	}
-
-	public static boolean isGitlab_ci() {
-		return System.getenv("GITLAB_CI") != null;
-	}
-
 	public String getProjectName() {
 		return rootCI.getName();
 	}
@@ -116,7 +108,7 @@ public abstract class Compilation {
 			final QueryEzFileToModuleParams       params = new QueryEzFileToModuleParams(aFile.getAbsolutePath(), io.readFile(aFile));
 			final Operation<CompilerInstructions> x      = new QueryEzFileToModule(params).calculate();
 			return x;
-		} catch (FileNotFoundException aE) {
+		} catch (final FileNotFoundException aE) {
 			return Operation.failure(aE);
 		}
 	}
@@ -145,21 +137,17 @@ public abstract class Compilation {
 		__cr.start(rootCI, do_out, op);
 	}
 
-	public void pushItem(CompilerInstructions aci) {
+	public void pushItem(final CompilerInstructions aci) {
 		_cis.onNext(aci);
 	}
 
-	public void addPipeline(PipelineMember aPl) {
+	public void addPipeline(final PipelineMember aPl) {
 		pipelines.add(aPl);
 	}
 
-	//
-	//
-	//
-
 	public AccessBus feedCmdLine(final @NotNull List<String> args) throws Exception {
 		final ErrSink   errSink = eee == null ? new StdErrSink() : eee;
-		boolean         do_out  = false /*, silent = false*/;
+		final boolean   do_out  = false /*, silent = false*/;
 		final AccessBus ab;
 
 		if (args.size() == 0) {
@@ -175,7 +163,7 @@ public abstract class Compilation {
 
 			subscribeCI(cio);
 
-			String[] args2;
+			final String[] args2;
 			args2 = op.process(this, args);
 
 /*
@@ -279,6 +267,15 @@ public abstract class Compilation {
 		_cis.subscribe(aCio);
 	}
 
+	//
+	//
+	//
+
+	public static ElLog.Verbosity gitlabCIVerbosity() {
+		final boolean gitlab_ci = isGitlab_ci();
+		return gitlab_ci ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
+	}
+
 	private @NotNull List<CompilerInstructions> searchEzFiles(final @NotNull File directory) {
 		final List<CompilerInstructions> R = new ArrayList<CompilerInstructions>();
 		final FilenameFilter filter = new FilenameFilter() {
@@ -297,13 +294,17 @@ public abstract class Compilation {
 					if (ezFile != null)
 						R.add(ezFile);
 					else
-						eee.reportError("9995 ezFile is null " + file.toString());
+						eee.reportError("9995 ezFile is null " + file);
 				} catch (final Exception e) {
 					eee.exception(e);
 				}
 			}
 		}
 		return R;
+	}
+
+	public static boolean isGitlab_ci() {
+		return System.getenv("GITLAB_CI") != null;
 	}
 
 	private CompilerInstructions parseEzFile(final File f, final String file_name, final ErrSink errSink) throws Exception {
@@ -387,7 +388,7 @@ public abstract class Compilation {
 
 	void writeLogs(final boolean aSilent, final @NotNull List<ElLog> aLogs) {
 		final Multimap<String, ElLog> logMap = ArrayListMultimap.create();
-		if (true || aSilent) {
+		if (true) {
 			for (final ElLog deduceLog : aLogs) {
 				logMap.put(deduceLog.getFileName(), deduceLog);
 			}
@@ -595,7 +596,7 @@ public abstract class Compilation {
 
 	static class CIS implements Observer<CompilerInstructions> {
 
-		private final Subject<CompilerInstructions> compilerInstructionsSubject = ReplaySubject.<CompilerInstructions>create();
+		private final Subject<CompilerInstructions> compilerInstructionsSubject = ReplaySubject.create();
 		CompilerInstructionsObserver _cio;
 
 		@Override
@@ -697,7 +698,7 @@ public abstract class Compilation {
 			final File instruction_dir = new File(compilerInstructions.getFilename()).getParentFile();
 			for (final LibraryStatementPart lsp : compilerInstructions.lsps) {
 				final String dir_name = Helpers.remove_single_quotes_from_string(lsp.getDirName());
-				File         dir;// = new File(dir_name);
+				final File   dir;// = new File(dir_name);
 				if (dir_name.equals(".."))
 					dir = instruction_dir/*.getAbsoluteFile()*/.getParentFile();
 				else
@@ -711,7 +712,7 @@ public abstract class Compilation {
 			use_internal(instruction_dir, do_out, lsp);
 		}
 
-		private void use_internal(final @NotNull File dir, final boolean do_out, LibraryStatementPart lsp) throws Exception {
+		private void use_internal(final @NotNull File dir, final boolean do_out, final LibraryStatementPart lsp) throws Exception {
 			if (!dir.isDirectory()) {
 				errSink.reportError("9997 Not a directory " + dir);
 				return;
@@ -785,7 +786,7 @@ public abstract class Compilation {
 
 			try {
 				om = realParseElijjahFile(f, file, do_out);
-			} catch (Exception aE) {
+			} catch (final Exception aE) {
 				return Operation2.failure(new ExceptionDiagnostic(aE));
 			}
 
