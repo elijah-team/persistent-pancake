@@ -236,12 +236,12 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 					if (potentialTypes.size() == 2) {
 						final ClassStatement resolvedClass1 = potentialTypes.get(0).resolved.getClassOf();
 						final ClassStatement resolvedClass2 = potentialTypes.get(1).resolved.getClassOf();
-						final OS_Module prelude = resolvedClass1.getContext().module().prelude;
+						final OS_Module      prelude        = resolvedClass1.getContext().module().prelude;
 
 						// TODO might not work when we split up prelude
 						//  Thats why I was testing for package name before
 						if (resolvedClass1.getContext().module() == prelude
-								&& resolvedClass2.getContext().module() == prelude) {
+						  && resolvedClass2.getContext().module() == prelude) {
 							// Favor String over ConstString
 							if (resolvedClass1.name().equals("ConstString") && resolvedClass2.name().equals("String")) {
 								potentialTypes.remove(0);
@@ -317,7 +317,9 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 					return new ArrayList<>(set);
 				}
 			};
-			varTableEntry.updatePotentialTypesCBPromise.resolve(varTableEntry.updatePotentialTypesCB);
+			if (!varTableEntry.updatePotentialTypesCBPromise.isResolved()) {
+				varTableEntry.updatePotentialTypesCBPromise.resolve(varTableEntry.updatePotentialTypesCB);
+			}
 		}
 	}
 

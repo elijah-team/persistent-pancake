@@ -75,40 +75,40 @@ public class GeneratedNamespace extends GeneratedContainerNC implements GNCoded 
 		return this.namespaceStatement;
 	}
 
-    @Override
-    public String identityString() {
-        return ""+namespaceStatement;
-    }
+	@Override
+	@Nullable
+	public VarTableEntry getVariable(final String aVarName) {
+		for (final VarTableEntry varTableEntry : varTable) {
+			if (varTableEntry.nameToken.getText().equals(aVarName))
+				return varTableEntry;
+		}
+		return null;
+	}
 
-    @Override
-    public OS_Module module() {
-        return module;
-    }
+	@Override
+	public void generateCode(final CodeGenerator aCodeGenerator, final GenerateResult aGr) {
+		aCodeGenerator.generate_namespace(this, aGr);
+	}
 
 	@Override
 	public OS_Element getElement() {
 		return getNamespaceStatement();
 	}
 
-    @Override
-    @Nullable
-    public VarTableEntry getVariable(String aVarName) {
-        for (VarTableEntry varTableEntry : varTable) {
-            if (varTableEntry.nameToken.getText().equals(aVarName))
-                return varTableEntry;
-        }
-        return null;
-    }
+	@Override
+	public @NotNull String identityString() {
+		return "" + namespaceStatement;
+	}
 
-    @Override
-    public void generateCode(CodeGenerator aCodeGenerator, GenerateResult aGr) {
-        aCodeGenerator.generate_namespace(this, aGr);
-    }
+	@Override
+	public OS_Module module() {
+		return module;
+	}
 
-    @Override
-    public Role getRole() {
-        return Role.NAMESPACE;
-    }
+	@Override
+	public Role getRole() {
+		return Role.NAMESPACE;
+	}
 }
 
 //

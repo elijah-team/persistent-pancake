@@ -66,26 +66,30 @@ public class TypeTableEntry {
 			} else
 				genType.typeName = aAttached/*.getTypeName()*/;
 			break;
-		case USER_CLASS:
+			case USER_CLASS:
 //			ClassStatement c = attached.getClassOf();
-			genType.resolved = aAttached/*attached*/; // c
-			break;
-		case UNIT_TYPE:
-			genType.resolved = aAttached;
-		case BUILT_IN:
-			if (genType.typeName != null)
+				genType.resolved = aAttached/*attached*/; // c
+				break;
+			case UNIT_TYPE:
 				genType.resolved = aAttached;
-			else
-				genType.typeName = aAttached;
-			break;
-		case FUNCTION:
-			assert genType.resolved == null || genType.resolved == aAttached;
-			genType.resolved = aAttached;
-			break;
-		default:
+			case BUILT_IN:
+				if (genType.typeName != null)
+					genType.resolved = aAttached;
+				else
+					genType.typeName = aAttached;
+				break;
+			case FUNCTION:
+				assert genType.resolved == null || genType.resolved == aAttached || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
+				genType.resolved = aAttached;
+				break;
+			case FUNC_EXPR:
+				assert genType.resolved == null || genType.resolved == aAttached;// || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
+				genType.resolved = aAttached;
+				break;
+			default:
 //			throw new NotImplementedException();
-			System.err.println("73 "+aAttached);
-			break;
+				System.err.println("73 " + aAttached);
+				break;
 		}
 	}
 

@@ -12,10 +12,21 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.ConstructStatement;
+import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.lang.ExpressionBuilder;
+import tripleo.elijah.lang.ExpressionKind;
+import tripleo.elijah.lang.FormalArgListItem;
+import tripleo.elijah.lang.FunctionItem;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.Scope3;
+import tripleo.elijah.lang.StatementWrapper;
 import tripleo.elijah.stages.deduce.ClassInvocation;
-import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.util.Holder;
 import tripleo.elijah.work.WorkJob;
 import tripleo.elijah.work.WorkManager;
 
@@ -27,15 +38,16 @@ import java.util.List;
  * Created 7/3/21 6:24 AM
  */
 public class WlGenerateCtor implements WorkJob {
-	private final GenerateFunctions generateFunctions;
-	private final FunctionInvocation functionInvocation;
-	private final IdentExpression constructorName;
-	private boolean _isDone = false;
+	private final GenerateFunctions    generateFunctions;
+	private final FunctionInvocation   functionInvocation;
+	private final IdentExpression      constructorName;
+	private       boolean              _isDone = false;
+	private       GeneratedConstructor result;
 
 	@Contract(pure = true)
-	public WlGenerateCtor(@NotNull final GenerateFunctions  aGenerateFunctions,
-						  @NotNull final FunctionInvocation aFunctionInvocation,
-						  @Nullable final IdentExpression    aConstructorName) {
+	public WlGenerateCtor(@NotNull final GenerateFunctions aGenerateFunctions,
+	                      @NotNull final FunctionInvocation aFunctionInvocation,
+	                      @Nullable final IdentExpression aConstructorName) {
 		generateFunctions  = aGenerateFunctions;
 		functionInvocation = aFunctionInvocation;
 		constructorName    = aConstructorName;
@@ -44,8 +56,8 @@ public class WlGenerateCtor implements WorkJob {
 	@Override
 	public void run(final WorkManager aWorkManager) {
 		if (functionInvocation.generateDeferred().isPending()) {
-			final ClassStatement klass = functionInvocation.getClassInvocation().getKlass();
-			final DeduceTypes2.Holder<GeneratedClass> hGenClass = new DeduceTypes2.Holder<>();
+			final ClassStatement                  klass     = functionInvocation.getClassInvocation().getKlass();
+			final @NotNull Holder<GeneratedClass> hGenClass = new Holder<>();
 			functionInvocation.getClassInvocation().resolvePromise().then(new DoneCallback<GeneratedClass>() {
 				@Override
 				public void onDone(final GeneratedClass result) {
@@ -55,22 +67,37 @@ public class WlGenerateCtor implements WorkJob {
 			final GeneratedClass genClass = hGenClass.get();
 			assert genClass != null;
 
-			final ConstructorDef cd = new ConstructorDef(constructorName, klass, klass.getContext());
-			final Scope3 scope3 = new Scope3(cd);
-			cd.scope(scope3);
-			for (final GeneratedContainer.VarTableEntry varTableEntry : genClass.varTable) {
-				if (varTableEntry.initialValue != IExpression.UNASSIGNED) {
-					final IExpression left = varTableEntry.nameToken;
-					final IExpression right = varTableEntry.initialValue;
-
-					final IExpression e = ExpressionBuilder.build(left, ExpressionKind.ASSIGNMENT, right);
-					scope3.add(new StatementWrapper(e, cd.getContext(), cd));
-				} else {
-					if (true || getPragma("auto_construct")) {
-						scope3.add(new ConstructStatement(cd, cd.getContext(), varTableEntry.nameToken, null, null));
+			ConstructorDef ccc = null;
+			if (constructorName != null) {
+				final Collection<ConstructorDef> cs = klass.getConstructors();
+				for (@NotNull final ConstructorDef c : cs) {
+					if (c.name().equals(constructorName.getText())) {
+						ccc = c;
+						break;
 					}
 				}
 			}
+
+			final ConstructorDef cd;
+			if (ccc == null) {
+				cd = new ConstructorDef(constructorName, klass, klass.getContext());
+				final @NotNull Scope3 scope3 = new Scope3(cd);
+				cd.scope(scope3);
+				for (final GeneratedContainer.VarTableEntry varTableEntry : genClass.varTable) {
+					if (varTableEntry.initialValue != IExpression.UNASSIGNED) {
+						final IExpression left  = varTableEntry.nameToken;
+						final IExpression right = varTableEntry.initialValue;
+
+						final IExpression e = ExpressionBuilder.build(left, ExpressionKind.ASSIGNMENT, right);
+						scope3.add(new StatementWrapper(e, cd.getContext(), cd));
+					} else {
+						if (true /*|| getPragma("auto_construct")*/) {
+							scope3.add(new ConstructStatement(cd, cd.getContext(), varTableEntry.nameToken, null, null));
+						}
+					}
+				}
+			} else
+				cd = ccc;
 
 			final OS_Element classStatement_ = cd.getParent();
 			assert classStatement_ instanceof ClassStatement;
@@ -80,8 +107,10 @@ public class WlGenerateCtor implements WorkJob {
 			ConstructorDef c = null;
 			if (constructorName != null) {
 				for (final ConstructorDef cc : cs) {
-					if (cc.name().equals(constructorName.getText()))
+					if (cc.name().equals(constructorName.getText())) {
 						c = cc;
+						break;
+					}
 				}
 			} else {
 				// TODO match based on arguments
@@ -106,7 +135,7 @@ public class WlGenerateCtor implements WorkJob {
 				// add inherit statement, if any
 
 				// add code from c
-				if (c != null) {
+				if (c != null && c != cd) {
 					final ArrayList<FunctionItem> is = new ArrayList<>(c.getItems());
 
 					// skip initializers (already present in cd)
@@ -137,6 +166,8 @@ public class WlGenerateCtor implements WorkJob {
 
 			functionInvocation.generateDeferred().resolve(gf);
 			functionInvocation.setGenerated(gf);
+
+			result = gf;
 		}
 
 		_isDone = true;
@@ -149,6 +180,10 @@ public class WlGenerateCtor implements WorkJob {
 	@Override
 	public boolean isDone() {
 		return _isDone;
+	}
+
+	public GeneratedConstructor getResult() {
+		return result;
 	}
 }
 
