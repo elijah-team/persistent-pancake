@@ -18,9 +18,9 @@ import java.util.List;
  */
 public class Instruction {
 	private InstructionName name;
-	private int index = -1;
-	List<InstructionArgument> args;
+	private int             index = -1;
 	public  DeduceElement deduceElement;
+	List<InstructionArgument> args;
 	private Context       context;
 
 	public void setName(final InstructionName aName) {

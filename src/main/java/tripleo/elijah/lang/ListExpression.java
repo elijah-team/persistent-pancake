@@ -34,19 +34,10 @@ public class ListExpression extends AbstractExpression implements Locatable {
 		return false;
 	}
 
-	@Override
+	public final Syntax syntax = new Syntax();	@Override
 	public void setType(final OS_Type deducedExpression) {
 
 	}
-
-	@Override
-	public OS_Type getType() {
-		return null;
-	}
-
-	// region Syntax
-
-	public final Syntax syntax = new Syntax();
 
 	public class Syntax {
 		Token startToken;
@@ -61,7 +52,16 @@ public class ListExpression extends AbstractExpression implements Locatable {
 		public void comma(final Token t) {
 			commas.add(t);
 		}
+	}	@Override
+	public OS_Type getType() {
+		return null;
 	}
+
+	// region Syntax
+
+
+
+
 
 	// endregion
 

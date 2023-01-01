@@ -38,7 +38,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	public final @NotNull List<ProcTableEntry>                       prte_list         = new ArrayList<ProcTableEntry>();
 	public final @NotNull List<TypeTableEntry>                       tte_list          = new ArrayList<TypeTableEntry>();
 	public final @NotNull List<IdentTableEntry>                      idte_list         = new ArrayList<IdentTableEntry>();
-	final Map<OS_Element, DeduceElement> elements = new HashMap<OS_Element, DeduceElement>();
+	final                 Map<OS_Element, DeduceElement>             elements          = new HashMap<OS_Element, DeduceElement>();
 	private final         List<Label>                                labelList         = new ArrayList<Label>();
 	private final         DeferredObject<GenType, Void, Void>        typeDeferred      = new DeferredObject<GenType, Void, Void>();
 	private final         Dependency                                 dependency        = new Dependency(this);
@@ -313,9 +313,9 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 					return lookup;
 				final int ite = addIdentTableEntry(ie, context);
 				return new IdentIA(ite, this);
-		}
-		default:
-			throw new IllegalStateException("Unexpected value: " + expression.getKind());
+			}
+			default:
+				throw new IllegalStateException("Unexpected value: " + expression.getKind());
 		}
 	}
 

@@ -38,7 +38,7 @@ abstract class _CommonNC {
 	}
 
 	public List<ClassItem> getItems() {
-		return items ;
+		return items;
 	}
 
 	public String getName() {

@@ -2220,7 +2220,7 @@ public class GenerateFunctions {
 				gia.neg(gf, bbe.getLeft(), right1.getKind(), right1, cctx);
 				break;
 			default:
-				LOG.err("right1.getKind(): "+right1.getKind());
+				LOG.err("right1.getKind(): " + right1.getKind());
 				throw new NotImplementedException();
 		}
 	}
@@ -2451,7 +2451,7 @@ public class GenerateFunctions {
 //			break;
 			case ASSIGNMENT: {
 				final InstructionArgument s1 = simplify_expression(expression.getLeft(), gf, cctx);
-				final InstructionArgument s2 = simplify_expression(((BasicBinaryExpression)expression).getRight(), gf, cctx);
+				final InstructionArgument s2 = simplify_expression(((BasicBinaryExpression) expression).getRight(), gf, cctx);
 				final int                 x  = add_i(gf, InstructionName.AGN, List_of(s1, s2), cctx);
 				return s1; // TODO is this right?
 			}

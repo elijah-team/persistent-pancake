@@ -71,13 +71,14 @@ public class NamespaceStatement extends _CommonNC implements Documentable, Modul
 	public InvariantStatement invariantStatement() {
 		throw new NotImplementedException();
 	}
-	
+
 	public FunctionDef funcDef() {
 		return new FunctionDef(this, getContext());
 	}
-	
+
 	public ProgramClosure XXX() {
-		return new ProgramClosure() {};
+		return new ProgramClosure() {
+		};
 	}
 
 	@Override // OS_Element

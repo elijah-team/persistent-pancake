@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ProcessRecord {
-	public final PipelineLogic                              pipelineLogic;
+	public final PipelineLogic pipelineLogic;
 	AccessBus ab;
 	private final DeferredObject<GenerateResult, Void, Void> _pgr = new DeferredObject<>();
 

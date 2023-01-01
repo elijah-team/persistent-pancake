@@ -56,10 +56,10 @@ public class GenType {
 	public GenType(final OS_Type aAttached,
 	               final OS_Type aOS_type,
 	               final boolean aB,
-				   final TypeName aTypeName,
-				   final DeduceTypes2 deduceTypes2,
-				   final ErrSink errSink,
-				   final DeducePhase phase) {
+	               final TypeName aTypeName,
+	               final DeduceTypes2 deduceTypes2,
+	               final ErrSink errSink,
+	               final DeducePhase phase) {
 		typeName = aAttached;
 		resolved = aOS_type;
 		if (aB) {

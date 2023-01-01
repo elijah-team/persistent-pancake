@@ -40,10 +40,10 @@ import static tripleo.elijah.contexts.ClassInfo.ClassInfoType.INHERITED;
  */
 public class ClassContext extends Context {
 
-	private final ClassStatement carrier;
-	public final Map<TypeName, ClassStatement> _inheritance = new HashMap<>();
-	private final Context        _parent;
-	private      boolean                       _didInheritance;
+	private final ClassStatement                carrier;
+	public final  Map<TypeName, ClassStatement> _inheritance = new HashMap<>();
+	private final Context                       _parent;
+	private       boolean                       _didInheritance;
 
 	public ClassContext(final Context aParent, final ClassStatement cls) {
 		_parent = aParent;
@@ -55,11 +55,11 @@ public class ClassContext extends Context {
 		alreadySearched.add(carrier.getContext());
 		for (final ClassItem item : carrier.getItems()) {
 			if (!(item instanceof ClassStatement) &&
-				!(item instanceof NamespaceStatement) &&
-				!(item instanceof BaseFunctionDef) &&
-				!(item instanceof VariableSequence) &&
-				!(item instanceof AliasStatement) &&
-				!(item instanceof PropertyStatement)
+			  !(item instanceof NamespaceStatement) &&
+			  !(item instanceof BaseFunctionDef) &&
+			  !(item instanceof VariableSequence) &&
+			  !(item instanceof AliasStatement) &&
+			  !(item instanceof PropertyStatement)
 			) continue;
 			if (item instanceof OS_Element2) {
 				if (((OS_Element2) item).name().equals(name)) {
@@ -86,8 +86,8 @@ public class ClassContext extends Context {
 
 		for (final TypeName tn1 : carrier.getGenericPart()) {
 			if (tn1 instanceof NormalTypeName) {
-				final NormalTypeName tn = (NormalTypeName) tn1;
-				final String name1 = tn.getName(); // TODO this may return a string with DOTs in it.
+				final NormalTypeName tn    = (NormalTypeName) tn1;
+				final String         name1 = tn.getName(); // TODO this may return a string with DOTs in it.
 				if (name1.equals(name)) {
 //					LookupResultList lrl = tn.getContext().lookup(name);
 //					OS_Element best = lrl.chooseBest(null);

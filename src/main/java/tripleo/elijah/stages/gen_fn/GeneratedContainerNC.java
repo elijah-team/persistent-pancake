@@ -29,13 +29,13 @@ import java.util.*;
  * Created 3/16/21 10:45 AM
  */
 public abstract class GeneratedContainerNC extends AbstractDependencyTracker implements GeneratedContainer, IDependencyReferent {
-	public final Map<FunctionDef, GeneratedFunction> functionMap = new HashMap<FunctionDef, GeneratedFunction>();
-	public final Map<ClassStatement, GeneratedClass> classMap    = new HashMap<ClassStatement, GeneratedClass>();
-	public final List<VarTableEntry> varTable = new ArrayList<VarTableEntry>();
-	private final Dependency dependency = new Dependency(this);
+	public final  Map<FunctionDef, GeneratedFunction>        functionMap          = new HashMap<FunctionDef, GeneratedFunction>();
+	public final  Map<ClassStatement, GeneratedClass>        classMap             = new HashMap<ClassStatement, GeneratedClass>();
+	public final  List<VarTableEntry>                        varTable             = new ArrayList<VarTableEntry>();
+	private final Dependency                                 dependency           = new Dependency(this);
 	private final Multimap<FunctionDef, FunctionMapDeferred> functionMapDeferreds = ArrayListMultimap.create();
-	public  boolean generatedAlready = false;
-	private int     code             = 0;
+	public        boolean                                    generatedAlready     = false;
+	private       int                                        code                 = 0;
 
 	public void addVarTableEntry(final AccessNotation an, final VariableStatement vs) {
 		// TODO dont ignore AccessNotation

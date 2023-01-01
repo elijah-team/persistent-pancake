@@ -41,24 +41,24 @@ import java.util.Map;
  * Created 9/12/20 10:27 PM
  */
 public class IdentTableEntry extends BaseTableEntry1 implements Constructable, TableEntryIV, DeduceTypes2.ExpectationBase {
-	public final @NotNull Map<Integer, TypeTableEntry> potentialTypes = new HashMap<Integer, TypeTableEntry>();
-	protected final DeferredObject<InstructionArgument, Void, Void> backlinkSet = new DeferredObject<InstructionArgument, Void, Void>();
-	final DeferredObject<ProcTableEntry, Void, Void> constructableDeferred = new DeferredObject<>();
-	private final int             index;
-	private final IdentExpression ident;
-	private final Context         pc;
-	private final         DeduceElementIdent           dei            = new DeduceElementIdent(this);
-	public        boolean         preUpdateStatusListenerAdded;
-	public                TypeTableEntry               type;
-	public                GeneratedNode                externalRef;
-	public                boolean                      fefi           = false;
-	public                ProcTableEntry               constructable_pte;
-	public  DeduceTypes2.PromiseExpectation<String> resolveExpectation;
+	public final @NotNull Map<Integer, TypeTableEntry>                    potentialTypes        = new HashMap<Integer, TypeTableEntry>();
+	protected final       DeferredObject<InstructionArgument, Void, Void> backlinkSet           = new DeferredObject<InstructionArgument, Void, Void>();
+	final                 DeferredObject<ProcTableEntry, Void, Void>      constructableDeferred = new DeferredObject<>();
+	private final         int                                             index;
+	private final         IdentExpression                                 ident;
+	private final         Context                                         pc;
+	private final         DeduceElementIdent                              dei                   = new DeduceElementIdent(this);
+	public                boolean                                         preUpdateStatusListenerAdded;
+	public                TypeTableEntry                                  type;
+	public                GeneratedNode                                   externalRef;
+	public                boolean                                         fefi                  = false;
+	public                ProcTableEntry                                  constructable_pte;
+	public                DeduceTypes2.PromiseExpectation<String>         resolveExpectation;
 	InstructionArgument backlink;
-	boolean insideGetResolvedElement = false;
-	private               GeneratedNode                resolvedType;
-	private DeduceElement3_IdentTableEntry          _de3;
-	private ITE_Zero                                _zero;
+	boolean             insideGetResolvedElement = false;
+	private GeneratedNode                  resolvedType;
+	private DeduceElement3_IdentTableEntry _de3;
+	private ITE_Zero                       _zero;
 
 	public IdentTableEntry(final int index, final IdentExpression ident, final Context pc) {
 		this.index = index;
@@ -75,9 +75,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		setupResolve();
 	}
 
-	public void addPotentialType(final int instructionIndex, final TypeTableEntry tte) {
-		potentialTypes.put(instructionIndex, tte);
-	}
+	private final DeferredObject<GenType, Void, Void> fefiDone = new DeferredObject<GenType, Void, Void>();
 
 	@Override
 	public OS_Element getResolvedElement() {
@@ -93,17 +91,21 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		return resolved_element;
 	}
 
+	public void addPotentialType(final int instructionIndex, final TypeTableEntry tte) {
+		potentialTypes.put(instructionIndex, tte);
+	}
+
 	@Override
 	public @NotNull String toString() {
 		return "IdentTableEntry{" +
-				"index=" + index +
-				", ident=" + ident +
-				", backlink=" + backlink +
-				", potentialTypes=" + potentialTypes +
-				", status=" + status +
-				", type=" + type +
-				", resolved=" + resolvedType +
-				'}';
+		  "index=" + index +
+		  ", ident=" + ident +
+		  ", backlink=" + backlink +
+		  ", potentialTypes=" + potentialTypes +
+		  ", status=" + status +
+		  ", type=" + type +
+		  ", resolved=" + resolvedType +
+		  '}';
 	}
 
 	public IdentExpression getIdent() {
@@ -115,10 +117,6 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		resolvedType = gn;
 		if (type != null) // TODO maybe find a more robust solution to this, like another Promise? or just setType? or onPossiblesResolve?
 			type.resolve(gn); // TODO maybe this obviates the above?
-	}
-
-	public void setDeduceTypes2(final @NotNull DeduceTypes2 aDeduceTypes2, final Context aContext, final @NotNull BaseGeneratedFunction aGeneratedFunction) {
-		dei.setDeduceTypes2(aDeduceTypes2, aContext, aGeneratedFunction);
 	}
 
 	public boolean isResolved() {
@@ -182,9 +180,8 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	// endregion constructable
 
-	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction) {
-		@NotNull final List<InstructionArgument> x = generatedFunction._getIdentIAPathList(new IdentIA(index, generatedFunction));
-		return new DeducePath(this, x);
+	public void setDeduceTypes2(final @NotNull DeduceTypes2 aDeduceTypes2, final Context aContext, final @NotNull BaseGeneratedFunction aGeneratedFunction) {
+		dei.setDeduceTypes2(aDeduceTypes2, aContext, aGeneratedFunction);
 	}
 
 	@Override
@@ -192,7 +189,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		return constructableDeferred.promise();
 	}
 
-	private final DeferredObject<GenType, Void, Void> fefiDone = new DeferredObject<GenType, Void, Void>();
+	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction) {
+		@NotNull final List<InstructionArgument> x = generatedFunction._getIdentIAPathList(new IdentIA(index, generatedFunction));
+		return new DeducePath(this, x);
+	}
 
 	public void fefiDone(final GenType aGenType) {
 		if (fefiDone.isPending())
@@ -203,8 +203,8 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	public String expectationString() {
 		return "IdentTableEntry{" +
 		  "index=" + index +
-				", ident=" + ident +
-				", backlink=" + backlink +
+		  ", ident=" + ident +
+		  ", backlink=" + backlink +
 		  "}";
 	}
 

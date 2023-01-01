@@ -59,7 +59,7 @@ class Resolve_Ident_IA2 {
 	public void resolveIdentIA2_(final @NotNull Context ctx,
 								 final @Nullable IdentIA identIA,
 								 @Nullable List<InstructionArgument> s) {
-		el = null;
+		el   = null;
 		ectx = ctx;
 
 		if (identIA == null)
@@ -69,9 +69,9 @@ class Resolve_Ident_IA2 {
 			s = generatedFunction._getIdentIAPathList(identIA);
 
 		if (identIA != null) {
-			final DeducePath dp = identIA.getEntry().buildDeducePath(generatedFunction);
-			final int index = dp.size() - 1;
-			final InstructionArgument ia2 = dp.getIA(index);
+			final DeducePath          dp    = identIA.getEntry().buildDeducePath(generatedFunction);
+			final int                 index = dp.size() - 1;
+			final InstructionArgument ia2   = dp.getIA(index);
 			// ia2 is not == equals to identIA, but functionally equivalent
 			if (ia2 instanceof IdentIA) {
 				final @NotNull IdentTableEntry ite = ((IdentIA) ia2).getEntry();
@@ -198,8 +198,8 @@ class Resolve_Ident_IA2 {
 	}
 
 	private void ia2_IntegerIA(@NotNull final IntegerIA ia2, @NotNull final Context ctx) {
-		@NotNull final VariableTableEntry vte = generatedFunction.getVarTableEntry(DeduceTypes2.to_int(ia2));
-		final String text = vte.getName();
+		@NotNull final VariableTableEntry vte  = generatedFunction.getVarTableEntry(DeduceTypes2.to_int(ia2));
+		final String                      text = vte.getName();
 
 		{
 			@NotNull final List<TypeTableEntry> pot = deduceTypes2.getPotentialTypesVte(vte);
@@ -278,12 +278,12 @@ class Resolve_Ident_IA2 {
 			// but for now, just set ectx
 			final InstructionArgument en = procTableEntry.expression_num;
 			if (en instanceof IdentIA) {
-				final @NotNull IdentIA identIA2 = (IdentIA) en;
-				final DeducePath ded = identIA2.getEntry().buildDeducePath(generatedFunction);
-				@Nullable final OS_Element el2 = ded.getElement(ded.size() - 1);
+				final @NotNull IdentIA     identIA2 = (IdentIA) en;
+				final DeducePath           ded      = identIA2.getEntry().buildDeducePath(generatedFunction);
+				@Nullable final OS_Element el2      = ded.getElement(ded.size() - 1);
 				if (el2 != null) {
 					state = 1;
-					ectx = el2.getContext();
+					ectx  = el2.getContext();
 					aVte.type.setAttached(attached1);
 				}
 			}
@@ -325,8 +325,8 @@ class Resolve_Ident_IA2 {
 	}
 
 	private void ia2_IdentIA_FunctionDef(@NotNull final IdentTableEntry idte2) {
-		@Nullable final OS_Type attached = new OS_UnknownType(el);
-		@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, attached, null, idte2);
+		@Nullable final OS_Type       attached = new OS_UnknownType(el);
+		@NotNull final TypeTableEntry tte      = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, attached, null, idte2);
 		idte2.type = tte;
 
 		// Set type to something other than Unknown when found
@@ -340,8 +340,8 @@ class Resolve_Ident_IA2 {
 				final InstructionArgument bl         = idte2.getBacklink();
 				@Nullable IInvocation     invocation = null;
 				if (bl instanceof IntegerIA) {
-					final @NotNull IntegerIA integerIA = (IntegerIA) bl;
-					@NotNull final VariableTableEntry vte = integerIA.getEntry();
+					final @NotNull IntegerIA          integerIA = (IntegerIA) bl;
+					@NotNull final VariableTableEntry vte       = integerIA.getEntry();
 					if (vte.constructable_pte != null) {
 						final ProcTableEntry cpte = vte.constructable_pte;
 						invocation = cpte.getFunctionInvocation().getClassInvocation();

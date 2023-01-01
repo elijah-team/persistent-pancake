@@ -30,12 +30,12 @@ import java.util.stream.Collectors;
  * Created 11/30/21 11:56 PM
  */
 public class DeduceProcCall {
-	private final ProcTableEntry        procTableEntry;
+	private final ProcTableEntry procTableEntry;
 	DeduceElement target;
-	private       DeduceTypes2          deduceTypes2;
-	private       Context               context;
-	private       BaseGeneratedFunction generatedFunction;
-	private       ErrSink               errSink;
+	private DeduceTypes2          deduceTypes2;
+	private Context               context;
+	private BaseGeneratedFunction generatedFunction;
+	private ErrSink               errSink;
 
 	@Contract(pure = true)
 	public DeduceProcCall(final @NotNull ProcTableEntry aProcTableEntry) {

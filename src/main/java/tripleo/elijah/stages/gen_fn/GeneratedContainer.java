@@ -43,7 +43,7 @@ public interface GeneratedContainer extends GeneratedNode {
 		private final OS_Element                                         parent;
 		public        OS_Type                                            varType;
 		UpdatePotentialTypesCB updatePotentialTypesCB;
-		private       GeneratedNode                                      _resolvedType;
+		private GeneratedNode _resolvedType;
 
 		public VarTableEntry(final VariableStatement aVs,
 		                     final @NotNull IdentExpression aNameToken,
@@ -85,24 +85,24 @@ public interface GeneratedContainer extends GeneratedNode {
 				@Override
 				public void onDone(final UpdatePotentialTypesCB result) {
 					result.call(aGeneratedContainer);
-                }
-            });
-        }
+				}
+			});
+		}
 
 		public interface UpdatePotentialTypesCB {
 			void call(final @NotNull GeneratedContainer aGeneratedContainer);
 		}
 
-        public static class ConnectionPair {
-            public final VariableTableEntry vte;
-            final GeneratedConstructor constructor;
+		public static class ConnectionPair {
+			public final VariableTableEntry   vte;
+			final        GeneratedConstructor constructor;
 
-            public ConnectionPair(final VariableTableEntry aVte, final GeneratedConstructor aConstructor) {
-                vte = aVte;
-                constructor = aConstructor;
-            }
-        }
-    }
+			public ConnectionPair(final VariableTableEntry aVte, final GeneratedConstructor aConstructor) {
+				vte         = aVte;
+				constructor = aConstructor;
+			}
+		}
+	}
 }
 
 //

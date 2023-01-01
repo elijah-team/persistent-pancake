@@ -83,11 +83,11 @@ private final Attached _a = new Attached();
 	public String getIterName() {
 		return iterName.getText();
 	}
-	
+
 	public LoopTypes getType() {
 		return type;
 	}
-	
+
 	public IExpression getToPart() {
 		return topart;
 	}

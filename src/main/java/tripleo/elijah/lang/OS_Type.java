@@ -56,18 +56,18 @@ public class OS_Type {
 	public ClassStatement getClassOf() {
 		if (etype != null && etype instanceof ClassStatement)
 			return (ClassStatement) etype;
-		System.err.println("3001 "+etype+" "+toString());
+		System.err.println("3001 " + etype + " " + toString());
 		throw new IllegalArgumentException();
 //		return null;
 	}
 
 	public OS_Element getElement() {
 		switch (type_of_type) {
-		case USER_CLASS:
+			case USER_CLASS:
 //		case FUNCTION: // defined in subclass
-			return etype;
-		default:
-			throw new IllegalArgumentException();
+				return etype;
+			default:
+				throw new IllegalArgumentException();
 		}
 	}
 
@@ -80,19 +80,19 @@ public class OS_Type {
 				// TODO These are technically not right
 				//
 				switch (getBType()) {
-				case SystemInteger: {
-					final LookupResultList r;
-					OS_Element             best;
+					case SystemInteger: {
+						final LookupResultList r;
+						OS_Element             best;
 
-					r    = ctx.lookup("SystemInteger");
-					best = r.chooseBest(null);
-					while (best instanceof AliasStatement) {
-						final AliasStatement   aliasStatement = (AliasStatement) best;
-						final LookupResultList lrl            = aliasStatement.getContext().lookup(aliasStatement.getExpression().toString());
-						best = lrl.chooseBest(null);
+						r    = ctx.lookup("SystemInteger");
+						best = r.chooseBest(null);
+						while (best instanceof AliasStatement) {
+							final AliasStatement   aliasStatement = (AliasStatement) best;
+							final LookupResultList lrl            = aliasStatement.getContext().lookup(aliasStatement.getExpression().toString());
+							best = lrl.chooseBest(null);
+						}
+						return ((ClassStatement) best).getOS_Type();
 					}
-					return ((ClassStatement) best).getOS_Type();
-				}
 				case Boolean:
 					{
 						final LookupResultList r;

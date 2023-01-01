@@ -50,7 +50,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	public PipelineLogic(final AccessBus iab) {
 		__ab = iab; // we're watching you
 
-		final boolean         sil     = __ab.getCompilation().getSilence();
+		final boolean sil = __ab.getCompilation().getSilence();
 
 		verbosity     = sil ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
 		generatePhase = new GeneratePhase(verbosity, this);

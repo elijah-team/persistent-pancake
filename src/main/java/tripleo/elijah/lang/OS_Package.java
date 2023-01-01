@@ -21,10 +21,10 @@ import java.util.List;
  */
 public class OS_Package {
 	public final static OS_Package       default_package = new OS_Package(null, 0);
-	final   int            _code;
-	final   Qualident      _name;
+	final               int              _code;
+	final               Qualident        _name;
 	private final       List<OS_Element> elements        = new ArrayList<OS_Element>();
-	private PackageContext _ctx;
+	private             PackageContext   _ctx;
 
 	// TODO packages, elements
 

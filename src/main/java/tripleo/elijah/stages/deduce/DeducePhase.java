@@ -175,8 +175,8 @@ public class DeducePhase {
 		deferredMembers.add(aDeferredMember);
 	}
 
-	private final ExecutorService classGenerator = Executors.newCachedThreadPool();
-	private List<DeferredMemberFunction> deferredMemberFunctions = new ArrayList<>();
+	private final ExecutorService              classGenerator          = Executors.newCachedThreadPool();
+	private       List<DeferredMemberFunction> deferredMemberFunctions = new ArrayList<>();
 
 //	public List<ElLog> deduceLogs = new ArrayList<ElLog>();
 
@@ -287,8 +287,8 @@ public class DeducePhase {
 			assert aParent instanceof ClassStatement || aParent instanceof NamespaceStatement;
 
 			identTableEntry = aIdentTableEntry;
-			parent = aParent;
-			varName = aVarName;
+			parent          = aParent;
+			varName         = aVarName;
 		}
 	}
 

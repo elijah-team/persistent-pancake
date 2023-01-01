@@ -15,7 +15,7 @@ import tripleo.util.buffer.TextBuffer;
 /**
  * Created 4/26/21 11:36 PM
  */
-public class BufferTabbedOutputStream  {
+public class BufferTabbedOutputStream {
 
 	int tabwidth = 0;
 	final   TextBuffer b       = new DefaultBuffer("");
@@ -25,7 +25,7 @@ public class BufferTabbedOutputStream  {
 	public Buffer getBuffer() {
 		return b;
 	}
-	
+
 	public void put_string_ln(final String s) {
 		if (!is_connected())
 			throw new IllegalStateException("is_connected assertion failed");

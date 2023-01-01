@@ -28,7 +28,7 @@ public class GeneratePhase {
 	private final PipelineLogic                     pipelineLogic;
 
 	public GeneratePhase(final ElLog.Verbosity aVerbosity, final PipelineLogic aPipelineLogic) {
-		verbosity = aVerbosity;
+		verbosity     = aVerbosity;
 		pipelineLogic = aPipelineLogic;
 	}
 

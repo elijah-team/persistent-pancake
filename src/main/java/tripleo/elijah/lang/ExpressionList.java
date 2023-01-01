@@ -44,7 +44,7 @@ public class ExpressionList implements Iterable<IExpression> {
 	public @NotNull Iterator<IExpression> iterator() {
 		return exprs.iterator();
 	}
-	
+
 	public void add(final IExpression aExpr) {
 		exprs.add(aExpr);
 	}

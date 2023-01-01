@@ -28,8 +28,8 @@ public class NameTable {
 		public String toString() {
 			return "TypedElement{" +
 			  "element=" + element +
-					", type=" + type +
-					'}';
+			  ", type=" + type +
+			  '}';
 		}
 	}
 	

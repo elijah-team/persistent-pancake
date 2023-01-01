@@ -32,8 +32,8 @@ public class TypeOfTypeName implements TypeName {
 	}
 
 	@Override
-	public Type kindOfType() {
-		return Type.TYPE_OF;
+	public void setContext(final Context context) {
+		_ctx = context;
 	}
 
 	@Override
@@ -42,8 +42,8 @@ public class TypeOfTypeName implements TypeName {
 	}
 
 	@Override
-	public void setContext(final Context context) {
-		_ctx = context;
+	public Type kindOfType() {
+		return Type.TYPE_OF;
 	}
 
 	@Override

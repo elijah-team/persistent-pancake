@@ -196,9 +196,9 @@ public class OutputStrategyC {
 
 	public void appendExtension(final GenerateResult.TY aTy, final StringBuilder aSb) {
 		switch (aTy) {
-		case IMPL:
-			aSb.append(".c");
-			break;
+			case IMPL:
+				aSb.append(".c");
+				break;
 			case PRIVATE_HEADER:
 				aSb.append("_Priv.h");
 			case HEADER:

@@ -43,7 +43,7 @@ public class GetRealTargetNameTest {
 
 	@Test
 	public void testManualXDotFoo() {
-		final IdentExpression x_ident = Helpers.string_to_ident("x");
+		final IdentExpression          x_ident   = Helpers.string_to_ident("x");
 		@NotNull final IdentExpression foo_ident = Helpers.string_to_ident("foo");
 		//
 		// create x.foo, where x is a VAR and foo is unknown

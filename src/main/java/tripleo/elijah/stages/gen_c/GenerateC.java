@@ -858,7 +858,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 					sll.add("" + const_to_string(constTableEntry.initialValue));
 				} else if (ia instanceof IntegerIA) {
 					final VariableTableEntry variableTableEntry = gf.getVarTableEntry(((IntegerIA) ia).getIndex());
-					sll.add(Emit.emit("/*853*/")+""+getRealTargetName(gf, variableTableEntry));
+					sll.add(Emit.emit("/*853*/") + "" + getRealTargetName(gf, variableTableEntry));
 				} else if (ia instanceof IdentIA) {
 					final String          path = gf.getIdentIAPathNormal((IdentIA) ia);    // return x.y.z
 					final IdentTableEntry ite  = gf.getIdentTableEntry(to_int(ia));
@@ -910,7 +910,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 
 		private static String const_to_string(final IExpression expression) {
 			if (expression instanceof NumericExpression) {
-				return ""+((NumericExpression) expression).getValue();
+				return "" + ((NumericExpression) expression).getValue();
 			}
 			if (expression instanceof CharLitExpression) {
 				return String.format("'%s'", expression.toString());

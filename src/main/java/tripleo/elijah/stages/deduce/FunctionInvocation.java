@@ -30,10 +30,10 @@ public class FunctionInvocation {
 	private final     DeferredObject<BaseGeneratedFunction, Void, Void> generateDeferred = new DeferredObject<tripleo.elijah.stages.gen_fn.BaseGeneratedFunction, Void, Void>();
 	private           ClassInvocation                                   classInvocation;
 	private           NamespaceInvocation                               namespaceInvocation;
-	private @Nullable BaseGeneratedFunction _generated = null;
+	private @Nullable BaseGeneratedFunction                             _generated       = null;
 
 	public FunctionInvocation(final BaseFunctionDef aFunctionDef, final ProcTableEntry aProcTableEntry, @NotNull final IInvocation invocation, final GeneratePhase phase) {
-		this.fd = aFunctionDef;
+		this.fd  = aFunctionDef;
 		this.pte = aProcTableEntry;
 		assert invocation != null;
 		invocation.setForFunctionInvocation(this);

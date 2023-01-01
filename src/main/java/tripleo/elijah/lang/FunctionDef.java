@@ -22,13 +22,10 @@ public class FunctionDef extends BaseFunctionDef implements Documentable, ClassI
 
 	private TypeName _returnType = null;
 
-	public void setReturnType(final TypeName tn) {
-		this._returnType = tn;
-	}
+	private final OS_Element parent;
 
 	// region constructor
-
-	private final OS_Element parent;
+	private OS_FuncType osType;
 
 	public FunctionDef(final OS_Element element, final Context context) {
 		parent = element;
@@ -79,7 +76,9 @@ public class FunctionDef extends BaseFunctionDef implements Documentable, ClassI
 		return _returnType;
 	}
 
-	private OS_FuncType osType;
+	public void setReturnType(final TypeName tn) {
+		this._returnType = tn;
+	}
 
 	@Override
 	public void postConstruct() { // TODO

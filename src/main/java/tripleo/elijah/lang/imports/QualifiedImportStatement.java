@@ -14,9 +14,9 @@ import java.util.List;
  * Created 8/7/20 2:09 AM
  */
 public class QualifiedImportStatement extends _BaseImportStatement {
-	final OS_Element parent;
+	final         OS_Element parent;
 	private final List<Part> _parts = new ArrayList<Part>();
-	private Context _ctx;
+	private       Context    _ctx;
 
 	public static class Part {
 		public final Qualident base;

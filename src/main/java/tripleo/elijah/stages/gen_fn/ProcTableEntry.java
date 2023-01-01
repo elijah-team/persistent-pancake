@@ -37,31 +37,23 @@ import java.util.List;
  * Created 9/12/20 10:07 PM
  */
 public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
-	public final int index;
-	public final List<TypeTableEntry> args;
+	public final  int                                             index;
+	public final  List<TypeTableEntry>                            args;
 	/**
 	 * Either a hint to the programmer-- The compiler should be able to work without this.
 	 * <br/>
 	 * Or for synthetic methods
 	 */
-	public final IExpression expression;
-	public final InstructionArgument expression_num;
-	public final DeduceProcCall dpc = new DeduceProcCall(this);
-	private final DeferredObject<ProcTableEntry, Void, Void> completeDeferred           = new DeferredObject<ProcTableEntry, Void, Void>();
-	private      ClassInvocation classInvocation;
+	public final  IExpression                                     expression;
+	public final  InstructionArgument                             expression_num;
+	public final  DeduceProcCall                                  dpc                   = new DeduceProcCall(this);
+	private final DeferredObject<ProcTableEntry, Void, Void>      completeDeferred      = new DeferredObject<ProcTableEntry, Void, Void>();
+	private       ClassInvocation                                 classInvocation;
 	private final DeferredObject2<FunctionInvocation, Void, Void> onFunctionInvocations = new DeferredObject2<FunctionInvocation, Void, Void>();
-	private      FunctionInvocation functionInvocation;
-	private DeduceElement3_ProcTableEntry _de3;
+	private       FunctionInvocation                              functionInvocation;
+	private       DeduceElement3_ProcTableEntry                   _de3;
 
-	@Override @NotNull
-	public String toString() {
-		return "ProcTableEntry{" +
-				"index=" + index +
-				", expression=" + expression +
-				", expression_num=" + expression_num +
-				", args=" + args +
-				'}';
-	}
+	private PTE_Zero _zero;
 
 	public List<TypeTableEntry> getArgs() {
 		return args;
@@ -115,7 +107,17 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 	public ClassInvocation getClassInvocation() {
 		return classInvocation;
 	}
-	private      PTE_Zero       _zero;
+
+	@Override
+	@NotNull
+	public String toString() {
+		return "ProcTableEntry{" +
+		  "index=" + index +
+		  ", expression=" + expression +
+		  ", expression_num=" + expression_num +
+		  ", args=" + args +
+		  '}';
+	}
 	public ProcTableEntry(final int aIndex, final IExpression aExpression, final InstructionArgument aExpressionNum, final List<TypeTableEntry> aArgs) {
 		index          = aIndex;
 		expression     = aExpression;

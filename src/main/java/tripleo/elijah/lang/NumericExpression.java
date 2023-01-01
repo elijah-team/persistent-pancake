@@ -31,7 +31,7 @@ public class NumericExpression implements IExpression, Locatable {
 	}
 
 	public NumericExpression(final @NotNull Token n) {
-		this.n = n;
+		this.n  = n;
 		carrier = Integer.parseInt(n.getText());
 	}
 

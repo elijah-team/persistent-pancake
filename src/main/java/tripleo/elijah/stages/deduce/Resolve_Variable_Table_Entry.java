@@ -256,7 +256,7 @@ class Resolve_Variable_Table_Entry {
 			wm.addJobs(wl);
 			wm.drain(); // TODO here?
 
-			aGenType.ci = modi;
+			aGenType.ci   = modi;
 			aGenType.node = wlgf.getResult();
 
 			final DeduceTypes2.@NotNull PromiseExpectation<GenType> pe = deduceTypes2.promiseExpectation(/*pot.genType.node*/new DeduceTypes2.ExpectationBase() {

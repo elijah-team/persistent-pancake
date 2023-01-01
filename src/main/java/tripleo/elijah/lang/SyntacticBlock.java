@@ -26,10 +26,10 @@ import java.util.List;
  */
 public class SyntacticBlock implements OS_Element, OS_Container, FunctionItem, StatementItem {
 
-	private final List<FunctionItem> _items = new ArrayList<FunctionItem>();
-	private final OS_Element _parent;
-	private SyntacticBlockContext ctx;
-	private Scope3 scope3;
+	private final List<FunctionItem>    _items = new ArrayList<FunctionItem>();
+	private final OS_Element            _parent;
+	private       SyntacticBlockContext ctx;
+	private       Scope3                scope3;
 
 	public SyntacticBlock(final OS_Element aParent) {
 		_parent = aParent;

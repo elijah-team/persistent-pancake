@@ -41,12 +41,12 @@ public class DeduceLookupUtils {
 				final @NotNull IdentExpression ident = (IdentExpression) left;
 				final LookupResultList         lrl   = ctx.lookup(ident.getText());
 				if (lrl.results().size() == 0) {
-					throw new ResolveError(ident,  lrl);
+					throw new ResolveError(ident, lrl);
 				}
 				return lrl;
 			}
-		default:
-			throw new IllegalArgumentException();
+			default:
+				throw new IllegalArgumentException();
 		}
 
 	}
@@ -336,7 +336,7 @@ public class DeduceLookupUtils {
 		}
 
 		return de3_ite;
-}
+	}
 
 	private static void deduceIdentExpression2(final @NotNull IDeduceElement3 aDeduceElement3) throws ResolveError {
 		@Nullable GenType result = null;

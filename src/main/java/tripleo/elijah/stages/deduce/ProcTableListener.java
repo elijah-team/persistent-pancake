@@ -26,11 +26,11 @@ import java.util.stream.Collectors;
  * Created 9/10/21 3:42 AM
  */
 public class ProcTableListener implements BaseTableEntry.StatusListener {
-	private final ProcTableEntry pte;
+	private final ProcTableEntry        pte;
 	private final BaseGeneratedFunction generatedFunction;
 
-	private final DeduceTypes2.@NotNull DeduceClient2 dc;
-	private final @NotNull ElLog LOG;
+	private final          DeduceTypes2.@NotNull DeduceClient2 dc;
+	private final @NotNull ElLog                               LOG;
 
 	public ProcTableListener(final ProcTableEntry pte, final BaseGeneratedFunction generatedFunction, final DeduceTypes2.@NotNull DeduceClient2 dc) {
 		this.pte = pte;
@@ -154,7 +154,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 	}
 
 	private void resolved_element_pte_FunctionDef_FormalArgListItem(final Constructable co, final ProcTableEntry pte, final AbstractDependencyTracker depTracker, @NotNull final FunctionDef fd, final FormalArgListItem parent) {
-		final FormalArgListItem fali = parent;
+		final FormalArgListItem             fali   = parent;
 		@Nullable final InstructionArgument vte_ia = generatedFunction.vte_lookup(fali.name());
 		assert vte_ia != null;
 		final @NotNull VariableTableEntry variableTableEntry = ((IntegerIA) vte_ia).getEntry();

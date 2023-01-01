@@ -38,11 +38,12 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 public class Generate_Code_For_Method {
 	private final ElLog LOG;
 
-	final BufferTabbedOutputStream tos    = new BufferTabbedOutputStream();
+	final BufferTabbedOutputStream tos = new BufferTabbedOutputStream();
 
 	GenerateC gc;
 
 	final BufferTabbedOutputStream tosHdr = new BufferTabbedOutputStream();
+
 	public Generate_Code_For_Method(@NotNull final GenerateC aGenerateC, final ElLog aLog) {
 		gc  = aGenerateC;
 		LOG = aLog; // use log from GenerateC
@@ -252,8 +253,8 @@ public class Generate_Code_For_Method {
 		assert rhs != null;
 
 		if (rhs instanceof ConstTableIA) {
-			final ConstantTableEntry cte = gf.getConstTableEntry(((ConstTableIA) rhs).getIndex());
-			final String realTargetName = gc.getRealTargetName(gf, (IntegerIA) lhs, AOG.GET);
+			final ConstantTableEntry cte            = gf.getConstTableEntry(((ConstTableIA) rhs).getIndex());
+			final String             realTargetName = gc.getRealTargetName(gf, (IntegerIA) lhs, AOG.GET);
 			tos.put_string_ln(String.format("vsb = %s == %s;", realTargetName, gc.getAssignmentValue(gf.getSelf(), rhs, gf)));
 			tos.put_string_ln(String.format("if (!vsb) goto %s;", realTarget.getName()));
 		} else {
@@ -279,8 +280,8 @@ public class Generate_Code_For_Method {
 		assert rhs != null;
 
 		if (rhs instanceof ConstTableIA) {
-			final ConstantTableEntry cte = gf.getConstTableEntry(((ConstTableIA) rhs).getIndex());
-			final String realTargetName = gc.getRealTargetName(gf, (IntegerIA) lhs, AOG.GET);
+			final ConstantTableEntry cte            = gf.getConstTableEntry(((ConstTableIA) rhs).getIndex());
+			final String             realTargetName = gc.getRealTargetName(gf, (IntegerIA) lhs, AOG.GET);
 			tos.put_string_ln(String.format("vsb = %s != %s;", realTargetName, gc.getAssignmentValue(gf.getSelf(), rhs, gf)));
 			tos.put_string_ln(String.format("if (!vsb) goto %s;", realTarget.getName()));
 		} else {
@@ -306,8 +307,8 @@ public class Generate_Code_For_Method {
 		assert rhs != null;
 
 		if (rhs instanceof ConstTableIA) {
-			final ConstantTableEntry cte = gf.getConstTableEntry(((ConstTableIA) rhs).getIndex());
-			final String realTargetName = gc.getRealTargetName(gf, (IntegerIA) lhs, AOG.GET);
+			final ConstantTableEntry cte            = gf.getConstTableEntry(((ConstTableIA) rhs).getIndex());
+			final String             realTargetName = gc.getRealTargetName(gf, (IntegerIA) lhs, AOG.GET);
 			tos.put_string_ln(String.format("vsb = %s < %s;", realTargetName, gc.getAssignmentValue(gf.getSelf(), rhs, gf)));
 			tos.put_string_ln(String.format("if (!vsb) goto %s;", realTarget.getName()));
 		} else {
@@ -383,13 +384,13 @@ public class Generate_Code_For_Method {
 				sb.append(");");
 			} else {
 				final CReference reference = new CReference();
-				final IdentIA ia2 = (IdentIA) pte.expression_num;
+				final IdentIA    ia2       = (IdentIA) pte.expression_num;
 				reference.getIdentIAPath(ia2, gf, AOG.GET, null);
 				final List<String> sl3 = gc.getArgumentStrings(gf, aInstruction);
 				reference.args(sl3);
 				final String path = reference.build();
 
-				sb.append(Emit.emit("/*427*/")+path+";");
+				sb.append(Emit.emit("/*427*/") + path + ";");
 			}
 		}
 		tos.put_string_ln(sb.toString());
@@ -422,9 +423,9 @@ public class Generate_Code_For_Method {
 				final List<String> sl3 = gc.getArgumentStrings(gf, aInstruction);
 				reference.args(sl3);
 				final String path = reference.build();
-				sb.append(Emit.emit("/*463*/")+path);
+				sb.append(Emit.emit("/*463*/") + path);
 			}
-			if (reference == null){
+			if (reference == null) {
 				sb.append('(');
 				final List<String> sl3 = gc.getArgumentStrings(gf, aInstruction);
 				sb.append(Helpers.String_join(", ", sl3));
@@ -657,12 +658,12 @@ public class Generate_Code_For_Method {
 
 	static class Generate_Method_Header {
 
-		private final String return_type;
-		private final String args_string;
-		private final String header_string;
-		private final String name;
+		private final String    return_type;
+		private final String    args_string;
+		private final String    header_string;
+		private final String    name;
 		private final GenerateC gc;
-		OS_Type type;
+		OS_Type        type;
 		TypeTableEntry tte;
 
 		public Generate_Method_Header(final BaseGeneratedFunction gf, @NotNull final GenerateC aGenerateC, final ElLog LOG) {

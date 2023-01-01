@@ -30,7 +30,7 @@ public class WlGenerateDefaultCtor implements WorkJob {
 
 	@Contract(pure = true)
 	public WlGenerateDefaultCtor(@NotNull final GenerateFunctions aGenerateFunctions, final FunctionInvocation aFunctionInvocation) {
-		generateFunctions = aGenerateFunctions;
+		generateFunctions  = aGenerateFunctions;
 		functionInvocation = aFunctionInvocation;
 	}
 

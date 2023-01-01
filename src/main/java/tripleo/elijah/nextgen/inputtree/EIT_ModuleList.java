@@ -114,15 +114,15 @@ public class EIT_ModuleList {
 //		private final ElLog.Verbosity                         verbosity;
 
 		private _ProcessParams(@NotNull final OS_Module aModule,
-							   @NotNull final PipelineLogic aPipelineLogic,
-							   @NotNull final GenerateFunctions aGenerateFunctions,
-							   @NotNull final EntryPointList aEntryPointList,
-							   @NotNull final DeducePhase aDeducePhase) {
-			mod = aModule;
+		                       @NotNull final PipelineLogic aPipelineLogic,
+		                       @NotNull final GenerateFunctions aGenerateFunctions,
+		                       @NotNull final EntryPointList aEntryPointList,
+		                       @NotNull final DeducePhase aDeducePhase) {
+			mod           = aModule;
 			pipelineLogic = aPipelineLogic;
-			gfm = aGenerateFunctions;
-			epl = aEntryPointList;
-			deducePhase = aDeducePhase;
+			gfm           = aGenerateFunctions;
+			epl           = aEntryPointList;
+			deducePhase   = aDeducePhase;
 //			verbosity = mod.getCompilation().pipelineLogic.getVerbosity();
 		}
 

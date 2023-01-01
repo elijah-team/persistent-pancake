@@ -99,13 +99,13 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 		for (final GenerateResultItem ab : gr.results()) {
 			final List<EIT_Input> inputs = List_of(new EIT_ModuleInput(ab.node.module(), c));
 
-			final EG_SingleStatement beginning   = new EG_SingleStatement("", new EX_Explanation() {
+			final EG_SingleStatement beginning = new EG_SingleStatement("", new EX_Explanation() {
 			});
-			final EG_SingleStatement middle      = new EG_SingleStatement(ab.output, new EX_Explanation() {
+			final EG_SingleStatement middle = new EG_SingleStatement(ab.output, new EX_Explanation() {
 			});
-			final EG_SingleStatement ending      = new EG_SingleStatement("", new EX_Explanation() {
+			final EG_SingleStatement ending = new EG_SingleStatement("", new EX_Explanation() {
 			});
-			final EX_Explanation     explanation = new EX_Explanation() {
+			final EX_Explanation explanation = new EX_Explanation() {
 			};
 
 			final EG_CompoundStatement seq = new EG_CompoundStatement(beginning, ending, middle, false, explanation);

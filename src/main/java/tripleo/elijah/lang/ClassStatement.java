@@ -34,10 +34,9 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 
 	private final OS_Element parent;
 	ClassInheritance _inh = new ClassInheritance(); // remove final for ClassBuilder
-	private ClassTypes _type;
-	private TypeNameList genericPart;
-
+	private ClassTypes   _type;
 	static final List<TypeName> emptyTypeNameList = ImmutableList.<TypeName>of();
+	private TypeNameList genericPart;
 	private      OS_Type        osType;
 
 	public ClassStatement(final OS_Element parentElement, final Context parentContext) {

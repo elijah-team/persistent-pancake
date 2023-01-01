@@ -58,18 +58,18 @@ public class TypeTableEntry {
 
 	private void _settingAttached(@NotNull final OS_Type aAttached) {
 		switch (aAttached.getType()) {
-		case USER:
-			if (genType.typeName != null) {
-				final TypeName typeName = aAttached.getTypeName();
-				if (!(typeName instanceof GenericTypeName))
-					genType.nonGenericTypeName = typeName;
-			} else
-				genType.typeName = aAttached/*.getTypeName()*/;
-			break;
-		case USER_CLASS:
+			case USER:
+				if (genType.typeName != null) {
+					final TypeName typeName = aAttached.getTypeName();
+					if (!(typeName instanceof GenericTypeName))
+						genType.nonGenericTypeName = typeName;
+				} else
+					genType.typeName = aAttached/*.getTypeName()*/;
+				break;
+			case USER_CLASS:
 //			ClassStatement c = attached.getClassOf();
-			genType.resolved = aAttached/*attached*/; // c
-			break;
+				genType.resolved = aAttached/*attached*/; // c
+				break;
 			case UNIT_TYPE:
 				genType.resolved = aAttached;
 			case BUILT_IN:

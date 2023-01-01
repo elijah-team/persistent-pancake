@@ -117,7 +117,7 @@ class Found_Element_For_ITE {
 								  final String normal_path = generatedFunction.getIdentIAPathNormal(new IdentIA(ite.getIndex(), generatedFunction));
 								  ite.resolveExpectation.satisfy(normal_path);
 							  }
-								});
+						  });
 					} else {
 						final IInvocation invocation;
 						if (ite.getBacklink() == null) {

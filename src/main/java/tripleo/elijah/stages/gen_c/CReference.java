@@ -570,14 +570,14 @@ public class CReference {
 	}
 
 	private static class CReference_getIdentIAPath_IdentIAHelper {
-		private final InstructionArgument ia_next;
-		private final List<String> sl;
-		private final int i;
-		private final int sSize;
-		private final OS_Element resolved_element;
+		private final InstructionArgument   ia_next;
+		private final List<String>          sl;
+		private final int                   i;
+		private final int                   sSize;
+		private final OS_Element            resolved_element;
 		private final BaseGeneratedFunction generatedFunction;
-		private final GeneratedNode resolved;
-		private final String value;
+		private final GeneratedNode         resolved;
+		private final String                value;
 
 
 		public int code;

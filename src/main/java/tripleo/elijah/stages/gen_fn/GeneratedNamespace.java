@@ -75,10 +75,10 @@ public class GeneratedNamespace extends GeneratedContainerNC implements GNCoded 
 		return null;
 	}
 
-    @Override
-    public OS_Module module() {
-        return module;
-    }
+	@Override
+	public void generateCode(final CodeGenerator aCodeGenerator, final GenerateResult aGr) {
+		aCodeGenerator.generate_namespace(this, aGr);
+	}
 
 	@Override
 	public OS_Element getElement() {
@@ -86,8 +86,8 @@ public class GeneratedNamespace extends GeneratedContainerNC implements GNCoded 
 	}
 
 	@Override
-	public void generateCode(final CodeGenerator aCodeGenerator, final GenerateResult aGr) {
-		aCodeGenerator.generate_namespace(this, aGr);
+	public OS_Module module() {
+		return module;
 	}
 
 	@Override
@@ -95,10 +95,10 @@ public class GeneratedNamespace extends GeneratedContainerNC implements GNCoded 
 		return "" + namespaceStatement;
 	}
 
-    @Override
-    public Role getRole() {
-        return Role.NAMESPACE;
-    }
+	@Override
+	public Role getRole() {
+		return Role.NAMESPACE;
+	}
 }
 
 //

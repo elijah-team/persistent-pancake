@@ -31,39 +31,62 @@ import java.util.Map;
  * Created 9/10/20 4:51 PM
  */
 public class VariableTableEntry extends BaseTableEntry1 implements Constructable, TableEntryIV, DeduceTypes2.ExpectationBase {
-	public final          VariableTableType                 vtt;
-	public final @NotNull Map<Integer, TypeTableEntry>      potentialTypes = new HashMap<Integer, TypeTableEntry>();
-	public final DeduceLocalVariable dlv = new DeduceLocalVariable(this);
-	final DeferredObject<ProcTableEntry, Void, Void> constructableDeferred = new DeferredObject<>();
-	private final         int                               index;
-	private final         String                            name;
-	private final DeferredObject2<GenType, Void, Void> typeDeferred = new DeferredObject2<GenType, Void, Void>();
-	public                TypeTableEntry                    type;
-	public                int                               tempNum        = -1;
-	public                ProcTableEntry                    constructable_pte;
-	public                GenType                           genType        = new GenType();
+	public final          VariableTableType                          vtt;
+	public final @NotNull Map<Integer, TypeTableEntry>               potentialTypes        = new HashMap<Integer, TypeTableEntry>();
+	public final          DeduceLocalVariable                        dlv                   = new DeduceLocalVariable(this);
+	final                 DeferredObject<ProcTableEntry, Void, Void> constructableDeferred = new DeferredObject<>();
+	private final         int                                        index;
+	private final         String                                     name;
+	private final         DeferredObject2<GenType, Void, Void>       typeDeferred          = new DeferredObject2<GenType, Void, Void>();
+	public                TypeTableEntry                             type;
+	public                int                                        tempNum               = -1;
+	public                ProcTableEntry                             constructable_pte;
+	public                GenType                                    genType               = new GenType();
 	// endregion constructable
-	@Nullable GenType _resolveTypeCalled = null;
+	@Nullable             GenType                                    _resolveTypeCalled    = null;
 
-	@Override
-	public @NotNull String toString() {
-		return "VariableTableEntry{" +
-				"index=" + index +
-				", name='" + name + '\'' +
-				", status=" + status +
-				", type=" + type.index +
-				", vtt=" + vtt +
-				", potentialTypes=" + potentialTypes +
-				'}';
-	}
+	private GeneratedNode _resolvedType;
 
 	public String getName() {
 		return name;
 	}
+	private DeduceElement3_VariableTableEntry _de3;
+
+	public @NotNull Collection<TypeTableEntry> potentialTypes() {
+		return potentialTypes.values();
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	@Override
+	public @NotNull String toString() {
+		return "VariableTableEntry{" +
+		  "index=" + index +
+		  ", name='" + name + '\'' +
+		  ", status=" + status +
+		  ", type=" + type.index +
+		  ", vtt=" + vtt +
+		  ", potentialTypes=" + potentialTypes +
+		  '}';
+	}
+
+	public Promise<GenType, Void, Void> typePromise() {
+		return typeDeferred.promise();
+	}
+
+//	public DeferredObject<GenType, Void, Void> typeDeferred() {
+//		return typeDeferred;
+//	}
+
+	public boolean typeDeferred_isPending() {
+		return typeDeferred.isPending();
+	}
 
 	public void addPotentialType(final int instructionIndex, final TypeTableEntry tte) {
 		if (!typeDeferred.isPending()) {
-			System.err.println("62 addPotentialType while typeDeferred is already resolved "+this);//throw new AssertionError();
+			System.err.println("62 addPotentialType while typeDeferred is already resolved " + this);//throw new AssertionError();
 			return;
 		}
 		//
@@ -99,29 +122,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 			}
 		}
 	}
-
-	public @NotNull Collection<TypeTableEntry> potentialTypes() {
-		return potentialTypes.values();
-	}
-
-	public int getIndex() {
-		return index;
-	}
-	private               GeneratedNode                     _resolvedType;
-
-	public Promise<GenType, Void, Void> typePromise() {
-		return typeDeferred.promise();
-	}
-
-//	public DeferredObject<GenType, Void, Void> typeDeferred() {
-//		return typeDeferred;
-//	}
-
-	public boolean typeDeferred_isPending() {
-		return typeDeferred.isPending();
-	}
-	private               DeduceElement3_VariableTableEntry _de3;
-	private               VTE_Zero                          _zero;
+	private VTE_Zero                          _zero;
 
 	public VariableTableEntry(final int aIndex, final VariableTableType aVtt, final String aName, final TypeTableEntry aTTE, final OS_Element el) {
 		this.index = aIndex;
@@ -159,7 +160,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 			return;
 		}
 		if (typeDeferred.isResolved()) {
-			System.err.println("126 typeDeferred is resolved "+this);
+			System.err.println("126 typeDeferred is resolved " + this);
 		}
 		_resolveTypeCalled = aGenType;
 		typeDeferred.resolve(aGenType);
@@ -181,7 +182,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 //	@Override
 	public void resolveTypeToClass(final GeneratedNode aNode) {
 		_resolvedType = aNode;
-		genType.node = aNode;
+		genType.node  = aNode;
 		type.resolve(aNode); // TODO maybe this obviates above
 	}
 

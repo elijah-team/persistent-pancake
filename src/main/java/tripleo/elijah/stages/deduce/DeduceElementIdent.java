@@ -22,11 +22,11 @@ import tripleo.elijah.stages.instructions.IdentIA;
  * Created 11/22/21 8:23 PM
  */
 public class DeduceElementIdent {
-	private final IdentTableEntry       identTableEntry;
+	private final IdentTableEntry                              identTableEntry;
 	private final DeferredObject<OS_Element, Diagnostic, Void> _resolvedElementPromise = new DeferredObject<>();
-	private       DeduceTypes2          deduceTypes2;
-	private       Context               context;
-	private       BaseGeneratedFunction generatedFunction;
+	private       DeduceTypes2                                 deduceTypes2;
+	private       Context                                      context;
+	private       BaseGeneratedFunction                        generatedFunction;
 
 	public DeduceElementIdent(final IdentTableEntry aIdentTableEntry) {
 		identTableEntry = aIdentTableEntry;

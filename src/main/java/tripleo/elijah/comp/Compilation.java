@@ -64,34 +64,34 @@ import java.util.regex.Pattern;
 
 public abstract class Compilation {
 
-	public final  List<OS_Module>                   modules      = new ArrayList<OS_Module>();
-	public final  List<CompilerInstructions>        cis          = new ArrayList<CompilerInstructions>();
-	public final List<ElLog> elLogs = new LinkedList<ElLog>();
-	final         Map<String, CompilerInstructions> fn2ci        = new HashMap<String, CompilerInstructions>();
-	final  Pipeline      pipelines = new Pipeline();
+	public final  List<OS_Module>                   modules   = new ArrayList<OS_Module>();
+	public final  List<CompilerInstructions>        cis       = new ArrayList<CompilerInstructions>();
+	public final  List<ElLog>                       elLogs    = new LinkedList<ElLog>();
+	final         Map<String, CompilerInstructions> fn2ci     = new HashMap<String, CompilerInstructions>();
+	final         Pipeline                          pipelines = new Pipeline();
 	private final int                               _compilationNumber;
 	private final ErrSink                           eee;
-	private final Map<String, OS_Module>            fn2m         = new HashMap<String, OS_Module>();
-	private final Map<String, OS_Package>           _packages    = new HashMap<String, OS_Package>();
-	private final CIS _cis = new CIS();
+	private final Map<String, OS_Module>            fn2m      = new HashMap<String, OS_Module>();
+	private final Map<String, OS_Package>           _packages = new HashMap<String, OS_Package>();
+	private final CIS                               _cis      = new CIS();
 
 	//
 	//
 	//
-	public PipelineLogic pipelineLogic;
-	final private USE use = new USE(this);
+	public        PipelineLogic        pipelineLogic;
+	final private USE                  use           = new USE(this);
 	//
 	//
 	//
-	public Stages stage = Stages.O; // Output
-	public  boolean do_out;
-	protected boolean silent = false;
-	private       IO                                io;
-	private       int                               _packageCode = 1;
-	private CompilationRunner    __cr;
-	private CompilerInstructions rootCI;
-	private int     _classCode    = 101;
-	private int     _functionCode = 1001;
+	public        Stages               stage         = Stages.O; // Output
+	public        boolean              do_out;
+	protected     boolean              silent        = false;
+	private       IO                   io;
+	private       int                  _packageCode  = 1;
+	private       CompilationRunner    __cr;
+	private       CompilerInstructions rootCI;
+	private       int                  _classCode    = 101;
+	private       int                  _functionCode = 1001;
 
 	public Compilation(final ErrSink eee, final IO io) {
 		this.eee                = eee;
@@ -103,14 +103,9 @@ public abstract class Compilation {
 		return rootCI.getName();
 	}
 
-	public Operation<CompilerInstructions> parseEzFile(final @NotNull File aFile) {
-		try {
-			final QueryEzFileToModuleParams       params = new QueryEzFileToModuleParams(aFile.getAbsolutePath(), io.readFile(aFile));
-			final Operation<CompilerInstructions> x      = new QueryEzFileToModule(params).calculate();
-			return x;
-		} catch (FileNotFoundException aE) {
-			return Operation.failure(aE);
-		}
+	public static ElLog.Verbosity gitlabCIVerbosity() {
+		final boolean gitlab_ci = isGitlab_ci();
+		return gitlab_ci ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
 	}
 
 	void hasInstructions(final @NotNull List<CompilerInstructions> cis,
@@ -137,6 +132,16 @@ public abstract class Compilation {
 		__cr.start(rootCI, do_out, op);
 	}
 
+	public Operation<CompilerInstructions> parseEzFile(final @NotNull File aFile) {
+		try {
+			final QueryEzFileToModuleParams       params = new QueryEzFileToModuleParams(aFile.getAbsolutePath(), io.readFile(aFile));
+			final Operation<CompilerInstructions> x      = new QueryEzFileToModule(params).calculate();
+			return x;
+		} catch (FileNotFoundException aE) {
+			return Operation.failure(aE);
+		}
+	}
+
 	public void pushItem(CompilerInstructions aci) {
 		_cis.onNext(aci);
 	}
@@ -144,6 +149,14 @@ public abstract class Compilation {
 	public void addPipeline(PipelineMember aPl) {
 		pipelines.add(aPl);
 	}
+
+	private void subscribeCI(final Observer<CompilerInstructions> aCio) {
+		_cis.subscribe(aCio);
+	}
+
+	//
+	//
+	//
 
 	public AccessBus feedCmdLine(final @NotNull List<String> args) throws Exception {
 		final ErrSink   errSink = eee == null ? new StdErrSink() : eee;
@@ -263,31 +276,6 @@ public abstract class Compilation {
 //		return ab;
 	}
 
-	private void subscribeCI(final Observer<CompilerInstructions> aCio) {
-		_cis.subscribe(aCio);
-	}
-
-	//
-	//
-	//
-
-	private CompilerInstructions parseEzFile(final File f, final String file_name, final ErrSink errSink) throws Exception {
-		System.out.println((String.format("   %s", f.getAbsolutePath())));
-		if (!f.exists()) {
-			errSink.reportError(
-			  "File doesn't exist " + f.getAbsolutePath());
-			return null;
-		}
-
-		final CompilerInstructions m = realParseEzFile(file_name, io.readFile(f), f);
-		{
-			String prelude = m.genLang();
-			System.err.println("230 " + prelude);
-			if (prelude == null) prelude = "c"; // TODO should be java for eljc
-		}
-		return m;
-	}
-
 	private @NotNull List<CompilerInstructions> searchEzFiles(final @NotNull File directory) {
 		final List<CompilerInstructions> R = new ArrayList<CompilerInstructions>();
 		final FilenameFilter filter = new FilenameFilter() {
@@ -306,7 +294,7 @@ public abstract class Compilation {
 					if (ezFile != null)
 						R.add(ezFile);
 					else
-						eee.reportError("9995 ezFile is null "+file.toString());
+						eee.reportError("9995 ezFile is null " + file.toString());
 				} catch (final Exception e) {
 					eee.exception(e);
 				}
@@ -315,10 +303,21 @@ public abstract class Compilation {
 		return R;
 	}
 
+	private CompilerInstructions parseEzFile(final File f, final String file_name, final ErrSink errSink) throws Exception {
+		System.out.println((String.format("   %s", f.getAbsolutePath())));
+		if (!f.exists()) {
+			errSink.reportError(
+			  "File doesn't exist " + f.getAbsolutePath());
+			return null;
+		}
 
-	public static ElLog.Verbosity gitlabCIVerbosity() {
-		final boolean gitlab_ci = isGitlab_ci();
-		return gitlab_ci ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
+		final CompilerInstructions m = realParseEzFile(file_name, io.readFile(f), f);
+		{
+			String prelude = m.genLang();
+			System.err.println("230 " + prelude);
+			if (prelude == null) prelude = "c"; // TODO should be java for eljc
+		}
+		return m;
 	}
 
 	public static boolean isGitlab_ci() {
@@ -497,12 +496,12 @@ public abstract class Compilation {
         if (fn2m.containsKey(fileName)) {
             return fn2m.get(fileName);
         }
-        return null;
+	    return null;
     }
 
 	// endregion
 
-    //
+	//
 	// region CLASS AND FUNCTION CODES
 	//
 
@@ -680,14 +679,14 @@ public abstract class Compilation {
 //	}
 
 	static class USE {
-		private static final FilenameFilter accept_source_files = (directory, file_name) -> {
+		private static final FilenameFilter         accept_source_files = (directory, file_name) -> {
 			final boolean matches = Pattern.matches(".+\\.elijah$", file_name)
 			  || Pattern.matches(".+\\.elijjah$", file_name);
 			return matches;
 		};
-		private final Compilation c;
-		private final ErrSink     errSink;
-		private final Map<String, OS_Module> fn2m = new HashMap<String, OS_Module>();
+		private final        Compilation            c;
+		private final        ErrSink                errSink;
+		private final        Map<String, OS_Module> fn2m                = new HashMap<String, OS_Module>();
 
 		@Contract(pure = true)
 		public USE(final Compilation aCompilation) {

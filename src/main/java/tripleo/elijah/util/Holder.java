@@ -13,15 +13,15 @@ package tripleo.elijah.util;
  * Created 3/17/22 4:27 PM
  */
 public class Holder<T> {
-    private T el;
+	private T el;
 
 	public void set(final T el) {
 		this.el = el;
 	}
 
-    public T get() {
-        return el;
-    }
+	public T get() {
+		return el;
+	}
 }
 
 //

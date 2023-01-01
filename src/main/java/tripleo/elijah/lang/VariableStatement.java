@@ -72,8 +72,8 @@ public class VariableStatement implements OS_Element, @NotNull Locatable {
 	@Nullable List<AnnotationClause> annotations = null;
 
 	@Override
-	public OS_Element getParent() {
-		return _parent;
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitVariableStatement(this);
 	}
 
 	@Override
@@ -84,8 +84,8 @@ public class VariableStatement implements OS_Element, @NotNull Locatable {
 	// region annotations
 
 	@Override
-	public void visitGen(final ElElementVisitor visit) {
-		visit.visitVariableStatement(this);
+	public OS_Element getParent() {
+		return _parent;
 	}
 
 	public void addAnnotation(final AnnotationClause a) {

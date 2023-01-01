@@ -23,7 +23,7 @@ public class FloatExpression implements IExpression {
 	private final Token n;
 
 	public FloatExpression(final Token n) {
-		this.n = n;
+		this.n  = n;
 		carrier = Float.parseFloat(n.getText());
 	}
 

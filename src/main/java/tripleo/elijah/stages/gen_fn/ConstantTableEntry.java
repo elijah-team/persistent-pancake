@@ -25,11 +25,11 @@ public class ConstantTableEntry {
 	@Override
 	public @NotNull String toString() {
 		return "ConstantTableEntry{" +
-				"index=" + index +
-				", name='" + name + '\'' +
-				", initialValue=" + initialValue +
-				", type=" + type +
-				'}';
+		  "index=" + index +
+		  ", name='" + name + '\'' +
+		  ", initialValue=" + initialValue +
+		  ", type=" + type +
+		  '}';
 	}
 
 	public ConstantTableEntry(final int index, final String name, final IExpression initialValue, final TypeTableEntry type) {
