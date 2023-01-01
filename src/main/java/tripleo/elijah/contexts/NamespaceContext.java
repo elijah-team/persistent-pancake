@@ -11,19 +11,29 @@
  */
 package tripleo.elijah.contexts;
 
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.AliasStatement;
+import tripleo.elijah.lang.ClassItem;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.NamespaceStatement;
+import tripleo.elijah.lang.OS_Element2;
+import tripleo.elijah.lang.PropertyStatement;
+import tripleo.elijah.lang.VariableSequence;
+import tripleo.elijah.lang.VariableStatement;
 
 import java.util.List;
 
 /**
  * @author Tripleo
- *
+ * <p>
  * Created 	Mar 29, 2020 at 8:59:42 PM
  */
 public class NamespaceContext extends Context {
 
-	private final Context _parent;
-	public NamespaceStatement carrier;
+	public final  NamespaceStatement carrier;
+	private final Context            _parent;
 
 //	public NamespaceContext(NamespaceStatement namespaceStatement) {
 //		carrier = namespaceStatement;
