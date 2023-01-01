@@ -10,7 +10,7 @@ package tripleo.elijah.lang;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.contexts.PropertyStatementContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.Helpers;
 
 /**
@@ -35,19 +35,19 @@ public class PropertyStatement implements OS_Element, OS_Element2, ClassItem {
 
 	@NotNull
 	private FunctionDef createSetFunction() {
-		final FunctionDef functionDef = new FunctionDef(this, getContext());
-		functionDef.setName(Helpers.string_to_ident(String.format("<prop_set %s>", prop_name)));
-		functionDef.setSpecies(FunctionDef.Species.PROP_SET);
-		final FormalArgList fal = new FormalArgList();
-		final FormalArgListItem fali = fal.next();
-		fali.setName(Helpers.string_to_ident("Value"));
-		fali.setTypeName(this.typeName);
-		final RegularTypeName unitType = new RegularTypeName();
-		unitType.setName(Helpers.string_to_qualident("Unit"));
-		functionDef.setReturnType(unitType/*BuiltInTypes.Unit*/);
-		functionDef.setFal(fal);
-		return functionDef;
-	}
+        final FunctionDef functionDef = new FunctionDef(this, getContext());
+        functionDef.setName(Helpers.string_to_ident(String.format("<prop_set %s>", prop_name)));
+        functionDef.setSpecies(FunctionDef.Species.PROP_SET);
+        final @NotNull FormalArgList fal = new FormalArgList();
+        final FormalArgListItem fali = fal.next();
+        fali.setName(Helpers.string_to_ident("Value"));
+        fali.setTypeName(this.typeName);
+        final RegularTypeName unitType = new RegularTypeName();
+        unitType.setName(Helpers.string_to_qualident("Unit"));
+        functionDef.setReturnType(unitType/*BuiltInTypes.Unit*/);
+        functionDef.setFal(fal);
+        return functionDef;
+    }
 
 	@NotNull
 	private FunctionDef createGetFunction() {
@@ -58,10 +58,10 @@ public class PropertyStatement implements OS_Element, OS_Element2, ClassItem {
 		return functionDef;
 	}
 
-	@Override // OS_Element
-	public void visitGen(final ICodeGen visit) {
-		visit.visitPropertyStatement(this);
-	}
+    @Override // OS_Element
+    public void visitGen(final ElElementVisitor visit) {
+        visit.visitPropertyStatement(this);
+    }
 
 	@Override // OS_Element
 	public OS_Element getParent() {

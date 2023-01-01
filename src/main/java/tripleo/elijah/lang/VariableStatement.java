@@ -9,8 +9,9 @@
 package tripleo.elijah.lang;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.diagnostic.Locatable;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,34 +69,34 @@ public class VariableStatement implements OS_Element, @NotNull Locatable {
 		return initialValue;
 	}
 
-	@Override
-	public void visitGen(final ICodeGen visit) {
-		visit.visitVariableStatement(this);
-	}
+    @Nullable List<AnnotationClause> annotations = null;
 
 	@Override
 	public OS_Element getParent() {
-		return _parent;
-	}
+        return _parent;
+    }
 
-	@Override
-	public Context getContext() {
-		return getParent().getContext();
-	}
+    @Override
+    public Context getContext() {
+        return getParent().getContext();
+    }
 
-	// region annotations
+    // region annotations
 
-	List<AnnotationClause> annotations = null;
+    @Override
+    public void visitGen(final ElElementVisitor visit) {
+        visit.visitVariableStatement(this);
+    }
 
-	public void addAnnotation(final AnnotationClause a) {
-		if (annotations == null)
-			annotations = new ArrayList<AnnotationClause>();
-		annotations.add(a);
-	}
+    public void addAnnotation(final AnnotationClause a) {
+        if (annotations == null)
+            annotations = new ArrayList<AnnotationClause>();
+        annotations.add(a);
+    }
 
-	public void walkAnnotations(final AnnotationWalker annotationWalker) {
-		if (_parent.annotations != null) {
-			for (final AnnotationClause annotationClause : _parent.annotations) {
+    public void walkAnnotations(final AnnotationWalker annotationWalker) {
+        if (_parent.annotations != null) {
+            for (final AnnotationClause annotationClause : _parent.annotations) {
 				for (final AnnotationPart annotationPart : annotationClause.aps) {
 					annotationWalker.annotation(annotationPart);
 				}

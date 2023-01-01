@@ -8,7 +8,7 @@
  */
 package tripleo.elijah.lang;
 
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
 
 public class YieldExpression /*extends BasicBinaryExpression*/ implements OS_Element, StatementItem {
@@ -18,10 +18,10 @@ public class YieldExpression /*extends BasicBinaryExpression*/ implements OS_Ele
 		throw new NotImplementedException();
 	}
 
-	@Override
-	public void visitGen(final ICodeGen visit) {
-		visit.visitYield(this);
-	}
+    @Override
+    public void visitGen(final ElElementVisitor visit) {
+        visit.visitYield(this);
+    }
 
 	@Override
 	public OS_Element getParent() {

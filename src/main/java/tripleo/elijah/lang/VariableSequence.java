@@ -8,7 +8,8 @@
  */
 package tripleo.elijah.lang;
 
-import tripleo.elijah.gen.ICodeGen;
+import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.lang2.ElElementVisitor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,18 +17,11 @@ import java.util.List;
 
 public class VariableSequence implements StatementItem, FunctionItem, ClassItem {
 
-	private Context _ctx;
-	private OS_Element parent;
-	List<VariableStatement> stmts;
-
-	@Deprecated public VariableSequence() {
-		stmts = new ArrayList<VariableStatement>();
-	}
-
-	public VariableSequence(final Context aContext) {
-		stmts = new ArrayList<VariableStatement>();
-		_ctx = aContext;
-	}
+    final List<VariableStatement> stmts;
+    @Nullable List<AnnotationClause> annotations = null;
+    private Context _ctx;
+    private OS_Element parent;
+    private AccessNotation access_note;
 
 	private TypeModifiers def;
 
@@ -44,10 +38,10 @@ public class VariableSequence implements StatementItem, FunctionItem, ClassItem 
 		return stmts;
 	}
 
-	@Override
-	public void visitGen(final ICodeGen visit) {
-		visit.visitVariableSequence(this);
-	}
+    @Deprecated
+    public VariableSequence() {
+        stmts = new ArrayList<VariableStatement>();
+    }
 
 	@Override
 	public OS_Element getParent() {
@@ -67,26 +61,33 @@ public class VariableSequence implements StatementItem, FunctionItem, ClassItem 
 		_ctx = ctx;
 	}
 
-	@Override public String toString() {
-		final List<String> r = new ArrayList<String>();
-		for (final VariableStatement stmt : stmts) {
-			r.add(stmt.getName());
-		}
-		return r.toString();
+    public VariableSequence(final Context aContext) {
+        stmts = new ArrayList<VariableStatement>();
+        _ctx = aContext;
+    }
+
+    @Override
+    public String toString() {
+        final List<String> r = new ArrayList<String>();
+        for (final VariableStatement stmt : stmts) {
+            r.add(stmt.getName());
+        }
+        return r.toString();
 //		return (stmts.stream().map(n -> n.getName()).collect(Collectors.toList())).toString();
-	}
+    }
 
-	List<AnnotationClause> annotations = null;
+    @Override
+    public void visitGen(final ElElementVisitor visit) {
+        visit.visitVariableSequence(this);
+    }
 
-	public void addAnnotation(final AnnotationClause a) {
-		if (annotations == null)
-			annotations = new ArrayList<AnnotationClause>();
-		annotations.add(a);
-	}
+    // region ClassItem
 
-	// region ClassItem
-
-	private AccessNotation access_note;
+    public void addAnnotation(final AnnotationClause a) {
+        if (annotations == null)
+            annotations = new ArrayList<AnnotationClause>();
+        annotations.add(a);
+    }
 	private El_Category category;
 
 	@Override

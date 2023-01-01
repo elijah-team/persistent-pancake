@@ -9,7 +9,7 @@
 package tripleo.elijah.lang;
 
 import antlr.Token;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijjah.ElijjahTokenTypes;
 
@@ -38,10 +38,10 @@ public class AccessNotation implements OS_Element {
 		this.tnl = tnl;
 	}
 
-	@Override
-	public void visitGen(final ICodeGen visit) {
-		visit.visitAccessNotation(this);
-	}
+    @Override
+    public void visitGen(final ElElementVisitor visit) {
+        visit.visitAccessNotation(this);
+    }
 
 	@Override
 	public OS_Element getParent() {

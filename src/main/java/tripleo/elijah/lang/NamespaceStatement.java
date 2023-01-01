@@ -8,8 +8,9 @@
  */
 package tripleo.elijah.lang;
 
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.contexts.NamespaceContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
 
 /**
@@ -79,10 +80,10 @@ public class NamespaceStatement extends _CommonNC implements Documentable, Modul
 		return new ProgramClosure() {};
 	}
 
-	@Override // OS_Element
-	public void visitGen(final ICodeGen visit) {
-		visit.visitNamespaceStatement(this);
-	}
+    @Override // OS_Element
+    public void visitGen(final @NotNull ElElementVisitor visit) {
+        visit.visitNamespaceStatement(this);
+    }
 
 	@Override // OS_Element
 	public OS_Element getParent() {
@@ -110,7 +111,7 @@ public class NamespaceStatement extends _CommonNC implements Documentable, Modul
 		if (anElement instanceof ClassItem)
 			items.add((ClassItem) anElement);
 		else
-			System.err.println(String.format("[NamespaceStatement#add] not a ClassItem: %s", anElement));
+            System.err.printf("[NamespaceStatement#add] not a ClassItem: %s%n", anElement);
 	}
 
 	public void postConstruct() {

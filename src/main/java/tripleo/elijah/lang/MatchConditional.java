@@ -9,9 +9,10 @@
 package tripleo.elijah.lang;
 
 import antlr.Token;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.contexts.MatchConditionalContext;
 import tripleo.elijah.contexts.MatchContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +39,13 @@ public class MatchConditional implements OS_Element, StatementItem, FunctionItem
 		return parts;
 	}
 
-	/**
-	 * @category OS_Element
-	 */
-	@Override
-	public void visitGen(final ICodeGen visit) {
-		visit.visitMatchConditional(this);
-	}
+    /**
+     * @category OS_Element
+     */
+    @Override
+    public void visitGen(final ElElementVisitor visit) {
+        visit.visitMatchConditional(this);
+    }
 
 	/**
 	 * @category OS_Element
@@ -115,9 +116,9 @@ public class MatchConditional implements OS_Element, StatementItem, FunctionItem
 
 		Iterable<? extends FunctionItem> getItems();
 
-		@Override
-		default void visitGen(final ICodeGen visit) {
-			visit.visitMC1(this);
+        @Override
+        default void visitGen(final ElElementVisitor visit) {
+            visit.visitMC1(this);
 		}
 	}
 
@@ -141,7 +142,7 @@ private final List<Token> docstrings = null;
 
 		@Override
 		public void add(final FunctionItem aItem) {
-			scope3.add((OS_Element) aItem);
+            scope3.add(aItem);
 			//items.add(aItem);
 		}
 
@@ -193,7 +194,7 @@ private final List<Token> docstrings = null;
 
 		@Override
 		public void add(final FunctionItem aItem) {
-			scope3.add((OS_Element) aItem);
+            scope3.add(aItem);
 			//items.add(aItem);
 		}
 
@@ -248,7 +249,7 @@ private final List<Token> docstrings = null;
 
 		@Override
 		public void add(final FunctionItem aItem) {
-			scope3.add((OS_Element) aItem);
+            scope3.add(aItem);
 			//items.add(aItem);
 		}
 
@@ -281,11 +282,11 @@ private final List<Token> docstrings = null;
 
 		public IdentExpression getIdent() {
 			return ident;
-		}
+        }
 
-		@Override
-		public Context getContext() {
-			return ___ctx;
+        @Override
+        public @NotNull Context getContext() {
+            return ___ctx;
 		}
 
 		@Override

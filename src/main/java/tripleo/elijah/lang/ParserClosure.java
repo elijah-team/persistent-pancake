@@ -30,11 +30,11 @@ public class ParserClosure extends ProgramClosure {
 		return module;
 	}
 
-	public OS_Package defaultPackageName(final Qualident aPackageName) {
+	public OS_Package defaultPackageName(final @NotNull Qualident aPackageName) {
 //		assert module.packageName == null;
-		module.pushPackageName(aPackageName);
-		return module.parent.makePackage(aPackageName);
-	}
+        module.pushPackageName(aPackageName);
+        return module.parent.makePackage(aPackageName);
+    }
 
 	public void packageName(final Qualident aPackageName) {
 		//assert module.packageName ==null;

@@ -9,7 +9,7 @@
 package tripleo.elijah.lang;
 
 import tripleo.elijah.contexts.FuncExprContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.List;
@@ -114,10 +114,10 @@ public class FuncExpr extends BaseFunctionDef implements IExpression, OS_Element
 		return _type;
 	}
 
-	@Override
-	public void visitGen(final ICodeGen visit) {
-		visit.visitFuncExpr(this);
-	}
+    @Override
+    public void visitGen(final ElElementVisitor visit) {
+        visit.visitFuncExpr(this);
+    }
 
 	@Override
 	public OS_Element getParent() {

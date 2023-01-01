@@ -21,18 +21,18 @@ import java.util.List;
  */
 public abstract class BaseFunctionDef implements Documentable, ClassItem, OS_Container, OS_Element2 {
 
-	public Attached _a = new Attached();
-	protected Species _species;
-	List<AnnotationClause> annotations = null;
-	protected Scope3 scope3;
-	protected FormalArgList mFal = new FormalArgList(); // remove final for FunctionDefBuilder
-	private IdentExpression funName;
-	private AccessNotation access_note;
-	private El_Category category;
+    public final Attached _a = new Attached();
+    protected Species _species;
+    protected Scope3 scope3;
+    protected FormalArgList mFal = new FormalArgList(); // remove final for FunctionDefBuilder
+    List<AnnotationClause> annotations = null;
+    private IdentExpression funName;
+    private AccessNotation access_note;
+    private El_Category category;
 
-	// region arglist
+    // region arglist
 
-	public FormalArgList fal() {
+    public FormalArgList fal() {
 		return mFal;
 	}
 
@@ -141,16 +141,16 @@ public abstract class BaseFunctionDef implements Documentable, ClassItem, OS_Con
 		}
 	}
 
-	public Iterable<AnnotationPart> annotationIterable() {
-		final List<AnnotationPart> aps = new ArrayList<AnnotationPart>();
-		if (annotations == null) return aps;
-		for (final AnnotationClause annotationClause : annotations) {
-			for (final AnnotationPart annotationPart : annotationClause.aps) {
-				aps.add(annotationPart);
-			}
-		}
-		return aps;
-	}
+    public @NotNull Iterable<AnnotationPart> annotationIterable() {
+        final List<AnnotationPart> aps = new ArrayList<AnnotationPart>();
+        if (annotations == null) return aps;
+        for (final AnnotationClause annotationClause : annotations) {
+            for (final AnnotationPart annotationPart : annotationClause.aps) {
+                aps.add(annotationPart);
+            }
+        }
+        return aps;
+    }
 
 	// endregion
 

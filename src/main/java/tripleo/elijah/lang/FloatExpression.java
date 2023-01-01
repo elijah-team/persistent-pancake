@@ -19,8 +19,8 @@ import tripleo.elijah.util.NotImplementedException;
 
 public class FloatExpression implements IExpression {
 
-	float carrier;
-	private final Token n;
+	final float carrier;
+    private final Token n;
 
 	public FloatExpression(final Token n) {
 		this.n = n;

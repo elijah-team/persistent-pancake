@@ -14,7 +14,7 @@ package tripleo.elijah.lang;
 import antlr.Token;
 import tripleo.elijah.contexts.CaseContext;
 import tripleo.elijah.contexts.SingleIdentContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.HashMap;
@@ -44,10 +44,10 @@ public class CaseConditional implements OS_Element, StatementItem, FunctionItem 
 		this.expr = expr;
 	}
 
-	@Override
-	public void visitGen(final ICodeGen visit) {
-		visit.visitCaseConditional(this);
-	}
+    @Override
+    public void visitGen(final ElElementVisitor visit) {
+        visit.visitCaseConditional(this);
+    }
 
 	public HashMap<IExpression, CaseScope> getScopes() {
 		return scopes;
@@ -119,10 +119,10 @@ public class CaseConditional implements OS_Element, StatementItem, FunctionItem 
 			cscope3.addDocString(s1);
 		}
 
-		@Override
-		public void visitGen(final ICodeGen visit) {
-			visit.visitCaseScope(this);
-		}
+        @Override
+        public void visitGen(final ElElementVisitor visit) {
+            visit.visitCaseScope(this);
+        }
 
 		@Override
 		public OS_Element getParent() {

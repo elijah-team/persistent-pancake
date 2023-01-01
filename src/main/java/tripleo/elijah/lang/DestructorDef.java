@@ -9,7 +9,7 @@
 package tripleo.elijah.lang;
 
 import tripleo.elijah.contexts.FunctionContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 
 /**
  * @author Tripleo
@@ -31,10 +31,10 @@ public class DestructorDef extends BaseFunctionDef {
 		setSpecies(Species.DTOR);
 	}
 
-	@Override
-	public void visitGen(final ICodeGen visit) {
-		visit.visitDestructor(this);
-	}
+    @Override
+    public void visitGen(final ElElementVisitor visit) {
+        visit.visitDestructor(this);
+    }
 
 	@Override
 	public OS_Element getParent() {

@@ -9,16 +9,16 @@
 package tripleo.elijah.lang;
 
 import tripleo.elijah.contexts.ImportContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 
 import java.util.List;
 
 public interface ImportStatement extends ModuleItem, ClassItem, StatementItem {
 
-	@Override
-	default void visitGen(final ICodeGen visit) {
-		visit.visitImportStatment(this);
-	}
+    @Override
+    default void visitGen(final ElElementVisitor visit) {
+        visit.visitImportStatment(this);
+    }
 
 	List<Qualident> parts();
 

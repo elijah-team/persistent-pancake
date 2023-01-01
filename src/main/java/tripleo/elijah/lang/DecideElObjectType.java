@@ -23,11 +23,15 @@ public class DecideElObjectType {
 		else if (input instanceof VariableSequence)
 			return ElObjectType.VAR_SEQ;
 		else if (input instanceof VariableStatement)
-			return ElObjectType.VAR;
-		else if (input instanceof FunctionDef)
-			return ElObjectType.FUNCTION;
-		else if (input instanceof FormalArgListItem)
-			return ElObjectType.FORMAL_ARG_LIST_ITEM;
+            return ElObjectType.VAR;
+        else if (input instanceof ConstructorDef)
+            return ElObjectType.CONSTRUCTOR;
+        else if (input instanceof FunctionDef)
+            return ElObjectType.FUNCTION;
+        else if (input instanceof FormalArgListItem)
+            return ElObjectType.FORMAL_ARG_LIST_ITEM;
+        else if (input instanceof OS_Module)
+            return ElObjectType.MODULE;
 		return ElObjectType.UNKNOWN;
 	}
 

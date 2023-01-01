@@ -12,10 +12,10 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.contexts.ClassContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
@@ -36,25 +36,37 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 	private ClassTypes _type;
 	private TypeNameList genericPart;
 
-	static final List<TypeName> emptyTypeNameList = ImmutableList.<TypeName>of();
+    static final List<TypeName> emptyTypeNameList = ImmutableList.<TypeName>of();
+    private OS_Type osType;
 
 	public ClassStatement(final OS_Element parentElement, final Context parentContext) {
-		parent = parentElement; // setParent
-		if (parentElement instanceof OS_Module) {
-			final OS_Module module = (OS_Module) parentElement;
-			//
-			this.setPackageName(module.pullPackageName());
-			_packageName.addElement(this);
-			module.add(this);
-		} else if (parentElement instanceof FunctionDef) {
-			// do nothing
-		} else if (parentElement instanceof OS_Container) {
-			((OS_Container) parentElement).add(this);
-		} else {
-			throw new IllegalStateException(String.format("Cant add ClassStatement to %s", parentElement));
-		}
-		setContext(new ClassContext(parentContext, this));
-	}
+        parent = parentElement; // setParent
+
+        @NotNull final ElObjectType x = DecideElObjectType.getElObjectType(parentElement);
+        switch (x) {
+            case MODULE:
+                final OS_Module module = (OS_Module) parentElement;
+                //
+                this.setPackageName(module.pullPackageName());
+                _packageName.addElement(this);
+                module.add(this);
+                break;
+            case FUNCTION:
+                // do nothing
+                break;
+            default:
+                // we kind of fail the switch test here because OS_Container is not an OS_Element,
+                // so we have to test explicitly, messing up the pretty flow we had.
+                // hey sh*t happens.
+                if (parentElement instanceof OS_Container) {
+                    ((OS_Container) parentElement).add(this);
+                } else {
+                    throw new IllegalStateException(String.format("Cant add ClassStatement to %s", parentElement));
+                }
+        }
+
+        setContext(new ClassContext(parentContext, this));
+    }
 
 	@Override
 	public OS_Element getParent() {
@@ -68,10 +80,10 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 		items.add((ClassItem) anElement);
 	}
 
-	@Override
-	public void visitGen(final ICodeGen visit) {
-		visit.addClass(this); // TODO visitClass
-	}
+    @Override
+    public void visitGen(final ElElementVisitor visit) {
+        visit.addClass(this); // TODO visitClass
+    }
 
 	@Override
 	public String toString() {
@@ -92,10 +104,10 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 		return new DestructorDef(this, getContext());
 	}
 
-	@Override // OS_Element
-	public Context getContext() {
-		return _a._context;
-	}
+    @Override // OS_Element
+    public ClassContext getContext() {
+        return (ClassContext) _a._context;
+    }
 
 	public void setContext(final ClassContext ctx) {
 		_a.setContext(ctx);
@@ -106,8 +118,7 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 			@Override
 			public boolean apply(@Nullable final ClassItem item) {
 				if (item instanceof FunctionDef && !(item instanceof ConstructorDef))
-					if (((FunctionDef) item).name().equals(name))
-						return true;
+                    return ((FunctionDef) item).name().equals(name);
 				return false;
 			}
 		});
@@ -149,14 +160,14 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 
 	// region annotations
 
-	public Iterable<AnnotationPart> annotationIterable() {
-		final List<AnnotationPart> aps = new ArrayList<AnnotationPart>();
-		if (annotations == null) return aps;
-		for (final AnnotationClause annotationClause : annotations) {
-			aps.addAll(annotationClause.aps);
-		}
-		return aps;
-	}
+    public @NotNull Iterable<AnnotationPart> annotationIterable() {
+        final List<AnnotationPart> aps = new ArrayList<AnnotationPart>();
+        if (annotations == null) return aps;
+        for (final AnnotationClause annotationClause : annotations) {
+            aps.addAll(annotationClause.aps);
+        }
+        return aps;
+    }
 
 	// endregion
 
@@ -176,10 +187,10 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 		return propertyStatement;
 	}
 
-	public TypeAliasStatement typeAlias() {
-		NotImplementedException.raise();
-		return null;
-	}
+    public @org.jetbrains.annotations.Nullable TypeAliasStatement typeAlias() {
+        NotImplementedException.raise();
+        return null;
+    }
 
 	public InvariantStatement invariantStatement() {
 		NotImplementedException.raise();
@@ -225,8 +236,10 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 	}
 
 	public OS_Type getOS_Type() {
-		return new OS_Type(this); // TODO to cache or not to cache??
-	}
+        if (osType == null)
+            osType = new OS_Type(this);
+        return osType;
+    }
 }
 
 //

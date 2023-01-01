@@ -9,7 +9,7 @@
 package tripleo.elijah.lang;
 
 import tripleo.elijah.contexts.LoopContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,10 +75,10 @@ private final Attached _a = new Attached();
 //		return items;
 	}
 
-	@Override // OS_Element
-	public void visitGen(final ICodeGen visit) {
-		visit.visitLoop(this);
-	}
+    @Override // OS_Element
+    public void visitGen(final ElElementVisitor visit) {
+        visit.visitLoop(this);
+    }
 
 	public String getIterName() {
 		return iterName.getText();

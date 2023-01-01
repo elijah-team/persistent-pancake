@@ -9,7 +9,7 @@
 package tripleo.elijah.lang;
 
 import tripleo.elijah.contexts.FunctionContext;
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.Helpers;
 
 /**
@@ -20,8 +20,8 @@ import tripleo.elijah.util.Helpers;
 public class ConstructorDef extends BaseFunctionDef {
 	public static final IdentExpression emptyConstructorName = Helpers.string_to_ident("<>");
 
-	// TODO override name() ??
-	public static ConstructorDef defaultVirtualCtor = new ConstructorDef(null, null, null);
+    // TODO override name() ??
+    public static final ConstructorDef defaultVirtualCtor = new ConstructorDef(null, null, null);
 
 	private final OS_Element parent;
 
@@ -43,10 +43,10 @@ public class ConstructorDef extends BaseFunctionDef {
 		setSpecies(Species.CTOR);
 	}
 
-	@Override
-	public void visitGen(final ICodeGen visit) {
-		visit.visitConstructorDef(this);
-	}
+    @Override
+    public void visitGen(final ElElementVisitor visit) {
+        visit.visitConstructorDef(this);
+    }
 
 	@Override // OS_Element
 	public OS_Element getParent() {

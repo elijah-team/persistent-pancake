@@ -12,13 +12,15 @@ package tripleo.elijah.lang;
  * Created 6/22/21 1:00 AM
  */
 public enum ElObjectType {
-	UNKNOWN,
-	CLASS,
-	NAMESPACE,
-	FUNCTION,
-	VAR_SEQ,
-	VAR,
-	FORMAL_ARG_LIST_ITEM
+    UNKNOWN,
+    CLASS,
+    NAMESPACE,
+    FUNCTION,
+    CONSTRUCTOR,
+    VAR_SEQ,
+    VAR,
+    FORMAL_ARG_LIST_ITEM,
+    MODULE
 }
 
 //

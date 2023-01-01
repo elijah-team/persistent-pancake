@@ -34,34 +34,34 @@ public class ListExpression extends AbstractExpression implements Locatable {
 		return false;
 	}
 
+    public final Syntax syntax = new Syntax();
+
+    @Override
+    public OS_Type getType() {
+        return null;
+    }
+
+    // region Syntax
+
 	@Override
 	public void setType(final OS_Type deducedExpression) {
 
-	}
+    }
 
-	@Override
-	public OS_Type getType() {
-		return null;
-	}
+    public class Syntax {
+        final List<Token> commas = new ArrayList<Token>();
+        Token startToken;
+        Token endToken;
 
-	// region Syntax
-
-	public class Syntax {
-		Token startToken;
-		Token endToken;
-		List<Token> commas = new ArrayList<Token>();
-
-		public void start_and_end(final Token startToken, final Token endToken) {
-			this.startToken = startToken;
-			this.endToken = endToken;
-		}
+        public void start_and_end(final Token startToken, final Token endToken) {
+            this.startToken = startToken;
+            this.endToken = endToken;
+        }
 
 		public void comma(final Token t) {
 			commas.add(t);
 		}
 	}
-
-	public Syntax syntax = new Syntax();
 
 	// endregion
 
