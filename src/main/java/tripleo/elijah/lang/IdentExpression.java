@@ -27,19 +27,19 @@ import java.io.File;
  */
 public class IdentExpression implements IExpression, OS_Element, Resolvable, Locatable {
 
-    public final Attached _a;
-    private final Token text;
-    private OS_Element _resolvedElement;
+	public final  Attached   _a;
+	private final Token      text;
+	private       OS_Element _resolvedElement;
 
-    public IdentExpression(final Token r1) {
-        this.text = r1;
-        this._a = new Attached();
-    }
+	public IdentExpression(final Token r1) {
+		this.text = r1;
+		this._a   = new Attached();
+	}
 
-    public IdentExpression(final Token r1, final Context cur) {
-        this.text = r1;
-        this._a = new Attached();
-        setContext(cur);
+	public IdentExpression(final Token r1, final Context cur) {
+		this.text = r1;
+		this._a   = new Attached();
+		setContext(cur);
 	}
 
 	@Override
@@ -67,16 +67,16 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 	}
 
 	@Override
-    public void setLeft(final @NotNull IExpression iexpression) {
+	public void setLeft(final @NotNull IExpression iexpression) {
 //		if (iexpression instanceof IdentExpression) {
 //			text = ((IdentExpression) iexpression).text;
 //		} else {
 //			// NOTE was System.err.println
-        throw new IllegalArgumentException("Trying to set left-side of IdentExpression to " + iexpression.toString());
+		throw new IllegalArgumentException("Trying to set left-side of IdentExpression to " + iexpression);
 //		}
-    }
+	}
 
-    @Override
+	@Override
 	public String repr_() {
 		return String.format("IdentExpression(%s %d)", text.getText(), _a.getCode());
 	}
@@ -91,11 +91,11 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 	}
 
 	@Override
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitIdentExpression(this);
-    }
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitIdentExpression(this);
+	}
 
-    @Override
+	@Override
 	public OS_Element getParent() {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();

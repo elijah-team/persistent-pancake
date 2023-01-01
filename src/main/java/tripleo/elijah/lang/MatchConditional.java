@@ -39,13 +39,13 @@ public class MatchConditional implements OS_Element, StatementItem, FunctionItem
 		return parts;
 	}
 
-    /**
-     * @category OS_Element
-     */
-    @Override
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitMatchConditional(this);
-    }
+	/**
+	 * @category OS_Element
+	 */
+	@Override
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitMatchConditional(this);
+	}
 
 	/**
 	 * @category OS_Element
@@ -116,9 +116,9 @@ public class MatchConditional implements OS_Element, StatementItem, FunctionItem
 
 		Iterable<? extends FunctionItem> getItems();
 
-        @Override
-        default void visitGen(final ElElementVisitor visit) {
-            visit.visitMC1(this);
+		@Override
+		default void visitGen(final ElElementVisitor visit) {
+			visit.visitMC1(this);
 		}
 	}
 
@@ -142,7 +142,7 @@ private final List<Token> docstrings = null;
 
 		@Override
 		public void add(final FunctionItem aItem) {
-            scope3.add(aItem);
+			scope3.add(aItem);
 			//items.add(aItem);
 		}
 
@@ -194,7 +194,7 @@ private final List<Token> docstrings = null;
 
 		@Override
 		public void add(final FunctionItem aItem) {
-            scope3.add(aItem);
+			scope3.add(aItem);
 			//items.add(aItem);
 		}
 
@@ -249,7 +249,7 @@ private final List<Token> docstrings = null;
 
 		@Override
 		public void add(final FunctionItem aItem) {
-            scope3.add(aItem);
+			scope3.add(aItem);
 			//items.add(aItem);
 		}
 
@@ -280,13 +280,13 @@ private final List<Token> docstrings = null;
 			tn = typeName;
 		}
 
+		@Override
+		public @NotNull Context getContext() {
+			return ___ctx;
+		}
+
 		public IdentExpression getIdent() {
 			return ident;
-        }
-
-        @Override
-        public @NotNull Context getContext() {
-            return ___ctx;
 		}
 
 		@Override

@@ -75,19 +75,19 @@ private final Attached _a = new Attached();
 //		return items;
 	}
 
-    @Override // OS_Element
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitLoop(this);
-    }
+	@Override // OS_Element
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitLoop(this);
+	}
 
 	public String getIterName() {
 		return iterName.getText();
 	}
-	
+
 	public LoopTypes getType() {
 		return type;
 	}
-	
+
 	public IExpression getToPart() {
 		return topart;
 	}

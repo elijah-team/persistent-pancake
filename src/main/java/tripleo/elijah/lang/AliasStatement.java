@@ -47,10 +47,10 @@ public class AliasStatement implements ModuleItem, ClassItem, FunctionItem, OS_E
 		this.nameToken = i1;
 	}
 
-    @Override // OS_Element
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitAliasStatement(this);
-    }
+	@Override // OS_Element
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitAliasStatement(this);
+	}
 
 	@Override // OS_Element
 	public OS_Element getParent() {

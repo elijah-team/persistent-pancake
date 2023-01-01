@@ -13,23 +13,23 @@ import java.util.Map;
  */
 public class NameTable {
 
-    final Map<String, TypedElement> members = new HashMap<String, TypedElement>();
+	final Map<String, TypedElement> members = new HashMap<String, TypedElement>();
 
-    class TypedElement {
-        final OS_Element element;
-        final OS_Type type;
+	class TypedElement {
+		final OS_Element element;
+		final OS_Type    type;
 
-        public TypedElement(final OS_Element element2, final OS_Type dtype) {
-            this.element = element2;
-            this.type = dtype;
-        }
+		public TypedElement(final OS_Element element2, final OS_Type dtype) {
+			this.element = element2;
+			this.type    = dtype;
+		}
 
-        @Override
-        public String toString() {
-            return "TypedElement{" +
-                    "element=" + element +
-                    ", type=" + type +
-                    '}';
+		@Override
+		public String toString() {
+			return "TypedElement{" +
+			  "element=" + element +
+			  ", type=" + type +
+			  '}';
 		}
 	}
 	

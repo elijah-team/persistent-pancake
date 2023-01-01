@@ -88,7 +88,7 @@ public class Qualident  implements IExpression {
 	
 	@Override
 	public String repr_() {
-		return String.format("Qualident (%s)", toString());
+		return String.format("Qualident (%s)", this);
 	}
 	
 	@Override

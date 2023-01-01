@@ -35,15 +35,15 @@ import java.util.Stack;
 
 public class OS_Module implements OS_Element, OS_Container {
 
-	public final @NotNull List<ModuleItem> items = new ArrayList<ModuleItem>();
-	public final @NotNull Attached _a = new Attached();
-	public final @NotNull EntryPointList entryPoints = new EntryPointList();
-	private final Stack<Qualident> packageNames_q = new Stack<Qualident>();
-	public @org.jetbrains.annotations.Nullable OS_Module prelude;
-	public Compilation parent;
-	private LibraryStatementPart lsp;
-	private String _fileName;
-	private IndexingStatement indexingStatement;
+	public final @NotNull                      List<ModuleItem>     items          = new ArrayList<ModuleItem>();
+	public final @NotNull                      Attached             _a             = new Attached();
+	public final @NotNull                      EntryPointList       entryPoints    = new EntryPointList();
+	private final                              Stack<Qualident>     packageNames_q = new Stack<Qualident>();
+	public @org.jetbrains.annotations.Nullable OS_Module            prelude;
+	public                                     Compilation          parent;
+	private                                    LibraryStatementPart lsp;
+	private                                    String               _fileName;
+	private                                    IndexingStatement    indexingStatement;
 
 	public @org.jetbrains.annotations.Nullable OS_Element findClass(final String aClassName) {
 		for (final ModuleItem item : items) {

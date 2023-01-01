@@ -69,34 +69,34 @@ public class VariableStatement implements OS_Element, @NotNull Locatable {
 		return initialValue;
 	}
 
-    @Nullable List<AnnotationClause> annotations = null;
+	@Nullable List<AnnotationClause> annotations = null;
+
+	@Override
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitVariableStatement(this);
+	}
+
+	@Override
+	public Context getContext() {
+		return getParent().getContext();
+	}
+
+	// region annotations
 
 	@Override
 	public OS_Element getParent() {
-        return _parent;
-    }
+		return _parent;
+	}
 
-    @Override
-    public Context getContext() {
-        return getParent().getContext();
-    }
+	public void addAnnotation(final AnnotationClause a) {
+		if (annotations == null)
+			annotations = new ArrayList<AnnotationClause>();
+		annotations.add(a);
+	}
 
-    // region annotations
-
-    @Override
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitVariableStatement(this);
-    }
-
-    public void addAnnotation(final AnnotationClause a) {
-        if (annotations == null)
-            annotations = new ArrayList<AnnotationClause>();
-        annotations.add(a);
-    }
-
-    public void walkAnnotations(final AnnotationWalker annotationWalker) {
-        if (_parent.annotations != null) {
-            for (final AnnotationClause annotationClause : _parent.annotations) {
+	public void walkAnnotations(final AnnotationWalker annotationWalker) {
+		if (_parent.annotations != null) {
+			for (final AnnotationClause annotationClause : _parent.annotations) {
 				for (final AnnotationPart annotationPart : annotationClause.aps) {
 					annotationWalker.annotation(annotationPart);
 				}

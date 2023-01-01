@@ -12,38 +12,38 @@ import tripleo.elijah.contexts.ContextInfo;
  */
 public class LookupResult {
 
-    private final Context context;
-    private final String name;
-    private final OS_Element element;
-    private final int level;
-    private final ContextInfo importInfo;
+	private final Context     context;
+	private final String      name;
+	private final OS_Element  element;
+	private final int         level;
+	private final ContextInfo importInfo;
 
-    public LookupResult(final String name, final OS_Element element, final int level, final Context aContext, final ContextInfo aImportInfo) {
-        this.name = name;
-        this.element = element;
-        this.level = level;
-        this.context = aContext;
-        this.importInfo = aImportInfo;
-    }
+	public LookupResult(final String name, final OS_Element element, final int level, final Context aContext, final ContextInfo aImportInfo) {
+		this.name       = name;
+		this.element    = element;
+		this.level      = level;
+		this.context    = aContext;
+		this.importInfo = aImportInfo;
+	}
 
-    public LookupResult(final String name, final OS_Element element, final int level, final Context aContext) {
-        this.name = name;
-        this.element = element;
-        this.level = level;
-        this.context = aContext;
-        this.importInfo = null;
-    }
+	public LookupResult(final String name, final OS_Element element, final int level, final Context aContext) {
+		this.name       = name;
+		this.element    = element;
+		this.level      = level;
+		this.context    = aContext;
+		this.importInfo = null;
+	}
 
-    public Context getContext() {
-        return context;
-    }
+	public Context getContext() {
+		return context;
+	}
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
 //	/**
 //	 * @param name the name to set
@@ -52,12 +52,12 @@ public class LookupResult {
 //		this.name = name;
 //	}
 
-    /**
-     * @return the element
-     */
-    public OS_Element getElement() {
-        return element;
-    }
+	/**
+	 * @return the element
+	 */
+	public OS_Element getElement() {
+		return element;
+	}
 
 //	/**
 //	 * @param element the element to set
@@ -66,12 +66,12 @@ public class LookupResult {
 //		this.element = element;
 //	}
 
-    /**
-     * @return the level
-     */
-    public int getLevel() {
-        return level;
-    }
+	/**
+	 * @return the level
+	 */
+	public int getLevel() {
+		return level;
+	}
 
 //	/**
 //	 * @param level the level to set
@@ -80,12 +80,12 @@ public class LookupResult {
 //		this.level = level;
 //	}
 
-    @Override
-    public String toString() {
-        return String.format("<%s %s %d>", element, name, level);
-    }
+	@Override
+	public String toString() {
+		return String.format("<%s %s %d>", element, name, level);
+	}
 
-    public ContextInfo getImportInfo() {
-        return importInfo;
-    }
+	public ContextInfo getImportInfo() {
+		return importInfo;
+	}
 }

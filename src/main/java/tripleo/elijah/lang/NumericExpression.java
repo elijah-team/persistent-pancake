@@ -23,15 +23,15 @@ import java.io.File;
 
 public class NumericExpression implements IExpression, Locatable {
 
-	final int carrier;
-    private Token n;
+	final   int   carrier;
+	private Token n;
 
 	public NumericExpression(final int aCarrier) {
 		carrier = aCarrier;
 	}
 
 	public NumericExpression(final @NotNull Token n) {
-		this.n = n;
+		this.n  = n;
 		carrier = Integer.parseInt(n.getText());
 	}
 

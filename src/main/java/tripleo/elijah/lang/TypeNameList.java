@@ -19,17 +19,19 @@ import java.util.List;
 
 public class TypeNameList {
 
-    final List<TypeName> p = new ArrayList<TypeName>();
+	final List<TypeName> p = new ArrayList<TypeName>();
 
-    public void add(final TypeName tn) {
-        p.add(tn);
-    }
+	public void add(final TypeName tn) {
+		p.add(tn);
+	}
 
-    public TypeName get(final int index) {
+	public TypeName get(final int index) {
 		return p.get(index);
 	}
 
-	public int size() { return p.size(); }
+	public int size() {
+		return p.size();
+	}
 
 	@Override
 	public String toString() {

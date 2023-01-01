@@ -62,11 +62,11 @@ public class Scope3 implements Documentable {
 	}
 
 	private class Scope3StatementClosure implements StatementClosure {
-        @Override
-        public void constructExpression(final @NotNull IExpression aExpr, final ExpressionList aO) {
-            final ConstructStatement constructExpression = new ConstructStatement(parent, parent.getContext(), aExpr, null, aO); // TODO provide for name
-            add(constructExpression);
-        }
+		@Override
+		public void constructExpression(final @NotNull IExpression aExpr, final ExpressionList aO) {
+			final ConstructStatement constructExpression = new ConstructStatement(parent, parent.getContext(), aExpr, null, aO); // TODO provide for name
+			add(constructExpression);
+		}
 
 		@Override
 		public IfConditional ifConditional(final OS_Element aParent, final Context cur) {

@@ -15,10 +15,10 @@ import java.util.List;
 
 public interface ImportStatement extends ModuleItem, ClassItem, StatementItem {
 
-    @Override
-    default void visitGen(final ElElementVisitor visit) {
-        visit.visitImportStatment(this);
-    }
+	@Override
+	default void visitGen(final ElElementVisitor visit) {
+		visit.visitImportStatment(this);
+	}
 
 	List<Qualident> parts();
 

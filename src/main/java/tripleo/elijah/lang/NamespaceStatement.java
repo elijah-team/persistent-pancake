@@ -71,19 +71,20 @@ public class NamespaceStatement extends _CommonNC implements Documentable, Modul
 	public InvariantStatement invariantStatement() {
 		throw new NotImplementedException();
 	}
-	
+
 	public FunctionDef funcDef() {
 		return new FunctionDef(this, getContext());
 	}
-	
+
 	public ProgramClosure XXX() {
-		return new ProgramClosure() {};
+		return new ProgramClosure() {
+		};
 	}
 
-    @Override // OS_Element
-    public void visitGen(final @NotNull ElElementVisitor visit) {
-        visit.visitNamespaceStatement(this);
-    }
+	@Override // OS_Element
+	public void visitGen(final @NotNull ElElementVisitor visit) {
+		visit.visitNamespaceStatement(this);
+	}
 
 	@Override // OS_Element
 	public OS_Element getParent() {
@@ -111,7 +112,7 @@ public class NamespaceStatement extends _CommonNC implements Documentable, Modul
 		if (anElement instanceof ClassItem)
 			items.add((ClassItem) anElement);
 		else
-            System.err.printf("[NamespaceStatement#add] not a ClassItem: %s%n", anElement);
+			System.err.printf("[NamespaceStatement#add] not a ClassItem: %s%n", anElement);
 	}
 
 	public void postConstruct() {

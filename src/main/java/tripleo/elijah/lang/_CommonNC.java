@@ -17,28 +17,28 @@ import java.util.List;
  * Created 3/29/21 5:11 PM
  */
 abstract class _CommonNC {
-    public final Attached _a = new Attached();
-    protected final List<ClassItem> items = new ArrayList<ClassItem>();
-    private final List<String> mDocs = new ArrayList<String>();
-    private final List<AccessNotation> accesses = new ArrayList<AccessNotation>();
-    protected IdentExpression nameToken;
-    protected OS_Package _packageName;
-    List<AnnotationClause> annotations = null;
+	public final    Attached        _a    = new Attached();
+	protected final List<ClassItem> items = new ArrayList<ClassItem>();
+	private final   List<String>    mDocs = new ArrayList<String>();
+	private final List<AccessNotation> accesses = new ArrayList<AccessNotation>();
+	protected       IdentExpression nameToken;
+	protected       OS_Package      _packageName;
+	List<AnnotationClause> annotations = null;
 
-    public OS_Package getPackageName() {
-        return _packageName;
-    }
+	public OS_Package getPackageName() {
+		return _packageName;
+	}
 
-    public void setPackageName(final OS_Package aPackageName) {
-        _packageName = aPackageName;
-    }
+	public void setPackageName(final OS_Package aPackageName) {
+		_packageName = aPackageName;
+	}
 
 	public void addDocString(final Token aText) {
 		mDocs.add(aText.getText());
 	}
 
 	public List<ClassItem> getItems() {
-		return items ;
+		return items;
 	}
 
 	public String getName() {

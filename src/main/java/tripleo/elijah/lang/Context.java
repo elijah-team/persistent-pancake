@@ -35,7 +35,7 @@ public abstract class Context {
 	
 	public abstract LookupResultList lookup(String name, int level, LookupResultList Result, List<Context> alreadySearched, boolean one);
 
-    public abstract @Nullable Context getParent();
+	public abstract @Nullable Context getParent();
 
 //	@Deprecated public void add(OS_Element element, String name) {
 //		add(element, new IdentExpression(Helpers.makeToken(name)));

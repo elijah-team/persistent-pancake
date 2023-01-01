@@ -114,10 +114,10 @@ public class FuncExpr extends BaseFunctionDef implements IExpression, OS_Element
 		return _type;
 	}
 
-    @Override
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitFuncExpr(this);
-    }
+	@Override
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitFuncExpr(this);
+	}
 
 	@Override
 	public OS_Element getParent() {

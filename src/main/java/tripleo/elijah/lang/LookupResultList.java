@@ -23,38 +23,38 @@ import java.util.function.Predicate;
 
 /**
  * @author Tripleo(sb)
- *
+ * <p>
  * Created 	Dec 9, 2019 at 3:30:44 PM
  */
 public class LookupResultList {
 
-    private final List<LookupResult> _results = new ArrayList<LookupResult>();
+	private final List<LookupResult> _results = new ArrayList<LookupResult>();
 
-    public void add(final String name, final int level, final OS_Element element, final Context aContext) {
-        for (final LookupResult result : _results) {
-            if (result.getElement() == element)
-                return; // TODO hack for bad algorithm
-        }
-        _results.add(new LookupResult(name, element, level, aContext));
-    }
+	public void add(final String name, final int level, final OS_Element element, final Context aContext) {
+		for (final LookupResult result : _results) {
+			if (result.getElement() == element)
+				return; // TODO hack for bad algorithm
+		}
+		_results.add(new LookupResult(name, element, level, aContext));
+	}
 
-    public void add(final String name, final int level, final OS_Element element, final Context aContext, final ContextInfo aImportInfo) {
-        for (final LookupResult result : _results) {
-            if (result.getElement() == element)
-                return; // TODO hack for bad algorithm
-        }
-        _results.add(new LookupResult(name, element, level, aContext, aImportInfo));
-    }
+	public void add(final String name, final int level, final OS_Element element, final Context aContext, final ContextInfo aImportInfo) {
+		for (final LookupResult result : _results) {
+			if (result.getElement() == element)
+				return; // TODO hack for bad algorithm
+		}
+		_results.add(new LookupResult(name, element, level, aContext, aImportInfo));
+	}
 
-    @Nullable
-    public OS_Element chooseBest(final List<Predicate<OS_Element>> l) {
-        final List<LookupResult> r;
-        if (l != null) {
-            r = getMaxScoredResults(l);
-        } else {
-            r = results();
-        }
-        //
+	@Nullable
+	public OS_Element chooseBest(final List<Predicate<OS_Element>> l) {
+		final List<LookupResult> r;
+		if (l != null) {
+			r = getMaxScoredResults(l);
+		} else {
+			r = results();
+		}
+		//
 		if (r.size() == 1)
 			return r.get(0).getElement();
 //		else if (r.size() == 2) {
@@ -75,17 +75,17 @@ public class LookupResultList {
 		return null; //throw new NotImplementedException();
 	}
 
-    private List<LookupResult> getMaxScoredResults(final @NotNull List<Predicate<OS_Element>> l) {
-        final Map<LookupResult, Integer> new_results = new HashMap<LookupResult, Integer>();
-        int maxScore = 0;
+	private List<LookupResult> getMaxScoredResults(final @NotNull List<Predicate<OS_Element>> l) {
+		final Map<LookupResult, Integer> new_results = new HashMap<LookupResult, Integer>();
+		int                              maxScore    = 0;
 
-        for (final LookupResult lookupResult : _results) {
-            int score = 0;
-            for (final Predicate<OS_Element> predicate : l) {
-                if (predicate.test(lookupResult.getElement()))
-                    score++;
-            }
-            if (score >= maxScore /*&& maxScore != 0*/) {
+		for (final LookupResult lookupResult : _results) {
+			int score = 0;
+			for (final Predicate<OS_Element> predicate : l) {
+				if (predicate.test(lookupResult.getElement()))
+					score++;
+			}
+			if (score >= maxScore /*&& maxScore != 0*/) {
 				maxScore = score;
 				new_results.clear();
 				new_results.put(lookupResult, score);

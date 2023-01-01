@@ -18,10 +18,10 @@ public class YieldExpression /*extends BasicBinaryExpression*/ implements OS_Ele
 		throw new NotImplementedException();
 	}
 
-    @Override
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitYield(this);
-    }
+	@Override
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitYield(this);
+	}
 
 	@Override
 	public OS_Element getParent() {

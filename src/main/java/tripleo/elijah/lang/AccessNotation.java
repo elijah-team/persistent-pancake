@@ -38,10 +38,10 @@ public class AccessNotation implements OS_Element {
 		this.tnl = tnl;
 	}
 
-    @Override
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitAccessNotation(this);
-    }
+	@Override
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitAccessNotation(this);
+	}
 
 	@Override
 	public OS_Element getParent() {

@@ -32,20 +32,20 @@ public class TypeAliasStatement implements OS_Element {
     public void make(final IdentExpression x, final Qualident y) {
 		this.x=x;
 		this.y=y;
-	}
-	
+    }
+
 	public void setIdent(final IdentExpression aToken) {
 		x = aToken;
 	}
-	
+
 	public void setBecomes(final Qualident qq) {
-		y=qq;
+		y = qq;
 	}
 
-    @Override
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitTypeAlias(this);
-    }
+	@Override
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitTypeAlias(this);
+	}
 
 	@Override
 	public OS_Element getParent() {

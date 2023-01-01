@@ -36,18 +36,18 @@ public class CaseConditional implements OS_Element, StatementItem, FunctionItem 
 	private CaseContext __ctx = null; // TODO look into removing this
 
 	public CaseConditional(final OS_Element parent, final Context parentContext) {
-        this.parent = parent;
-        this._ctx = new SingleIdentContext(parentContext, this);
-    }
+		this.parent = parent;
+		this._ctx   = new SingleIdentContext(parentContext, this);
+	}
 
-    public void expr(final IExpression expr) {
+	public void expr(final IExpression expr) {
 		this.expr = expr;
 	}
 
-    @Override
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitCaseConditional(this);
-    }
+	@Override
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitCaseConditional(this);
+	}
 
 	public HashMap<IExpression, CaseScope> getScopes() {
 		return scopes;
@@ -119,10 +119,10 @@ public class CaseConditional implements OS_Element, StatementItem, FunctionItem 
 			cscope3.addDocString(s1);
 		}
 
-        @Override
-        public void visitGen(final ElElementVisitor visit) {
-            visit.visitCaseScope(this);
-        }
+		@Override
+		public void visitGen(final ElElementVisitor visit) {
+			visit.visitCaseScope(this);
+		}
 
 		@Override
 		public OS_Element getParent() {

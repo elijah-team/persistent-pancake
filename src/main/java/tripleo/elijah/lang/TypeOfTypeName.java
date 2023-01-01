@@ -11,30 +11,30 @@ import java.io.File;
  * Created 8/16/20 7:42 AM
  */
 public class TypeOfTypeName implements TypeName {
-    private Context _ctx;
-    private Qualident _typeOf;
-    private TypeModifiers modifiers;
+	private Context       _ctx;
+	private Qualident     _typeOf;
+	private TypeModifiers modifiers;
 
-    public TypeOfTypeName(final Context cur) {
-        _ctx = cur;
-    }
+	public TypeOfTypeName(final Context cur) {
+		_ctx = cur;
+	}
 
-    public void typeOf(final Qualident xy) {
-        _typeOf = xy;
-    }
+	public void typeOf(final Qualident xy) {
+		_typeOf = xy;
+	}
 
-    public Qualident typeOf() {
-        return _typeOf;
-    }
+	public Qualident typeOf() {
+		return _typeOf;
+	}
 
-    public void set(final TypeModifiers modifiers_) {
-        modifiers = modifiers_;
-    }
+	public void set(final TypeModifiers modifiers_) {
+		modifiers = modifiers_;
+	}
 
-    @Override
-    public Type kindOfType() {
-        return Type.TYPE_OF;
-    }
+	@Override
+	public void setContext(final Context context) {
+		_ctx = context;
+	}
 
 	@Override
 	public boolean isNull() {
@@ -42,8 +42,8 @@ public class TypeOfTypeName implements TypeName {
 	}
 
 	@Override
-	public void setContext(final Context context) {
-        _ctx = context;
+	public Type kindOfType() {
+		return Type.TYPE_OF;
 	}
 
 	@Override
@@ -51,14 +51,14 @@ public class TypeOfTypeName implements TypeName {
 		return _ctx;
 	}
 
-    public TypeName resolve(final @NotNull Context ctx, final DeduceTypes2 deduceTypes2) throws ResolveError {
+	public TypeName resolve(final @NotNull Context ctx, final DeduceTypes2 deduceTypes2) throws ResolveError {
 //		System.out.println(_typeOf.toString());
-        final LookupResultList lrl = DeduceLookupUtils.lookupExpression(_typeOf, ctx, deduceTypes2);
-        final OS_Element best = lrl.chooseBest(null);
-        if (best instanceof VariableStatement)
-            return ((VariableStatement) best).typeName();
-        return null;
-    }
+		final LookupResultList lrl  = DeduceLookupUtils.lookupExpression(_typeOf, ctx, deduceTypes2);
+		final OS_Element       best = lrl.chooseBest(null);
+		if (best instanceof VariableStatement)
+			return ((VariableStatement) best).typeName();
+		return null;
+	}
 
 	// region Locatable
 

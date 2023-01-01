@@ -36,10 +36,10 @@ public class WithStatement implements OS_Element, OS_Container, FunctionItem, St
 		_parent = aParent;
 	}
 
-    @Override
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitWithStatement(this);
-    }
+	@Override
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitWithStatement(this);
+	}
 
 	@Override
 	public OS_Element getParent() {

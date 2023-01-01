@@ -17,15 +17,14 @@ import java.util.List;
 
 public class VariableSequence implements StatementItem, FunctionItem, ClassItem {
 
-    final List<VariableStatement> stmts;
-    @Nullable List<AnnotationClause> annotations = null;
-    private Context _ctx;
-    private OS_Element parent;
-    private AccessNotation access_note;
+	final     List<VariableStatement> stmts;
+	@Nullable List<AnnotationClause>  annotations = null;
+	private   Context                 _ctx;
+	private OS_Element parent;
+	private AccessNotation access_note;
 
 	private TypeModifiers def;
-
-	public void defaultModifiers(final TypeModifiers aModifiers) {def=aModifiers;}
+	private El_Category    category;
 
 	public VariableStatement next() {
 		final VariableStatement st = new VariableStatement(this);
@@ -38,10 +37,10 @@ public class VariableSequence implements StatementItem, FunctionItem, ClassItem 
 		return stmts;
 	}
 
-    @Deprecated
-    public VariableSequence() {
-        stmts = new ArrayList<VariableStatement>();
-    }
+	@Deprecated
+	public VariableSequence() {
+		stmts = new ArrayList<VariableStatement>();
+	}
 
 	@Override
 	public OS_Element getParent() {
@@ -61,34 +60,37 @@ public class VariableSequence implements StatementItem, FunctionItem, ClassItem 
 		_ctx = ctx;
 	}
 
-    public VariableSequence(final Context aContext) {
-        stmts = new ArrayList<VariableStatement>();
-        _ctx = aContext;
-    }
+	public VariableSequence(final Context aContext) {
+		stmts = new ArrayList<VariableStatement>();
+		_ctx  = aContext;
+	}
 
-    @Override
-    public String toString() {
-        final List<String> r = new ArrayList<String>();
-        for (final VariableStatement stmt : stmts) {
-            r.add(stmt.getName());
-        }
-        return r.toString();
+	public void defaultModifiers(final TypeModifiers aModifiers) {
+		def = aModifiers;
+	}
+
+	@Override
+	public String toString() {
+		final List<String> r = new ArrayList<String>();
+		for (final VariableStatement stmt : stmts) {
+			r.add(stmt.getName());
+		}
+		return r.toString();
 //		return (stmts.stream().map(n -> n.getName()).collect(Collectors.toList())).toString();
-    }
+	}
 
-    @Override
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitVariableSequence(this);
-    }
+	// region ClassItem
 
-    // region ClassItem
+	@Override
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitVariableSequence(this);
+	}
 
-    public void addAnnotation(final AnnotationClause a) {
-        if (annotations == null)
-            annotations = new ArrayList<AnnotationClause>();
-        annotations.add(a);
-    }
-	private El_Category category;
+	public void addAnnotation(final AnnotationClause a) {
+		if (annotations == null)
+			annotations = new ArrayList<AnnotationClause>();
+		annotations.add(a);
+	}
 
 	@Override
 	public void setCategory(final El_Category aCategory) {

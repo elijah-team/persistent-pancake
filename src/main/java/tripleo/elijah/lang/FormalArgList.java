@@ -19,10 +19,10 @@ import java.util.List;
 
 public class FormalArgList {
 
-    public final List<FormalArgListItem> falis = new ArrayList<FormalArgListItem>();
+	public final List<FormalArgListItem> falis = new ArrayList<FormalArgListItem>();
 
 	public FormalArgListItem next() {
-        final @NotNull FormalArgListItem fali = new FormalArgListItem();
+		final @NotNull FormalArgListItem fali = new FormalArgListItem();
 		falis.add(fali);
 		return fali;
 	}

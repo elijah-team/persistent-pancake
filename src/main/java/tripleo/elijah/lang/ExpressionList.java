@@ -40,11 +40,11 @@ public class ExpressionList implements Iterable<IExpression> {
 		return exprs;
 	}
 
-    @Override
-    public @NotNull Iterator<IExpression> iterator() {
-        return exprs.iterator();
-    }
-	
+	@Override
+	public @NotNull Iterator<IExpression> iterator() {
+		return exprs.iterator();
+	}
+
 	public void add(final IExpression aExpr) {
 		exprs.add(aExpr);
 	}

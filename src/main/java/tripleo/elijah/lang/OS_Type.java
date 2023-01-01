@@ -29,10 +29,9 @@ public class OS_Type {
 	}
 
 	public static boolean isConcreteType(final OS_Element element) {
-		if (element instanceof ClassStatement) return true;
+		return element instanceof ClassStatement;
 		// enum
 		// type
-		return false;
 	}
 
 	@Override
@@ -56,19 +55,16 @@ public class OS_Type {
 	public ClassStatement getClassOf() {
 		if (etype != null && etype instanceof ClassStatement)
 			return (ClassStatement) etype;
-		System.err.println("3001 "+etype+" "+toString());
+		System.err.println("3001 "+etype+" "+ this);
 		throw new IllegalArgumentException();
 //		return null;
 	}
 
 	public OS_Element getElement() {
-		switch (type_of_type) {
-		case USER_CLASS:
-//		case FUNCTION: // defined in subclass
+		if (type_of_type == Type.USER_CLASS) {//		case FUNCTION: // defined in subclass
 			return etype;
-		default:
-			throw new IllegalArgumentException();
 		}
+		throw new IllegalArgumentException();
 	}
 
 	public OS_Type resolve(final Context ctx) {
@@ -82,13 +78,13 @@ public class OS_Type {
 				switch (getBType()) {
 					case SystemInteger: {
 						final LookupResultList r;
-						OS_Element best;
+						OS_Element             best;
 
-						r = ctx.lookup("SystemInteger");
+						r    = ctx.lookup("SystemInteger");
 						best = r.chooseBest(null);
 						while (best instanceof AliasStatement) {
-							final AliasStatement aliasStatement = (AliasStatement) best;
-							final LookupResultList lrl = aliasStatement.getContext().lookup(aliasStatement.getExpression().toString());
+							final AliasStatement   aliasStatement = (AliasStatement) best;
+							final LookupResultList lrl            = aliasStatement.getContext().lookup(aliasStatement.getExpression().toString());
 							best = lrl.chooseBest(null);
 						}
 						return ((ClassStatement) best).getOS_Type();

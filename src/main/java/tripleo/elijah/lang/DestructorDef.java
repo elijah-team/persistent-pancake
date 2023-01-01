@@ -31,10 +31,10 @@ public class DestructorDef extends BaseFunctionDef {
 		setSpecies(Species.DTOR);
 	}
 
-    @Override
-    public void visitGen(final ElElementVisitor visit) {
-        visit.visitDestructor(this);
-    }
+	@Override
+	public void visitGen(final ElElementVisitor visit) {
+		visit.visitDestructor(this);
+	}
 
 	@Override
 	public OS_Element getParent() {
