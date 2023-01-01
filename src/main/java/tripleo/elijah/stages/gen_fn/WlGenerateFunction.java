@@ -40,8 +40,19 @@ public class WlGenerateFunction implements WorkJob {
 //		if (_isDone) return;
 
 		if (functionInvocation.getGenerated() == null) {
-			final OS_Element parent = functionDef.getParent();
-			@NotNull final GeneratedFunction gf = generateFunctions.generateFunction(functionDef, parent, functionInvocation);
+			final OS_Element                 parent = functionDef.getParent();
+			@NotNull final GeneratedFunction gf     = generateFunctions.generateFunction(functionDef, parent, functionInvocation);
+
+			{
+				int i = 0;
+				for (final TypeTableEntry tte : functionInvocation.getArgs()) {
+					i = i + 1;
+					if (tte.getAttached() == null) {
+						System.err.printf("4949 null tte #%d %s in %s%n", i, tte, gf);
+					}
+				}
+			}
+
 //			lgf.add(gf);
 
 			if (parent instanceof NamespaceStatement) {

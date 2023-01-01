@@ -28,10 +28,10 @@ import static tripleo.elijah.util.Helpers.List_of;
 public class CompilationTest {
 
 	@Test
-	public final void testEz() {
+	public final void testEz() throws Exception {
 		final List<String> args = List_of("test/comp_test/main3", "-sE"/*, "-out"*/);
-		final ErrSink eee = new StdErrSink();
-		final Compilation c = new CompilationImpl(eee, new IO());
+		final ErrSink      eee  = new StdErrSink();
+		final Compilation  c    = new CompilationImpl(eee, new IO());
 
 		c.feedCmdLine(args);
 

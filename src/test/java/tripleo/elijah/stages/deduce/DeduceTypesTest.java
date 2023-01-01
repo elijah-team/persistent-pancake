@@ -59,7 +59,7 @@ public class DeduceTypesTest {
 		final IdentExpression x1 = Helpers.string_to_ident("x");
 		x1.setContext(fc);
 		//
-		mod.prelude = mod.parent.findPrelude("c");
+		mod.prelude = mod.parent.findPrelude("c").success();
 		//
 		//
 		//

@@ -24,6 +24,7 @@ import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.FunctionMapHook;
 import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
+import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.instructions.Instruction;
 import tripleo.elijah.stages.instructions.InstructionName;
 import tripleo.elijah.stages.logging.ElLog;
@@ -50,7 +51,7 @@ public class TestGenFunction {
 		final File file = new File(f);
 		final OS_Module m = c.realParseElijjahFile(f, file, false);
 		Assert.assertTrue("Method parsed correctly", m != null);
-		m.prelude = c.findPrelude("c"); // TODO we dont know which prelude to find yet
+		m.prelude = c.findPrelude("c").success(); // TODO we dont know which prelude to find yet
 
 		//
 		//
@@ -58,7 +59,7 @@ public class TestGenFunction {
 		final ClassStatement main_class = (ClassStatement) m.findClass("Main");
 		assert main_class != null;
 		final MainClassEntryPoint mainClassEntryPoint = new MainClassEntryPoint(main_class);
-		m.entryPoints = new EntryPointList();
+//		m.entryPoints = new EntryPointList();
 		m.entryPoints.add(mainClassEntryPoint);
 		//
 		//
@@ -234,7 +235,7 @@ public class TestGenFunction {
 		final File file = new File(f);
 		final OS_Module m = c.realParseElijjahFile(f, file, false);
 		Assert.assertTrue("Method parsed correctly", m != null);
-		m.prelude = c.findPrelude("c"); // TODO we dont know which prelude to find yet
+		m.prelude = c.findPrelude("c").success(); // TODO we dont know which prelude to find yet
 
 		c.findStdLib("c");
 
@@ -243,11 +244,14 @@ public class TestGenFunction {
 		}
 
 		final ElLog.Verbosity verbosity1 = c.gitlabCIVerbosity();
-		final AccessBus ab = new AccessBus(c);
-		final PipelineLogic pl = new PipelineLogic(ab);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
-		final GenerateFunctions gfm = generatePhase.getGenerateFunctions(m);
-		final List<GeneratedNode> lgc = new ArrayList<>();
+		final AccessBus       ab         = new AccessBus(c);
+
+		ab.addPipelineLogic(PipelineLogic::new);
+		final PipelineLogic pl = ab.__getPL();
+
+		final GeneratePhase       generatePhase = pl.generatePhase;
+		final GenerateFunctions   gfm           = generatePhase.getGenerateFunctions(m);
+		final List<GeneratedNode> lgc           = new ArrayList<>();
 		gfm.generateAllTopLevelClasses(lgc);
 
 		final DeducePhase dp = new DeducePhase(generatePhase, pl, verbosity1);
@@ -272,7 +276,7 @@ public class TestGenFunction {
 			}
 		}
 
-		dp.deduceModule(m, lgc, false, c.gitlabCIVerbosity());
+		dp.deduceModule(m, lgc, true, c.gitlabCIVerbosity());
 		dp.finish(dp.generatedClasses);
 //		new DeduceTypes2(m).deduceFunctions(lgf);
 
@@ -287,7 +291,8 @@ public class TestGenFunction {
 			}
 		}
 
-		final GenerateC ggc = new GenerateC(m, eee, c.gitlabCIVerbosity(), pl);
+		final OutputFileFactoryParams p   = new OutputFileFactoryParams(m, eee, c.gitlabCIVerbosity(), pl);
+		final GenerateC               ggc = new GenerateC(p);
 		ggc.generateCode(lgf, wm);
 
 		final GenerateResult gr = new GenerateResult();

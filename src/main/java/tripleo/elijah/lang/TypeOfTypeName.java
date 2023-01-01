@@ -1,9 +1,9 @@
 package tripleo.elijah.lang;
 
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
-import tripleo.elijah.util.NotImplementedException;
 
 import java.io.File;
 
@@ -11,16 +11,20 @@ import java.io.File;
  * Created 8/16/20 7:42 AM
  */
 public class TypeOfTypeName implements TypeName {
-	private final Context _ctx;
-	private Qualident _typeOf;
+	private Context       _ctx;
+	private Qualident     _typeOf;
 	private TypeModifiers modifiers;
 
 	public TypeOfTypeName(final Context cur) {
-		_ctx=cur;
+		_ctx = cur;
 	}
 
 	public void typeOf(final Qualident xy) {
-		_typeOf=xy;
+		_typeOf = xy;
+	}
+
+	public Qualident typeOf() {
+		return _typeOf;
 	}
 
 	public void set(final TypeModifiers modifiers_) {
@@ -39,7 +43,7 @@ public class TypeOfTypeName implements TypeName {
 
 	@Override
 	public void setContext(final Context context) {
-		throw new NotImplementedException();
+		_ctx = context;
 	}
 
 	@Override
@@ -47,10 +51,10 @@ public class TypeOfTypeName implements TypeName {
 		return _ctx;
 	}
 
-	public TypeName resolve(final Context ctx, final DeduceTypes2 deduceTypes2) throws ResolveError {
+	public TypeName resolve(final @NotNull Context ctx, final DeduceTypes2 deduceTypes2) throws ResolveError {
 //		System.out.println(_typeOf.toString());
-		final LookupResultList lrl = DeduceLookupUtils.lookupExpression(_typeOf, ctx, deduceTypes2);
-		final OS_Element best = lrl.chooseBest(null);
+		final LookupResultList lrl  = DeduceLookupUtils.lookupExpression(_typeOf, ctx, deduceTypes2);
+		final OS_Element       best = lrl.chooseBest(null);
 		if (best instanceof VariableStatement)
 			return ((VariableStatement) best).typeName();
 		return null;

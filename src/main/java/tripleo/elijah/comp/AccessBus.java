@@ -1,5 +1,6 @@
 package tripleo.elijah.comp;
 
+import com.google.common.collect.Collections2;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
@@ -8,8 +9,11 @@ import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
+import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Stupidity;
 import tripleo.elijah.work.WorkManager;
@@ -17,6 +21,7 @@ import tripleo.elijah.work.WorkManager;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class AccessBus {
 	private final Compilation _c;
@@ -85,13 +90,14 @@ public class AccessBus {
 	}
 
 	void doModule(@NotNull final List<GeneratedNode> lgc,
-				  final WorkManager wm,
-				  @NotNull final OS_Module mod,
-				  @NotNull final PipelineLogic aPipelineLogic) {
+	              final WorkManager wm,
+	              @NotNull final OS_Module mod,
+	              @NotNull final PipelineLogic aPipelineLogic, final ErrSink aErrSink) {
 		final ErrSink         errSink   = mod.parent.getErrSink();
 		final ElLog.Verbosity verbosity = aPipelineLogic.getVerbosity();
 
-		final GenerateC generateC = new GenerateC(mod, errSink, verbosity, aPipelineLogic);
+		final OutputFileFactoryParams p         = new OutputFileFactoryParams(mod, aErrSink, verbosity, aPipelineLogic);
+		final GenerateC               generateC = new GenerateC(p);
 
 		final GenerateResult gr = new GenerateResult();
 
@@ -109,13 +115,13 @@ public class AccessBus {
 					nc.generateCode(generateC, gr);
 
 					// 2.
-					final @NotNull Collection<GeneratedNode> gn1 = generateC.functions_to_list_of_generated_nodes(nc.functionMap.values());
-					final GenerateResult                           gr2 = generateC.generateCode(gn1, wm);
+					final @NotNull Collection<GeneratedNode> gn1 = (nc.functionMap.values()).stream().map(x -> (GeneratedNode) x).collect(Collectors.toList());
+					final GenerateResult                     gr2 = generateC.generateCode(gn1, wm);
 					gr.additional(gr2);
 
 					// 3.
-					final @NotNull Collection<GeneratedNode> gn2 = generateC.classes_to_list_of_generated_nodes(nc.classMap.values());
-					final GenerateResult                           gr3 = generateC.generateCode(gn2, wm);
+					final @NotNull Collection<GeneratedNode> gn2 = (nc.classMap.values()).stream().map(x -> (GeneratedNode) x).collect(Collectors.toList());
+					final GenerateResult                     gr3 = generateC.generateCode(gn2, wm);
 					gr.additional(gr3);
 				} else {
 					Stupidity.println_out("2009 " + generatedNode.getClass().getName());

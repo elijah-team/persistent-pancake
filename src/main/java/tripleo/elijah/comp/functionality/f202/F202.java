@@ -20,18 +20,18 @@ import java.util.Collection;
  * Created 8/11/21 5:46 AM
  */
 public class F202 {
-	private final ErrSink errSink;
-	GetLogDirectoryBehavior gld;
-	GetLogNameBehavior      gln;
-	ProcessLogEntryBehavior ple;
-	ProgressBehavior        pre;
+	final         GetLogDirectoryBehavior gld;
+	final         GetLogNameBehavior      gln;
+	final         ProcessLogEntryBehavior ple;
+	final         ProgressBehavior        pre;
+	private final ErrSink                 errSink;
 
 	public F202(final ErrSink aErrSink, final Compilation c) {
 		errSink = aErrSink;
-		gld = new DefaultGetLogDirectoryBehavior(c);
-		gln = new DefaultGetLogNameBehavior();
-		ple = new DefaultProcessLogEntryBehavior();
-		pre = new DefaultProgressBehavior();
+		gld     = new DefaultGetLogDirectoryBehavior(c);
+		gln     = new DefaultGetLogNameBehavior();
+		ple     = new DefaultProcessLogEntryBehavior();
+		pre     = new DefaultProgressBehavior();
 	}
 
 	public void processLogs(final Collection<ElLog> aElLogs) {

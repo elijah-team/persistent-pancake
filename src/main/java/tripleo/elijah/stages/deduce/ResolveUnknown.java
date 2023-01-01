@@ -41,7 +41,7 @@ public class ResolveUnknown implements Diagnostic {
 
 	@Override
 	public void report(@NotNull final PrintStream stream) {
-		stream.println(String.format("---[%s]---: %s", code(), message()));
+		stream.printf("---[%s]---: %s%n", code(), message());
 		// linecache.print(primary);
 		for (final Locatable sec : secondary()) {
 			//linecache.print(sec)

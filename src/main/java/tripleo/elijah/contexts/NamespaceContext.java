@@ -22,8 +22,8 @@ import java.util.List;
  */
 public class NamespaceContext extends Context {
 
-	private final Context _parent;
-	public NamespaceStatement carrier;
+	public final  NamespaceStatement carrier;
+	private final Context            _parent;
 
 //	public NamespaceContext(NamespaceStatement namespaceStatement) {
 //		carrier = namespaceStatement;

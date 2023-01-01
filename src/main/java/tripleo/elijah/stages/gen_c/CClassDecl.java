@@ -8,7 +8,11 @@
  */
 package tripleo.elijah.stages.gen_c;
 
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.AnnotationPart;
+import tripleo.elijah.lang.AnnotationWalker;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.StringExpression;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.util.Helpers;
 

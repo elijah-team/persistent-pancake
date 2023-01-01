@@ -44,7 +44,7 @@ public class GeneratedFunction extends BaseGeneratedFunction implements GNCoded 
 		ClassInvocation classInvocation = null; //// = fi.getClassInvocation();
 		NamespaceInvocation namespaceInvocation = null; //// = fi.getNamespaceInvocation();
 
-		Promise<GeneratedClass, Void, Void> crp;
+		Promise<GeneratedClass, Void, Void>     crp;
 		Promise<GeneratedNamespace, Void, Void> nsrp;
 
 
