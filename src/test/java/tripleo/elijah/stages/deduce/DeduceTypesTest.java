@@ -12,13 +12,25 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import tripleo.elijah.comp.AccessBus;
+import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.NormalTypeName;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.Qualident;
+import tripleo.elijah.lang.RegularTypeName;
+import tripleo.elijah.lang.Scope3;
+import tripleo.elijah.lang.VariableSequence;
+import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.VariableTypeName;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
 import tripleo.elijah.stages.logging.ElLog;
@@ -50,7 +62,7 @@ public class DeduceTypesTest {
 		final Qualident qu = new Qualident();
 		qu.append(Helpers.string_to_ident("Integer"));
 		((NormalTypeName)vs.typeName()).setName(qu);
-		((NormalTypeName)vs.typeName()).setContext(fd.getContext());
+		vs.typeName().setContext(fd.getContext());
 		fd.scope(scope3);
 		fd.postConstruct();
 		cs.postConstruct();
@@ -59,11 +71,11 @@ public class DeduceTypesTest {
 		final IdentExpression x1 = Helpers.string_to_ident("x");
 		x1.setContext(fc);
 		//
-		mod.prelude = mod.parent.findPrelude("c");
+		mod.prelude = mod.parent.findPrelude("c").success();
 		//
 		//
 		//
-		final ElLog.Verbosity verbosity = mod.parent.gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity = Compilation.gitlabCIVerbosity();
 		final AccessBus ab = new AccessBus(mod.parent);
 		final PipelineLogic pl = new PipelineLogic(ab);
 		final GeneratePhase generatePhase = new GeneratePhase(verbosity, pl);

@@ -10,11 +10,25 @@ package tripleo.elijah.stages.deduce;
 
 import org.junit.Assert;
 import org.junit.Test;
-import tripleo.elijah.comp.*;
+import tripleo.elijah.comp.AccessBus;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.IO;
+import tripleo.elijah.comp.PipelineLogic;
+import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.NormalTypeName;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.Qualident;
+import tripleo.elijah.lang.Scope3;
+import tripleo.elijah.lang.VariableSequence;
+import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.VariableTypeName;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
 import tripleo.elijah.stages.logging.ElLog;
@@ -24,19 +38,19 @@ public class DeduceTypesTest2 {
 
 	@Test
 	public void testDeduceIdentExpression() throws ResolveError {
-		final OS_Module mod = new OS_Module();
-		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
-		mod.parent = c;
-		mod.prelude = mod.parent.findPrelude("c");
+		final OS_Module   mod = new OS_Module();
+		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO());
+		mod.parent  = c;
+		mod.prelude = mod.parent.findPrelude("c").success();
 		final ModuleContext mctx = new ModuleContext(mod);
 		mod.setContext(mctx);
 		final ClassStatement cs = new ClassStatement(mod, mctx);
 		cs.setName(Helpers.string_to_ident("Test"));
 		final FunctionDef fd = cs.funcDef();
 		fd.setName((Helpers.string_to_ident("test")));
-		final Scope3 scope3 = new Scope3(fd);
-		final VariableSequence vss = scope3.varSeq();
-		final VariableStatement vs = vss.next();
+		final Scope3            scope3 = new Scope3(fd);
+		final VariableSequence  vss    = scope3.varSeq();
+		final VariableStatement vs     = vss.next();
 		vs.setName((Helpers.string_to_ident("x")));
 		final Qualident qu = new Qualident();
 		qu.append(Helpers.string_to_ident("SystemInteger"));
@@ -53,7 +67,7 @@ public class DeduceTypesTest2 {
 		//
 		//
 		//
-		final ElLog.Verbosity verbosity1 = c.gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity1 = Compilation.gitlabCIVerbosity();
 		final AccessBus ab = new AccessBus(c);
 		final PipelineLogic pl = new PipelineLogic(ab);
 		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);

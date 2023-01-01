@@ -17,9 +17,14 @@ import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
 import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.VariableTableType;
@@ -42,7 +47,7 @@ public class GetRealTargetNameTest {
 
 	@Test
 	public void testManualXDotFoo() {
-		final IdentExpression x_ident = Helpers.string_to_ident("x");
+		final IdentExpression          x_ident   = Helpers.string_to_ident("x");
 		@NotNull final IdentExpression foo_ident = Helpers.string_to_ident("foo");
 		//
 		// create x.foo, where x is a VAR and foo is unknown
@@ -50,16 +55,17 @@ public class GetRealTargetNameTest {
 		// GenerateC#getRealTargetName doesn't use type information
 		// TODO but what if foo was a property instead of a member
 		//
-		final OS_Type type = null;
-		final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, x_ident);
-		final int int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, mock(VariableStatement.class));
-		final int ite_index = gf.addIdentTableEntry(foo_ident, null);
-		final IdentIA ident_ia = new IdentIA(ite_index, gf);
+		final OS_Type        type      = null;
+		final TypeTableEntry tte       = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, x_ident);
+		final int            int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, mock(VariableStatement.class));
+		final int            ite_index = gf.addIdentTableEntry(foo_ident, null);
+		final IdentIA        ident_ia  = new IdentIA(ite_index, gf);
 		ident_ia.setPrev(new IntegerIA(int_index, gf));
 		//
-		final AccessBus ab = new AccessBus(mock(Compilation.class));
-		final PipelineLogic pl = new PipelineLogic(ab);
-		final GenerateC c = new GenerateC(mod, new StdErrSink(), ElLog.Verbosity.SILENT, pl); // TODO do we want silent?
+		final AccessBus               ab = new AccessBus(mock(Compilation.class));
+		final PipelineLogic           pl = new PipelineLogic(ab);
+		final OutputFileFactoryParams p  = new OutputFileFactoryParams(mod, new StdErrSink(), ElLog.Verbosity.SILENT, pl);  // TODO do we want silent?
+		final GenerateC               c  = new GenerateC(p);
 		//
 		Emit.emitting = false;
 		final String x = c.getRealTargetName(gf, ident_ia, Generate_Code_For_Method.AOG.GET, null); // TODO is null correct?
