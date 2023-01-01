@@ -14,7 +14,12 @@ import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.gen_c.GenerateC;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.GenerateFunctions;
+import tripleo.elijah.stages.gen_fn.GeneratePhase;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
+import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
 import tripleo.elijah.stages.logging.ElLog;
@@ -43,15 +48,14 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	private final List<OS_Module> __mods_BACKING = new ArrayList<OS_Module>();
 	final         EIT_ModuleList  mods           = new EIT_ModuleList(__mods_BACKING);
 
-	public PipelineLogic(final AccessBus ab) {
-		__ab = ab;
+	public PipelineLogic(final AccessBus iab) {
+		__ab = iab; // we're watching you
 
-		final boolean         sil     = ab.getCompilation().getSilence();
-		final ElLog.Verbosity silence = sil ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
+		final boolean sil = __ab.getCompilation().getSilence();
 
-		verbosity = silence;
+		verbosity     = sil ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
 		generatePhase = new GeneratePhase(verbosity, this);
-		dp = new DeducePhase(generatePhase, this, verbosity);
+		dp            = new DeducePhase(generatePhase, this, verbosity);
 
 
 		subscribeMods(this);
