@@ -280,13 +280,13 @@ private final List<Token> docstrings = null;
 			tn = typeName;
 		}
 
+		public IdentExpression getIdent() {
+			return ident;
+		}
+
 		@Override
 		public @NotNull Context getContext() {
 			return ___ctx;
-		}
-
-		public IdentExpression getIdent() {
-			return ident;
 		}
 
 		@Override

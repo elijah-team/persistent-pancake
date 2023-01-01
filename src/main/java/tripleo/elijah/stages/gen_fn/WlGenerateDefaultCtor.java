@@ -11,15 +11,9 @@ package tripleo.elijah.stages.gen_fn;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.ConstructStatement;
-import tripleo.elijah.lang.ConstructorDef;
-import tripleo.elijah.lang.ExpressionBuilder;
-import tripleo.elijah.lang.ExpressionKind;
-import tripleo.elijah.lang.IExpression;
-import tripleo.elijah.lang.OS_Element;
-import tripleo.elijah.lang.Scope3;
+import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.deduce.ClassInvocation;
+import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.util.Holder;
 import tripleo.elijah.work.WorkJob;
@@ -67,7 +61,7 @@ public class WlGenerateDefaultCtor implements WorkJob {
 					final IExpression e = ExpressionBuilder.build(left, ExpressionKind.ASSIGNMENT, right);
 					scope3.add(new WrappedStatementWrapper(e, cd.getContext(), cd, varTableEntry.vs));
 				} else {
-					if (true) {
+					if (true || getPragma("auto_construct")) {
 						scope3.add(new ConstructStatement(cd, cd.getContext(), varTableEntry.nameToken, null, null));
 					}
 				}

@@ -11,41 +11,26 @@ package tripleo.elijah.stages.deduce;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.ConstructorDef;
-import tripleo.elijah.lang.FormalArgListItem;
-import tripleo.elijah.lang.FunctionDef;
-import tripleo.elijah.lang.IdentExpression;
-import tripleo.elijah.lang.NamespaceStatement;
-import tripleo.elijah.lang.OS_Element;
-import tripleo.elijah.lang.TypeName;
-import tripleo.elijah.lang.VariableStatement;
-import tripleo.elijah.stages.gen_fn.AbstractDependencyTracker;
-import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
-import tripleo.elijah.stages.gen_fn.BaseTableEntry;
-import tripleo.elijah.stages.gen_fn.Constructable;
-import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.gen_fn.GeneratedClass;
-import tripleo.elijah.stages.gen_fn.IElementHolder;
-import tripleo.elijah.stages.gen_fn.IdentTableEntry;
-import tripleo.elijah.stages.gen_fn.ProcTableEntry;
-import tripleo.elijah.stages.gen_fn.TypeTableEntry;
-import tripleo.elijah.stages.gen_fn.VariableTableEntry;
+import tripleo.elijah.lang.*;
+import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.stages.logging.ElLog;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Created 9/10/21 3:42 AM
  */
 public class ProcTableListener implements BaseTableEntry.StatusListener {
-	private final ProcTableEntry pte;
+	private final ProcTableEntry        pte;
 	private final BaseGeneratedFunction generatedFunction;
 
-	private final DeduceTypes2.@NotNull DeduceClient2 dc;
-	private final @NotNull ElLog LOG;
+	private final          DeduceTypes2.@NotNull DeduceClient2 dc;
+	private final @NotNull ElLog                               LOG;
 
 	public ProcTableListener(final ProcTableEntry pte, final BaseGeneratedFunction generatedFunction, final DeduceTypes2.@NotNull DeduceClient2 dc) {
 		this.pte = pte;
@@ -106,6 +91,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 			resolved_element_pte_FunctionDef(co, pte, depTracker, fd);
 		} else {
 			LOG.err("845 Unknown element for ProcTableEntry " + e);
+			return;
 		}
 	}
 

@@ -40,9 +40,9 @@ public class ListExpression extends AbstractExpression implements Locatable {
 	}
 
 	public class Syntax {
-		final List<Token> commas = new ArrayList<Token>();
 		Token startToken;
 		Token endToken;
+		final List<Token> commas = new ArrayList<Token>();
 
 		public void start_and_end(final Token startToken, final Token endToken) {
 			this.startToken = startToken;

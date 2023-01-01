@@ -9,17 +9,7 @@
 package tripleo.elijah.contexts;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.Context;
-import tripleo.elijah.lang.FormalArgListItem;
-import tripleo.elijah.lang.FuncExpr;
-import tripleo.elijah.lang.FunctionDef;
-import tripleo.elijah.lang.FunctionItem;
-import tripleo.elijah.lang.LookupResultList;
-import tripleo.elijah.lang.NamespaceStatement;
-import tripleo.elijah.lang.OS_Element2;
-import tripleo.elijah.lang.VariableSequence;
-import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.*;
 
 import java.util.List;
 

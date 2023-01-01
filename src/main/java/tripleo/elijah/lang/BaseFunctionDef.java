@@ -23,9 +23,9 @@ public abstract class BaseFunctionDef implements Documentable, ClassItem, OS_Con
 
 	public final Attached _a = new Attached();
 	protected    Species  _species;
+	List<AnnotationClause> annotations = null;
 	protected Scope3          scope3;
 	protected FormalArgList   mFal = new FormalArgList(); // remove final for FunctionDefBuilder
-	List<AnnotationClause> annotations = null;
 	private   IdentExpression funName;
 	private   AccessNotation  access_note;
 	private   El_Category     category;

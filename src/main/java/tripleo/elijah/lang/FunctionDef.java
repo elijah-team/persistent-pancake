@@ -20,8 +20,9 @@ import tripleo.elijah.lang2.ElElementVisitor;
 // TODO FunctionDef is not a Container is it?
 public class FunctionDef extends BaseFunctionDef implements Documentable, ClassItem, OS_Element2 {
 
-	private final OS_Element parent;
 	private TypeName _returnType = null;
+
+	private final OS_Element parent;
 
 	// region constructor
 	private OS_FuncType osType;

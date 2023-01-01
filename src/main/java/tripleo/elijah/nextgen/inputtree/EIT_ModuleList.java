@@ -120,9 +120,9 @@ public class EIT_ModuleList {
 		                       @NotNull final DeducePhase aDeducePhase) {
 			mod           = aModule;
 			pipelineLogic = aPipelineLogic;
-			gfm = aGenerateFunctions;
-			epl = aEntryPointList;
-			deducePhase = aDeducePhase;
+			gfm           = aGenerateFunctions;
+			epl           = aEntryPointList;
+			deducePhase   = aDeducePhase;
 //			verbosity = mod.getCompilation().pipelineLogic.getVerbosity();
 		}
 

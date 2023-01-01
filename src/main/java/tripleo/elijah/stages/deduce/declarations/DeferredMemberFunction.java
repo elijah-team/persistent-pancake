@@ -15,14 +15,14 @@ import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.lang.BaseFunctionDef;
-import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.deduce.IInvocation;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedNode;
 
 /**
  * Created 11/21/21 6:32 AM

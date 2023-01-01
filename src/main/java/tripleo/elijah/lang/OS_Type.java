@@ -29,9 +29,10 @@ public class OS_Type {
 	}
 
 	public static boolean isConcreteType(final OS_Element element) {
-		return element instanceof ClassStatement;
+		if (element instanceof ClassStatement) return true;
 		// enum
 		// type
+		return false;
 	}
 
 	@Override
@@ -55,16 +56,19 @@ public class OS_Type {
 	public ClassStatement getClassOf() {
 		if (etype != null && etype instanceof ClassStatement)
 			return (ClassStatement) etype;
-		System.err.println("3001 "+etype+" "+ this);
+		System.err.println("3001 " + etype + " " + toString());
 		throw new IllegalArgumentException();
 //		return null;
 	}
 
 	public OS_Element getElement() {
-		if (type_of_type == Type.USER_CLASS) {//		case FUNCTION: // defined in subclass
-			return etype;
+		switch (type_of_type) {
+			case USER_CLASS:
+//		case FUNCTION: // defined in subclass
+				return etype;
+			default:
+				throw new IllegalArgumentException();
 		}
-		throw new IllegalArgumentException();
 	}
 
 	public OS_Type resolve(final Context ctx) {

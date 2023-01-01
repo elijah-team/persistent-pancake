@@ -48,7 +48,6 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	private final         IdentExpression                                 ident;
 	private final         Context                                         pc;
 	private final         DeduceElementIdent                              dei                   = new DeduceElementIdent(this);
-	private final DeferredObject<GenType, Void, Void> fefiDone = new DeferredObject<GenType, Void, Void>();
 	public                boolean                                         preUpdateStatusListenerAdded;
 	public                TypeTableEntry                                  type;
 	public                GeneratedNode                                   externalRef;
@@ -60,10 +59,6 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	private GeneratedNode                  resolvedType;
 	private DeduceElement3_IdentTableEntry _de3;
 	private ITE_Zero                       _zero;
-
-	public void addPotentialType(final int instructionIndex, final TypeTableEntry tte) {
-		potentialTypes.put(instructionIndex, tte);
-	}
 
 	public IdentTableEntry(final int index, final IdentExpression ident, final Context pc) {
 		this.index = index;
@@ -80,6 +75,8 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		setupResolve();
 	}
 
+	private final DeferredObject<GenType, Void, Void> fefiDone = new DeferredObject<GenType, Void, Void>();
+
 	@Override
 	public OS_Element getResolvedElement() {
 		// short circuit
@@ -94,15 +91,8 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		return resolved_element;
 	}
 
-	public IdentExpression getIdent() {
-		return ident;
-	}
-
-	@Override
-	public void resolveTypeToClass(final GeneratedNode gn) {
-		resolvedType = gn;
-		if (type != null) // TODO maybe find a more robust solution to this, like another Promise? or just setType? or onPossiblesResolve?
-			type.resolve(gn); // TODO maybe this obviates the above?
+	public void addPotentialType(final int instructionIndex, final TypeTableEntry tte) {
+		potentialTypes.put(instructionIndex, tte);
 	}
 
 	@Override
@@ -113,9 +103,20 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		  ", backlink=" + backlink +
 		  ", potentialTypes=" + potentialTypes +
 		  ", status=" + status +
-				", type=" + type +
-				", resolved=" + resolvedType +
-				'}';
+		  ", type=" + type +
+		  ", resolved=" + resolvedType +
+		  '}';
+	}
+
+	public IdentExpression getIdent() {
+		return ident;
+	}
+
+	@Override
+	public void resolveTypeToClass(final GeneratedNode gn) {
+		resolvedType = gn;
+		if (type != null) // TODO maybe find a more robust solution to this, like another Promise? or just setType? or onPossiblesResolve?
+			type.resolve(gn); // TODO maybe this obviates the above?
 	}
 
 	public boolean isResolved() {
@@ -144,10 +145,6 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	// region constructable
 
-	public void setDeduceTypes2(final @NotNull DeduceTypes2 aDeduceTypes2, final Context aContext, final @NotNull BaseGeneratedFunction aGeneratedFunction) {
-		dei.setDeduceTypes2(aDeduceTypes2, aContext, aGeneratedFunction);
-	}
-
 	//	@SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
 	public @NotNull Collection<TypeTableEntry> potentialTypes() {
 		return potentialTypes.values();
@@ -171,13 +168,6 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	}
 
-	// endregion constructable
-
-	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction) {
-		@NotNull final List<InstructionArgument> x = BaseGeneratedFunction._getIdentIAPathList(new IdentIA(index, generatedFunction));
-		return new DeducePath(this, x);
-	}
-
 	@Override
 	public void setGenType(final GenType aGenType) {
 		if (type != null) {
@@ -188,9 +178,20 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		}
 	}
 
+	// endregion constructable
+
+	public void setDeduceTypes2(final @NotNull DeduceTypes2 aDeduceTypes2, final Context aContext, final @NotNull BaseGeneratedFunction aGeneratedFunction) {
+		dei.setDeduceTypes2(aDeduceTypes2, aContext, aGeneratedFunction);
+	}
+
 	@Override
 	public Promise<ProcTableEntry, Void, Void> constructablePromise() {
 		return constructableDeferred.promise();
+	}
+
+	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction) {
+		@NotNull final List<InstructionArgument> x = generatedFunction._getIdentIAPathList(new IdentIA(index, generatedFunction));
+		return new DeducePath(this, x);
 	}
 
 	public void fefiDone(final GenType aGenType) {

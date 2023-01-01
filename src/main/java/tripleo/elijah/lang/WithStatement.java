@@ -9,6 +9,7 @@
 package tripleo.elijah.lang;
 
 import antlr.Token;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.contexts.WithContext;
 import tripleo.elijah.lang2.ElElementVisitor;
 

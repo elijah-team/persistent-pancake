@@ -15,14 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.BaseFunctionDef;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
-import tripleo.elijah.stages.gen_fn.GeneratePhase;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
-import tripleo.elijah.stages.gen_fn.ProcTableEntry;
-import tripleo.elijah.stages.gen_fn.TypeTableEntry;
-import tripleo.elijah.stages.gen_fn.WlGenerateDefaultCtor;
-import tripleo.elijah.stages.gen_fn.WlGenerateFunction;
-import tripleo.elijah.stages.gen_fn.WlGenerateNamespace;
+import tripleo.elijah.stages.gen_fn.*;
 
 import java.util.List;
 
@@ -149,7 +142,9 @@ public class FunctionInvocation {
 		if (pte != aFunctionInvocation.pte) return false;
 		if (classInvocation != aFunctionInvocation.classInvocation) return false;
 		if (namespaceInvocation != aFunctionInvocation.namespaceInvocation) return false;
-		return _generated == aFunctionInvocation._generated;
+		if (_generated != aFunctionInvocation._generated) return false;
+
+		return true;
 	}
 }
 

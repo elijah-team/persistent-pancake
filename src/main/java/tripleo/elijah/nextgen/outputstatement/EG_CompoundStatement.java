@@ -31,12 +31,13 @@ public class EG_CompoundStatement implements EG_Statement {
 
 	@Override
 	public String getText() {
+		final StringBuilder sb = new StringBuilder();
 
-		final String sb = beginning.getText() +
-		  middle.getText() +
-		  ending.getText();
+		sb.append(beginning.getText());
+		sb.append(middle.getText());
+		sb.append(ending.getText());
 
-		return sb;
+		return sb.toString();
 	}
 
 	@Override

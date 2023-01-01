@@ -74,14 +74,14 @@ public class GenType {
 
 		final GenType genType = (GenType) aO;
 
-		if (!Objects.equals(resolvedn, genType.resolvedn)) return false;
-		if (!Objects.equals(typeName, genType.typeName)) return false;
-		if (!Objects.equals(nonGenericTypeName, genType.nonGenericTypeName))
+		if (resolvedn != null ? !resolvedn.equals(genType.resolvedn) : genType.resolvedn != null) return false;
+		if (typeName != null ? !typeName.equals(genType.typeName) : genType.typeName != null) return false;
+		if (nonGenericTypeName != null ? !nonGenericTypeName.equals(genType.nonGenericTypeName) : genType.nonGenericTypeName != null)
 			return false;
-		if (!Objects.equals(resolved, genType.resolved)) return false;
-		if (!Objects.equals(ci, genType.ci)) return false;
-		if (!Objects.equals(node, genType.node)) return false;
-		return Objects.equals(functionInvocation, genType.functionInvocation);
+		if (resolved != null ? !resolved.equals(genType.resolved) : genType.resolved != null) return false;
+		if (ci != null ? !ci.equals(genType.ci) : genType.ci != null) return false;
+		if (node != null ? !node.equals(genType.node) : genType.node != null) return false;
+		return functionInvocation != null ? functionInvocation.equals(genType.functionInvocation) : genType.functionInvocation == null;
 	}
 
 	@Override
@@ -138,7 +138,8 @@ public class GenType {
 		if (nonGenericTypeName != null) return false;
 		if (resolved != null) return false;
 		if (ci != null) return false;
-		return node == null;
+		if (node != null) return false;
+		return true;
 	}
 
 	public void copy(final GenType aGenType) {

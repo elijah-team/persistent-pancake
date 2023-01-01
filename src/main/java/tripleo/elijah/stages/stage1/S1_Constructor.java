@@ -3,14 +3,7 @@
  */
 package tripleo.elijah.stages.stage1;
 
-import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.ConstructorDef;
-import tripleo.elijah.lang.Context;
-import tripleo.elijah.lang.FormalArgListItem;
-import tripleo.elijah.lang.FunctionItem;
-import tripleo.elijah.lang.IdentExpression;
-import tripleo.elijah.lang.OS_Type;
-import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions.S1toG_GC_Processor;

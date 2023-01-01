@@ -52,6 +52,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 	private final DeferredObject2<FunctionInvocation, Void, Void> onFunctionInvocations = new DeferredObject2<FunctionInvocation, Void, Void>();
 	private       FunctionInvocation                              functionInvocation;
 	private       DeduceElement3_ProcTableEntry                   _de3;
+
 	private PTE_Zero _zero;
 
 	public List<TypeTableEntry> getArgs() {
@@ -107,6 +108,16 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		return classInvocation;
 	}
 
+	@Override
+	@NotNull
+	public String toString() {
+		return "ProcTableEntry{" +
+		  "index=" + index +
+		  ", expression=" + expression +
+		  ", expression_num=" + expression_num +
+		  ", args=" + args +
+		  '}';
+	}
 	public ProcTableEntry(final int aIndex, final IExpression aExpression, final InstructionArgument aExpressionNum, final List<TypeTableEntry> aArgs) {
 		index          = aIndex;
 		expression     = aExpression;
@@ -132,17 +143,6 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		}
 
 		setupResolve();
-	}
-
-	@Override
-	@NotNull
-	public String toString() {
-		return "ProcTableEntry{" +
-		  "index=" + index +
-		  ", expression=" + expression +
-		  ", expression_num=" + expression_num +
-		  ", args=" + args +
-		  '}';
 	}
 
 	// have no idea what this is for

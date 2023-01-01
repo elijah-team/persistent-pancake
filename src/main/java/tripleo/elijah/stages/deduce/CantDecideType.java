@@ -12,6 +12,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang.VariableStatement;
@@ -69,7 +70,7 @@ public class CantDecideType implements Diagnostic {
 
 	@Override
 	public void report(@NotNull final PrintStream stream) {
-		stream.printf("---[%s]---: %s%n", code(), message());
+		stream.println(String.format("---[%s]---: %s", code(), message()));
 		// linecache.print(primary);
 		for (final Locatable sec : secondary()) {
 			//linecache.print(sec)

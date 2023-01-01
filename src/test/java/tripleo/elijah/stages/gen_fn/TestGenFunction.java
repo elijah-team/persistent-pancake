@@ -12,12 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.AccessBus;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
+import tripleo.elijah.comp.*;
 import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.entrypoints.MainClassEntryPoint;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.FunctionDef;
@@ -53,7 +50,7 @@ public class TestGenFunction {
 		final String f = "test/demo-el-normal/fact1.elijah";
 		final File file = new File(f);
 		final OS_Module m = c.realParseElijjahFile(f, file, false);
-		Assert.assertNotNull("Method parsed correctly", m);
+		Assert.assertTrue("Method parsed correctly", m != null);
 		m.prelude = c.findPrelude("c").success(); // TODO we dont know which prelude to find yet
 
 		//
@@ -172,7 +169,7 @@ public class TestGenFunction {
 				System.out.println("main\n====");
 				for (int i = 0; i < gf.vte_list.size(); i++) {
 					final VariableTableEntry vte = gf.getVarTableEntry(i);
-					System.out.printf("8007 %s %s %s%n", vte.getName(), vte.type, vte.potentialTypes());
+					System.out.println(String.format("8007 %s %s %s", vte.getName(), vte.type, vte.potentialTypes()));
 					if (vte.type.getAttached() != null) {
 						Assert.assertNotEquals(OS_Type.Type.BUILT_IN, vte.type.getAttached().getType());
 						Assert.assertNotEquals(OS_Type.Type.USER, vte.type.getAttached().getType());
@@ -200,7 +197,7 @@ public class TestGenFunction {
 				System.out.println("factorial\n=========");
 				for (int i = 0; i < gf.vte_list.size(); i++) {
 					final VariableTableEntry vte = gf.getVarTableEntry(i);
-					System.out.printf("8008 %s %s %s%n", vte.getName(), vte.type, vte.potentialTypes());
+					System.out.println(String.format("8008 %s %s %s", vte.getName(), vte.type, vte.potentialTypes()));
 					if (vte.type.getAttached() != null) {
 						Assert.assertNotEquals(OS_Type.Type.BUILT_IN, vte.type.getAttached().getType());
 						Assert.assertNotEquals(OS_Type.Type.USER, vte.type.getAttached().getType());
@@ -212,7 +209,7 @@ public class TestGenFunction {
 			}
 		});
 
-		dp.deduceModule(m, lgc, false, Compilation.gitlabCIVerbosity());
+		dp.deduceModule(m, lgc, false, c.gitlabCIVerbosity());
 		dp.finish(dp.generatedClasses);
 
 		Assert.assertEquals("Not all hooks ran", 4, ran_hooks.size());
@@ -237,7 +234,7 @@ public class TestGenFunction {
 		final String f = "test/basic1/backlink1.elijah";
 		final File file = new File(f);
 		final OS_Module m = c.realParseElijjahFile(f, file, false);
-		Assert.assertNotNull("Method parsed correctly", m);
+		Assert.assertTrue("Method parsed correctly", m != null);
 		m.prelude = c.findPrelude("c").success(); // TODO we dont know which prelude to find yet
 
 		c.findStdLib("c");
@@ -246,7 +243,7 @@ public class TestGenFunction {
 			c.use(ci, false);
 		}
 
-		final ElLog.Verbosity verbosity1 = Compilation.gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity1 = c.gitlabCIVerbosity();
 		final AccessBus       ab         = new AccessBus(c);
 
 		ab.addPipelineLogic(PipelineLogic::new);
@@ -279,7 +276,7 @@ public class TestGenFunction {
 			}
 		}
 
-		dp.deduceModule(m, lgc, true, Compilation.gitlabCIVerbosity());
+		dp.deduceModule(m, lgc, true, c.gitlabCIVerbosity());
 		dp.finish(dp.generatedClasses);
 //		new DeduceTypes2(m).deduceFunctions(lgf);
 
@@ -294,7 +291,7 @@ public class TestGenFunction {
 			}
 		}
 
-		final OutputFileFactoryParams p   = new OutputFileFactoryParams(m, eee, Compilation.gitlabCIVerbosity(), pl);
+		final OutputFileFactoryParams p   = new OutputFileFactoryParams(m, eee, c.gitlabCIVerbosity(), pl);
 		final GenerateC               ggc = new GenerateC(p);
 		ggc.generateCode(lgf, wm);
 

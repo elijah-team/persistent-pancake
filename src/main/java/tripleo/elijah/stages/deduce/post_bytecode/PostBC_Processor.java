@@ -1,7 +1,7 @@
 package tripleo.elijah.stages.deduce.post_bytecode;
 
-import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
+import org.jdeferred2.Promise;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

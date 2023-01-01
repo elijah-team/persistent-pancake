@@ -13,37 +13,11 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.ConstructorDef;
-import tripleo.elijah.lang.Context;
-import tripleo.elijah.lang.FormalArgListItem;
-import tripleo.elijah.lang.IdentExpression;
-import tripleo.elijah.lang.NormalTypeName;
-import tripleo.elijah.lang.OS_GenericTypeNameType;
-import tripleo.elijah.lang.OS_Type;
-import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.deduce.ClassInvocation;
-import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
-import tripleo.elijah.stages.gen_fn.ConstantTableEntry;
-import tripleo.elijah.stages.gen_fn.GeneratedClass;
-import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
-import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
-import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
-import tripleo.elijah.stages.gen_fn.ProcTableEntry;
-import tripleo.elijah.stages.gen_fn.TypeTableEntry;
-import tripleo.elijah.stages.gen_fn.VariableTableEntry;
+import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
-import tripleo.elijah.stages.instructions.ConstTableIA;
-import tripleo.elijah.stages.instructions.IdentIA;
-import tripleo.elijah.stages.instructions.Instruction;
-import tripleo.elijah.stages.instructions.InstructionArgument;
-import tripleo.elijah.stages.instructions.IntegerIA;
-import tripleo.elijah.stages.instructions.Label;
-import tripleo.elijah.stages.instructions.LabelIA;
-import tripleo.elijah.stages.instructions.ProcIA;
-import tripleo.elijah.stages.instructions.SymbolIA;
-import tripleo.elijah.stages.instructions.VariableTableType;
+import tripleo.elijah.stages.instructions.*;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.BufferTabbedOutputStream;
 import tripleo.elijah.util.Helpers;
@@ -65,9 +39,10 @@ public class Generate_Code_For_Method {
 	private final ElLog LOG;
 
 	final BufferTabbedOutputStream tos = new BufferTabbedOutputStream();
-	final BufferTabbedOutputStream tosHdr = new BufferTabbedOutputStream();
+
 	GenerateC gc;
-	boolean is_constructor = false, is_unit_type = false;
+
+	final BufferTabbedOutputStream tosHdr = new BufferTabbedOutputStream();
 
 	public Generate_Code_For_Method(@NotNull final GenerateC aGenerateC, final ElLog aLog) {
 		gc  = aGenerateC;
@@ -177,6 +152,8 @@ public class Generate_Code_For_Method {
 		tos.put_string_ln("}");
 	}
 
+	boolean is_constructor = false, is_unit_type = false;
+
 	private void action_E(final BaseGeneratedFunction gf, final Generate_Method_Header aGmh) {
 		tos.put_string_ln("bool vsb;");
 		int state = 0;
@@ -218,6 +195,16 @@ public class Generate_Code_For_Method {
 		tos.incr_tabs();
 	}
 
+	private void action_XS() {
+		tos.dec_tabs();
+		tos.put_string_ln("}");
+	}
+
+	private void action_ES() {
+		tos.put_string_ln("{");
+		tos.incr_tabs();
+	}
+
 	private void action_X(final Generate_Method_Header aGmh) {
 		if (is_constructor) return;
 
@@ -227,16 +214,6 @@ public class Generate_Code_For_Method {
 			if (aGmh.tte != null && aGmh.tte.isResolved()) {
 				tos.put_string_ln("return vsr;");
 			}
-	}
-
-	private void action_ES() {
-		tos.put_string_ln("{");
-		tos.incr_tabs();
-	}
-
-	private void action_XS() {
-		tos.dec_tabs();
-		tos.put_string_ln("}");
 	}
 
 	private void action_AGN(final BaseGeneratedFunction gf, final Instruction aInstruction) {

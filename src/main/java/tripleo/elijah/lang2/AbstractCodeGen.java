@@ -11,6 +11,7 @@ package tripleo.elijah.lang2;
 
 import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.FunctionItem;
 
 /**
  * Created 11/18/21 1:02 PM

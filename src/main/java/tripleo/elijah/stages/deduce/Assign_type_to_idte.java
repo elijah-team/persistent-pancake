@@ -19,8 +19,6 @@ import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.util.NotImplementedException;
 
-import java.util.Objects;
-
 class Assign_type_to_idte {
 	private final DeduceTypes2          aDeduceTypes2;
 	private final IdentTableEntry       ite;
@@ -64,12 +62,12 @@ class Assign_type_to_idte {
 					case USER:
 						__foundElement_USER_type();
 						break;
-                    case USER_CLASS:
-                        use_user_class(ite.type.getAttached(), ite);
-                        break;
-                    case FUNCTION:
-                        __foundElement__FUNCTION_type();
-	                    break;
+					case USER_CLASS:
+						use_user_class(ite.type.getAttached(), ite);
+						break;
+					case FUNCTION:
+						__foundElement__FUNCTION_type();
+						break;
 					default:
 						throw new IllegalStateException("Unexpected value: " + ite.type.getAttached().getType());
 				}
@@ -79,50 +77,18 @@ class Assign_type_to_idte {
 			}
 		}
 
-		private void __ite_has_type(final OS_Element x) {
-			if (ite.hasResolvedElement())
-				return;
-
-			@Nullable LookupResultList lrl      = null;
-			final IdentExpression      iteIdent = ite.getIdent();
-
-			try {
-				lrl = DeduceLookupUtils.lookupExpression(iteIdent, aFunctionContext, aDeduceTypes2);
-				@Nullable final OS_Element best = lrl.chooseBest(null);
-				if (best != null) {
-					// TODO how does best relate to x??
-					ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(x));
-
-					// TODO this is checked above, so is below redundant??
-					assert ite.type != null;
-					assert ite.type.getAttached() != null;
-
-					if (ite.type != null && ite.type.getAttached() != null) {
-						if (Objects.requireNonNull(ite.type.getAttached().getType()) == OS_Type.Type.USER) {
-							try {
-								@NotNull final GenType xx = aDeduceTypes2.resolve_type(ite.type.getAttached(), aFunctionContext);
-								ite.type.setAttached(xx);
-							} catch (final ResolveError resolveError) { // TODO double catch
-								aDeduceTypes2.LOG.info("210 Can't attach type to " + iteIdent);
-								aDeduceTypes2.errSink.reportDiagnostic(resolveError);
-							}
-						}
-                    }
-                } else {
-                    aDeduceTypes2.LOG.err("184 Couldn't resolve " + iteIdent);
-                }
-            } catch (final ResolveError aResolveError) {
-                aDeduceTypes2.LOG.err("184-506 Couldn't resolve " + iteIdent);
-//						aResolveError.printStackTrace();
-                aDeduceTypes2.errSink.reportDiagnostic(aResolveError);
+        private void __foundElement_USER_type() {
+            try {
+                @NotNull final GenType xx = aDeduceTypes2.resolve_type(ite.type.getAttached(), aFunctionContext);
+                ite.type.setAttached(xx);
+            } catch (final ResolveError resolveError) {
+                aDeduceTypes2.LOG.info("192 Can't attach type to " + path);
+                aDeduceTypes2.errSink.reportDiagnostic(resolveError);
             }
-
-            assert ite.type != null;
-            assert ite.type.getAttached() != null;
-
             if (ite.type.getAttached().getType() == OS_Type.Type.USER_CLASS) {
                 use_user_class(ite.type.getAttached(), ite);
             }
+	        return;
         }
 
         private void __foundElement__FUNCTION_type() {
@@ -146,14 +112,49 @@ class Assign_type_to_idte {
             }
         }
 
-        private void __foundElement_USER_type() {
-            try {
-                @NotNull final GenType xx = aDeduceTypes2.resolve_type(ite.type.getAttached(), aFunctionContext);
-                ite.type.setAttached(xx);
-            } catch (final ResolveError resolveError) {
-                aDeduceTypes2.LOG.info("192 Can't attach type to " + path);
-                aDeduceTypes2.errSink.reportDiagnostic(resolveError);
+		private void __ite_has_type(final OS_Element x) {
+			if (ite.hasResolvedElement())
+				return;
+
+			@Nullable LookupResultList lrl      = null;
+			final IdentExpression      iteIdent = ite.getIdent();
+
+			try {
+				lrl = DeduceLookupUtils.lookupExpression(iteIdent, aFunctionContext, aDeduceTypes2);
+				@Nullable final OS_Element best = lrl.chooseBest(null);
+				if (best != null) {
+					// TODO how does best relate to x??
+					ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(x));
+
+					// TODO this is checked above, so is below redundant??
+					assert ite.type != null;
+					assert ite.type.getAttached() != null;
+
+					if (ite.type != null && ite.type.getAttached() != null) {
+						switch (ite.type.getAttached().getType()) {
+							case USER:
+								try {
+									@NotNull final GenType xx = aDeduceTypes2.resolve_type(ite.type.getAttached(), aFunctionContext);
+									ite.type.setAttached(xx);
+								} catch (final ResolveError resolveError) { // TODO double catch
+									aDeduceTypes2.LOG.info("210 Can't attach type to " + iteIdent);
+									aDeduceTypes2.errSink.reportDiagnostic(resolveError);
+								}
+								break;
+						}
+					}
+				} else {
+                    aDeduceTypes2.LOG.err("184 Couldn't resolve " + iteIdent);
+                }
+            } catch (final ResolveError aResolveError) {
+                aDeduceTypes2.LOG.err("184-506 Couldn't resolve " + iteIdent);
+//						aResolveError.printStackTrace();
+                aDeduceTypes2.errSink.reportDiagnostic(aResolveError);
             }
+
+            assert ite.type != null;
+            assert ite.type.getAttached() != null;
+
             if (ite.type.getAttached().getType() == OS_Type.Type.USER_CLASS) {
                 use_user_class(ite.type.getAttached(), ite);
             }

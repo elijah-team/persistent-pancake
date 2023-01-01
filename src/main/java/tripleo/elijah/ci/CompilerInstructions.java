@@ -11,6 +11,7 @@ package tripleo.elijah.ci;
 import antlr.Token;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.StringExpression;
@@ -62,7 +63,10 @@ public class CompilerInstructions {
 			@Override
 			public boolean apply(final GenerateStatement.@Nullable Directive input) {
 				assert input != null;
-				return input.getName().equals("gen");
+				if (input.getName().equals("gen")) {
+					return true;
+				}
+				return false;
 			}
 		});
 		final Iterator<GenerateStatement.Directive> gi = gens.iterator();

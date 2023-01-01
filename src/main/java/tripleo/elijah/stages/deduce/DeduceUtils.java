@@ -5,15 +5,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.ClassItem;
-import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.ConstructorDef;
-import tripleo.elijah.lang.ExpressionList;
-import tripleo.elijah.lang.FunctionDef;
-import tripleo.elijah.lang.LookupResult;
-import tripleo.elijah.lang.OS_Element;
-import tripleo.elijah.lang.OS_Element2;
-import tripleo.elijah.lang.ProcedureCallExpression;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.lang.*;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.List;

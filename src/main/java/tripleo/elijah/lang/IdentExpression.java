@@ -24,6 +24,7 @@ import java.io.File;
 
 /**
  * @author Tripleo(sb)
+ *
  */
 public class IdentExpression implements IExpression, OS_Element, Resolvable, Locatable {
 
@@ -72,7 +73,7 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 //			text = ((IdentExpression) iexpression).text;
 //		} else {
 //			// NOTE was System.err.println
-		throw new IllegalArgumentException("Trying to set left-side of IdentExpression to " + iexpression);
+		throw new IllegalArgumentException("Trying to set left-side of IdentExpression to " + iexpression.toString());
 //		}
 	}
 

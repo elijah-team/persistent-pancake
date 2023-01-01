@@ -20,6 +20,7 @@ public class VariableSequence implements StatementItem, FunctionItem, ClassItem 
 	final     List<VariableStatement> stmts;
 	@Nullable List<AnnotationClause>  annotations = null;
 	private   Context                 _ctx;
+
 	private OS_Element parent;
 	private AccessNotation access_note;
 
@@ -60,15 +61,6 @@ public class VariableSequence implements StatementItem, FunctionItem, ClassItem 
 		_ctx = ctx;
 	}
 
-	public VariableSequence(final Context aContext) {
-		stmts = new ArrayList<VariableStatement>();
-		_ctx  = aContext;
-	}
-
-	public void defaultModifiers(final TypeModifiers aModifiers) {
-		def = aModifiers;
-	}
-
 	@Override
 	public String toString() {
 		final List<String> r = new ArrayList<String>();
@@ -79,8 +71,6 @@ public class VariableSequence implements StatementItem, FunctionItem, ClassItem 
 //		return (stmts.stream().map(n -> n.getName()).collect(Collectors.toList())).toString();
 	}
 
-	// region ClassItem
-
 	@Override
 	public void visitGen(final ElElementVisitor visit) {
 		visit.visitVariableSequence(this);
@@ -90,6 +80,17 @@ public class VariableSequence implements StatementItem, FunctionItem, ClassItem 
 		if (annotations == null)
 			annotations = new ArrayList<AnnotationClause>();
 		annotations.add(a);
+	}
+
+	// region ClassItem
+
+	public VariableSequence(final Context aContext) {
+		stmts = new ArrayList<VariableStatement>();
+		_ctx  = aContext;
+	}
+
+	public void defaultModifiers(final TypeModifiers aModifiers) {
+		def = aModifiers;
 	}
 
 	@Override

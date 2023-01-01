@@ -14,6 +14,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
@@ -33,9 +34,9 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 
 	private final OS_Element parent;
 	ClassInheritance _inh = new ClassInheritance(); // remove final for ClassBuilder
-	static final List<TypeName> emptyTypeNameList = ImmutableList.of();
-	private TypeNameList genericPart;
 	private ClassTypes   _type;
+	static final List<TypeName> emptyTypeNameList = ImmutableList.<TypeName>of();
+	private TypeNameList genericPart;
 	private      OS_Type        osType;
 
 	public ClassStatement(final OS_Element parentElement, final Context parentContext) {

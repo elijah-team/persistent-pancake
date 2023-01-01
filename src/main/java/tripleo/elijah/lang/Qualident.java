@@ -13,6 +13,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.util.Helpers;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class Qualident  implements IExpression {
 	
 	@Override
 	public String repr_() {
-		return String.format("Qualident (%s)", this);
+		return String.format("Qualident (%s)", toString());
 	}
 	
 	@Override

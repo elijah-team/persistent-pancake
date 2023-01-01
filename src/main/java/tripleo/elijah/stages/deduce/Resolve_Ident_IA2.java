@@ -15,16 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.*;
-import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
-import tripleo.elijah.stages.gen_fn.BaseTableEntry;
-import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
-import tripleo.elijah.stages.gen_fn.GenericElementHolder;
-import tripleo.elijah.stages.gen_fn.IdentTableEntry;
-import tripleo.elijah.stages.gen_fn.ProcTableEntry;
-import tripleo.elijah.stages.gen_fn.TableEntryIV;
-import tripleo.elijah.stages.gen_fn.TypeTableEntry;
-import tripleo.elijah.stages.gen_fn.VariableTableEntry;
+import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
@@ -68,18 +59,19 @@ class Resolve_Ident_IA2 {
 	public void resolveIdentIA2_(final @NotNull Context ctx,
 								 final @Nullable IdentIA identIA,
 								 @Nullable List<InstructionArgument> s) {
-		el = null;
+		el   = null;
 		ectx = ctx;
 
-		assert identIA != null || s != null;
+		if (identIA == null)
+			assert s != null;
 
 		if (s == null)
-			s = BaseGeneratedFunction._getIdentIAPathList(identIA);
+			s = generatedFunction._getIdentIAPathList(identIA);
 
 		if (identIA != null) {
-			final DeducePath dp = identIA.getEntry().buildDeducePath(generatedFunction);
-			final int index = dp.size() - 1;
-			final InstructionArgument ia2 = dp.getIA(index);
+			final DeducePath          dp    = identIA.getEntry().buildDeducePath(generatedFunction);
+			final int                 index = dp.size() - 1;
+			final InstructionArgument ia2   = dp.getIA(index);
 			// ia2 is not == equals to identIA, but functionally equivalent
 			if (ia2 instanceof IdentIA) {
 				final @NotNull IdentTableEntry ite = ((IdentIA) ia2).getEntry();

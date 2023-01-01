@@ -13,43 +13,17 @@ import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.BaseFunctionDef;
-import tripleo.elijah.lang.ConstructorDef;
-import tripleo.elijah.lang.Context;
-import tripleo.elijah.lang.DotExpression;
-import tripleo.elijah.lang.IExpression;
-import tripleo.elijah.lang.IdentExpression;
-import tripleo.elijah.lang.OS_Element;
-import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.lang.OS_Type;
-import tripleo.elijah.lang.ProcedureCallExpression;
-import tripleo.elijah.stages.deduce.DeduceElement;
-import tripleo.elijah.stages.deduce.DeduceTypes2;
-import tripleo.elijah.stages.deduce.FoundElement;
-import tripleo.elijah.stages.deduce.FunctionInvocation;
-import tripleo.elijah.stages.deduce.OnGenClass;
+import tripleo.elijah.lang.*;
+import tripleo.elijah.stages.deduce.*;
 import tripleo.elijah.stages.gen_generic.Dependency;
 import tripleo.elijah.stages.gen_generic.IDependencyReferent;
-import tripleo.elijah.stages.instructions.ConstTableIA;
-import tripleo.elijah.stages.instructions.FnCallArgs;
-import tripleo.elijah.stages.instructions.IdentIA;
-import tripleo.elijah.stages.instructions.Instruction;
-import tripleo.elijah.stages.instructions.InstructionArgument;
-import tripleo.elijah.stages.instructions.InstructionName;
-import tripleo.elijah.stages.instructions.IntegerIA;
-import tripleo.elijah.stages.instructions.Label;
-import tripleo.elijah.stages.instructions.ProcIA;
-import tripleo.elijah.stages.instructions.VariableTableType;
+import tripleo.elijah.stages.instructions.*;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Holder;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.util.range.Range;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 
@@ -75,8 +49,8 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	private               int                                        label_count       = 0;
 	private               int                                        _nextTemp         = 0;
 	private               GeneratedNode                              genClass;
-	private       GeneratedContainerNC                       parent;
-	private final DeferredObject<GeneratedClass, Void, Void> _gcP = new DeferredObject<>();
+	private               GeneratedContainerNC                       parent;
+	private               DeferredObject<GeneratedClass, Void, Void> _gcP              = new DeferredObject<>();
 
 	//
 	// region Ident-IA
@@ -517,7 +491,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	/*
 	 * Hook in for GeneratedClass
 	 */
-	public void onGenClass(final OnGenClass aOnGenClass) {
+	public void onGenClass(OnGenClass aOnGenClass) {
 		_gcP.then(aOnGenClass::accept);
 	}
 

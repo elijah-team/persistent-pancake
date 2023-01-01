@@ -8,39 +8,22 @@
  */
 package tripleo.elijah.stages.gen_c;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.ErrSink;
+import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.lang2.SpecialVariables;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
-import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
-import tripleo.elijah.stages.gen_fn.BaseTableEntry;
-import tripleo.elijah.stages.gen_fn.ConstantTableEntry;
-import tripleo.elijah.stages.gen_fn.GeneratedClass;
-import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
-import tripleo.elijah.stages.gen_fn.GeneratedContainer;
-import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
-import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
-import tripleo.elijah.stages.gen_fn.IdentTableEntry;
-import tripleo.elijah.stages.gen_fn.ProcTableEntry;
-import tripleo.elijah.stages.gen_fn.TypeTableEntry;
-import tripleo.elijah.stages.gen_fn.VariableTableEntry;
+import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.CodeGenerator;
 import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
-import tripleo.elijah.stages.instructions.ConstTableIA;
-import tripleo.elijah.stages.instructions.FnCallArgs;
-import tripleo.elijah.stages.instructions.IdentIA;
-import tripleo.elijah.stages.instructions.Instruction;
-import tripleo.elijah.stages.instructions.InstructionArgument;
-import tripleo.elijah.stages.instructions.IntegerIA;
-import tripleo.elijah.stages.instructions.ProcIA;
-import tripleo.elijah.stages.instructions.VariableTableType;
+import tripleo.elijah.stages.instructions.*;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.BufferTabbedOutputStream;
 import tripleo.elijah.util.Helpers;
@@ -56,6 +39,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
@@ -164,6 +148,14 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 		throw new IllegalStateException("Must be class or namespace.");
 	}
 
+	String getTypeName(@NotNull final GeneratedClass aGeneratedClass) {
+		return GetTypeName.forGenClass(aGeneratedClass);
+	}
+
+	String getTypeName(@NotNull final GeneratedNamespace aGeneratedNamespace) {
+		return GetTypeName.forGenNamespace(aGeneratedNamespace);
+	}
+
 	public void generate_function(final GeneratedFunction aGeneratedFunction, final GenerateResult gr, final WorkList wl) {
 		generateCodeForMethod(aGeneratedFunction, gr, wl);
 		for (final IdentTableEntry identTableEntry : aGeneratedFunction.idte_list) {
@@ -197,10 +189,6 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 				}
 			}
 		}
-	}
-
-	String getTypeName(@NotNull final GeneratedClass aGeneratedClass) {
-		return GetTypeName.forGenClass(aGeneratedClass);
 	}
 
 	public void generate_constructor(final GeneratedConstructor aGeneratedConstructor, final GenerateResult gr, final WorkList wl) {
@@ -294,10 +282,6 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 			}
 		}
 		x.generatedAlready = true;
-	}
-
-	String getTypeName(@NotNull final GeneratedNamespace aGeneratedNamespace) {
-		return GetTypeName.forGenNamespace(aGeneratedNamespace);
 	}
 
 	@Override
@@ -905,23 +889,6 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 			return sll;
 		}
 
-		private static String const_to_string(final IExpression expression) {
-			if (expression instanceof NumericExpression) {
-				return "" + ((NumericExpression) expression).getValue();
-			}
-			if (expression instanceof CharLitExpression) {
-				return String.format("'%s'", expression.toString());
-			}
-			if (expression instanceof StringExpression) {
-				// TODO triple quoted strings and other escaping concerns
-				return String.format("\"%s\"", ((StringExpression) expression).getText());
-			}
-
-			// FloatLitExpression
-			// BooleanExpression
-			throw new NotImplementedException();
-		}
-
 		public String ConstTableIA(final ConstTableIA constTableIA, final BaseGeneratedFunction gf) {
 			final ConstantTableEntry cte = gf.getConstTableEntry(constTableIA.getIndex());
 //			LOG.err(("9001-3 "+cte.initialValue));
@@ -939,6 +906,23 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 				default:
 					throw new NotImplementedException();
 			}
+		}
+
+		private static String const_to_string(final IExpression expression) {
+			if (expression instanceof NumericExpression) {
+				return "" + ((NumericExpression) expression).getValue();
+			}
+			if (expression instanceof CharLitExpression) {
+				return String.format("'%s'", expression.toString());
+			}
+			if (expression instanceof StringExpression) {
+				// TODO triple quoted strings and other escaping concerns
+				return String.format("\"%s\"", ((StringExpression) expression).getText());
+			}
+
+			// FloatLitExpression
+			// BooleanExpression
+			throw new NotImplementedException();
 		}
 
 		public String IntegerIA(final IntegerIA integerIA, final BaseGeneratedFunction gf) {

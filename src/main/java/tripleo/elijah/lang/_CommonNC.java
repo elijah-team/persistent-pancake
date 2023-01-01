@@ -17,20 +17,20 @@ import java.util.List;
  * Created 3/29/21 5:11 PM
  */
 abstract class _CommonNC {
-	public final    Attached        _a    = new Attached();
 	protected final List<ClassItem> items = new ArrayList<ClassItem>();
+	public final    Attached        _a    = new Attached();
 	private final   List<String>    mDocs = new ArrayList<String>();
-	private final List<AccessNotation> accesses = new ArrayList<AccessNotation>();
 	protected       IdentExpression nameToken;
 	protected       OS_Package      _packageName;
 	List<AnnotationClause> annotations = null;
-
-	public OS_Package getPackageName() {
-		return _packageName;
-	}
+	private final List<AccessNotation> accesses = new ArrayList<AccessNotation>();
 
 	public void setPackageName(final OS_Package aPackageName) {
 		_packageName = aPackageName;
+	}
+
+	public OS_Package getPackageName() {
+		return _packageName;
 	}
 
 	public void addDocString(final Token aText) {

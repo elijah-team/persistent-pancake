@@ -40,8 +40,8 @@ import static tripleo.elijah.contexts.ClassInfo.ClassInfoType.INHERITED;
  */
 public class ClassContext extends Context {
 
-	public final  Map<TypeName, ClassStatement> _inheritance = new HashMap<>();
 	private final ClassStatement                carrier;
+	public final  Map<TypeName, ClassStatement> _inheritance = new HashMap<>();
 	private final Context                       _parent;
 	private       boolean                       _didInheritance;
 
