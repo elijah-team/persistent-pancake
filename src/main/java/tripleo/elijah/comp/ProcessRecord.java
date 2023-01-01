@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 
 public class ProcessRecord {
 	public final PipelineLogic pipelineLogic;
-	private final DeferredObject<GenerateResult, Void, Void> _pgr = new DeferredObject<>();
 	AccessBus ab;
+	private final DeferredObject<GenerateResult, Void, Void> _pgr = new DeferredObject<>();
 
 	public ProcessRecord(final @NotNull ICompilationAccess ca0) {
 		ab = new AccessBus(ca0.getCompilation());
