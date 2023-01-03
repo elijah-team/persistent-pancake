@@ -88,17 +88,29 @@ public class CReference {
 		if (generated == null)
 			throw new IllegalStateException();
 
-		final GeneratedContainerNC genClass = (GeneratedContainerNC) generated.getGenClass();
-
 		if (generated instanceof GeneratedConstructor) {
-			final int    y                   = 2;
-			final String constructorNameText = generated.getFunctionName();
-
-			text[0] = String.format("ZC%d%s", genClass.getCode(), constructorNameText);
-			addRef(text[0], Ref.CONSTRUCTOR);
+			NotImplementedException.raise();
+			generated.onGenClass(genClass -> {
+				final IdentExpression constructorName = generated.getFD().getNameNode();
+				final String          constructorNameText;
+				if (constructorName == ConstructorDef.emptyConstructorName) {
+					constructorNameText = "";
+				} else {
+					constructorNameText = constructorName.getText();
+				}
+				text[0] = String.format("ZC%d%s", genClass.getCode(), constructorNameText);
+				addRef(text[0], Ref.CONSTRUCTOR);
+			});
+			final GeneratedContainerNC genClass = (GeneratedContainerNC) generated.getGenClass();
+			if (genClass == null) {
+				final int y = 2;
+				//generated.setClass(genClass);
+			}
 		} else {
-			text[0] = String.format("Z%d%s", genClass.getCode(), generated.getFunctionName());
-			addRef(text[0], Ref.FUNCTION);
+			generated.onGenClass(genClass -> {
+				text[0] = String.format("Z%d%s", genClass.getCode(), generated.getFD().getNameNode().getText());
+				addRef(text[0], Ref.FUNCTION);
+			});
 		}
 
 		return text[0];
