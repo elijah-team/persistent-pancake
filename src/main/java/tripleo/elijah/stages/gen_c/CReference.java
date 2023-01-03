@@ -9,31 +9,29 @@
  */
 package tripleo.elijah.stages.gen_c;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.*;
-import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
-import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
-import tripleo.elijah.nextgen.outputstatement.EG_Statement;
-import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
-import tripleo.elijah.stages.deduce.FunctionInvocation;
-import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
+import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
-import tripleo.elijah.stages.gen_c.Generate_Code_For_Method.AOG;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
+import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
-import tripleo.elijah.stages.instructions.Instruction;
 import tripleo.elijah.stages.instructions.InstructionArgument;
-import tripleo.elijah.stages.instructions.InstructionFixedList;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 
@@ -116,18 +114,13 @@ public class CReference {
 		return text[0];
 	}
 
-	public void getIdentIAPath(IdentIA ia2, BaseGeneratedFunction gf, AOG get, Object object) {
-		// TODO remove this
-		getIdentIAPath(ia2, get, rtext);
-	}
-
-
-//	enum Ref {
-//		LOCAL, MEMBER, PROPERTY_GET, PROPERTY_SET, INLINE_MEMBER, CONSTRUCTOR, DIRECT_MEMBER, LITERAL, PROPERTY, FUNCTION
-//	}
-
-
 	enum Ref {
+		//  was:
+		//	enum Ref {
+		//		LOCAL, MEMBER, PROPERTY_GET, PROPERTY_SET, INLINE_MEMBER, CONSTRUCTOR, DIRECT_MEMBER, LITERAL, PROPERTY (removed), FUNCTION
+		//	}
+
+
 		// https://www.baeldung.com/a-guide-to-java-enums
 		LOCAL {
 			@Override
