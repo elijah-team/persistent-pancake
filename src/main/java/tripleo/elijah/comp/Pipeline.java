@@ -15,7 +15,8 @@ import java.util.List;
  * Created 8/21/21 10:09 PM
  */
 public class Pipeline {
-	final List<PipelineMember> pls = new ArrayList<>();
+	final   List<PipelineMember> pls = new ArrayList<>();
+	private boolean              _runAlready; // TODO remove need for this
 
 	public void add(final PipelineMember aPipelineMember) {
 		pls.add(aPipelineMember);
@@ -23,9 +24,13 @@ public class Pipeline {
 
 
 	public void run() throws Exception {
+		if (_runAlready) return;
+
 		for (final PipelineMember pl : pls) {
 			pl.run();
 		}
+
+		_runAlready = true;
 	}
 }
 
