@@ -82,6 +82,7 @@ public class CReference {
 	public String getIdentIAPath_Proc(final @NotNull ProcTableEntry aPrte) {
 		final String[]              text      = new String[1];
 		final BaseGeneratedFunction generated = aPrte.getFunctionInvocation().getGenerated();
+		final IDeduceElement3       de_pte    = aPrte.getDeduceElement3();
 
 		if (generated == null)
 			throw new IllegalStateException();
