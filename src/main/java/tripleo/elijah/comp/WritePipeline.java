@@ -17,6 +17,7 @@ import tripleo.elijah.nextgen.inputtree.EIT_Input;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
 import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
+import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
@@ -133,19 +134,47 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 		write_inputs(aFile_prefix);
 
 		for (final Map.Entry<String, Collection<Buffer>> entry : mb.asMap().entrySet()) {
-			final String key = entry.getKey();
-			final Path path = FileSystems.getDefault().getPath(prefix, key);
+			final String key  = entry.getKey();
+			final Path   path = FileSystems.getDefault().getPath(prefix, key);
 //			BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
 
 			path.getParent().toFile().mkdirs();
 
 			// TODO functionality
-			System.out.println("201 Writing path: "+path);
+			System.out.println("201 Writing path: " + path);
 			final CharSink x = c.getIO().openWrite(path);
-			for (final @NotNull Buffer buffer : entry.getValue()) {
-				x.accept(buffer.getText());
-			}
-			((FileCharSink)x).close();
+
+			final EG_SingleStatement beginning = new EG_SingleStatement("", new EX_Explanation() {
+			});
+			final EG_Statement middle = new EG_Statement() {
+				@Override
+				public String getText() {
+					return Helpers.String_join("\n\n", entry.getValue()
+					                                        .stream()
+					                                        .map(buffer -> buffer.getText())
+					                                        .collect(Collectors.toList()));
+				}
+
+				@Override
+				public EX_Explanation getExplanation() {
+					return new EX_Explanation() {
+						final String message = "buffers to statement";
+					};
+				}
+			};
+			final EG_SingleStatement ending = new EG_SingleStatement("", new EX_Explanation() {
+			});
+			final EX_Explanation explanation = new EX_Explanation() {
+				final String message = "write output file";
+			};
+
+			final EG_CompoundStatement seq = new EG_CompoundStatement(beginning, ending, middle, false, explanation);
+
+//			for (final @NotNull Buffer buffer : entry.getValue()) {
+//				x.accept(buffer.getText());
+//			}
+			x.accept(seq.getText());
+			((FileCharSink) x).close();
 		}
 	}
 
@@ -215,7 +244,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 //				assert false;
 //				grs = aGenerateResultSupplier;
 //				//final GenerateResult gr = aGenerateResultSupplier.get();
-				int y = 2;
+				final int y = 2;
 			}
 		};
 	}
