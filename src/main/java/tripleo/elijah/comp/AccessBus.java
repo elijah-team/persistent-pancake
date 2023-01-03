@@ -1,6 +1,5 @@
 package tripleo.elijah.comp;
 
-import com.google.common.collect.Collections2;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
@@ -9,9 +8,7 @@ import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
-import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
@@ -66,7 +63,7 @@ public class AccessBus {
 
 	public void add(final @NotNull Function<AccessBus, PipelineMember> aCr) {
 		final PipelineMember x = aCr.apply(this);
-		_c.pipelines.add(x);
+		_c.getPipelines().add(x);
 	}
 
 	public void addPipelineLogic(final @NotNull Function<AccessBus, PipelineLogic> aPlr) {

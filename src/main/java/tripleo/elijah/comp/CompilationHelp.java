@@ -84,7 +84,7 @@ class RuntimeProcesses {
 	}
 
 	public void prepare() throws Exception {
-		for (RuntimeProcess runtimeProcess : processes) {
+		for (final RuntimeProcess runtimeProcess : processes) {
 			System.err.println("***** RuntimeProcess [prepare] named " + runtimeProcess);
 			runtimeProcess.prepare();
 		}
@@ -93,14 +93,14 @@ class RuntimeProcesses {
 	public void run() {
 		final Compilation comp = ca.getCompilation();
 
-		for (RuntimeProcess runtimeProcess : processes) {
+		for (final RuntimeProcess runtimeProcess : processes) {
 			System.err.println("***** RuntimeProcess [run    ] named " + runtimeProcess);
 			runtimeProcess.run(comp);
 		}
 	}
 
-	public void postProcess(ProcessRecord pr) {
-		for (RuntimeProcess runtimeProcess : processes) {
+	public void postProcess(final ProcessRecord pr) {
+		for (final RuntimeProcess runtimeProcess : processes) {
 			System.err.println("***** RuntimeProcess [postProcess] named " + runtimeProcess);
 			runtimeProcess.postProcess();
 		}
@@ -184,7 +184,7 @@ class DStageProcess implements RuntimeProcess {
 
 	@Override
 	public void run(final Compilation aCompilation) {
-		int y = 2;
+		final int y = 2;
 	}
 
 	@Override
@@ -207,13 +207,13 @@ class OStageProcess implements RuntimeProcess {
 	}
 
 	@Override
-	public void run(final Compilation aCompilation) {
-		Pipeline ps = aCompilation.pipelines;
+	public void run(final @NotNull Compilation aCompilation) {
+		final Pipeline ps = aCompilation.getPipelines();
 
 		try {
 			ps.run();
-		} catch (Exception ex) {
-			Logger.getLogger(OStageProcess.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (final Exception ex) {
+			Logger.getLogger(OStageProcess.class.getName()).log(Level.SEVERE, "Error during Piplines#run from OStageProcess", ex);
 		}
 	}
 
@@ -261,8 +261,8 @@ class OStageProcess implements RuntimeProcess {
 			comp.modules.stream().forEach(m -> pl.addModule(m));
 
 			try {
-				comp.pipelines.run();
-			} catch (Exception aE) {
+				comp.getPipelines().run();
+			} catch (final Exception aE) {
 				throw new RuntimeException(aE); // TODO fucking lambdas
 			}
 
