@@ -13,7 +13,15 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.FormalArgListItem;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.NormalTypeName;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
@@ -107,6 +115,14 @@ public class DeduceProcCall {
 			final int y = 2;
 		}
 		return target;
+	}
+
+	public DeduceTypes2 _deduceTypes2() {
+		return deduceTypes2;
+	}
+
+	public BaseGeneratedFunction _generatedFunction() {
+		return generatedFunction;
 	}
 
 	private class DeclTarget implements DeduceElement {

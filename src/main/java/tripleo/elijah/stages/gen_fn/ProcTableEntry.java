@@ -246,6 +246,12 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		return _zero;
 	}
 
+	public IDeduceElement3 getDeduceElement3() {
+		assert dpc._deduceTypes2() != null; // TODO setDeduce... called; Promise?
+
+		return getDeduceElement3(dpc._deduceTypes2(), dpc._generatedFunction());
+	}
+
 //	public Promise<GenType, Void, Void> typeResolvePromise() {
 //		return typeDeferred.promise();
 //	}
