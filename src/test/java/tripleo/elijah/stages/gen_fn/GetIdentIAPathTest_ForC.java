@@ -12,9 +12,24 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import tripleo.elijah.comp.*;
+import tripleo.elijah.comp.AccessBus;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.IO;
+import tripleo.elijah.comp.PipelineLogic;
+import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.DotExpression;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Package;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.VariableSequence;
+import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.stages.gen_c.CReference;
 import tripleo.elijah.stages.gen_c.Emit;
 import tripleo.elijah.stages.gen_c.Generate_Code_For_Method;
@@ -227,7 +242,7 @@ public class GetIdentIAPathTest_ForC {
 
 	String getIdentIAPath(final IdentIA ia2, final GeneratedFunction generatedFunction) {
 		final CReference reference = new CReference();
-		reference.getIdentIAPath(ia2, generatedFunction, Generate_Code_For_Method.AOG.GET, null); // TODO is null correct?
+		reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null); // TODO is null correct?
 		return reference.build();
 	}
 
