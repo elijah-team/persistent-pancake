@@ -77,7 +77,7 @@ public class EIT_ModuleList {
 
 		plp.deduceModule();
 
-		plp.lgcThing();
+		plp.pipelineLogic.resolveCheck(plp.getLgc());
 
 //			for (final GeneratedNode gn : lgf) {
 //				if (gn instanceof GeneratedFunction) {
@@ -171,8 +171,5 @@ public class EIT_ModuleList {
 			deducePhase.deduceModule(mod, getLgc(), getVerbosity());
 		}
 
-		public void lgcThing() {
-			pipelineLogic.resolveCheck(getLgc());
-		}
 	}
 }

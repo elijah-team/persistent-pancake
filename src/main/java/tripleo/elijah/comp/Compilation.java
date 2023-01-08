@@ -276,50 +276,6 @@ public abstract class Compilation {
 //		return ab;
 	}
 
-	private @NotNull List<CompilerInstructions> searchEzFiles(final @NotNull File directory) {
-		final List<CompilerInstructions> R = new ArrayList<CompilerInstructions>();
-		final FilenameFilter filter = new FilenameFilter() {
-			@Override
-			public boolean accept(final File file, final String s) {
-				final boolean matches2 = Pattern.matches(".+\\.ez$", s);
-				return matches2;
-			}
-		};
-		final String[] list = directory.list(filter);
-		if (list != null) {
-			for (final String file_name : list) {
-				try {
-					final @NotNull File        file   = new File(directory, file_name);
-					final CompilerInstructions ezFile = parseEzFile(file, file.toString(), eee);
-					if (ezFile != null)
-						R.add(ezFile);
-					else
-						eee.reportError("9995 ezFile is null " + file);
-				} catch (final Exception e) {
-					eee.exception(e);
-				}
-			}
-		}
-		return R;
-	}
-
-	private CompilerInstructions parseEzFile(final File f, final String file_name, final ErrSink errSink) throws Exception {
-		System.out.println((String.format("   %s", f.getAbsolutePath())));
-		if (!f.exists()) {
-			errSink.reportError(
-			  "File doesn't exist " + f.getAbsolutePath());
-			return null;
-		}
-
-		final CompilerInstructions m = realParseEzFile(file_name, io.readFile(f), f);
-		{
-			String prelude = m.genLang();
-			System.err.println("230 " + prelude);
-			if (prelude == null) prelude = "c"; // TODO should be java for eljc
-		}
-		return m;
-	}
-
 	public static boolean isGitlab_ci() {
 		return System.getenv("GITLAB_CI") != null;
 	}
@@ -840,10 +796,6 @@ public abstract class Compilation {
 				s.close();
 				return Operation.failure(e);
 			}
-		}
-
-		public void addModule(final OS_Module aModule, final String aFn) {
-			fn2m.put(aFn, aModule);
 		}
 	}
 

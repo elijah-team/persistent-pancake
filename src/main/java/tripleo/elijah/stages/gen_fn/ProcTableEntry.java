@@ -91,13 +91,29 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 			case 2:
 				System.err.println("138 Internal compiler error");
 				break;
-			case 3:
-				if (completeDeferred.isPending())
-					completeDeferred.resolve(this);
-				break;
-			default:
-				throw new NotImplementedException();
+		case 3:
+			if (completeDeferred.isPending())
+				completeDeferred.resolve(this);
+			break;
+		default:
+			throw new NotImplementedException();
 		}
+	}
+
+	/**
+	 * Completes when all args have an attached typeEntry
+	 */
+//	@Contract(pure = true)
+//	private DeferredObject<ProcTableEntry, Void, Void> completeDeferred() {
+//		return completeDeferred;
+//	}
+
+	/**
+	 * Call {@code cb} when all args have an attached typeEntry
+	 */
+	@Contract(pure = true)
+	private void onComplete(final DoneCallback<ProcTableEntry> cb) {
+		completeDeferred.then(cb);
 	}
 
 	public void setClassInvocation(final ClassInvocation aClassInvocation) {
@@ -149,20 +165,6 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 	public void onFunctionInvocation(final DoneCallback<FunctionInvocation> callback) {
 		onFunctionInvocations.then(callback);
 	}
-
-/*
-	public FunctionInvocation getFunctionInvocation() {
-		return functionInvocation;
-	}
-
-	private DeferredObject<ProcTableEntry, Void, Void> completeDeferred() {
-		return completeDeferred;
-	}
-
-	public void onFunctionInvocation(final DoneCallback<FunctionInvocation> callback) {
-		onFunctionInvocations.then(callback);
-	}
-*/
 
 	private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();
 
@@ -226,11 +228,6 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		dpc.setDeduceTypes2(aDeduceTypes2, aContext, aGeneratedFunction, aErrSink);
 	}
 
-	@Contract(pure = true)
-	private DeferredObject<ProcTableEntry, Void, Void> completeDeferred() {
-		return completeDeferred;
-	}
-
 	public IDeduceElement3 getDeduceElement3(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction) {
 		if (_de3 == null) {
 			_de3 = new DeduceElement3_ProcTableEntry(this, aDeduceTypes2, aGeneratedFunction);
@@ -239,22 +236,18 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		return _de3;
 	}
 
-	public PTE_Zero zero() {
-		if (_zero == null)
-			_zero = new PTE_Zero(this);
-
-		return _zero;
-	}
-
 	public IDeduceElement3 getDeduceElement3() {
 		assert dpc._deduceTypes2() != null; // TODO setDeduce... called; Promise?
 
 		return getDeduceElement3(dpc._deduceTypes2(), dpc._generatedFunction());
 	}
 
-//	public Promise<GenType, Void, Void> typeResolvePromise() {
-//		return typeDeferred.promise();
-//	}
+	public PTE_Zero zero() {
+		if (_zero == null)
+			_zero = new PTE_Zero(this);
+
+		return _zero;
+	}
 }
 
 //

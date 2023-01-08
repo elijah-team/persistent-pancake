@@ -27,6 +27,10 @@ public class OutputFileFactoryParams {
 		return mod;
 	}
 
+	public String getModFileName() {
+		return mod.getFileName();
+	}
+
 	public ErrSink getErrSink() {
 		return errSink;
 	}

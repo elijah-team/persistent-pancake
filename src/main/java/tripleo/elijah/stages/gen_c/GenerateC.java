@@ -8,22 +8,41 @@
  */
 package tripleo.elijah.stages.gen_c;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.lang2.SpecialVariables;
+import tripleo.elijah.nextgen.model.SM_ClassDeclaration;
+import tripleo.elijah.nextgen.model.SM_Node;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.ConstantTableEntry;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
+import tripleo.elijah.stages.gen_fn.GeneratedContainer;
+import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
+import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.gen_generic.CodeGenerator;
 import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
-import tripleo.elijah.stages.instructions.*;
+import tripleo.elijah.stages.instructions.ConstTableIA;
+import tripleo.elijah.stages.instructions.FnCallArgs;
+import tripleo.elijah.stages.instructions.IdentIA;
+import tripleo.elijah.stages.instructions.Instruction;
+import tripleo.elijah.stages.instructions.InstructionArgument;
+import tripleo.elijah.stages.instructions.IntegerIA;
+import tripleo.elijah.stages.instructions.ProcIA;
+import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.BufferTabbedOutputStream;
 import tripleo.elijah.util.Helpers;
@@ -39,7 +58,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
@@ -52,16 +70,9 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 	private final        ErrSink errSink;
 	private final        ElLog   LOG;
 
-//	public GenerateC(@NotNull final OS_Module aM, final ErrSink aErrSink, final ElLog.Verbosity verbosity, @NotNull final PipelineLogic pipelineLogic) {
-//		errSink = aErrSink;
-//		LOG = new ElLog(aM.getFileName(), verbosity, PHASE);
-//		//
-//		pipelineLogic.addLog(LOG);
-//	}
-
 	public GenerateC(final @NotNull OutputFileFactoryParams p) {
 		errSink = p.getErrSink();
-		LOG     = new ElLog(p.getMod().getFileName(), p.getVerbosity(), PHASE);
+		LOG     = new ElLog(p.getModFileName(), p.getVerbosity(), PHASE);
 		//
 		p.getPipelineLogic().addLog(LOG);
 	}
@@ -137,6 +148,20 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 		}
 
 		return gr;
+	}
+
+	@Override
+	public void forNode(final SM_ClassDeclaration aNode) {
+		final int y = 2;
+	}
+
+	@Override
+	public void forNode(final SM_Node aNode) {
+		final int y = 2;
+		if (aNode instanceof SM_ClassDeclaration) {
+			final SM_ClassDeclaration classDecl = ((SM_ClassDeclaration) aNode);
+
+		}
 	}
 
 	@NotNull
@@ -446,9 +471,28 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 		return GetTypeName.forTypeName(typeName, errSink);
 	}
 
-	String getRealTargetName(final BaseGeneratedFunction gf, final IntegerIA target, final Generate_Code_For_Method.AOG aog) {
+	String getRealTargetName(final @NotNull BaseGeneratedFunction gf, final @NotNull IntegerIA target, final Generate_Code_For_Method.AOG aog) {
 		final VariableTableEntry varTableEntry = gf.getVarTableEntry(target.getIndex());
 		return getRealTargetName(gf, varTableEntry);
+	}
+
+	static @NotNull String getRealTargetName(final BaseGeneratedFunction gf, final @NotNull VariableTableEntry varTableEntry) {
+		final String vte_name = varTableEntry.getName();
+		if (varTableEntry.vtt == VariableTableType.TEMP) {
+			if (varTableEntry.getName() == null) {
+				return "vt" + varTableEntry.tempNum;
+			} else {
+				return "vt" + varTableEntry.getName();
+			}
+		} else if (varTableEntry.vtt == VariableTableType.ARG) {
+			return "va" + vte_name;
+		} else if (SpecialVariables.contains(vte_name)) {
+			return SpecialVariables.get(vte_name);
+		} else if (isValue(gf, vte_name)) {
+			return "vsc->vsv";
+		} else {
+			return Emit.emit("/*879*/") + "vv" + vte_name;
+		}
 	}
 
 	String getAssignmentValue(final VariableTableEntry aSelf, final Instruction aInstruction, final ClassInvocation aClsinv, final BaseGeneratedFunction gf) {
@@ -483,14 +527,14 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 		return "" + value;
 	}
 
-	@NotNull List<String> getArgumentStrings(final BaseGeneratedFunction gf, final @NotNull Supplier<IFixedList<InstructionArgument>> instructionSupplier) {
+	@NotNull List<String> getArgumentStrings(final @NotNull Supplier<IFixedList<InstructionArgument>> instructionSupplier) {
 		final @NotNull List<String> sl3       = new ArrayList<String>();
 		final int                   args_size = instructionSupplier.get().size();
 		for (int i = 1; i < args_size; i++) {
 			final InstructionArgument ia = instructionSupplier.get().get(i);
 			if (ia instanceof IntegerIA) {
 //				VariableTableEntry vte = gf.getVarTableEntry(DeduceTypes2.to_int(ia));
-				final String realTargetName = getRealTargetName(gf, (IntegerIA) ia, Generate_Code_For_Method.AOG.GET);
+				final String realTargetName = getRealTargetName((IntegerIA) ia, Generate_Code_For_Method.AOG.GET);
 				sl3.add(Emit.emit("/*669*/") + "" + realTargetName);
 			} else if (ia instanceof IdentIA) {
 				final CReference reference = new CReference();
@@ -499,7 +543,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 				sl3.add(Emit.emit("/*673*/") + "" + text);
 			} else if (ia instanceof ConstTableIA) {
 				final ConstTableIA       c   = (ConstTableIA) ia;
-				final ConstantTableEntry cte = gf.getConstTableEntry(c.getIndex());
+				final ConstantTableEntry cte = c.getEntry();
 				final String             s   = GetAssignmentValue.const_to_string(cte.initialValue);
 				sl3.add(s);
 				final int y = 2;
@@ -611,23 +655,10 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 		}
 	}
 
-	static String getRealTargetName(final BaseGeneratedFunction gf, final VariableTableEntry varTableEntry) {
-		final String vte_name = varTableEntry.getName();
-		if (varTableEntry.vtt == VariableTableType.TEMP) {
-			if (varTableEntry.getName() == null) {
-				return "vt" + varTableEntry.tempNum;
-			} else {
-				return "vt" + varTableEntry.getName();
-			}
-		} else if (varTableEntry.vtt == VariableTableType.ARG) {
-			return "va" + vte_name;
-		} else if (SpecialVariables.contains(vte_name)) {
-			return SpecialVariables.get(vte_name);
-		} else if (isValue(gf, vte_name)) {
-			return "vsc->vsv";
-		} else {
-			return Emit.emit("/*879*/") + "vv" + vte_name;
-		}
+	String getRealTargetName(final @NotNull IntegerIA target, final Generate_Code_For_Method.AOG aog) {
+		final BaseGeneratedFunction gf            = target.gf;
+		final VariableTableEntry    varTableEntry = gf.getVarTableEntry(target.getIndex());
+		return getRealTargetName(gf, varTableEntry);
 	}
 
 	static class GetTypeName {
@@ -680,7 +711,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 			return z;
 		}
 
-		static String forTypeTableEntry(@NotNull final TypeTableEntry tte) {
+		static @NotNull String forTypeTableEntry(@NotNull final TypeTableEntry tte) {
 			final GeneratedNode res = tte.resolved();
 			if (res instanceof GeneratedContainerNC) {
 				final GeneratedContainerNC nc   = (GeneratedContainerNC) res;
@@ -755,7 +786,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 
 	static class GetAssignmentValue {
 
-		public String FnCallArgs(final FnCallArgs fca, final BaseGeneratedFunction gf, final ElLog LOG) {
+		public String FnCallArgs(final @NotNull FnCallArgs fca, final @NotNull BaseGeneratedFunction gf, final ElLog LOG) {
 			final StringBuilder sb   = new StringBuilder();
 			final Instruction   inst = fca.getExpression();
 //			LOG.err("9000 "+inst.getName());
@@ -764,8 +795,8 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 			final ProcTableEntry pte = gf.getProcTableEntry(to_int(x));
 //			LOG.err("9000-2 "+pte);
 			switch (inst.getName()) {
-				case CALL: {
-					if (pte.expression_num == null) {
+			case CALL: {
+				if (pte.expression_num == null) {
 //					assert false; // TODO synthetic methods
 						final IdentExpression ptex = (IdentExpression) pte.expression;
 						sb.append(ptex.getText());
@@ -846,7 +877,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 		}
 
 		@NotNull
-		private List<String> getAssignmentValueArgs(final Instruction inst, final BaseGeneratedFunction gf, final ElLog LOG) {
+		private List<String> getAssignmentValueArgs(final @NotNull Instruction inst, final BaseGeneratedFunction gf, final ElLog LOG) {
 			final int          args_size = inst.getArgsSize();
 			final List<String> sll       = new ArrayList<String>();
 			for (int i = 1; i < args_size; i++) {
@@ -889,17 +920,17 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 			return sll;
 		}
 
-		public String ConstTableIA(final ConstTableIA constTableIA, final BaseGeneratedFunction gf) {
+		public String ConstTableIA(final @NotNull ConstTableIA constTableIA, final @NotNull BaseGeneratedFunction gf) {
 			final ConstantTableEntry cte = gf.getConstTableEntry(constTableIA.getIndex());
 //			LOG.err(("9001-3 "+cte.initialValue));
 			switch (cte.initialValue.getKind()) {
-				case NUMERIC:
-					return const_to_string(cte.initialValue);
-				case STRING_LITERAL:
-					return const_to_string(cte.initialValue);
-				case IDENT:
-					final String text = ((IdentExpression) cte.initialValue).getText();
-					if (BuiltInTypes.isBooleanText(text))
+			case NUMERIC:
+				return const_to_string(cte.initialValue);
+			case STRING_LITERAL:
+				return const_to_string(cte.initialValue);
+			case IDENT:
+				final String text = ((IdentExpression) cte.initialValue).getText();
+				if (BuiltInTypes.isBooleanText(text))
 						return text;
 					else
 						throw new NotImplementedException();
@@ -913,7 +944,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 				return "" + ((NumericExpression) expression).getValue();
 			}
 			if (expression instanceof CharLitExpression) {
-				return String.format("'%s'", expression.toString());
+				return String.format("'%s'", expression);
 			}
 			if (expression instanceof StringExpression) {
 				// TODO triple quoted strings and other escaping concerns
@@ -925,20 +956,20 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 			throw new NotImplementedException();
 		}
 
-		public String IntegerIA(final IntegerIA integerIA, final BaseGeneratedFunction gf) {
+		public String IntegerIA(final @NotNull IntegerIA integerIA, final @NotNull BaseGeneratedFunction gf) {
 			final VariableTableEntry vte = gf.getVarTableEntry(integerIA.getIndex());
 			final String             x   = getRealTargetName(gf, vte);
 			return x;
 		}
 
-		public String IdentIA(final IdentIA identIA, final BaseGeneratedFunction gf) {
+		public String IdentIA(final @NotNull IdentIA identIA, final BaseGeneratedFunction gf) {
 			assert gf == identIA.gf;
 			final CReference reference = new CReference();
 			reference.getIdentIAPath(identIA, Generate_Code_For_Method.AOG.GET, null);
 			return reference.build();
 		}
 
-		public String forClassInvocation(final Instruction aInstruction, final ClassInvocation aClsinv, final BaseGeneratedFunction gf, final ElLog LOG) {
+		public String forClassInvocation(final @NotNull Instruction aInstruction, final ClassInvocation aClsinv, final @NotNull BaseGeneratedFunction gf, final ElLog LOG) {
 			final int                     y         = 2;
 			final InstructionArgument     _arg0     = aInstruction.getArg(0);
 			@NotNull final ProcTableEntry pte       = gf.getProcTableEntry(((ProcIA) _arg0).getIndex());

@@ -1,57 +1,18 @@
 package tripleo.elijah.stages.gen_generic;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.stages.gen_fn.GeneratedClass;
-import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.nextgen.model.SM_ClassDeclaration;
+import tripleo.elijah.nextgen.model.SM_Node;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.work.WorkManager;
 
 import java.util.Collection;
 
 public interface GenerateFiles extends CodeGenerator {
-	@NotNull
-	static Collection<GeneratedNode> functions_to_list_of_generated_nodes(final Collection<GeneratedFunction> generatedFunctions) {
-		return Collections2.transform(generatedFunctions, new Function<GeneratedFunction, GeneratedNode>() {
-			@org.jetbrains.annotations.Nullable
-			@Override
-			public GeneratedNode apply(@org.jetbrains.annotations.Nullable final GeneratedFunction input) {
-				return input;
-			}
-		});
-	}
 
-	@NotNull
-	static Collection<GeneratedNode> constructors_to_list_of_generated_nodes(final Collection<GeneratedConstructor> aGeneratedConstructors) {
-		return Collections2.transform(aGeneratedConstructors, new Function<GeneratedConstructor, GeneratedNode>() {
-			@org.jetbrains.annotations.Nullable
-			@Override
-			public GeneratedNode apply(@org.jetbrains.annotations.Nullable final GeneratedConstructor input) {
-				return input;
-			}
-		});
-	}
+	GenerateResult generateCode(final @NotNull Collection<GeneratedNode> aNodeCollection, final @NotNull WorkManager aWorkManager);
 
-	@NotNull
-	static Collection<GeneratedNode> classes_to_list_of_generated_nodes(final Collection<GeneratedClass> aGeneratedClasses) {
-		return Collections2.transform(aGeneratedClasses, new Function<GeneratedClass, GeneratedNode>() {
-			@org.jetbrains.annotations.Nullable
-			@Override
-			public GeneratedNode apply(@org.jetbrains.annotations.Nullable final GeneratedClass input) {
-				return input;
-			}
-		});
-	}
+	void forNode(final SM_ClassDeclaration aNode);
 
-	GenerateResult generateCode(Collection<GeneratedNode> aNodeCollection, WorkManager aWorkManager);
-
-/*
-	@Override
-	void generate_namespace(GeneratedNamespace aGeneratedNamespace, GenerateResult aGenerateResult);
-
-	@Override
-	void generate_class(GeneratedClass aGeneratedClass, GenerateResult aGenerateResult);
-*/
+	void forNode(SM_Node aNode);
 }

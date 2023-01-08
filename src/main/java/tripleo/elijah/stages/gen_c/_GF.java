@@ -59,8 +59,8 @@ public class _GF {
 				@Nullable final InstructionArgument xx = gf.vte_lookup(text);
 				assert xx != null;
 
-				final String       realTargetName = gc.getRealTargetName(gf, (IntegerIA) xx, GET);
-				final List<String> sl3            = gc.getArgumentStrings(gf, () -> new InstructionFixedList(instruction));
+				final String       realTargetName = gc.getRealTargetName((IntegerIA) xx, GET);
+				final List<String> sl3            = gc.getArgumentStrings(() -> new InstructionFixedList(instruction));
 
 				final StringBuilder sb = new StringBuilder();
 				sb.append(Emit.emit("/*424*/"));
@@ -78,7 +78,7 @@ public class _GF {
 
 				final CReference reference = new CReference();
 				reference.getIdentIAPath(identIA, GET, null);
-				final List<String> sl3 = gc.getArgumentStrings(gf, () -> new InstructionFixedList(instruction));
+				final List<String> sl3 = gc.getArgumentStrings(() -> new InstructionFixedList(instruction));
 				reference.args(sl3);
 				final @NotNull String path = reference.build();
 
