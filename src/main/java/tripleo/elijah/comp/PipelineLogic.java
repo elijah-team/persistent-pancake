@@ -196,7 +196,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	@Override
 	public void mods_slot(final @NotNull EIT_ModuleList aModuleList) {
 		//
-		__ab.subscribePipelineLogic((x) -> aModuleList._set_PL(x));
+//		__ab.subscribePipelineLogic((x) -> aModuleList._set_PL(x));
 
 		//
 		aModuleList.process__PL(this::getGenerateFunctions, this);

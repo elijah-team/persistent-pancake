@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 public class EIT_ModuleList {
 	private final List<OS_Module> mods;
-	private PipelineLogic __pl;
+//	private PipelineLogic __pl;
 
 	@Contract(pure = true)
 	public EIT_ModuleList(final List<OS_Module> aMods) {
@@ -96,9 +96,9 @@ public class EIT_ModuleList {
 //			}
 	}
 
-	public void _set_PL(final PipelineLogic aPipelineLogic) {
-		__pl = aPipelineLogic;
-	}
+//	public void _set_PL(final PipelineLogic aPipelineLogic) {
+//		__pl = aPipelineLogic;
+//	}
 
 	public Stream<OS_Module> stream() {
 		return mods.stream();
