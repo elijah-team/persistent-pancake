@@ -151,11 +151,6 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 	}
 
 	@Override
-	public void forNode(final SM_ClassDeclaration aNode) {
-		final int y = 2;
-	}
-
-	@Override
 	public void forNode(final SM_Node aNode) {
 		final int y = 2;
 		if (aNode instanceof SM_ClassDeclaration) {
