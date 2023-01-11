@@ -15,8 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 interface RuntimeProcess {
 	void run(final Compilation aCompilation);
@@ -201,20 +199,27 @@ class OStageProcess implements RuntimeProcess {
 	private final ProcessRecord      pr;
 	private final ICompilationAccess ca;
 
+	private final DeferredObject<PipelineLogic, Void, Void> ppl = new DeferredObject<>();
+
 	OStageProcess(final ICompilationAccess aCa, final ProcessRecord aPr) {
 		ca = aCa;
 		pr = aPr;
 	}
 
 	@Override
-	public void run(final @NotNull Compilation aCompilation) {
-		final Pipeline ps = aCompilation.getPipelines();
+	public void run(final @NotNull Compilation comp) {
+		ppl.then((pl) -> {
+			final Pipeline ps = comp.getPipelines();
 
-		try {
-			ps.run();
-		} catch (final Exception ex) {
-			Logger.getLogger(OStageProcess.class.getName()).log(Level.SEVERE, "Error during Piplines#run from OStageProcess", ex);
-		}
+			try {
+				ps.run();
+			} catch (final Exception ex) {
+//				Logger.getLogger(OStageProcess.class.getName()).log(Level.SEVERE, "Error during Piplines#run from OStageProcess", ex);
+				comp.getErrSink().exception(ex);
+			}
+
+			comp.writeLogs(comp.silent, comp.elLogs);
+		});
 	}
 
 	@Override
@@ -228,14 +233,9 @@ class OStageProcess implements RuntimeProcess {
 		Preconditions.checkNotNull(pr.pipelineLogic);
 		Preconditions.checkNotNull(pr.pipelineLogic.gr);
 
-		final DeferredObject<PipelineLogic, Void, Void> ppl = new DeferredObject<>();
 		ppl.resolve(pr.pipelineLogic);
 
-		final Compilation comp = ca.getCompilation();
-
 		final AccessBus ab = pr.ab;
-
-//		ab.addPipelineLogic((x) -> pr.pipelineLogic);
 
 //		ab.add(DeducePipeline::new);
 		ab.add(GeneratePipeline::new);
@@ -249,24 +249,11 @@ class OStageProcess implements RuntimeProcess {
 //
 //		List_of(dpl, gpl, wpl, wmpl)
 //		  .forEach(ca::addPipeline);
-//
-//		pr.setGenerateResult(pr.pipelineLogic.gr);
-
-		// NOTE Java needs help!
-		//Helpers.<Consumer<Supplier<GenerateResult>>>List_of(wpl.consumer(), wmpl.consumer())
-//		List_of(wpl.consumer(), wmpl.consumer())
-//		  .forEach(pr::consumeGenerateResult);
 
 		ppl.then(pl -> {
-			comp.modules.stream().forEach(m -> pl.addModule(m));
+			final Compilation comp = ca.getCompilation();
 
-			try {
-				comp.getPipelines().run();
-			} catch (final Exception aE) {
-				throw new RuntimeException(aE); // TODO fucking lambdas
-			}
-
-			comp.writeLogs(comp.silent, comp.elLogs);
+			comp.modules.stream().forEach(pl::addModule);
 		});
 	}
 }
