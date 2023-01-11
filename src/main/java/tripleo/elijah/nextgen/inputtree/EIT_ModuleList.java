@@ -10,6 +10,7 @@ import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.Stupidity;
 import tripleo.elijah.work.WorkManager;
 
@@ -55,11 +56,15 @@ public class EIT_ModuleList {
 	private void __process__PL__each(final @NotNull _ProcessParams plp) {
 		final List<GeneratedNode> resolved_nodes = new ArrayList<GeneratedNode>();
 
-//		assert lgc.size() == 0;
+		final OS_Module                    mod = plp.getMod();
+		final DeducePhase.GeneratedClasses lgc = plp.getLgc();
 
-		final int size = plp.getLgc().size();
+		// assert lgc.size() == 0;
+
+		final int size = lgc.size();
+
 		if (size != 0) {
-			final int y = 2;
+			NotImplementedException.raise();
 			Stupidity.println_err(String.format("lgc.size() != 0: %d", size));
 		}
 
@@ -69,11 +74,11 @@ public class EIT_ModuleList {
 
 		final Coder coder = new Coder();
 
-		for (final GeneratedNode generatedNode : plp.getLgc()) {
-			coder.codeNodes(plp.getMod(), resolved_nodes, generatedNode);
+		for (final GeneratedNode generatedNode : lgc) {
+			coder.codeNodes(mod, resolved_nodes, generatedNode);
 		}
 
-		resolved_nodes.forEach(generatedNode -> coder.codeNode(generatedNode, plp.getMod()));
+		resolved_nodes.forEach(generatedNode -> coder.codeNode(generatedNode, mod));
 
 		plp.deduceModule();
 
@@ -131,18 +136,6 @@ public class EIT_ModuleList {
 			return mod;
 		}
 
-//		public GenerateFunctions getGfm() {
-//			return gfm;
-//		}
-//
-//		public EntryPointList getEpl() {
-//			return epl;
-//		}
-//
-//		public DeducePhase getDeducePhase() {
-//			return deducePhase;
-//		}
-
 		@Contract(pure = true)
 		public DeducePhase.GeneratedClasses getLgc() {
 			return deducePhase.generatedClasses;
@@ -155,8 +148,7 @@ public class EIT_ModuleList {
 
 		@Contract(pure = true)
 		public ElLog.@NotNull Verbosity getVerbosity() {
-//			return verbosity;
-			return /*mod.getCompilation().*/pipelineLogic.getVerbosity();
+			return pipelineLogic.getVerbosity();
 		}
 
 		//
