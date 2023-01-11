@@ -82,7 +82,7 @@ public class EIT_ModuleList {
 
 		plp.deduceModule();
 
-		plp.pipelineLogic.resolveCheck(plp.getLgc());
+		PipelineLogic.resolveCheck(lgc);
 
 //			for (final GeneratedNode gn : lgf) {
 //				if (gn instanceof GeneratedFunction) {

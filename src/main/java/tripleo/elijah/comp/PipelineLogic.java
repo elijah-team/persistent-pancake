@@ -149,7 +149,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		mods.add(m);
 	}
 
-	public void resolveCheck(final DeducePhase.@NotNull GeneratedClasses lgc) {
+	public static void resolveCheck(final DeducePhase.@NotNull GeneratedClasses lgc) {
 		for (final GeneratedNode generatedNode : lgc) {
 			if (generatedNode instanceof GeneratedFunction) {
 
@@ -241,7 +241,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 
 			dp.deduceModule(mod, lgc, true, pipelineLogic.getVerbosity());
 
-			pipelineLogic.resolveCheck(lgc);
+			resolveCheck(lgc);
 
 //		for (final GeneratedNode gn : lgf) {
 //			if (gn instanceof GeneratedFunction) {
