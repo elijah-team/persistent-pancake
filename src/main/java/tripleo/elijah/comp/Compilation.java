@@ -68,35 +68,40 @@ public abstract class Compilation {
 	public final  List<CompilerInstructions>        cis       = new ArrayList<CompilerInstructions>();
 	public final  List<ElLog>                       elLogs    = new LinkedList<ElLog>();
 	final         Map<String, CompilerInstructions> fn2ci     = new HashMap<String, CompilerInstructions>();
-	private final Pipeline                          pipelines = new Pipeline();
+	private final Pipeline                          pipelines;
 	private final int                               _compilationNumber;
 	private final ErrSink                           eee;
+	private final CIS _cis = new CIS();
 	private final Map<String, OS_Module>            fn2m      = new HashMap<String, OS_Module>();
 	private final Map<String, OS_Package>           _packages = new HashMap<String, OS_Package>();
-	private final CIS                               _cis      = new CIS();
 
 	//
-	//
-	//
-	public        PipelineLogic        pipelineLogic;
-	final private USE                  use           = new USE(this);
+	final private USE use  = new USE(this);
 	//
 	//
 	//
-	public        Stages               stage         = Stages.O; // Output
-	public        boolean              do_out;
-	protected     boolean              silent        = false;
-	private       IO                   io;
-	private       int                  _packageCode  = 1;
-	private       CompilationRunner    __cr;
-	private       CompilerInstructions rootCI;
-	private       int                  _classCode    = 101;
-	private       int                  _functionCode = 1001;
+	public    PipelineLogic        pipelineLogic;
+	//
+	//
+	//
+	public    Stages               stage  = Stages.O; // Output
+	public    boolean              do_out;
+	protected boolean              silent = false;
+	private       IO                                io;
+	private   CompilationRunner    __cr;
+	private   CompilerInstructions rootCI;
 
-	public Compilation(final ErrSink eee, final IO io) {
-		this.eee                = eee;
-		this.io                 = io;
-		this._compilationNumber = new Random().nextInt(Integer.MAX_VALUE);
+	//
+
+	private int _packageCode  = 1;
+	private int _classCode    = 101;
+	private int _functionCode = 1001;
+
+	public Compilation(final ErrSink aErrSink, final IO aIO) {
+		eee                = aErrSink;
+		io                 = aIO;
+		_compilationNumber = new Random().nextInt(Integer.MAX_VALUE);
+		pipelines          = new Pipeline(aErrSink);
 	}
 
 	public String getProjectName() {
