@@ -13,9 +13,6 @@ import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 interface RuntimeProcess {
 	void run(final Compilation aCompilation);
 
@@ -53,9 +50,9 @@ class StageToRuntime {
 }
 
 class RuntimeProcesses {
-	private final List<RuntimeProcess> processes = new ArrayList<>();
-	private final ICompilationAccess   ca;
-	private final ProcessRecord        pr;
+	private final ICompilationAccess ca;
+	private final ProcessRecord      pr;
+	private       RuntimeProcess     process;
 
 	public RuntimeProcesses(final @NotNull ICompilationAccess aca, final @NotNull ProcessRecord aPr) {
 		ca = aca;
@@ -63,11 +60,11 @@ class RuntimeProcesses {
 	}
 
 	public void add(final RuntimeProcess aProcess) {
-		processes.add(aProcess);
+		process = aProcess;
 	}
 
 	public int size() {
-		return processes.size();
+		return process == null ? 0 : 1;
 	}
 
 	public void run_better() throws Exception {
@@ -76,80 +73,22 @@ class RuntimeProcesses {
 
 		final RuntimeProcesses rt = this;
 
-		rt.prepare();
-		rt.run();
-		rt.postProcess(pr);
-	}
+		// rt.prepare();
+		System.err.println("***** RuntimeProcess [prepare] named " + process);
+		process.prepare();
 
-	public void prepare() throws Exception {
-		for (final RuntimeProcess runtimeProcess : processes) {
-			System.err.println("***** RuntimeProcess [prepare] named " + runtimeProcess);
-			runtimeProcess.prepare();
-		}
-	}
-
-	public void run() {
+		// rt.run();
 		final Compilation comp = ca.getCompilation();
 
-		for (final RuntimeProcess runtimeProcess : processes) {
-			System.err.println("***** RuntimeProcess [run    ] named " + runtimeProcess);
-			runtimeProcess.run(comp);
-		}
-	}
+		System.err.println("***** RuntimeProcess [run    ] named " + process);
+		process.run(comp);
 
-	public void postProcess(final ProcessRecord pr) {
-		for (final RuntimeProcess runtimeProcess : processes) {
-			System.err.println("***** RuntimeProcess [postProcess] named " + runtimeProcess);
-			runtimeProcess.postProcess();
-		}
+		// rt.postProcess(pr);
+		System.err.println("***** RuntimeProcess [postProcess] named " + process);
+		process.postProcess();
 
 		System.err.println("***** RuntimeProcess^ [postProcess/writeLogs]");
 		pr.writeLogs(ca);
-	}
-
-	private void addPipeline(final PipelineMember aPipelineMember) {
-	}
-
-	public void run_loser() {
-		if (false) {
-//			final PipelineLogic pipelineLogic;
-//			final Compilation   comp      = null;
-//			final Stages        stage     = null;
-//			final FakePipelines pipelines = new FakePipelines();
-//
-//			pipelineLogic = pr.pipelineLogic;
-//
-//			final DeducePipeline dpl = pr.dpl;
-//			addPipeline(dpl);
-//
-//			if (stage == Stages.O) {
-//				pr.setGenerateResult(null);
-//
-//				final GeneratePipeline gpl = new GeneratePipeline(comp, dpl);
-//				addPipeline(gpl);
-//				final WritePipeline wpl = new WritePipeline(comp, pr, null);
-//				pr.consumeGenerateResult(wpl);
-//				addPipeline(wpl);
-//				final WriteMesonPipeline wmpl = new WriteMesonPipeline(comp, pr, null, wpl);
-//				pr.consumeGenerateResult(wmpl);
-//				addPipeline(wmpl);
-//			} else
-//				assert stage == Stages.D;
-//
-//			assert pipelines.size() == 4;
-//			pipelines.run();
-//
-//			ca.writeLogs();
-		}
-	}
-
-	private static class FakePipelines {
-		int size() {
-			return 4;
-		}
-
-		public void run() {
-		}
 	}
 }
 
