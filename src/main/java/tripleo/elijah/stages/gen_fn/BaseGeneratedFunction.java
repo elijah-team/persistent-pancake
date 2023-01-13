@@ -74,9 +74,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	private               int                                        instruction_index = 0;
 	private               int                                        label_count       = 0;
 	private               int                                        _nextTemp         = 0;
-	private               GeneratedNode                              genClass;
 	private       GeneratedContainerNC                       parent;
-	private final DeferredObject<GeneratedClass, Void, Void> _gcP = new DeferredObject<>();
 
 	//
 	// region Ident-IA
@@ -448,6 +446,11 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 		return parent;
 	}
 
+	// region genClass
+
+	private final DeferredObject<GeneratedClass, Void, Void> _gcP = new DeferredObject<>();
+	private       GeneratedNode                              genClass;
+
 	public void setClass(@NotNull final GeneratedNode aNode) {
 		assert aNode instanceof GeneratedClass || aNode instanceof GeneratedNamespace;
 		genClass = aNode;
@@ -461,6 +464,15 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	public GeneratedNode getGenClass() {
 		return genClass;
 	}
+
+	/*
+	 * Hook in for GeneratedClass
+	 */
+	public void onGenClass(final OnGenClass aOnGenClass) {
+		_gcP.then(aOnGenClass::accept);
+	}
+
+	// endregion
 
 	public abstract BaseFunctionDef getFD();
 
@@ -517,13 +529,6 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 
 	public Dependency getDependency() {
 		return dependency;
-	}
-
-	/*
-	 * Hook in for GeneratedClass
-	 */
-	public void onGenClass(final OnGenClass aOnGenClass) {
-		_gcP.then(aOnGenClass::accept);
 	}
 
 }
