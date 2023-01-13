@@ -22,6 +22,7 @@ import tripleo.elijah.lang.OS_GenericTypeNameType;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.stages.deduce.ClassInvocation;
+import tripleo.elijah.stages.gen_c.c_ast1.C_HeaderString;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.ConstantTableEntry;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
@@ -824,23 +825,22 @@ public class Generate_Code_For_Method {
 			// NOTE getGenClass is always a class or namespace, getParent can be a function
 			final GeneratedContainerNC parent = (GeneratedContainerNC) gf.getGenClass();
 
+			final String         s2;
+			final C_HeaderString headerString;
+
 			if (parent instanceof GeneratedClass) {
-				final GeneratedClass st         = (GeneratedClass) parent;
-				final String         class_name = gc.getTypeName(st);
-//				LOG.info("234 class_name >> " + class_name);
-				final String if_args = args_string.length() == 0 ? "" : ", ";
-				return String.format("%s %s%s(%s* vsc%s%s)", return_type, class_name, name, class_name, if_args, args_string);
+				final GeneratedClass st = (GeneratedClass) parent;
+
+				headerString = C_HeaderString.forClass(st, () -> gc.getTypeName(st), return_type, name, args_string, LOG);
 			} else if (parent instanceof GeneratedNamespace) {
-				final GeneratedNamespace st         = (GeneratedNamespace) parent;
-				final String             class_name = gc.getTypeName(st);
-				LOG.info(String.format("240 (namespace) %s -> %s", st.getName(), class_name));
-				final String if_args = args_string.length() == 0 ? "" : ", ";
-				// TODO vsi for namespace instance??
-//				tos.put_string_ln(String.format("%s %s%s(%s* vsi%s%s) {", returnType, class_name, name, class_name, if_args, args));
-				return String.format("%s %s%s(%s)", return_type, class_name, name, args_string);
+				final GeneratedNamespace st = (GeneratedNamespace) parent;
+
+				headerString = C_HeaderString.forNamespace(st, () -> gc.getTypeName(st), return_type, name, args_string, LOG);
 			} else {
-				return String.format("%s %s(%s)", return_type, name, args_string);
+				headerString = C_HeaderString.forOther(parent, return_type, name, args_string);
 			}
+			s2 = headerString.getResult();
+			return s2;
 		}
 	}
 }
