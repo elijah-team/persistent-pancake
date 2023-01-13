@@ -15,22 +15,25 @@ import java.util.List;
  * Created 8/21/21 10:09 PM
  */
 public class Pipeline {
-	final   List<PipelineMember> pls = new ArrayList<>();
-	private boolean              _runAlready; // TODO remove need for this
+	private final List<PipelineMember> pls = new ArrayList<>();
+	private final ErrSink              errSink;
+
+	public Pipeline(final ErrSink aErrSink) {
+		errSink = aErrSink;
+	}
 
 	public void add(final PipelineMember aPipelineMember) {
 		pls.add(aPipelineMember);
 	}
 
-
-	public void run() throws Exception {
-		if (_runAlready) return;
-
-		for (final PipelineMember pl : pls) {
-			pl.run();
+	public void run() {
+		try {
+			for (final PipelineMember pl : pls) {
+				pl.run();
+			}
+		} catch (final Exception e) {
+			errSink.exception(e);
 		}
-
-		_runAlready = true;
 	}
 }
 
