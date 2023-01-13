@@ -44,10 +44,10 @@ public class C_HeaderString {
 	@Contract("_, _, _, _, _, _ -> new")
 	public static @NotNull C_HeaderString forNamespace(final @NotNull GeneratedNamespace st,
 	                                                   final java.util.function.@NotNull Supplier<String> classNameSupplier,
-	                                                   final @NotNull ElLog LOG,
 	                                                   final String return_type,
 	                                                   final String name,
-	                                                   final @NotNull String args_string) {
+	                                                   final @NotNull String args_string,
+	                                                   final @NotNull ElLog LOG) {
 		//final String       class_name = gc.getTypeName(st);
 		final String class_name = classNameSupplier.get();
 		LOG.info(String.format("240 (namespace) %s -> %s", st.getName(), class_name));
