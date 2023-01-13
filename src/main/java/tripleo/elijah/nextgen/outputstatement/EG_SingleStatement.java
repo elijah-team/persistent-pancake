@@ -16,6 +16,11 @@ public class EG_SingleStatement implements EG_Statement {
 		explanation = aExplanation;
 	}
 
+	public EG_SingleStatement(final String aText) {
+		text        = aText;
+		explanation = null;
+	}
+
 	@Override
 	public String getText() {
 		return text;
@@ -24,5 +29,13 @@ public class EG_SingleStatement implements EG_Statement {
 	@Override
 	public EX_Explanation getExplanation() {
 		return explanation;
+	}
+
+	public EG_SingleStatement tag(final String aS, final int aI) {
+		return this;
+	}
+
+	public EG_SingleStatement rule(final String aS, final int aI) {
+		return this;
 	}
 }

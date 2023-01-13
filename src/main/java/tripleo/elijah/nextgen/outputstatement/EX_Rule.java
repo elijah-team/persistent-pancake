@@ -1,6 +1,4 @@
-package tripleo.elijah.stages.gen_c;
-
-import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
+package tripleo.elijah.nextgen.outputstatement;
 
 public class EX_Rule implements EX_Explanation {
 	private final String rule;
