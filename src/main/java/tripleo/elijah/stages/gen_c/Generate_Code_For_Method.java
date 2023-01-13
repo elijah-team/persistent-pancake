@@ -693,7 +693,7 @@ public class Generate_Code_For_Method {
 		OS_Type        type;
 		TypeTableEntry tte;
 
-		public Generate_Method_Header(final BaseGeneratedFunction gf, @NotNull final GenerateC aGenerateC, final ElLog LOG) {
+		public Generate_Method_Header(final @NotNull BaseGeneratedFunction gf, @NotNull final GenerateC aGenerateC, final ElLog LOG) {
 			gc   = aGenerateC;
 			name = gf.getFD().name();
 			//
@@ -821,7 +821,7 @@ public class Generate_Code_For_Method {
 			return args;
 		}
 
-		String find_header_string(final BaseGeneratedFunction gf, final ElLog LOG) {
+		@NotNull String find_header_string(final @NotNull BaseGeneratedFunction gf, final ElLog LOG) {
 			// NOTE getGenClass is always a class or namespace, getParent can be a function
 			final GeneratedContainerNC parent = (GeneratedContainerNC) gf.getGenClass();
 
