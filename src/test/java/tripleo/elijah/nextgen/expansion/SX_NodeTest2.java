@@ -95,6 +95,13 @@ public class SX_NodeTest2 extends TestCase {
 		//    '("z100main" :tag <class Main> :rule c-fn-code-main))
 		final EG_SingleStatement a = new EG_SingleStatement("void").tag("fn Main::main/<rt-type>", 0);
 		final EG_SingleStatement b = new EG_SingleStatement("z100main").tag("<class Main>", 0).rule("c-fn-code-main", 0);
+
+		final EG_SingleStatement   mc91e1 = new EG_SingleStatement("Z100*").tag("<class Main>", 0).rule("c-class-code-main", 0);
+		final EG_SingleStatement   mc91e2 = new EG_SingleStatement("C").tag("<class Main>", 0).rule("c-arg-c-for-current", 0);
+		final EG_SequenceStatement mc91e  = new EG_SequenceStatement(new EG_Naming("xxx_fn-arg-1"), List_of(mc91e1, mc91e2));
+		final EG_SequenceStatement mc91ee = new EG_SequenceStatement(new EG_Naming("xxx_arg-list"), "(", ")", List_of(mc91e));
+		final EG_SequenceStatement mc8    = new EG_SequenceStatement(new EG_Naming("c-fn-hdr"), List_of(a, b, mc91ee));
+
 		// 9+ -> (comp seq '({9.1} {9.2}))
 		// 9.1 -> (sing c-simple-decl-assign
 		//   ("int" :tag [i/c-type] :rule el-std-c-types)
@@ -109,13 +116,7 @@ public class SX_NodeTest2 extends TestCase {
 		final EG_SingleStatement mc91b = new EG_SingleStatement("vvi").tag("i", 0).rule("el-std-var-name", 0);
 		final EG_SingleStatement mc91c = new EG_SingleStatement(" = ").rule("c-assignment", 0);
 		final EG_SingleStatement mc91d = new EG_SingleStatement("0").tag("<class Main>", 0).rule("el-c-inot-iterate-with-initial-increment", 0);
-
-		final EG_SingleStatement   mc91e1 = new EG_SingleStatement("Z100*").tag("<class Main>", 0).rule("c-class-code-main", 0);
-		final EG_SingleStatement   mc91e2 = new EG_SingleStatement("C").tag("<class Main>", 0).rule("c-arg-c-for-current", 0);
-		final EG_SequenceStatement mc91e  = new EG_SequenceStatement(new EG_Naming("xxx_fn-arg-1"), List_of(mc91e1, mc91e2));
-		final EG_SequenceStatement mc91ee = new EG_SequenceStatement(new EG_Naming("xxx_arg-list"), "(", ")", List_of(mc91e));
-		final EG_SequenceStatement mc8    = new EG_SequenceStatement(new EG_Naming("c-fn-hdr"), List_of(a, b, mc91ee));
-		final EG_SingleStatement   mc91f  = new EG_SingleStatement(";").rule("c-close-statement", 0);
+		final EG_SingleStatement mc91f = new EG_SingleStatement(";").rule("c-close-statement", 0);
 
 		final EG_SequenceStatement mc91 = new EG_SequenceStatement(new EG_Naming("xxx_int-decl"), List_of(mc91a, mc91b, mc91c, mc91d, mc91f));
 		// 9.2.1 -> (comp seq while-loop-range-monotonic ("while") (LPAREN) (ENC??)
