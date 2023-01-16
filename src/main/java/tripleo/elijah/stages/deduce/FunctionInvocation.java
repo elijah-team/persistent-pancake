@@ -15,7 +15,14 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.BaseFunctionDef;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratePhase;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_fn.WlGenerateDefaultCtor;
+import tripleo.elijah.stages.gen_fn.WlGenerateFunction;
+import tripleo.elijah.stages.gen_fn.WlGenerateNamespace;
 
 import java.util.List;
 
@@ -32,7 +39,7 @@ public class FunctionInvocation {
 	private           NamespaceInvocation                               namespaceInvocation;
 	private @Nullable BaseGeneratedFunction                             _generated       = null;
 
-	public FunctionInvocation(final BaseFunctionDef aFunctionDef, final ProcTableEntry aProcTableEntry, @NotNull final IInvocation invocation, final GeneratePhase phase) {
+	public FunctionInvocation(final BaseFunctionDef aFunctionDef, final ProcTableEntry aProcTableEntry, final @NotNull IInvocation invocation, final GeneratePhase phase) {
 		this.fd  = aFunctionDef;
 		this.pte = aProcTableEntry;
 		assert invocation != null;
@@ -142,9 +149,7 @@ public class FunctionInvocation {
 		if (pte != aFunctionInvocation.pte) return false;
 		if (classInvocation != aFunctionInvocation.classInvocation) return false;
 		if (namespaceInvocation != aFunctionInvocation.namespaceInvocation) return false;
-		if (_generated != aFunctionInvocation._generated) return false;
-
-		return true;
+		return _generated == aFunctionInvocation._generated;
 	}
 }
 

@@ -86,8 +86,9 @@ public class Helpers {
 	}
 
 	@NotNull
-	public static String remove_single_quotes_from_string(final String s) {
-		return s.substring(1, s.length()-1);
+	public static String remove_single_quotes_from_string(final @NotNull String s) {
+		assert s.length() >= 3;
+		return s.substring(1, s.length() - 1);
 	}
 
 	public static String String_join(final String separator, final Iterable<String> stringIterable) {

@@ -19,18 +19,40 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.entrypoints.EntryPointList;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.NamespaceStatement;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.OS_UnknownType;
+import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.nextgen.ClassDefinition;
 import tripleo.elijah.nextgen.diagnostic.CouldntGenerateClass;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GenerateFunctions;
+import tripleo.elijah.stages.gen_fn.GeneratePhase;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedContainer;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
+import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_fn.WlGenerateClass;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
@@ -176,7 +198,7 @@ public class DeducePhase {
 	}
 
 	private final ExecutorService              classGenerator          = Executors.newCachedThreadPool();
-	private       List<DeferredMemberFunction> deferredMemberFunctions = new ArrayList<>();
+	private final List<DeferredMemberFunction> deferredMemberFunctions = new ArrayList<>();
 
 //	public List<ElLog> deduceLogs = new ArrayList<ElLog>();
 
@@ -187,7 +209,7 @@ public class DeducePhase {
 
 	// helper function. no generics!
 	public @Nullable ClassInvocation registerClassInvocation(final ClassStatement aParent, final String aO) {
-		@Nullable ClassInvocation ci = new ClassInvocation((ClassStatement) aParent, aO);
+		@Nullable ClassInvocation ci = new ClassInvocation(aParent, aO);
 		ci = registerClassInvocation(ci);
 		return ci;
 	}
@@ -197,7 +219,7 @@ public class DeducePhase {
 	}
 
 	public ClassInvocation registerClassInvocation(final ClassStatement aParent) {
-		@Nullable ClassInvocation ci = new ClassInvocation((ClassStatement) aParent, null);
+		@Nullable ClassInvocation ci = new ClassInvocation(aParent, null);
 		ci = registerClassInvocation(ci);
 		return ci;
 	}
@@ -329,7 +351,7 @@ public class DeducePhase {
 		fi.generateDeferred().promise().then(new DoneCallback<BaseGeneratedFunction>() {
 			@Override
 			public void onDone(@NotNull final BaseGeneratedFunction result) {
-				result.typePromise().then(new DoneCallback<GenType>() {
+				result.onType(new DoneCallback<GenType>() {
 					@Override
 					public void onDone(final GenType result) {
 						forFunction.typeDecided(result);
@@ -342,7 +364,7 @@ public class DeducePhase {
 //	Map<GeneratedFunction, OS_Type> typeDecideds = new HashMap<GeneratedFunction, OS_Type>();
 
 	public void typeDecided(@NotNull final GeneratedFunction gf, final GenType aType) {
-		gf.typeDeferred().resolve(aType);
+		gf.resolveTypeDeferred(aType);
 //		typeDecideds.put(gf, aType);
 	}
 

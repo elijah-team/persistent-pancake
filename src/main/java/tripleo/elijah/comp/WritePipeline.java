@@ -13,14 +13,13 @@ import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.functionality.f203.F203;
-import tripleo.elijah.nextgen.inputtree.EIT_Input;
-import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
+import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
+import tripleo.elijah.nextgen.outputstatement.GE_BuffersStatement;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
 import tripleo.elijah.stages.generate.ElSystem;
@@ -44,13 +43,12 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import static tripleo.elijah.util.Helpers.List_of;
 
 /**
  * Created 8/21/21 10:19 PM
@@ -96,27 +94,25 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 			mb.put(ab.output, ab.buffer);
 		}
 
-		final List<EOT_OutputFile> leof = new ArrayList<>();
+		final Map<String, OS_Module> modmap = new HashMap<String, OS_Module>();
 		for (final GenerateResultItem ab : gr.results()) {
-			final List<EIT_Input> inputs = List_of(new EIT_ModuleInput(ab.node.module(), c));
+			modmap.put(ab.output, ab.node.module());
+		}
 
-			final EG_SingleStatement beginning = new EG_SingleStatement("", new EX_Explanation() {
-			});
-			final EG_SingleStatement middle = new EG_SingleStatement(ab.output, new EX_Explanation() {
-			});
-			final EG_SingleStatement ending = new EG_SingleStatement("", new EX_Explanation() {
-			});
-			final EX_Explanation explanation = new EX_Explanation() {
-			};
+		final List<EOT_OutputFile> leof = new ArrayList<>();
 
-			final EG_CompoundStatement seq = new EG_CompoundStatement(beginning, ending, middle, false, explanation);
-			final EOT_OutputFile       eof = new EOT_OutputFile(c, inputs, ab.output, EOT_OutputType.SOURCES, seq);
+		for (final String s : mb.keySet()) {
+			final Collection<Buffer> vs = mb.get(s);
+
+			final EOT_OutputFile eof = EOT_OutputFile.bufferSetToOutputFile(s, vs, c, modmap.get(s));
 			leof.add(eof);
 		}
 
+		c.getOutputTree().set(leof);
+
 		final File fn1 = choose_dir_name();
 
-		__rest(mb, fn1); //file_prefix);
+		__rest(mb, fn1, leof);
 	}
 
 	private @NotNull File choose_dir_name() {
@@ -126,7 +122,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 		return fn01;
 	}
 
-	private void __rest(final @NotNull Multimap<String, Buffer> mb, final @NotNull File aFile_prefix) throws IOException {
+	private void __rest(final @NotNull Multimap<String, Buffer> mb, final @NotNull File aFile_prefix, final List<EOT_OutputFile> leof) throws IOException {
 		aFile_prefix.mkdirs();
 		final String prefix = aFile_prefix.toString();
 
@@ -146,22 +142,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 			final EG_SingleStatement beginning = new EG_SingleStatement("", new EX_Explanation() {
 			});
-			final EG_Statement middle = new EG_Statement() {
-				@Override
-				public String getText() {
-					return Helpers.String_join("\n\n", entry.getValue()
-					                                        .stream()
-					                                        .map(buffer -> buffer.getText())
-					                                        .collect(Collectors.toList()));
-				}
-
-				@Override
-				public EX_Explanation getExplanation() {
-					return new EX_Explanation() {
-						final String message = "buffers to statement";
-					};
-				}
-			};
+			final EG_Statement middle = new GE_BuffersStatement(entry);
 			final EG_SingleStatement ending = new EG_SingleStatement("", new EX_Explanation() {
 			});
 			final EX_Explanation explanation = new EX_Explanation() {
@@ -248,6 +229,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 			}
 		};
 	}
+
 }
 
 //

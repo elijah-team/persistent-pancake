@@ -22,7 +22,16 @@ import tripleo.elijah.lang.OS_FuncType;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.DeferredObject2;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
@@ -183,7 +192,7 @@ public class DeduceLocalVariable {
 												// TODO check args (hint functionInvocation.pte)
 												//  but against what? (vte *should* have callable_pte)
 												//  if not, then try potential types for a PCE
-												aGeneratedFunction.typePromise().then(new DoneCallback<GenType>() {
+												aGeneratedFunction.onType(new DoneCallback<GenType>() {
 													@Override
 													public void onDone(final GenType result) {
 														vte.resolveType(result);

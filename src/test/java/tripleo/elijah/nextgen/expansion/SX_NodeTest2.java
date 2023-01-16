@@ -1,12 +1,10 @@
 package tripleo.elijah.nextgen.expansion;
 
 import junit.framework.TestCase;
-import tripleo.elijah.comp.AccessBus;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
-import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.model.SM_ClassBody;
 import tripleo.elijah.nextgen.model.SM_ClassDeclaration;
 import tripleo.elijah.nextgen.model.SM_ClassInheritance;
@@ -18,11 +16,9 @@ import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputstatement.EG_SyntheticStatement;
 import tripleo.elijah.nextgen.outputstatement.EX_Rule;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.nextgen.small.ES_Symbol;
-import tripleo.elijah.stages.gen_c.GenerateC;
-import tripleo.elijah.stages.gen_generic.GenerateFiles;
-import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
-import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 
 import java.util.List;
@@ -33,17 +29,27 @@ import static tripleo.elijah.util.Helpers.List_of;
 public class SX_NodeTest2 extends TestCase {
 
 	public void testFullText() {
-		final StdErrSink      errSink       = new StdErrSink();
-		final IO              io            = new IO();
-		final CompilationImpl comp          = new CompilationImpl(errSink, io);
-		final AccessBus       ab            = new AccessBus(comp);
-		final PipelineLogic   pipelineLogic = new PipelineLogic(ab);
-		final OS_Module mod = comp.moduleBuilder()
-		                          .withFileName("filename.elijah")
-		                          .addToCompilation()
-		                          .build();
-		final OutputFileFactoryParams p    = new OutputFileFactoryParams(mod, errSink, ElLog.Verbosity.SILENT, pipelineLogic);
-		final GenerateFiles           fgen = new GenerateC(p);
+		final StdErrSink      errSink = new StdErrSink();
+		final IO              io      = new IO();
+		final CompilationImpl comp    = new CompilationImpl(errSink, io);
+//		final AccessBus       ab            = new AccessBus(comp);
+//		final PipelineLogic   pipelineLogic = new PipelineLogic(ab);
+//		final OS_Module mod = comp.moduleBuilder()
+//		                          .withFileName("filename.elijah")
+//		                          .addToCompilation()
+//		                          .build();
+//		final OutputFileFactoryParams p    = new OutputFileFactoryParams(mod, errSink, ElLog.Verbosity.SILENT, pipelineLogic);
+//		final GenerateFiles           fgen = new GenerateC(p);
+
+		final String f = "test/basic2/while100/";
+
+		try {
+			comp.feedCmdLine(List_of(f));
+		} catch (final Exception aE) {
+			throw new RuntimeException(aE);
+		}
+
+		final @NotNull EOT_OutputTree rt = comp.getOutputTree();
 
 		final SM_ClassDeclaration node = new SM_ClassDeclaration() {
 			@Override
@@ -82,7 +88,7 @@ public class SX_NodeTest2 extends TestCase {
 			}
 		};
 
-		fgen.forNode(node);
+//		fgen.forNode(node);
 
 		// (syn include local "main.h" :rule c-interface-default)
 		final EG_SyntheticStatement emh = new EG_SyntheticStatement(new EG_Naming("include", "local"), "main.h", new EX_Rule("c-interface-default"));
@@ -151,9 +157,20 @@ public class SX_NodeTest2 extends TestCase {
 		final String y = Helpers.String_join("\n", List_of(emh, eph, lb1, enc1).stream()
 		                                                                       .map((EG_Statement x) -> x.getText())
 		                                                                       .collect(Collectors.toList()));
-		final int yy = 2;
+//		final int yy = 2;
 		System.out.println(enc1.getText());
+//		System.out.println();
+//		System.out.println(y);
 		System.out.println();
-		System.out.println(y);
+
+		final List<EOT_OutputFile> l   = rt.list;
+		final int                  yyy = 2;
+		final List<EOT_OutputFile> wmainl = l.stream()
+		                                     .filter(eof -> eof.getFilename().equals("/while100/Main.c"))
+		                                     .collect(Collectors.toList());
+		assert wmainl.size() == 1;
+		final EOT_OutputFile wmain = wmainl.get(0);
+		final EG_Statement   seqs  = wmain.getStatementSequence();
+		System.out.println(seqs.getText());
 	}
 }

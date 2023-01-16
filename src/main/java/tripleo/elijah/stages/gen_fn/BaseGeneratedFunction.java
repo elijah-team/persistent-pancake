@@ -9,7 +9,6 @@
 package tripleo.elijah.stages.gen_fn;
 
 import org.jdeferred2.DoneCallback;
-import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,6 +42,7 @@ import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Holder;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.Stupidity;
 import tripleo.util.range.Range;
 
 import java.util.ArrayList;
@@ -66,7 +66,6 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	public final @NotNull List<IdentTableEntry>                      idte_list         = new ArrayList<IdentTableEntry>();
 	final                 Map<OS_Element, DeduceElement>             elements          = new HashMap<OS_Element, DeduceElement>();
 	private final         List<Label>                                labelList         = new ArrayList<Label>();
-	private final         DeferredObject<GenType, Void, Void>        typeDeferred      = new DeferredObject<GenType, Void, Void>();
 	private final         Dependency                                 dependency        = new Dependency(this);
 	public                boolean                                    deducedAlready;
 	public                FunctionInvocation                         fi;
@@ -451,15 +450,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	private final DeferredObject<GeneratedClass, Void, Void> _gcP = new DeferredObject<>();
 	private       GeneratedNode                              genClass;
 
-	public void setClass(@NotNull final GeneratedNode aNode) {
-		assert aNode instanceof GeneratedClass || aNode instanceof GeneratedNamespace;
-		genClass = aNode;
-
-		if (aNode instanceof GeneratedClass) {
-			_gcP.resolve((GeneratedClass) aNode);
-		} else
-			throw new RuntimeException("not implemented");
-	}
+	private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();
 
 	public GeneratedNode getGenClass() {
 		return genClass;
@@ -476,13 +467,43 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 
 	public abstract BaseFunctionDef getFD();
 
-	public Promise<GenType, Void, Void> typePromise() {
-		return typeDeferred.promise();
+	// region typeDeferred
+
+//	public Promise<GenType, Void, Void> typePromise() {
+//		return typeDeferred.promise();
+//	}
+
+	public void setClass(@NotNull final GeneratedNode aNode) {
+		assert aNode instanceof GeneratedClass || aNode instanceof GeneratedNamespace;
+		genClass = aNode;
+
+		if (aNode instanceof GeneratedClass) {
+			_gcP.resolve((GeneratedClass) aNode);
+		} else if (aNode instanceof GeneratedNamespace) {
+			final int y = 2; // TODO
+		} else
+			throw new RuntimeException("not implemented");
 	}
 
-	public DeferredObject<GenType, Void, Void> typeDeferred() {
-		return typeDeferred;
+//	public DeferredObject<GenType, Void, Void> typeDeferred() {
+//		return typeDeferred;
+//	}
+
+	public void onType(final DoneCallback<GenType> cb) {
+		typeDeferred.then(cb);
 	}
+
+	public void resolveTypeDeferred(final @NotNull GenType aType) {
+		if (typeDeferred.isPending())
+			typeDeferred.resolve(aType);
+		else {
+			final Holder<GenType> holder = new Holder<GenType>();
+			typeDeferred.then(result -> holder.set(result));
+			Stupidity.println_err(String.format("Trying to resolve function twice 1) %s 2) %s", holder.get().asString(), aType.asString()));
+		}
+	}
+
+	// endregion
 
 	@Override
 	public String expectationString() {
@@ -490,21 +511,6 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	}
 
 	public abstract @Nullable VariableTableEntry getSelf();
-
-	public void resolveTypeDeferred(final @NotNull GenType aType) {
-		if (typeDeferred.isPending())
-			typeDeferred.resolve(aType);
-		else {
-			final Holder<GenType> holder = new Holder<GenType>();
-			typeDeferred.then(new DoneCallback<GenType>() {
-				@Override
-				public void onDone(final GenType result) {
-					holder.set(result);
-				}
-			});
-			tripleo.elijah.util.Stupidity.println_err(String.format("Trying to resolve function twice 1) %s 2) %s", holder.get().asString(), aType.asString()));
-		}
-	}
 
 	public void addElement(final OS_Element aElement, final DeduceElement aDeduceElement) {
 		elements.put(aElement, aDeduceElement);

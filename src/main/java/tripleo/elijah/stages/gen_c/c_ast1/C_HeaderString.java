@@ -53,7 +53,7 @@ public class C_HeaderString {
 		LOG.info(String.format("240 (namespace) %s -> %s", st.getName(), class_name));
 		//final String if_args = args_string.length() == 0 ? "" : ", ";
 
-		assert args_string.length() == 0;
+//		assert args_string.length() == 0;
 
 		// TODO vsi for namespace instance??
 		//tos.put_string_ln(String.format("%s %s%s(%s* vsi%s%s) {", returnType, class_name, name, class_name, if_args, args));

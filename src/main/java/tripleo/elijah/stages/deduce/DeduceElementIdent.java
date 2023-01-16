@@ -51,7 +51,8 @@ public class DeduceElementIdent {
 			resolveIdentIA_(context, identIA, generatedFunction, new FoundElement(deduceTypes2.phase) {
 				@Override
 				public void foundElement(final OS_Element e) {
-					_resolvedElementPromise.resolve(e);
+					if (_resolvedElementPromise.isPending())
+						_resolvedElementPromise.resolve(e);
 				}
 
 				@Override
@@ -61,7 +62,8 @@ public class DeduceElementIdent {
 					  identTableEntry,
 					  generatedFunction);
 
-					_resolvedElementPromise.reject(err);
+					if (_resolvedElementPromise.isPending())
+						_resolvedElementPromise.reject(err);
 
 //					deduceTypes2.LOG.err(err.message);
 				}

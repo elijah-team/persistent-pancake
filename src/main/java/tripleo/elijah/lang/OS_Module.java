@@ -220,7 +220,7 @@ public class OS_Module implements OS_Element, OS_Container {
 		return lsp;
 	}
 
-	public void setLsp(final LibraryStatementPart aLsp) {
+	public void setLsp(final @NotNull LibraryStatementPart aLsp) {
 		lsp = aLsp;
 	}
 

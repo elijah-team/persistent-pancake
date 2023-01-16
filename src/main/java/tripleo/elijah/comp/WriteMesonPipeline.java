@@ -9,7 +9,6 @@
 package tripleo.elijah.comp;
 
 import com.google.common.collect.Multimap;
-import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
@@ -48,33 +47,41 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 	private Supplier<GenerateResult>                         grs;
 	private Consumer<Multimap<CompilerInstructions, String>> _wmc;
 
-	public WriteMesonPipeline(final Compilation aCompilation,
-	                          final ProcessRecord ignoredAPr,
-	                          final @NotNull Promise<PipelineLogic, Void, Void> ppl,
-	                          final WritePipeline aWritePipeline) {
-		c = aCompilation;
-//		gr = aGr;
-		writePipeline = aWritePipeline;
+	public WriteMesonPipeline(final @NotNull AccessBus ab) {
+		c = ab.getCompilation();
 
-//		file_prefix = new File("COMP", c.getCompilationNumberString());
+		writePipeline = null;
 
-		ppl.then((x) -> {
-			final GenerateResult ignoredAGr;
-
-			ignoredAGr = x.gr;
-
-			grs = () -> ignoredAGr;
-		});
+		ab.subscribePipelineLogic(this::pl_slot);
 	}
 
+//	public WriteMesonPipeline(final Compilation aCompilation,
+//	                          final ProcessRecord ignoredAPr,
+//	                          final @NotNull Promise<PipelineLogic, Void, Void> ppl,
+//	                          final WritePipeline aWritePipeline) {
+//		c = aCompilation;
+////		gr = aGr;
+//		writePipeline = aWritePipeline;
+//
+////		file_prefix = new File("COMP", c.getCompilationNumberString());
+//
+//		ppl.then((x) -> {
+//			final GenerateResult ignoredAGr;
+//
+//			ignoredAGr = x.__ab.gr;
+//
+//			grs = () -> ignoredAGr;
+//		});
+//	}
+
 	private void write_makefiles_action(final Multimap<CompilerInstructions, String> lsp_outputs) {
-		List<String> dep_dirs = new LinkedList<String>();
+		final List<String> dep_dirs = new LinkedList<String>();
 
 		try {
 			write_root(lsp_outputs, dep_dirs);
 
 			for (final CompilerInstructions compilerInstructions : lsp_outputs.keySet()) {
-				int y = 2;
+				final int y = 2;
 
 				final String sub_dir = compilerInstructions.getName();
 				final Path   dpath   = getPath(sub_dir);
@@ -85,39 +92,39 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 			}
 
 			write_prelude();
-		} catch (IOException aE) {
+		} catch (final IOException aE) {
 			throw new RuntimeException(aE);
 		}
 
 	}
 
-	private void write_root(@NotNull Multimap<CompilerInstructions, String> lsp_outputs, List<String> aDep_dirs) throws IOException {
-		CharSink root_file = c.getIO().openWrite(getPath("meson.build"));
+	private void write_root(@NotNull final Multimap<CompilerInstructions, String> lsp_outputs, final List<String> aDep_dirs) throws IOException {
+		final CharSink root_file = c.getIO().openWrite(getPath("meson.build"));
 		try {
-			String project_name   = c.getProjectName();
-			String project_string = String.format("project('%s', 'c', version: '1.0.0', meson_version: '>= 0.48.0',)", project_name);
+			final String project_name   = c.getProjectName();
+			final String project_string = String.format("project('%s', 'c', version: '1.0.0', meson_version: '>= 0.48.0',)", project_name);
 			root_file.accept(project_string);
 			root_file.accept("\n");
 
-			for (CompilerInstructions compilerInstructions : lsp_outputs.keySet()) {
-				String     name  = compilerInstructions.getName();
-				final Path dpath = getPath(name);
+			for (final CompilerInstructions compilerInstructions : lsp_outputs.keySet()) {
+				final String name  = compilerInstructions.getName();
+				final Path   dpath = getPath(name);
 				if (dpath.toFile().exists()) {
-					String name_subdir_string = String.format("subdir('%s')\n", name);
+					final String name_subdir_string = String.format("subdir('%s')\n", name);
 					root_file.accept(name_subdir_string);
 					aDep_dirs.add(name);
 				}
 			}
 			aDep_dirs.add("Prelude");
 //			String prelude_string = String.format("subdir(\"Prelude_%s\")\n", /*c.defaultGenLang()*/"c");
-			String prelude_string = "subdir('Prelude')\n";
+			final String prelude_string = "subdir('Prelude')\n";
 			root_file.accept(prelude_string);
 
 //			root_file.accept("\n");
 
-			String deps_names = String_join(", ", aDep_dirs.stream()
-			                                               .map(x -> String.format("%s", x)) // TODO _lib ??
-			                                               .collect(Collectors.toList()));
+			final String deps_names = String_join(", ", aDep_dirs.stream()
+			                                                     .map(x -> String.format("%s", x)) // TODO _lib ??
+			                                                     .collect(Collectors.toList()));
 			root_file.accept(String.format("%s_bin = executable('%s', link_with: [ %s ], install: true)", project_name, project_name, deps_names)); // dependencies, include_directories
 		} finally {
 			((FileCharSink) root_file).close();
@@ -125,25 +132,25 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 	}
 
 	@NotNull
-	private Path getPath(String aName) {
+	private Path getPath(final String aName) {
 		return FileSystems.getDefault().getPath("COMP",
 		  c.getCompilationNumberString(),
 		  aName);
 	}
 
-	private void write_lsp(@NotNull Multimap<CompilerInstructions, String> lsp_outputs, CompilerInstructions compilerInstructions, String aSub_dir) throws IOException {
+	private void write_lsp(@NotNull final Multimap<CompilerInstructions, String> lsp_outputs, final CompilerInstructions compilerInstructions, final String aSub_dir) throws IOException {
 		final Path path = FileSystems.getDefault().getPath("COMP",
 		  c.getCompilationNumberString(),
 		  aSub_dir,
 		  "meson.build");
-		CharSink sub_file = c.getIO().openWrite(path);
+		final CharSink sub_file = c.getIO().openWrite(path);
 		try {
-			int                yy     = 2;
-			Collection<String> files_ = lsp_outputs.get(compilerInstructions);
-			Set<String> files = files_.stream()
-			                          .filter(x -> x.endsWith(".c"))
-			                          .map(x -> String.format("\t'%s',", pullFileName(x)))
-			                          .collect(Collectors.toSet()); // TODO .toUnmodifiableSet -- language level 10
+			final int                yy     = 2;
+			final Collection<String> files_ = lsp_outputs.get(compilerInstructions);
+			final Set<String> files = files_.stream()
+			                                .filter(x -> x.endsWith(".c"))
+			                                .map(x -> String.format("\t'%s',", pullFileName(x)))
+			                                .collect(Collectors.toSet()); // TODO .toUnmodifiableSet -- language level 10
 			sub_file.accept(String.format("%s_sources = files(\n%s\n)", aSub_dir, String_join("\n", files)));
 			sub_file.accept("\n");
 			sub_file.accept(String.format("%s = static_library('%s', %s_sources, install: false,)", aSub_dir, aSub_dir, aSub_dir)); // include_directories, dependencies: [],
@@ -162,10 +169,10 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 
 		ppath.getParent().toFile().mkdirs(); // README just in case -- but should be unnecessary at this point
 
-		CharSink prel_file = c.getIO().openWrite(ppath);
+		final CharSink prel_file = c.getIO().openWrite(ppath);
 		try {
 //			Collection<String> files_ = lsp_outputs.get(compilerInstructions);
-			List<String> files = List_of("'Prelude.c'")/*files_.stream()
+			final List<String> files = List_of("'Prelude.c'")/*files_.stream()
 					.filter(x -> x.endsWith(".c"))
 					.map(x -> String.format("\t'%s',", x))
 					.collect(Collectors.toList())*/;
@@ -181,13 +188,13 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 		}
 	}
 
-	private @Nullable String pullFileName(String aFilename) {
+	private @Nullable String pullFileName(final String aFilename) {
 		//return aFilename.substring(aFilename.lastIndexOf('/')+1);
-		Matcher x = pullPat.matcher(aFilename);
+		final Matcher x = pullPat.matcher(aFilename);
 		try {
 			if (x.matches())
 				return x.group(1);
-		} catch (IllegalStateException aE) {
+		} catch (final IllegalStateException aE) {
 		}
 		return null;
 	}
@@ -221,7 +228,7 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 	public void accept(final @NotNull Supplier<GenerateResult> aGenerateResultSupplier) {
 		final GenerateResult gr = aGenerateResultSupplier.get();
 		grs = aGenerateResultSupplier;
-		int y = 2;
+		final int y = 2;
 	}
 
 	public Consumer<Supplier<GenerateResult>> consumer() {
@@ -238,6 +245,10 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 				//final GenerateResult gr = aGenerateResultSupplier.get();
 			}
 		};
+	}
+
+	private void pl_slot(final PipelineLogic pll) {
+		grs = () -> pll.__ab.gr;
 	}
 }
 

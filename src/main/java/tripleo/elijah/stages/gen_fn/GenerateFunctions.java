@@ -1799,10 +1799,9 @@ package tripleo.elijah.stages.gen_fn;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.entrypoints.EntryPointList;
@@ -1813,7 +1812,18 @@ import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceConstructStatement;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
-import tripleo.elijah.stages.instructions.*;
+import tripleo.elijah.stages.instructions.ConstTableIA;
+import tripleo.elijah.stages.instructions.FnCallArgs;
+import tripleo.elijah.stages.instructions.IdentIA;
+import tripleo.elijah.stages.instructions.Instruction;
+import tripleo.elijah.stages.instructions.InstructionArgument;
+import tripleo.elijah.stages.instructions.InstructionName;
+import tripleo.elijah.stages.instructions.IntegerIA;
+import tripleo.elijah.stages.instructions.Label;
+import tripleo.elijah.stages.instructions.LabelIA;
+import tripleo.elijah.stages.instructions.ProcIA;
+import tripleo.elijah.stages.instructions.SymbolIA;
+import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.stages.stage1.S1_Constructor;
 import tripleo.elijah.util.Helpers;
@@ -2081,29 +2091,31 @@ public class GenerateFunctions {
 			final List<FormalArgListItem> fali_args = fd.fal().falis;
 			final List<TypeTableEntry>    fi_args   = aFunctionInvocation.getArgs();
 
-			for (int i = 0; i < fali_args.size(); i++) {
-				final FormalArgListItem fali = fali_args.get(i);
+			if (fi_args.size() > 0) {
+				for (int i = 0; i < fali_args.size(); i++) {
+					final FormalArgListItem fali = fali_args.get(i);
 
-				final TypeTableEntry tte1     = fi_args.get(i);
-				final OS_Type        attached = tte1.getAttached();
+					final TypeTableEntry tte1     = fi_args.get(i);
+					final OS_Type        attached = tte1.getAttached();
 
-				// TODO for reference now...
-				final GenType  genType  = new GenType();
-				final TypeName typeName = fali.typeName();
-				if (typeName != null)
-					genType.typeName = new OS_Type(typeName);
-				genType.resolved = attached;
+					// TODO for reference now...
+					final GenType  genType  = new GenType();
+					final TypeName typeName = fali.typeName();
+					if (typeName != null)
+						genType.typeName = new OS_Type(typeName);
+					genType.resolved = attached;
 
-				final OS_Type attached1;
-				if (attached == null && typeName != null)
-					attached1 = genType.typeName;
-				else
-					attached1 = attached;
+					final OS_Type attached1;
+					if (attached == null && typeName != null)
+						attached1 = genType.typeName;
+					else
+						attached1 = attached;
 
-				final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, attached1, fali.getNameToken());
-//				assert attached != null; // TODO this fails
+					final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, attached1, fali.getNameToken());
+//		    		assert attached != null; // TODO this fails
 
-				gf.addVariableTableEntry(fali.name(), VariableTableType.ARG, tte, fali);
+					gf.addVariableTableEntry(fali.name(), VariableTableType.ARG, tte, fali);
+				}
 			}
 		}
 

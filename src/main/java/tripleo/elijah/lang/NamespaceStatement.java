@@ -127,6 +127,11 @@ public class NamespaceStatement extends _CommonNC implements Documentable, Modul
 		}
 	}
 
+	public OS_Type getOS_Type() {
+//		return new OS_Type(OS_Type.Type.);
+		return null; // TODO
+	}
+
 	// region ClassItem
 
 	// endregion

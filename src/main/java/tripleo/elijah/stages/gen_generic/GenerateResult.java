@@ -36,7 +36,7 @@ public class GenerateResult {
 		addFunction(aGeneratedConstructor, aBuffer, aTY, aLsp);
 	}
 
-	public void addFunction(final BaseGeneratedFunction aGeneratedFunction, final Buffer aBuffer, final TY aTY, final LibraryStatementPart aLsp) {
+	public void addFunction(final BaseGeneratedFunction aGeneratedFunction, final Buffer aBuffer, final TY aTY, final @NotNull LibraryStatementPart aLsp) {
 		add(aBuffer, aGeneratedFunction, aTY, aLsp, aGeneratedFunction.getDependency());
 	}
 

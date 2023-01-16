@@ -15,7 +15,16 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.*;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.TableEntryIV;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
@@ -62,11 +71,10 @@ class Resolve_Ident_IA2 {
 		el   = null;
 		ectx = ctx;
 
-		if (identIA == null)
-			assert s != null;
+		assert identIA != null || s != null;
 
 		if (s == null)
-			s = generatedFunction._getIdentIAPathList(identIA);
+			s = BaseGeneratedFunction._getIdentIAPathList(identIA);
 
 		if (identIA != null) {
 			final DeducePath          dp    = identIA.getEntry().buildDeducePath(generatedFunction);
@@ -266,7 +274,7 @@ class Resolve_Ident_IA2 {
 			procTableEntry.getFunctionInvocation().generateDeferred().done(new DoneCallback<BaseGeneratedFunction>() {
 				@Override
 				public void onDone(@NotNull final BaseGeneratedFunction result) {
-					result.typePromise().then(new DoneCallback<GenType>() {
+					result.onType(new DoneCallback<GenType>() {
 						@Override
 						public void onDone(final GenType result) {
 							final int y = 2;
@@ -389,18 +397,12 @@ class Resolve_Ident_IA2 {
 				pte.setFunctionInvocation(fi);
 			}
 
-			pte.getFunctionInvocation().generatePromise().then(new DoneCallback<BaseGeneratedFunction>() {
-				@Override
-				public void onDone(@NotNull final BaseGeneratedFunction result) {
-					result.typePromise().then(new DoneCallback<GenType>() {
-						@Override
-						public void onDone(final GenType result) {
-							// NOTE there is no Promise-type notification for when type changes
-							idte2.type.setAttached(result);
-						}
-					});
-				}
-			});
+			pte.getFunctionInvocation().generatePromise()
+			   .then(aBaseGeneratedFunction ->
+			     aBaseGeneratedFunction.onType(aGenType -> {
+				     // NOTE there is no Promise-type notification for when type changes
+				     idte2.type.setAttached(aGenType);
+			     }));
 		}
 	}
 

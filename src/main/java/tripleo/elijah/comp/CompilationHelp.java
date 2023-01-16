@@ -14,26 +14,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 interface RuntimeProcess {
-	void run(final Compilation aCompilation);
+	void run();
 
 	void postProcess();
 
 	void prepare() throws Exception;
 }
-
-//interface ICompilationAccess {
-//	void setPipelineLogic(final PipelineLogic pl);
-//
-//	void addPipeline(final PipelineMember pl);
-//
-//	ElLog.Verbosity testSilence();
-//
-//	Compilation getCompilation();
-//
-//	void writeLogs();
-//
-//	Pipeline pipelines();
-//}
 
 class StageToRuntime {
 	@Contract("_, _, _ -> new")
@@ -69,19 +55,15 @@ class RuntimeProcesses {
 
 	public void run_better() throws Exception {
 		// do nothing. job over
-		if (ca.getCompilation().stage == Stages.E) return;
-
-		final RuntimeProcesses rt = this;
+		if (ca.getStage() == Stages.E) return;
 
 		// rt.prepare();
 		System.err.println("***** RuntimeProcess [prepare] named " + process);
 		process.prepare();
 
 		// rt.run();
-		final Compilation comp = ca.getCompilation();
-
 		System.err.println("***** RuntimeProcess [run    ] named " + process);
-		process.run(comp);
+		process.run();
 
 		// rt.postProcess(pr);
 		System.err.println("***** RuntimeProcess [postProcess] named " + process);
@@ -97,11 +79,11 @@ final class EmptyProcess implements RuntimeProcess {
 	}
 
 	@Override
-	public void run(final Compilation aCompilation) {
+	public void postProcess() {
 	}
 
 	@Override
-	public void postProcess() {
+	public void run() {
 	}
 
 	@Override
@@ -120,7 +102,7 @@ class DStageProcess implements RuntimeProcess {
 	}
 
 	@Override
-	public void run(final Compilation aCompilation) {
+	public void run() {
 		final int y = 2;
 	}
 
@@ -130,7 +112,7 @@ class DStageProcess implements RuntimeProcess {
 
 	@Override
 	public void prepare() {
-		//assert pr.stage == Stages.D; // FIXME
+		assert ca.getStage() == Stages.D;
 	}
 }
 
@@ -146,7 +128,9 @@ class OStageProcess implements RuntimeProcess {
 	}
 
 	@Override
-	public void run(final @NotNull Compilation comp) {
+	public void run() {
+		final Compilation comp = ca.getCompilation();
+
 		ppl.then((pl) -> {
 			final Pipeline ps = comp.getPipelines();
 
@@ -157,7 +141,7 @@ class OStageProcess implements RuntimeProcess {
 				comp.getErrSink().exception(ex);
 			}
 
-			comp.writeLogs(comp.silent, comp.elLogs);
+			comp.writeLogs(comp.cfg.silent, comp.elLogs);
 		});
 	}
 
@@ -168,9 +152,8 @@ class OStageProcess implements RuntimeProcess {
 	@Override
 	public void prepare() throws Exception {
 		Preconditions.checkNotNull(pr);
-
 		Preconditions.checkNotNull(pr.pipelineLogic);
-		Preconditions.checkNotNull(pr.pipelineLogic.gr);
+		Preconditions.checkNotNull(pr.ab.gr);
 
 		ppl.resolve(pr.pipelineLogic);
 
@@ -179,7 +162,7 @@ class OStageProcess implements RuntimeProcess {
 //		ab.add(DeducePipeline::new);
 		ab.add(GeneratePipeline::new);
 		ab.add(WritePipeline::new);
-//		ab.add(WriteMesonPipeline::new);
+		ab.add(WriteMesonPipeline::new);
 
 //		final DeducePipeline     dpl  = new DeducePipeline(ab);
 //		final GeneratePipeline   gpl  = new GeneratePipeline(ab);
@@ -192,7 +175,7 @@ class OStageProcess implements RuntimeProcess {
 		ppl.then(pl -> {
 			final Compilation comp = ca.getCompilation();
 
-			comp.modules.stream().forEach(pl::addModule);
+			comp.mod.modules.stream().forEach(pl::addModule);
 		});
 	}
 }

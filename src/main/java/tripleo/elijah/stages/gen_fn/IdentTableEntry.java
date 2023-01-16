@@ -178,6 +178,14 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		}
 	}
 
+	public void setGenType(final GenType genType, final BaseGeneratedFunction gf) {
+		if (type == null) {
+			makeType(gf, TypeTableEntry.Type.SPECIFIED, genType.resolved);
+		}
+
+		type.genType.copy(genType);
+	}
+
 	// endregion constructable
 
 	public void setDeduceTypes2(final @NotNull DeduceTypes2 aDeduceTypes2, final Context aContext, final @NotNull BaseGeneratedFunction aGeneratedFunction) {
@@ -190,7 +198,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	}
 
 	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction) {
-		@NotNull final List<InstructionArgument> x = generatedFunction._getIdentIAPathList(new IdentIA(index, generatedFunction));
+		@NotNull final List<InstructionArgument> x = BaseGeneratedFunction._getIdentIAPathList(new IdentIA(index, generatedFunction));
 		return new DeducePath(this, x);
 	}
 

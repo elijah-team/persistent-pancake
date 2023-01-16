@@ -16,7 +16,7 @@ import java.util.Map;
 
 class DefaultCompilationAccess implements ICompilationAccess {
 	protected final Compilation                                compilation;
-	private         DeferredObject2<PipelineLogic, Void, Void> pipelineLogicDeferred = new DeferredObject2<>();
+	private final   DeferredObject2<PipelineLogic, Void, Void> pipelineLogicDeferred = new DeferredObject2<>();
 
 	public DefaultCompilationAccess(final Compilation aCompilation) {
 		compilation = aCompilation;
@@ -28,7 +28,7 @@ class DefaultCompilationAccess implements ICompilationAccess {
 			public void onDone(final PipelineLogic result) {
 				try {
 					aPipelineLogicConsumer.accept(result);
-				} catch (Throwable aE) {
+				} catch (final Throwable aE) {
 					throw new RuntimeException(aE);
 				}
 			}
@@ -42,10 +42,12 @@ class DefaultCompilationAccess implements ICompilationAccess {
 		pipelineLogicDeferred.resolve(pl);
 	}
 
+/*
 	@Override
 	public void addPipeline(final PipelineMember pl) {
 		compilation.addPipeline(pl);
 	}
+*/
 
 	@Override
 	@NotNull
@@ -73,18 +75,23 @@ class DefaultCompilationAccess implements ICompilationAccess {
 		return null;
 	}
 
+//	@Override
+//	public Pipeline pipelines() {
+//		return compilation.getPipelines();
+//	}
+
 	@Override
-	public Pipeline pipelines() {
-		return compilation.getPipelines();
+	public Stages getStage() {
+		return getCompilation().cfg.stage;
 	}
 
-	private void writeLogs(boolean aSilent, List<ElLog> aLogs) {
-		Multimap<String, ElLog> logMap = ArrayListMultimap.create();
-		if (true || aSilent) {
-			for (ElLog deduceLog : aLogs) {
+	private void writeLogs(final boolean aSilent, final List<ElLog> aLogs) {
+		final Multimap<String, ElLog> logMap = ArrayListMultimap.create();
+		if (true) {
+			for (final ElLog deduceLog : aLogs) {
 				logMap.put(deduceLog.getFileName(), deduceLog);
 			}
-			for (Map.Entry<String, Collection<ElLog>> stringCollectionEntry : logMap.asMap().entrySet()) {
+			for (final Map.Entry<String, Collection<ElLog>> stringCollectionEntry : logMap.asMap().entrySet()) {
 				final F202 f202 = new F202(compilation.getErrSink(), compilation);
 				f202.processLogs(stringCollectionEntry.getValue());
 			}

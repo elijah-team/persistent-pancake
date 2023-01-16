@@ -35,8 +35,7 @@ public class CompilationImpl extends Compilation {
 	private @Nullable EOT_OutputTree _output_tree = null;
 
 	@Override
-	@NotNull
-	public EOT_OutputTree getOutputTree() {
+	public @NotNull EOT_OutputTree getOutputTree() {
 		if (_output_tree == null) {
 			_output_tree = new EOT_OutputTree();
 		}

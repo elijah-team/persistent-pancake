@@ -8,7 +8,7 @@ import java.util.List;
 public interface ICompilationAccess {
 	void setPipelineLogic(final PipelineLogic pl);
 
-	void addPipeline(final PipelineMember pl);
+//	void addPipeline(final PipelineMember pl);
 
 	ElLog.Verbosity testSilence();
 
@@ -18,5 +18,7 @@ public interface ICompilationAccess {
 
 	List<FunctionMapHook> functionMapHooks();
 
-	Pipeline pipelines();
+//	Pipeline pipelines();
+
+	Stages getStage();
 }

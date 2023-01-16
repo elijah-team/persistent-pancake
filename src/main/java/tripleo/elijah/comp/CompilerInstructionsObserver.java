@@ -10,13 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 class CompilerInstructionsObserver implements Observer<CompilerInstructions> {
-	final         List<CompilerInstructions> l = new ArrayList<>();
+	private final List<CompilerInstructions> l = new ArrayList<>();
 	private final Compilation                compilation;
-	private final OptionsProcessor           op;
 
-	public CompilerInstructionsObserver(final Compilation aCompilation, final OptionsProcessor aOp) {
+	public CompilerInstructionsObserver(final Compilation aCompilation, final OptionsProcessor ignoredAOp) {
 		compilation = aCompilation;
-		op          = aOp;
+	}
+
+	public CompilerInstructionsObserver(final Compilation aCompilation, final OptionsProcessor ignoredAOp, final Compilation.CIS cis) {
+		compilation = aCompilation;
+		cis._cio    = this;
+
+		cis.subscribe(this);
 	}
 
 	@Override
@@ -42,9 +47,10 @@ class CompilerInstructionsObserver implements Observer<CompilerInstructions> {
 
 	public void almostComplete() {
 		try {
-			compilation.hasInstructions(l, compilation.do_out, op);
-		} catch (Exception aE) {
-			NotImplementedException.raise();
+			compilation.hasInstructions(l);
+		} catch (final Exception aE) {
+			compilation.getErrSink().exception(aE);
+//			NotImplementedException.raise();
 			throw new RuntimeException(aE);
 		}
 	}

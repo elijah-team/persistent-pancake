@@ -1,10 +1,12 @@
 package tripleo.elijah.stages.gen_c;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.AliasStatement;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.lang.DefFunctionDef;
+import tripleo.elijah.lang.FormalArgListItem;
 import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.lang.NamespaceStatement;
 import tripleo.elijah.lang.OS_Element;
@@ -64,12 +66,20 @@ class CReference_getIdentIAPath_IdentIAHelper {
 			_act_PropertyStatement(aCReference);
 		} else if (resolvedElement instanceof AliasStatement) {
 			_act_AliasStatement();
+		} else if (resolvedElement instanceof FormalArgListItem) {
+			_act_FormalArgListItem(aCReference, (FormalArgListItem) resolvedElement);
 		} else {
 			// text = idte.getIdent().getText();
 			tripleo.elijah.util.Stupidity.println_out("1008 " + resolvedElement.getClass().getName());
 			throw new NotImplementedException();
 		}
 		return b;
+	}
+
+	private void _act_FormalArgListItem(final @NotNull CReference aCReference, final @NotNull FormalArgListItem fali) {
+		final int    y     = 2;
+		final String text2 = "va" + fali.getNameToken().getText();
+		aCReference.addRef(text2, CReference.Ref.LOCAL); // TODO
 	}
 
 	@Contract(pure = true)

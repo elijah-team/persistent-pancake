@@ -17,7 +17,7 @@ class CC_SetStage implements CompilationChange {
 
 	@Override
 	public void apply(final @NotNull Compilation c) {
-		c.stage = Stages.valueOf(s);
+		c.cfg.stage = Stages.valueOf(s);
 	}
 }
 
@@ -30,7 +30,7 @@ class CC_SetShowTree implements CompilationChange {
 
 	@Override
 	public void apply(final Compilation c) {
-		c.showTree = flag;
+		c.cfg.showTree = flag;
 	}
 }
 
@@ -43,7 +43,7 @@ class CC_SetDoOut implements CompilationChange {
 
 	@Override
 	public void apply(final Compilation c) {
-		c.do_out = flag;
+		c.cfg.do_out = flag;
 	}
 }
 
@@ -56,6 +56,6 @@ class CC_SetSilent implements CompilationChange {
 
 	@Override
 	public void apply(final Compilation c) {
-		c.silent = flag;
+		c.cfg.silent = flag;
 	}
 }

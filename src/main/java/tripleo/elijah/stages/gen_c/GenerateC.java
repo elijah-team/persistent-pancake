@@ -74,7 +74,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 		errSink = p.getErrSink();
 		LOG     = new ElLog(p.getModFileName(), p.getVerbosity(), PHASE);
 		//
-		p.getPipelineLogic().addLog(LOG);
+		p.addLog(LOG);
 	}
 
 	private static boolean isValue(final BaseGeneratedFunction gf, final @NotNull String name) {
@@ -154,9 +154,10 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 	public void forNode(final SM_Node aNode) {
 		final int y = 2;
 		if (aNode instanceof SM_ClassDeclaration) {
-			final SM_ClassDeclaration classDecl = ((SM_ClassDeclaration) aNode);
-
+			final SM_ClassDeclaration classDecl = (SM_ClassDeclaration) aNode;
+//			return classDecl;
 		}
+//		return null;
 	}
 
 	@NotNull

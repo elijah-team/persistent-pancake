@@ -16,7 +16,20 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.stages.deduce.zero.ITE_Zero;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GenerateFunctions;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.IElementHolder;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
+import tripleo.elijah.stages.gen_fn.WlGenerateCtor;
+import tripleo.elijah.stages.gen_fn.WlGenerateDefaultCtor;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
@@ -435,9 +448,10 @@ class Resolve_Ident_IA {
 				ci = phase.registerClassInvocation(ci);
 				fi = new FunctionInvocation(null, pte, ci, phase.generatePhase);
 			} else if (resolvedElement instanceof FunctionDef) {
-				final IInvocation invocation = dc.getInvocation((GeneratedFunction) generatedFunction);
-				fi = new FunctionInvocation((FunctionDef) resolvedElement, pte, invocation, phase.generatePhase);
-				if (fi.getFunction().getParent() instanceof ClassStatement) {
+				final IInvocation invocation  = dc.getInvocation((GeneratedFunction) generatedFunction);
+				final FunctionDef functionDef = (FunctionDef) resolvedElement;
+				fi = new FunctionInvocation(functionDef, pte, invocation, phase.generatePhase);
+				if (functionDef.getParent() instanceof ClassStatement) {
 					final ClassStatement classStatement = (ClassStatement) fi.getFunction().getParent();
 					ci = new ClassInvocation(classStatement, null); // TODO generics
 					ci = phase.registerClassInvocation(ci);
@@ -603,7 +617,7 @@ class Resolve_Ident_IA {
 			} else if (idte.getStatus() == BaseTableEntry.Status.KNOWN) {
 				final String normal_path = generatedFunction.getIdentIAPathNormal(identIA);
 				//assert idte.resolveExpectation.isSatisfied();
-				if (!idte.resolveExpectation.isSatisfied())
+				if (idte.resolveExpectation != null && !idte.resolveExpectation.isSatisfied())
 					idte.resolveExpectation.satisfy(normal_path);
 
 				el   = idte.getResolvedElement();
@@ -617,7 +631,8 @@ class Resolve_Ident_IA {
 			if (idte.getStatus() == BaseTableEntry.Status.UNKNOWN) {
 //			LOG.info("1257 Not found for " + generatedFunction.getIdentIAPathNormal(ia));
 				// No need checking more than once
-				idte.resolveExpectation.fail();
+				if (idte.resolveExpectation != null)
+					idte.resolveExpectation.fail();
 				foundElement.doNoFoundElement();
 				return true;
 			}

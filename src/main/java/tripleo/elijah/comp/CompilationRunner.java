@@ -14,7 +14,6 @@ import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.nextgen.query.Mode;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
-import tripleo.elijah.util.NotImplementedException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,13 +21,16 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 class CompilationRunner {
-	private final Compilation     compilation;
-	private final Compilation.CIS cis;
-	private final CCI             cci;
+	final         Map<String, CompilerInstructions> fn2ci = new HashMap<String, CompilerInstructions>();
+	private final Compilation                       compilation;
+	private final Compilation.CIS                   cis;
+	private final CCI                               cci;
 
 	@Contract(pure = true)
 	CompilationRunner(final Compilation aCompilation, final Compilation.CIS a_cis) {
@@ -37,9 +39,9 @@ class CompilationRunner {
 		cci         = new CCI(compilation, a_cis);
 	}
 
-	void start(final CompilerInstructions ci, final boolean do_out, final @NotNull OptionsProcessor ignoredOp) throws Exception {
+	void start(final CompilerInstructions ci, final boolean do_out) throws Exception {
 		// 0. debugging
-		NotImplementedException.raise();
+		//NotImplementedException.raise();
 
 		// 1. find stdlib
 		//   -- question placement
@@ -59,7 +61,7 @@ class CompilationRunner {
 		// 3. do rest
 		final ICompilationAccess ca = new DefaultCompilationAccess(compilation);
 		final ProcessRecord      pr = new ProcessRecord(ca);
-		final RuntimeProcesses   rt = StageToRuntime.get(compilation.stage, ca, pr);
+		final RuntimeProcesses   rt = StageToRuntime.get(ca.getStage(), ca, pr);
 
 		rt.run_better();
 	}
@@ -109,20 +111,20 @@ class CompilationRunner {
 		final String absolutePath;
 		try {
 			absolutePath = file.getCanonicalFile().toString();
-		} catch (IOException aE) {
+		} catch (final IOException aE) {
 			//throw new RuntimeException(aE);
 			return Operation.failure(aE);
 		}
 
-		if (c.fn2ci.containsKey(absolutePath)) { // don't parse twice
-			return Operation.success(c.fn2ci.get(absolutePath));
+		if (fn2ci.containsKey(absolutePath)) { // don't parse twice
+			return Operation.success(fn2ci.get(absolutePath));
 		}
 
 		try {
 			try {
 				final Operation<CompilerInstructions> cio = parseEzFile_(f, s);
 
-				if (cio.mode() != Mode.SUCCESS) {
+				if (cio.mode() == Mode.FAILURE) {
 					final Exception e = cio.failure();
 					assert e != null;
 
@@ -134,7 +136,7 @@ class CompilationRunner {
 
 				final CompilerInstructions R = cio.success();
 				R.setFilename(file.toString());
-				c.fn2ci.put(absolutePath, R);
+				fn2ci.put(absolutePath, R);
 				return cio;
 			} catch (final ANTLRException e) {
 				System.err.println(("parser exception: " + e));
@@ -145,7 +147,7 @@ class CompilationRunner {
 			if (s != null) {
 				try {
 					s.close();
-				} catch (IOException aE) {
+				} catch (final IOException aE) {
 					// TODO return inside finally: is this ok??
 					return new Operation<>(null, aE, Mode.FAILURE);
 				}
@@ -178,7 +180,7 @@ class CompilationRunner {
 			final File    f         = new File(file_name);
 			final boolean matches2  = Pattern.matches(".+\\.ez$", file_name);
 			if (matches2) {
-				ILazyCompilerInstructions ilci = ILazyCompilerInstructions.of(f, c);
+				final ILazyCompilerInstructions ilci = ILazyCompilerInstructions.of(f, c);
 				cci.accept(new Maybe<>(ilci, null));
 			} else {
 				//errSink.reportError("9996 Not an .ez file "+file_name);
@@ -283,7 +285,7 @@ class CompilationRunner {
 
 		try {
 			return realParseEzFile(f, io.readFile(file), file, c);
-		} catch (FileNotFoundException aE) {
+		} catch (final FileNotFoundException aE) {
 			return Operation.failure(aE);
 		}
 	}

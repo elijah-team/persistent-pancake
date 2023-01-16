@@ -40,7 +40,7 @@ public class ElSystemTest {
 		final OutputStrategy os = new OutputStrategy();
 		os.per(OutputStrategy.Per.PER_CLASS);
 		sys.setOutputStrategy(os);
-		sys.generateOutputs(c.pipelineLogic.gr);
+		sys.generateOutputs(c.pipelineLogic.getGR());
 	}
 }
 

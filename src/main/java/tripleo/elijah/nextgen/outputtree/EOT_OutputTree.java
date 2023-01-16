@@ -4,9 +4,15 @@
  */
 package tripleo.elijah.nextgen.outputtree;
 
+import java.util.List;
+
 /**
  * @author olu
  */
 public class EOT_OutputTree {
+	public List<EOT_OutputFile> list;
 
+	public void set(final List<EOT_OutputFile> aLeof) {
+		list = aLeof;
+	}
 }

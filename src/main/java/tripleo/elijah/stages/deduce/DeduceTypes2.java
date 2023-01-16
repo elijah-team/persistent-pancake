@@ -1304,8 +1304,11 @@ public class DeduceTypes2 {
 						@NotNull final String typeName = type.getBType().name();
 						assert typeName.equals("SystemCharacter");
 						OS_Module prelude = module.prelude;
-						if (prelude == null) // README Assume `module' IS prelude
+						if (prelude == null) { // README Assume `module' IS prelude
 							prelude = module;
+							assert module != null;
+							assert prelude.getContext() != null;
+						}
 						final LookupResultList lrl  = prelude.getContext().lookup("SystemCharacter");
 						@Nullable OS_Element   best = lrl.chooseBest(null);
 						while (!(best instanceof ClassStatement)) {
@@ -1868,7 +1871,7 @@ public class DeduceTypes2 {
 								@Override
 								public void onDone(@NotNull final BaseGeneratedFunction bgf) {
 									@NotNull final PromiseExpectation<GenType> pe = promiseExpectation(bgf, "Function Result type");
-									bgf.typePromise().then(new DoneCallback<GenType>() {
+									bgf.onType(new DoneCallback<GenType>() {
 										@Override
 										public void onDone(@NotNull final GenType result) {
 											pe.satisfy(result);

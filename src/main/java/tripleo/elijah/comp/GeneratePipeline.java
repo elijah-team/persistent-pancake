@@ -10,25 +10,32 @@ package tripleo.elijah.comp;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
+import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah.stages.gen_generic.GenerateResult;
+import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.work.WorkManager;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created 8/21/21 10:16 PM
  */
-public class GeneratePipeline implements PipelineMember, AccessBus.AB_LgcListener {
+public class GeneratePipeline implements PipelineMember/*, AccessBus.AB_LgcListener*/ {
+	private final ErrSink             errSink;
 	private final AccessBus           __ab;
-	//	private final Compilation c;
-//	private final DeducePipeline dpl;
+	//	private final DeducePipeline dpl;
 	private       PipelineLogic       pipelineLogic;
 	private       List<GeneratedNode> lgc;
 
 	public GeneratePipeline(@NotNull final AccessBus ab) {
-//		c = ab.getCompilation();
+		errSink = ab.getCompilation().getErrSink();
 
-		ab.subscribePipelineLogic(pll -> pipelineLogic = pll);
-		ab.subscribe_lgc(this);
+		ab.subscribePipelineLogic(aPl -> pipelineLogic = aPl);
+		ab.subscribe_lgc(aLgc -> lgc = aLgc);
 
 		__ab = ab;
 	}
@@ -38,12 +45,27 @@ public class GeneratePipeline implements PipelineMember, AccessBus.AB_LgcListene
 		Preconditions.checkNotNull(pipelineLogic);
 		Preconditions.checkNotNull(lgc);
 
-		pipelineLogic.generate(lgc, __ab.getCompilation().getErrSink());
+		/*pipelineLogic.*/
+		generate(lgc, errSink, pipelineLogic.mods, pipelineLogic.getVerbosity());
 	}
 
-	@Override
-	public void lgc_slot(final List<GeneratedNode> aX) {
-		lgc = aX;
+	protected void generate(final @NotNull List<GeneratedNode> lgc,
+	                        final @NotNull ErrSink aErrSink,
+	                        final @NotNull EIT_ModuleList mods,
+	                        final @NotNull ElLog.Verbosity verbosity) {
+		final WorkManager    wm   = new WorkManager();
+		final GenerateResult gr   = __ab.gr;
+		final Compilation    comp = __ab.getCompilation();
+
+		for (final @NotNull OS_Module mod : mods.getMods()) {
+			final List<GeneratedNode> nodes = lgc.stream()
+			                                     .filter(aGeneratedNode -> aGeneratedNode.module() == mod)
+			                                     .collect(Collectors.toList());
+
+			new EIT_ModuleInput(mod, comp).doGenerate(nodes, aErrSink, verbosity, pipelineLogic, wm, (gr2) -> gr.additional(gr2));
+		}
+
+		__ab.resolveGenerateResult(gr);
 	}
 }
 

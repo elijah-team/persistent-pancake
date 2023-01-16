@@ -22,10 +22,8 @@ public class ProcessRecord {
 		pipelineLogic = ab.__getPL();
 	}
 
-	public void writeLogs(final ICompilationAccess aCa) {
-		final ICompilationAccess ca = aCa;
-
-		ca.getCompilation().stage.writeLogs(ca);
+	public void writeLogs(final @NotNull ICompilationAccess ca) {
+		ca.getStage().writeLogs(ca);
 	}
 
 	public void setGenerateResult(final GenerateResult gr) {

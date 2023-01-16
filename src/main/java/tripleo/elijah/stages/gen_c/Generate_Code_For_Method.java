@@ -13,6 +13,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.FormalArgListItem;
@@ -90,10 +91,11 @@ public class Generate_Code_For_Method {
 		tosHdr.close();
 		final Buffer buf = tos.getBuffer();
 //		LOG.info(buf.getText());
-		gr.addFunction(gf, buf, GenerateResult.TY.IMPL, gf.module().getLsp());
+		final LibraryStatementPart lsp = gf.module().getLsp();
+		gr.addFunction(gf, buf, GenerateResult.TY.IMPL, lsp);
 		final Buffer bufHdr = tosHdr.getBuffer();
 //		LOG.info(bufHdr.getText());
-		gr.addFunction(gf, bufHdr, GenerateResult.TY.HEADER, gf.module().getLsp());
+		gr.addFunction(gf, bufHdr, GenerateResult.TY.HEADER, lsp);
 	}
 
 	private void action_invariant(final BaseGeneratedFunction gf, final Generate_Method_Header aGmh) {

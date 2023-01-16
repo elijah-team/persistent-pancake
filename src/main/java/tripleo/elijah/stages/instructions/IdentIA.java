@@ -70,7 +70,7 @@ public class IdentIA implements InstructionArgument, Constructable {
 
 	@Override
 	public void setGenType(final GenType aGenType) {
-		getEntry().setGenType(aGenType);
+		getEntry().setGenType(aGenType, gf);
 	}
 
 	@Override

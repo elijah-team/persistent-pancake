@@ -13,7 +13,6 @@ import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
@@ -22,9 +21,7 @@ import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
-import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
-import tripleo.elijah.work.WorkManager;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -36,11 +33,9 @@ import java.util.stream.Collectors;
  * Created 12/30/20 2:14 AM
  */
 public class PipelineLogic implements AccessBus.AB_ModuleListListener {
-	public final  GeneratePhase generatePhase;
-	public final  DeducePhase   dp;
-	private final AccessBus     __ab;
-
-	public final GenerateResult gr = new GenerateResult();
+	public final GeneratePhase generatePhase;
+	public final DeducePhase   dp;
+	final        AccessBus     __ab;
 
 	private final ElLog.Verbosity verbosity;
 
@@ -50,7 +45,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	public PipelineLogic(final AccessBus iab) {
 		__ab = iab; // we're watching you
 
-		final boolean sil = __ab.getCompilation().getSilence();
+		final boolean sil = __ab.getCompilation().getSilence(); // ca.testSilence
 
 		verbosity     = sil ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
 		generatePhase = new GeneratePhase(verbosity, this);
@@ -76,23 +71,10 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 
 //		lgc2.forEach(dp::finish);
 
+		// TODO duplication??
 		dp.generatedClasses.addAll(lgc);
 
 //		elLogs = dp.deduceLogs;
-	}
-
-	public void generate(final List<GeneratedNode> lgc, final ErrSink aErrSink) {
-		final WorkManager wm = new WorkManager();
-
-		for (final @NotNull OS_Module mod : mods.getMods()) {
-			final OutputFileFactoryParams p         = new OutputFileFactoryParams(mod, aErrSink, verbosity, this);
-			final GenerateC               generateC = new GenerateC(p);
-			final GenerateResult          ggr       = run3(mod, lgc, wm, generateC);
-			wm.drain();
-			gr.results().addAll(ggr.results());
-		}
-
-		__ab.resolveGenerateResult(gr);
 	}
 
 	public void subscribeMods(final AccessBus.AB_ModuleListListener l) {
@@ -114,19 +96,6 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		__ab.resolveGenerateResult(gr);
 	}
 */
-
-	protected GenerateResult run3(final @NotNull OS_Module mod,
-	                              final @NotNull List<GeneratedNode> lgc,
-	                              final @NotNull WorkManager wm,
-	                              final @NotNull GenerateC ggc) {
-		final List<GeneratedNode> nodes = lgc.stream()
-				.filter(aGeneratedNode -> aGeneratedNode.module() == mod)
-				.collect(Collectors.toList());
-
-		final GenerateResult gr2 = ggc.resultsFromNodes(nodes, wm);
-
-		return gr2;
-	}
 
 	public static void debug_buffers(@NotNull final GenerateResult gr, final PrintStream stream) {
 		for (final GenerateResultItem ab : gr.results()) {
@@ -205,15 +174,19 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 //		dp.generatedClasses.addAll(lgc);
 	}
 
+	public GenerateResult getGR() {
+		return __ab.gr;
+	}
+
 	static class PL_Run2 {
-		private final OS_Module mod;
-		private final List<EntryPoint> entryPoints;
-		private final DeducePhase dp;
+		private final OS_Module                              mod;
+		private final List<EntryPoint>                       entryPoints;
+		private final DeducePhase                            dp;
 		private final Function<OS_Module, GenerateFunctions> mapper;
-		private final PipelineLogic pipelineLogic;
+		private final PipelineLogic                          pipelineLogic;
 
 		public PL_Run2(final OS_Module mod,
-					   final List<EntryPoint> entryPoints,
+		               final List<EntryPoint> entryPoints,
 					   final Function<OS_Module, GenerateFunctions> mapper,
 					   final DeducePhase dp,
 					   final PipelineLogic pipelineLogic) {

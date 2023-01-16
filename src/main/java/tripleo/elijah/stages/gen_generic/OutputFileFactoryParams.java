@@ -42,4 +42,8 @@ public class OutputFileFactoryParams {
 	public PipelineLogic getPipelineLogic() {
 		return pipelineLogic;
 	}
+
+	public void addLog(final ElLog aLOG) {
+		getPipelineLogic().addLog(aLOG);
+	}
 }
