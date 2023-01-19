@@ -8,7 +8,9 @@
  */
 package tripleo.elijah.contexts;
 
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.*;
+
 import java.util.List;
 
 /**
@@ -35,7 +37,7 @@ public class FuncExprContext extends FunctionContext {
 			) continue;
 			if (item instanceof OS_Element2) {
 				if (((OS_Element2) item).name().equals(name)) {
-					Result.add(name, level, (OS_Element) item, this);
+					Result.add(name, level, item, this);
 				}
 			} else if (item instanceof VariableSequence) {
 //				System.out.println("[FunctionContext#lookup] VariableSequence "+item);
@@ -45,7 +47,7 @@ public class FuncExprContext extends FunctionContext {
 				}
 			}
 		}
-		for (final FormalArgListItem arg : carrier.getArgs()) {
+		for (final @NotNull FormalArgListItem arg : carrier.getArgs()) {
 			if (arg.name().equals(name)) {
 				Result.add(name, level, arg, this);
 			}

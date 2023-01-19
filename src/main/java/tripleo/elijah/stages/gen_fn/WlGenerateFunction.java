@@ -29,19 +29,30 @@ public class WlGenerateFunction implements WorkJob {
 	private boolean _isDone = false;
 	private GeneratedFunction result;
 
-	public WlGenerateFunction(GenerateFunctions aGenerateFunctions, @NotNull FunctionInvocation aFunctionInvocation) {
+	public WlGenerateFunction(final GenerateFunctions aGenerateFunctions, @NotNull final FunctionInvocation aFunctionInvocation) {
 		functionDef = (FunctionDef) aFunctionInvocation.getFunction();
 		generateFunctions = aGenerateFunctions;
 		functionInvocation = aFunctionInvocation;
 	}
 
 	@Override
-	public void run(WorkManager aWorkManager) {
+	public void run(final WorkManager aWorkManager) {
 //		if (_isDone) return;
 
 		if (functionInvocation.getGenerated() == null) {
-			OS_Element parent = functionDef.getParent();
-			@NotNull GeneratedFunction gf = generateFunctions.generateFunction(functionDef, parent, functionInvocation);
+			final OS_Element                 parent = functionDef.getParent();
+			@NotNull final GeneratedFunction gf     = generateFunctions.generateFunction(functionDef, parent, functionInvocation);
+
+			{
+				int i = 0;
+				for (final TypeTableEntry tte : functionInvocation.getArgs()) {
+					i = i + 1;
+					if (tte.getAttached() == null) {
+						System.err.printf("4949 null tte #%d %s in %s%n", i, tte, gf);
+					}
+				}
+			}
+
 //			lgf.add(gf);
 
 			if (parent instanceof NamespaceStatement) {
@@ -49,7 +60,7 @@ public class WlGenerateFunction implements WorkJob {
 				assert nsi != null;
 				nsi.resolveDeferred().done(new DoneCallback<GeneratedNamespace>() {
 					@Override
-					public void onDone(GeneratedNamespace result) {
+					public void onDone(final GeneratedNamespace result) {
 						if (result.getFunction(functionDef) == null) {
 							gf.setCode(generateFunctions.module.parent.nextFunctionCode());
 							result.addFunction(functionDef, gf);
@@ -61,7 +72,7 @@ public class WlGenerateFunction implements WorkJob {
 				final ClassInvocation ci = functionInvocation.getClassInvocation();
 				ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
 					@Override
-					public void onDone(GeneratedClass result) {
+					public void onDone(final GeneratedClass result) {
 						if (result.getFunction(functionDef) == null) {
 							gf.setCode(generateFunctions.module.parent.nextFunctionCode());
 							result.addFunction(functionDef, gf);

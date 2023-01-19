@@ -20,12 +20,11 @@ import java.util.List;
  *
  */
 public class OS_Package {
-	public final static OS_Package default_package = new OS_Package(null, 0);
-	private final List<OS_Element> elements = new ArrayList<OS_Element>();
-
-	int _code;
-	Qualident _name;
-	private PackageContext _ctx;
+	public final static OS_Package       default_package = new OS_Package(null, 0);
+	final               int              _code;
+	final               Qualident        _name;
+	private final       List<OS_Element> elements        = new ArrayList<OS_Element>();
+	private             PackageContext   _ctx;
 
 	// TODO packages, elements
 
@@ -62,7 +61,7 @@ public class OS_Package {
 		return _name.toString();
 	}
 
-	public void setContext(PackageContext cur) {
+	public void setContext(final PackageContext cur) {
 		_ctx = cur;
 	}
 }

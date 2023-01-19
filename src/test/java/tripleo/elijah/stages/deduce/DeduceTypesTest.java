@@ -11,10 +11,11 @@ package tripleo.elijah.stages.deduce;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
+import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.*;
@@ -33,14 +34,14 @@ public class DeduceTypesTest {
 	@Before
 	public void setUp() throws ResolveError {
 		final OS_Module mod = new OS_Module();
-		mod.parent = new Compilation(new StdErrSink(), new IO());
+		mod.parent = new CompilationImpl(new StdErrSink(), new IO());
 		final ModuleContext mctx = new ModuleContext(mod);
 		mod.setContext(mctx);
 		final ClassStatement cs = new ClassStatement(mod, mctx);
 		cs.setName(Helpers.string_to_ident("Test"));
 		final FunctionDef fd = cs.funcDef();
 		fd.setName(Helpers.string_to_ident("test"));
-		Scope3 scope3 = new Scope3(fd);
+		final Scope3 scope3 = new Scope3(fd);
 		final VariableSequence vss = scope3.statementClosure().varSeq(fd.getContext());
 		final VariableStatement vs = vss.next();
 		final IdentExpression x = Helpers.string_to_ident("x");
@@ -48,8 +49,8 @@ public class DeduceTypesTest {
 		vs.setName(x);
 		final Qualident qu = new Qualident();
 		qu.append(Helpers.string_to_ident("Integer"));
-		((NormalTypeName)vs.typeName()).setName(qu);
-		((NormalTypeName)vs.typeName()).setContext(fd.getContext());
+		((NormalTypeName) vs.typeName()).setName(qu);
+		((NormalTypeName) vs.typeName()).setContext(fd.getContext());
 		fd.scope(scope3);
 		fd.postConstruct();
 		cs.postConstruct();
@@ -58,15 +59,16 @@ public class DeduceTypesTest {
 		final IdentExpression x1 = Helpers.string_to_ident("x");
 		x1.setContext(fc);
 		//
-		mod.prelude = mod.parent.findPrelude("c");
+		mod.prelude = mod.parent.findPrelude("c").success();
 		//
 		//
 		//
-		final ElLog.Verbosity verbosity = mod.parent.gitlabCIVerbosity();
-		final PipelineLogic pl = new PipelineLogic(verbosity);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity, pl);
-		DeducePhase dp = new DeducePhase(generatePhase, pl, verbosity);
-		DeduceTypes2 d = dp.deduceModule(mod, verbosity);
+		final ElLog.Verbosity verbosity     = mod.parent.gitlabCIVerbosity();
+		final AccessBus       ab            = new AccessBus(mod.parent);
+		final PipelineLogic   pl            = new PipelineLogic(ab);
+		final GeneratePhase   generatePhase = new GeneratePhase(verbosity, pl);
+		final DeducePhase     dp            = new DeducePhase(generatePhase, pl, verbosity);
+		final DeduceTypes2    d             = dp.deduceModule(mod, verbosity);
 //		final DeduceTypes d = new DeduceTypes(mod);
 		this.x = DeduceLookupUtils.deduceExpression(d, x1, fc);
 		System.out.println(this.x);
@@ -109,7 +111,7 @@ public class DeduceTypesTest {
 		Assert.assertEquals(new OS_Type(tn).toString(), x.typeName.toString());
 	}
 
-	private boolean genTypeTypenameEquals(OS_Type aType, GenType genType) {
+	private boolean genTypeTypenameEquals(final OS_Type aType, final GenType genType) {
 		return genType.typeName.equals(aType);
 	}
 

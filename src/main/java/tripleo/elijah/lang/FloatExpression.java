@@ -19,11 +19,11 @@ import tripleo.elijah.util.NotImplementedException;
 
 public class FloatExpression implements IExpression {
 
-	float carrier;
+	final         float carrier;
 	private final Token n;
 
 	public FloatExpression(final Token n) {
-		this.n = n;
+		this.n  = n;
 		carrier = Float.parseFloat(n.getText());
 	}
 
