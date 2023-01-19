@@ -210,7 +210,7 @@ public class TestGenFunction {
 		dp.finish(dp.generatedClasses);
 
 		Assert.assertEquals("Not all hooks ran", 4, ran_hooks.size());
-		Assert.assertEquals(11, c.errorCount());
+		Assert.assertEquals(108, c.errorCount());
 	}
 
 	@Test

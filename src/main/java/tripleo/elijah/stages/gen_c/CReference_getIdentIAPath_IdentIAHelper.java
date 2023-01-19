@@ -11,6 +11,7 @@ import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.lang.NamespaceStatement;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.PropertyStatement;
+import tripleo.elijah.lang.VariableSequence;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
@@ -34,7 +35,7 @@ class CReference_getIdentIAPath_IdentIAHelper {
 	private final String                value;
 
 
-	public int code;
+	public int code = -1;
 
 
 	CReference_getIdentIAPath_IdentIAHelper(final InstructionArgument ia_next, final List<String> sl, final int i, final int sSize, final OS_Element resolved_element, final BaseGeneratedFunction generatedFunction, final GeneratedNode aResolved, final String aValue) {
@@ -205,14 +206,18 @@ class CReference_getIdentIAPath_IdentIAHelper {
 	}
 
 	private void _act_VariableStatement(final CReference aCReference) {
+		final VariableStatement variableStatement = (VariableStatement) getResolved_element();
+		final String            text2             = variableStatement.getName();
+
 		// first getParent is VariableSequence
-		final String text2 = ((VariableStatement) getResolved_element()).getName();
-		if (getResolved_element().getParent().getParent() == getGeneratedFunction().getFD().getParent()) {
+		final VariableSequence variableSequence = (VariableSequence) getResolved_element().getParent();
+		final OS_Element       parent           = variableSequence.getParent();
+
+		if (parent == getGeneratedFunction().getFD().getParent()) {
 			// A direct member value. Doesn't handle when indirect
 //				text = Emit.emit("/*124*/")+"vsc->vm" + text2;
 			aCReference.addRef(text2, CReference.Ref.DIRECT_MEMBER, getValue());
 		} else {
-			final OS_Element parent = getResolved_element().getParent().getParent();
 			if (parent == getGeneratedFunction().getFD()) {
 				aCReference.addRef(text2, CReference.Ref.LOCAL);
 			} else {

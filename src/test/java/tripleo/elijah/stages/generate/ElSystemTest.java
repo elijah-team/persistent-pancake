@@ -11,6 +11,7 @@ package tripleo.elijah.stages.generate;
 
 import org.junit.Before;
 import org.junit.Test;
+import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
@@ -19,13 +20,14 @@ import tripleo.elijah.util.Helpers;
 
 public class ElSystemTest {
 
-	ElSystem sys;
+	ElSystem    sys;
 	Compilation c;
+	private AccessBus ab;
 
 	@Before
 	public void setUp() throws Exception {
-		final StdErrSink eee = new StdErrSink();
-		c = new CompilationImpl(eee, new IO());
+		c  = new CompilationImpl(new StdErrSink(), new IO());
+		ab = new AccessBus(c);
 
 		final String f = "test/basic1/backlink3";
 
@@ -40,7 +42,7 @@ public class ElSystemTest {
 		final OutputStrategy os = new OutputStrategy();
 		os.per(OutputStrategy.Per.PER_CLASS);
 		sys.setOutputStrategy(os);
-		sys.generateOutputs(c.pipelineLogic.getGR());
+		sys.generateOutputs(ab.gr);
 	}
 }
 

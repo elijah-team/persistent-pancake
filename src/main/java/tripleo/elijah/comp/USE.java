@@ -43,6 +43,11 @@ class USE {
 	}
 
 	public void use(final @NotNull CompilerInstructions compilerInstructions, final boolean do_out) throws Exception {
+		// TODO
+
+		if (compilerInstructions.getFilename() == null) return;
+
+
 		final File instruction_dir = new File(compilerInstructions.getFilename()).getParentFile();
 		for (final LibraryStatementPart lsp : compilerInstructions.lsps) {
 			final String dir_name = Helpers.remove_single_quotes_from_string(lsp.getDirName());

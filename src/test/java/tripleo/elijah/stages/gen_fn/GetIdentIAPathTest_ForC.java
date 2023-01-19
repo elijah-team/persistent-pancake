@@ -41,6 +41,7 @@ import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 
 import static org.easymock.EasyMock.*;
+import static tripleo.elijah.util.Helpers.List_of;
 
 public class GetIdentIAPathTest_ForC {
 
@@ -106,15 +107,16 @@ public class GetIdentIAPathTest_ForC {
 
 		//		el1.add(vsq);
 		//
-		final ElLog.Verbosity verbosity1 = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final AccessBus ab = new AccessBus(mock(Compilation.class));
-		final PipelineLogic pl = new PipelineLogic(ab);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
-		final GenerateFunctions gen = generatePhase.getGenerateFunctions(mod);
-		final Context ctx = mock(Context.class);
+		final CompilationImpl   c             = new CompilationImpl(new StdErrSink(), new IO());
+		final ElLog.Verbosity   verbosity1    = Compilation.gitlabCIVerbosity();
+		final AccessBus         ab            = new AccessBus(c);
+		final PipelineLogic     pl            = new PipelineLogic(ab);
+		final GeneratePhase     generatePhase = new GeneratePhase(verbosity1, pl);
+		final GenerateFunctions gen           = generatePhase.getGenerateFunctions(mod);
+		final Context           ctx           = mock(Context.class);
 		//
-		final DotExpression expr = new DotExpression(x_ident, foo_ident);
-		final InstructionArgument xx = gen.simplify_expression(expr, gf, ctx);
+		final DotExpression       expr = new DotExpression(x_ident, foo_ident);
+		final InstructionArgument xx   = gen.simplify_expression(expr, gf, ctx);
 		//
 		@NotNull final IdentTableEntry x_ite = gf.getIdentTableEntry(0); // x
 		x_ite.setResolvedElement(x_vs);
@@ -130,22 +132,23 @@ public class GetIdentIAPathTest_ForC {
 
 	@Test
 	public void testManualXDotFoo3() {
-		final IdentExpression x_ident = Helpers.string_to_ident("x");
+		final IdentExpression          x_ident   = Helpers.string_to_ident("x");
 		@NotNull final IdentExpression foo_ident = Helpers.string_to_ident("foo");
 		//
-		final ElLog.Verbosity verbosity1 = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final AccessBus ab = new AccessBus(mock(Compilation.class));
-		final PipelineLogic pl = new PipelineLogic(ab);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
-		final GenerateFunctions gen = generatePhase.getGenerateFunctions(mod);
-		final Context ctx = mock(Context.class);
+		final CompilationImpl   c             = new CompilationImpl(new StdErrSink(), new IO());
+		final ElLog.Verbosity   verbosity1    = Compilation.gitlabCIVerbosity();
+		final AccessBus         ab            = new AccessBus(c);
+		final PipelineLogic     pl            = new PipelineLogic(ab);
+		final GeneratePhase     generatePhase = new GeneratePhase(verbosity1, pl);
+		final GenerateFunctions gen           = generatePhase.getGenerateFunctions(mod);
+		final Context           ctx           = mock(Context.class);
 		//
-		final OS_Type type = null;
-		final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, x_ident);
-		final int int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, mock(VariableStatement.class));
+		final OS_Type        type      = null;
+		final TypeTableEntry tte       = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, x_ident);
+		final int            int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, mock(VariableStatement.class));
 		//
-		final DotExpression expr = new DotExpression(x_ident, foo_ident);
-		final InstructionArgument xx = gen.simplify_expression(expr, gf, ctx);
+		final DotExpression       expr = new DotExpression(x_ident, foo_ident);
+		final InstructionArgument xx   = gen.simplify_expression(expr, gf, ctx);
 		//
 /*
 		int ite_index = gf.addIdentTableEntry(foo_ident);
@@ -209,26 +212,31 @@ public class GetIdentIAPathTest_ForC {
 		//
 
 		//
-		final OS_Type type = new OS_Type(classStatement);
-		final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, x_ident);
-		final int int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, mock(VariableStatement.class));
+		final OS_Type        type      = new OS_Type(classStatement);
+		final TypeTableEntry tte       = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, x_ident);
+		final int            int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, mock(VariableStatement.class));
 		//
 		final DotExpression expr = new DotExpression(x_ident, foo_ident);
 		//
-		final ElLog.Verbosity verbosity1 = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final AccessBus ab = new AccessBus(mock(Compilation.class));
-		final PipelineLogic pl = new PipelineLogic(ab);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
-		final GenerateFunctions gen = generatePhase.getGenerateFunctions(mod);
-		final InstructionArgument xx = gen.simplify_expression(expr, gf, ctx);
+		final CompilationImpl     c             = new CompilationImpl(new StdErrSink(), new IO());
+		final ElLog.Verbosity     verbosity1    = Compilation.gitlabCIVerbosity();
+		final AccessBus           ab            = new AccessBus(c);
+		final PipelineLogic       pl            = new PipelineLogic(ab);
+		final GeneratePhase       generatePhase = new GeneratePhase(verbosity1, pl);
+		final GenerateFunctions   gen           = generatePhase.getGenerateFunctions(mod);
+		final InstructionArgument xx            = gen.simplify_expression(expr, gf, ctx);
 
 		//
 		// This is the Deduce portion.
 		// Not very extensive is it?
 		//
-		final IdentIA ident_ia = (IdentIA) xx;
-		final IdentTableEntry ite = ident_ia.getEntry();
+		final IdentIA         ident_ia = (IdentIA) xx;
+		final IdentTableEntry ite      = ident_ia.getEntry();
 		ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(functionDef));
+
+		final TypeTableEntry tte1 = new TypeTableEntry(0, TypeTableEntry.Type.TRANSIENT, null, expr, null);
+		final ProcTableEntry pte  = new ProcTableEntry(0, expr, new IntegerIA(0, gf), List_of(tte1));
+		ite.setCallablePTE(pte);
 
 		// This assumes we want a function call
 		// but what if we want a function pointer or a curry or function reference?
