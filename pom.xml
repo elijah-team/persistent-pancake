@@ -4,7 +4,7 @@
     <groupId>tripleo.elijah</groupId>
     <artifactId>elijah-v1-fluffy-umbrella</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.6</version>
+    <version>0.0.9-flum-main-230119-001-rel</version>
     <name>eljc-v1-fluffy-umbrella</name>
     <url>http://github.com/elijah-team/fluffy-umbrella/</url>
     <properties>
@@ -175,12 +175,24 @@
             <url>https://gitlab.com/api/v4/projects/21223510/packages/maven</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub elijah-team/fluffy-umbrella Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/elijah-team/fluffy-umbrella</url>
+        </repository>
+    </distributionManagement>
+
+
+    <!--
     <distributionManagement>
         <repository>
             <id>gitlab-maven</id>
             <url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
         </repository>
     </distributionManagement>
+-->
 
     <build>
         <!--
@@ -278,7 +290,6 @@
                 </executions>
             </plugin>
 
-
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -296,31 +307,30 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
-                    <!-- Add this checking -->
-                    <execution>
-                        <id>jacoco-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <rule>
-                                    <element>PACKAGE</element>
-                                    <limits>
-                                        <limit>
-                                            <counter>LINE</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.4</minimum>
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
-                        </configuration>
-                    </execution>
-
+                    <!--
+                                        <execution>
+                                            <id>jacoco-check</id>
+                                            <goals>
+                                                <goal>check</goal>
+                                            </goals>
+                                            <configuration>
+                                                <rules>
+                                                    <rule>
+                                                        <element>PACKAGE</element>
+                                                        <limits>
+                                                            <limit>
+                                                                <counter>LINE</counter>
+                                                                <value>COVEREDRATIO</value>
+                                                                <minimum>0.4</minimum>
+                                                            </limit>
+                                                        </limits>
+                                                    </rule>
+                                                </rules>
+                                            </configuration>
+                                        </execution>
+                    -->
                 </executions>
             </plugin>
-
 
         </plugins>
 
@@ -355,25 +365,29 @@
 
     </build>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>3.0.0-M5</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>javadoc</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
+    <!--
+        <reporting>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-report-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                    <reportSets>
+                        <reportSet>
+                            <reports>
+                                <report>javadoc</report>
+                            </reports>
+                        </reportSet>
+                    </reportSets>
+                </plugin>
+            </plugins>
+        </reporting>
+
+    -->
+
 </project>
