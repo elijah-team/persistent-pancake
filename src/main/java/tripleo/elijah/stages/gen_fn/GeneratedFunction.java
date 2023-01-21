@@ -95,6 +95,7 @@ public class GeneratedFunction extends BaseGeneratedFunction implements GNCoded 
 					break;
 				case 4:
 					R = String.format("<GeneratedFunction %s %s %s>", fd.getParent(), fd.name(), pte_string);
+					state = 5;
 					break;
 				case 5:
 					break;
