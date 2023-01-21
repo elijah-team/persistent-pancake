@@ -65,7 +65,6 @@ public class CReference {
 				addRef(vte.getName(), Ref.LOCAL);
 			} else if (ia instanceof IdentIA) {
 				final IdentTableEntry idte = ((IdentIA) ia).getEntry();
-				/*return*/
 				text = CRI_Ident.of(idte, ((IdentIA) ia).gf).getIdentIAPath(i, sSize, aog, sl, aValue, refs::add, s, ia2, this);
 			} else if (ia instanceof ProcIA) {
 				final ProcTableEntry prte = generatedFunction.getProcTableEntry(to_int(ia));
