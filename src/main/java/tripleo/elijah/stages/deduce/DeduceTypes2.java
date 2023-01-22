@@ -224,8 +224,23 @@ public class DeduceTypes2 {
 	}
 	@NotNull PromiseExpectations expectations = new PromiseExpectations();
 
+	public DeduceTypes2(@NotNull final OS_Module module, @NotNull final DeducePhase phase, final ElLog.Verbosity verbosity) {
+		this.module  = module;
+		this.phase   = phase;
+		this.errSink = module.getCompilation().getErrSink();
+		this.LOG     = new ElLog(module.getFileName(), verbosity, PHASE);
+		//
+		phase.addLog(LOG);
+		//
+		DeduceElement3_VariableTableEntry.ST.register(phase);
+	}
+
 	void onFinish(final Runnable r) {
-		onRunnables.add(r);
+		onRunnables.add(new IStateRunnable() {
+			public void run() {
+				r.run();
+			}
+		});
 	}
 
 	public void deduce_generated_function(final @NotNull GeneratedFunction generatedFunction) {
@@ -1455,8 +1470,8 @@ public class DeduceTypes2 {
 		for (@NotNull final VariableTableEntry vte : generatedFunction.vte_list) {
 			vte.resolve_var_table_entry_for_exit_function();
 		}
-		for (@NotNull final Runnable runnable : onRunnables) {
-			runnable.run();
+		for (@NotNull final IStateRunnable runnable : onRunnables) {
+			runnable.mvState(null, IStateRunnable.ST.EXIT_RUN);
 		}
 //					LOG.info("167 "+generatedFunction);
 		//
