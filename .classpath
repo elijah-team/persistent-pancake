@@ -49,8 +49,6 @@
 	<classpathentry kind="lib" path="lib/commons-codec/commons-codec/1.15/commons-codec-1.15.jar"/>
 	<classpathentry kind="lib" path="lib/org.jdeferred.v2/jdeferred-core/2.0.0/jdeferred-core-2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/org.slf4j/slf4j-api/2.0.0-alpha5/slf4j-api-2.0.0-alpha5.jar"/>
-	<classpathentry kind="lib" path="lib/org.slf4j/slf4j-simple/2.0.0-alpha5/slf4j-simple-2.0.0-alpha5.jar"/>
 	<classpathentry kind="lib" path="lib/tripleo/buffers/buffers-v1/0.0.3/buffers-v1-0.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/tripleo/util/range/range-v1/0.0.3b/range-v1-0.0.3b.jar"/>
 	<classpathentry kind="lib" path="lib/me/friwi/jcef-api/jcef-0cdd84c+cef-105.3.36+g88e0038+chromium-105.0.5195.102/jcef-api-jcef-0cdd84c+cef-105.3.36+g88e0038+chromium-105.0.5195.102.jar"/>
@@ -59,5 +57,7 @@
 	<classpathentry kind="lib" path="lib/me/friwi/gluegen-rt/v2.4.0-rc-20210111/gluegen-rt-v2.4.0-rc-20210111.jar"/>
 	<classpathentry kind="lib" path="lib/reactive-streams-1.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/org.easymock/easymock-4.2.jar"/>
+	<classpathentry kind="lib" path="lib/org.slf4j/slf4j-api/2.0.0/slf4j-api-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.slf4j/slf4j-simple/2.0.0/slf4j-simple-2.0.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
