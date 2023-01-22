@@ -29,6 +29,7 @@ import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.nextgen.ClassDefinition;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
 import tripleo.elijah.stages.deduce.zero.IZero;
 import tripleo.elijah.stages.deduce.zero.Zero_FuncExprType;
 import tripleo.elijah.stages.gen_fn.*;
@@ -72,15 +73,7 @@ public class DeduceTypes2 {
 	}
 
 	@NotNull WorkManager wm = new WorkManager();
-
-	public DeduceTypes2(@NotNull final OS_Module module, @NotNull final DeducePhase phase, final ElLog.Verbosity verbosity) {
-		this.module  = module;
-		this.phase   = phase;
-		this.errSink = module.getCompilation().getErrSink();
-		this.LOG     = new ElLog(module.getFileName(), verbosity, PHASE);
-		//
-		phase.addLog(LOG);
-	}
+	final    List<FunctionInvocation> functionInvocations = new ArrayList<>();
 
 	public void deduceFunctions(final @NotNull Iterable<GeneratedNode> lgf) {
 		for (final GeneratedNode generatedNode : lgf) {

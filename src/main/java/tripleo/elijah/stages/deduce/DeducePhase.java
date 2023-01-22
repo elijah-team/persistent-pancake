@@ -31,6 +31,7 @@ import tripleo.elijah.nextgen.ClassDefinition;
 import tripleo.elijah.nextgen.diagnostic.CouldntGenerateClass;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
+import tripleo.elijah.stages.deduce.post_bytecode.State;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions;
@@ -74,13 +75,7 @@ public class DeducePhase {
 
 	private final @NotNull ElLog LOG;
 
-	public DeducePhase(final GeneratePhase aGeneratePhase, final PipelineLogic aPipelineLogic, final ElLog.Verbosity verbosity) {
-		generatePhase = aGeneratePhase;
-		pipelineLogic = aPipelineLogic;
-		//
-		LOG = new ElLog("(DEDUCE_PHASE)", verbosity, "DeducePhase");
-		pipelineLogic.addLog(LOG);
-	}
+	private final List<State> registeredStates = new ArrayList<>();
 
 	public void addFunction(final GeneratedFunction generatedFunction, final FunctionDef fd) {
 		functionMap.put(fd, generatedFunction);
@@ -298,6 +293,29 @@ public class DeducePhase {
 		deduceTypes2.deduceClasses(matching_class_list);
 
 		return deduceTypes2;
+	}
+
+	public DeducePhase(final GeneratePhase aGeneratePhase, final PipelineLogic aPipelineLogic, final ElLog.Verbosity verbosity) {
+		generatePhase = aGeneratePhase;
+		pipelineLogic = aPipelineLogic;
+		//
+		LOG = new ElLog("(DEDUCE_PHASE)", verbosity, "DeducePhase");
+		pipelineLogic.addLog(LOG);
+		//
+		IStateRunnable.ST.register(this);
+	}
+
+	public State register(final State aState) {
+		if (!(registeredStates.contains(aState))) {
+			registeredStates.add(aState);
+
+			final int id = registeredStates.indexOf(aState);
+
+			aState.setIdentity(id);
+			return aState;
+		}
+
+		return aState;
 	}
 
 	static class ResolvedVariables {
