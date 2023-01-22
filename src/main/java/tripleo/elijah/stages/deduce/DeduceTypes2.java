@@ -1468,7 +1468,8 @@ public class DeduceTypes2 {
 		// resolve var table. moved from `E'
 		//
 		for (@NotNull final VariableTableEntry vte : generatedFunction.vte_list) {
-			vte.resolve_var_table_entry_for_exit_function();
+			final DeduceElement3_VariableTableEntry vte_de = (DeduceElement3_VariableTableEntry) vte.getDeduceElement3();
+			vte_de.mvState(null, DeduceElement3_VariableTableEntry.ST.EXIT_RESOLVE);
 		}
 		for (@NotNull final IStateRunnable runnable : onRunnables) {
 			runnable.mvState(null, IStateRunnable.ST.EXIT_RUN);
@@ -1480,45 +1481,8 @@ public class DeduceTypes2 {
 		//
 		for (final @NotNull VariableTableEntry vte : generatedFunction.vte_list) {
 //						LOG.info("704 "+vte.type.attached+" "+vte.potentialTypes());
-			final @Nullable OS_Type attached = vte.type.getAttached();
-			if (attached != null && attached.getType() == OS_Type.Type.USER) {
-				final TypeName x = attached.getTypeName();
-				if (x instanceof NormalTypeName) {
-					final String           tn   = ((NormalTypeName) x).getName();
-					final LookupResultList lrl  = x.getContext().lookup(tn);
-					@Nullable OS_Element   best = lrl.chooseBest(null);
-					if (best != null) {
-						while (best instanceof AliasStatement) {
-							best = DeduceLookupUtils._resolveAlias((AliasStatement) best, this);
-						}
-						if (!(OS_Type.isConcreteType(best))) {
-							errSink.reportError(String.format("Not a concrete type %s for (%s)", best, tn));
-						} else {
-//									LOG.info("705 " + best);
-							// NOTE that when we set USER_CLASS from USER generic information is
-							// still contained in constructable_pte
-							@NotNull final GenType genType = new GenType(attached, ((ClassStatement) best).getOS_Type(), true, x, this, errSink, phase);
-							vte.type.genType.copy(genType);
-							// set node when available
-							((ClassInvocation) vte.type.genType.ci).resolvePromise().done(new DoneCallback<GeneratedClass>() {
-								@Override
-								public void onDone(final GeneratedClass result) {
-									vte.type.genType.node = result;
-									vte.resolveTypeToClass(result);
-									vte.genType = vte.type.genType; // TODO who knows if this is necessary?
-								}
-							});
-						}
-						//vte.el = best;
-						// NOTE we called resolve_var_table_entry above
-						LOG.err("200 " + best);
-						assert vte.getResolvedElement() == null || vte.getStatus() == BaseTableEntry.Status.KNOWN;
-//									vte.setStatus(BaseTableEntry.Status.KNOWN, best/*vte.el*/);
-					} else {
-						errSink.reportDiagnostic(new ResolveError(x, lrl));
-					}
-				}
-			}
+			final DeduceElement3_VariableTableEntry vte_de = (DeduceElement3_VariableTableEntry) vte.getDeduceElement3();
+			vte_de.mvState(null, DeduceElement3_VariableTableEntry.ST.EXIT_CONVERT_USER_TYPES);
 		}
 		for (final @NotNull VariableTableEntry vte : generatedFunction.vte_list) {
 			if (vte.vtt == VariableTableType.ARG) {
