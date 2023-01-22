@@ -2802,22 +2802,27 @@ public class GenerateFunctions {
 	                                                @NotNull final Context cctx) {
 		final IExpression left = pce.getLeft();
 		switch (left.getKind()) {
-			case IDENT: {
-				return expression_to_call_add_entry(gf, pce, left, cctx);
-			}
-			case QIDENT: {
-				final IExpression xx = Helpers.qualidentToDotExpression2((Qualident) left);
+		case IDENT: {
+			return expression_to_call_add_entry(gf, pce, left, cctx);
+		}
+		case QIDENT: {
+			final IExpression xx = Helpers.qualidentToDotExpression2((Qualident) left);
 //			simplify_qident((Qualident) pce.getLeft(), gf); // TODO ??
-				return expression_to_call_add_entry(gf, pce, xx/*pce.getLeft()*/, cctx);
-			}
-			case DOT_EXP: {
-				@NotNull final InstructionArgument x = simplify_dot_expression((DotExpression) left, gf, cctx); // TODO ??
-				return expression_to_call_add_entry(gf, pce, left, x, cctx);
-			}
-//		default:
-//			throw new NotImplementedException();
-			default:
-				throw new IllegalStateException("Unexpected value: " + left.getKind());
+			return expression_to_call_add_entry(gf, pce, xx/*pce.getLeft()*/, cctx);
+		}
+		case DOT_EXP: {
+			@NotNull final InstructionArgument x = simplify_dot_expression((DotExpression) left, gf, cctx); // TODO ??
+			return expression_to_call_add_entry(gf, pce, left, x, cctx);
+		}
+		case PROCEDURE_CALL: {
+			int               y           = 2;
+			final Instruction instruction = new Instruction();
+			instruction.setName(InstructionName.NOP);
+			instruction.setArgs(List_of());
+			return instruction;
+		}
+		default:
+			throw new IllegalStateException("Unexpected value: " + left.getKind());
 		}
 	}
 
