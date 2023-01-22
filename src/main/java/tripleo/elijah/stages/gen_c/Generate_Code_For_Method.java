@@ -14,6 +14,8 @@ import com.google.common.collect.Collections2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.LibraryStatementPart;
+import tripleo.elijah.diagnostic.Diagnostic;
+import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.FormalArgListItem;
@@ -22,7 +24,15 @@ import tripleo.elijah.lang.NormalTypeName;
 import tripleo.elijah.lang.OS_GenericTypeNameType;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.nextgen.outputstatement.EG_DottedStatement;
+import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
+import tripleo.elijah.nextgen.outputstatement.EG_Statement;
+import tripleo.elijah.nextgen.outputstatement.EX_Rule;
+import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.ClassInvocation;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
+import tripleo.elijah.stages.deduce.post_bytecode.GCFM_Diagnostic;
 import tripleo.elijah.stages.gen_c.c_ast1.C_HeaderString;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.ConstantTableEntry;
@@ -53,10 +63,12 @@ import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkList;
 import tripleo.util.buffer.Buffer;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 
@@ -659,7 +671,7 @@ public class Generate_Code_For_Method {
 					// TODO still should not happen
 					tos.put_string_ln(String.format("/*%s is declared as the Unit type*/", target_name));
 				} else {
-	//				LOG.err("Bad potentialTypes size " + type);
+					//				LOG.err("Bad potentialTypes size " + type);
 					final String z = gc.getTypeName(type);
 					tos.put_string_ln(String.format("/*535*/Z<%s> %s; /*%s*/", z, target_name, type.getClassOf()));
 				}
@@ -671,7 +683,7 @@ public class Generate_Code_For_Method {
 		// MTL A TEMP VARIABLE
 		//
 		@NotNull final Collection<TypeTableEntry> pt_ = vte.potentialTypes();
-		final List<TypeTableEntry> pt = new ArrayList<TypeTableEntry>(pt_);
+		final List<TypeTableEntry>                pt  = new ArrayList<TypeTableEntry>(pt_);
 		if (pt.size() == 1) {
 			final TypeTableEntry ty = pt.get(0);
 			if (ty.genType.node != null) {
@@ -686,7 +698,7 @@ public class Generate_Code_For_Method {
 			} else {
 //				LOG.err("8885 " +ty.attached);
 				final OS_Type attached = ty.getAttached();
-				final String z;
+				final String  z;
 				if (attached != null)
 					z = gc.getTypeName(attached);
 				else
@@ -812,24 +824,95 @@ public class Generate_Code_For_Method {
 
 	static class Generate_Method_Header {
 
-		private final String    return_type;
-		private final String    args_string;
-		private final String    header_string;
-		private final String    name;
-		private final GenerateC gc;
+		private final String       return_type;
+		private final String       args_string;
+		private final String       header_string;
+		private final String       name;
+		private final GenerateC    gc;
+		private final EG_Statement args_statement;
 		OS_Type        type;
 		TypeTableEntry tte;
 
-		public Generate_Method_Header(final @NotNull BaseGeneratedFunction gf, @NotNull final GenerateC aGenerateC, final ElLog LOG) {
+		public Generate_Method_Header(final BaseGeneratedFunction gf, @NotNull final GenerateC aGenerateC, final ElLog LOG) {
 			gc   = aGenerateC;
 			name = gf.getFD().name();
 			//
-			return_type   = find_return_type(gf, LOG);
-			args_string   = find_args_string(gf);
-			header_string = find_header_string(gf, LOG);
+			return_type    = find_return_type(gf, LOG);
+			args_statement = find_args_statement(gf);
+			args_string    = args_statement.getText();
+			header_string  = find_header_string(gf, LOG);
 		}
 
 		@NotNull String find_return_type(final BaseGeneratedFunction gf, final ElLog LOG) {
+			return discriminator(gf, LOG, gc)
+			  .find_return_type(this);
+		}
+
+		EG_Statement find_args_statement(final @NotNull BaseGeneratedFunction gf) {
+
+			final String rule = "gen_c:gcfm:Generate_Method_Header:find_args_statement";
+
+			// TODO EG_Statement, rule
+			final List<String> args_list = gf.vte_list
+			  .stream()
+			  .filter(input -> input.vtt == VariableTableType.ARG)
+
+			  //rule=vte:args_at
+			  .map(input -> String.format("%s va%s", GenerateC.GetTypeName.forVTE(input), input.getName()))
+			  .collect(Collectors.toList());
+			final EG_Statement args = new EG_DottedStatement(", ", args_list, new EX_Rule(rule));
+
+			return args;
+		}
+
+		static GCM_D discriminator(final BaseGeneratedFunction bgf, final ElLog aLOG, final GenerateC aGc) {
+			if (bgf instanceof GeneratedConstructor) {
+				return new GCM_GC((GeneratedConstructor) bgf, aLOG, aGc);
+			} else if (bgf instanceof GeneratedFunction) {
+				return new GCM_GF((GeneratedFunction) bgf, aLOG, aGc);
+			}
+
+			throw new IllegalStateException();
+		}
+
+		String __find_header_string(final BaseGeneratedFunction gf, final ElLog LOG) {
+			final String result;
+			// TODO buffer for gf.parent.<element>.locatable
+
+			// NOTE getGenClass is always a class or namespace, getParent can be a function
+			final GeneratedContainerNC parent = (GeneratedContainerNC) gf.getGenClass();
+
+			if (parent instanceof GeneratedClass) {
+				final GeneratedClass st = (GeneratedClass) parent;
+
+				@NotNull final C_HeaderString chs = C_HeaderString.forClass(st,
+				  () -> GenerateC.GetTypeName.forGenClass(st),
+				  return_type,
+				  name,
+				  args_string,
+				  LOG);
+
+				result = chs.getResult();
+			} else if (parent instanceof GeneratedNamespace) {
+				final GeneratedNamespace st = (GeneratedNamespace) parent;
+
+				@NotNull final C_HeaderString chs = C_HeaderString.forNamespace(st,
+				  () -> GenerateC.GetTypeName.forGenNamespace(st),
+				  return_type,
+				  name,
+				  args_string,
+				  LOG);
+				result = chs.getResult();
+			} else {
+				@NotNull final C_HeaderString chs = C_HeaderString.forOther(parent, return_type, name, args_string);
+				//result = String.format("%s %s(%s)", return_type, name, args_string);
+				result = chs.getResult();
+			}
+
+			return result;
+		}
+
+		@NotNull String __find_return_type(final BaseGeneratedFunction gf, final ElLog LOG) {
 			String returnType = null;
 			if (gf instanceof GeneratedConstructor) {
 				@Nullable final InstructionArgument result_index = gf.vte_lookup("self");
@@ -848,7 +931,7 @@ public class Generate_Code_For_Method {
 				// Get it from type.attached
 				type = tte.getAttached();
 
-				LOG.info("228-1 "+ type);
+				LOG.info("228-1 " + type);
 				if (type.isUnitType()) {
 					assert false;
 				} else if (type != null) {
@@ -891,7 +974,7 @@ public class Generate_Code_For_Method {
 				} else if (type != null) {
 					if (type instanceof OS_GenericTypeNameType) {
 						final OS_GenericTypeNameType genericTypeNameType = (OS_GenericTypeNameType) type;
-						final TypeName tn = genericTypeNameType.getRealTypeName();
+						final TypeName               tn                  = genericTypeNameType.getRealTypeName();
 
 						final @Nullable Map<TypeName, OS_Type> gp = gf.fi.getClassInvocation().genericPart;
 
@@ -915,6 +998,134 @@ public class Generate_Code_For_Method {
 				}
 			}
 			return returnType;
+		}
+
+		interface GCM_D {
+			String find_return_type(Generate_Method_Header aGenerate_method_header);
+		}
+
+		static class GCM_GC implements GCM_D {
+			private final GeneratedConstructor gf;
+			private final ElLog                LOG;
+			private final GenerateC            gc;
+
+			public GCM_GC(final GeneratedConstructor aGf, final ElLog aLOG, final GenerateC aGc) {
+				gf  = aGf;
+				LOG = aLOG;
+				gc  = aGc;
+			}
+
+			@Override
+			public String find_return_type(final Generate_Method_Header aGenerate_method_header__) {
+				final OS_Type        type;
+				final TypeTableEntry tte;
+				String               returnType = null;
+
+				@Nullable final InstructionArgument result_index = gf.vte_lookup("self");
+				@NotNull final VariableTableEntry   vte          = ((IntegerIA) result_index).getEntry();
+				assert vte.vtt == VariableTableType.SELF;
+
+				// Get it from resolved
+				tte = gf.getTypeTableEntry(((IntegerIA) result_index).getIndex());
+				final GeneratedNode res = tte.resolved();
+				if (res instanceof GeneratedContainerNC) {
+					final GeneratedContainerNC nc   = (GeneratedContainerNC) res;
+					final int                  code = nc.getCode();
+					return String.format("Z%d*", code);
+				}
+
+				// Get it from type.attached
+				type = tte.getAttached();
+
+				LOG.info("228-1 " + type);
+				if (type.isUnitType()) {
+					assert false;
+				} else if (type != null) {
+					returnType = String.format("/*267*/%s*", gc.getTypeName(type));
+				} else {
+					LOG.err("655 Shouldn't be here (type is null)");
+					returnType = "void/*2*/";
+				}
+
+				return returnType;
+			}
+		}
+
+		static class GCM_GF implements GCM_D {
+			private final GeneratedFunction gf;
+			private final ElLog             LOG;
+			private final GenerateC         gc;
+
+			public GCM_GF(final GeneratedFunction aGf, final ElLog aLOG, final GenerateC aGc) {
+				gf  = aGf;
+				LOG = aLOG;
+				gc  = aGc;
+			}
+
+			@Override
+			public String find_return_type(final Generate_Method_Header aGenerate_method_header__) {
+				String               returnType = null;
+				final TypeTableEntry tte;
+				final OS_Type        type;
+
+				@Nullable InstructionArgument result_index = gf.vte_lookup("Result");
+				if (result_index == null) {
+					// if there is no Result, there should be Value
+					result_index = gf.vte_lookup("Value");
+					// but Value might be passed in. If it is, discard value
+					@NotNull final VariableTableEntry vte = ((IntegerIA) result_index).getEntry();
+					if (vte.vtt != VariableTableType.RESULT)
+						result_index = null;
+					if (result_index == null)
+						return "void"; // README Assuming Unit
+				}
+
+				// Get it from resolved
+				tte = gf.getTypeTableEntry(((IntegerIA) result_index).getIndex());
+				final GeneratedNode res = tte.resolved();
+				if (res instanceof GeneratedContainerNC) {
+					final GeneratedContainerNC nc   = (GeneratedContainerNC) res;
+					final int                  code = nc.getCode();
+					return String.format("Z%d*", code);
+				}
+
+				// Get it from type.attached
+				type = tte.getAttached();
+
+				LOG.info("228 " + type);
+				if (type == null) {
+					LOG.err("655 Shouldn't be here (type is null)");
+					returnType = "ERR_type_attached_is_null/*2*/";
+				} else if (type.isUnitType()) {
+					returnType = "void/*Unit*/";
+				} else if (type != null) {
+					if (type instanceof OS_GenericTypeNameType) {
+						final OS_GenericTypeNameType genericTypeNameType = (OS_GenericTypeNameType) type;
+						final TypeName               tn                  = genericTypeNameType.getRealTypeName();
+
+						final @Nullable Map<TypeName, OS_Type> gp = gf.fi.getClassInvocation().genericPart;
+
+						OS_Type realType = null;
+
+						for (final Map.Entry<TypeName, OS_Type> entry : gp.entrySet()) {
+							if (entry.getKey().equals(tn)) {
+								realType = entry.getValue();
+								break;
+							}
+						}
+
+						assert realType != null;
+						returnType = String.format("/*267*/%s*", gc.getTypeName(realType));
+					} else
+						returnType = String.format("/*267*/%s*", gc.getTypeName(type));
+				} else {
+					throw new IllegalStateException();
+//					LOG.err("656 Shouldn't be here (can't reason about type)");
+//					returnType = "void/*656*/";
+				}
+
+				return returnType;
+			}
 		}
 
 		String find_args_string(final BaseGeneratedFunction gf) {
@@ -968,6 +1179,79 @@ public class Generate_Code_For_Method {
 			}
 			s2 = headerString.getResult();
 			return s2;
+		}
+	}
+
+	private static class Diagnostic_8886 implements GCFM_Diagnostic {
+		final int _code = 8886;
+
+		@Override
+		public String code() {
+			return "" + _code;
+		}
+
+		@Override
+		public Severity severity() {
+			return Severity.ERROR;
+		}
+
+		@Override
+		public @NotNull Locatable primary() {
+			return null;
+		}
+
+		@Override
+		public @NotNull List<Locatable> secondary() {
+			return null;
+		}
+
+		@Override
+		public void report(final PrintStream stream) {
+			stream.println(_message());
+		}
+
+		@Override
+		public String _message() {
+			return String.format("%d y is null (No typename specified)", _code);
+		}
+	}
+
+	private static class Diagnostic_8887 implements GCFM_Diagnostic {
+		final         int      _code = 8887;
+		private final TypeName y;
+
+		private Diagnostic_8887(final TypeName aY) {
+			y = aY;
+		}
+
+		@Override
+		public String code() {
+			return "" + _code;
+		}
+
+		@Override
+		public Severity severity() {
+			return Severity.ERROR;
+		}
+
+		@Override
+		public @NotNull Locatable primary() {
+			return null;
+		}
+
+		@Override
+		public @NotNull List<Locatable> secondary() {
+			return null;
+		}
+
+		@Override
+		public void report(final @NotNull PrintStream stream) {
+			stream.println(_message());
+		}
+
+		@Override
+		public String _message() {
+			return String.format("%d VARIABLE WASN'T FULLY DEDUCED YET: %s", _code, y.getClass().getName());
 		}
 	}
 }
