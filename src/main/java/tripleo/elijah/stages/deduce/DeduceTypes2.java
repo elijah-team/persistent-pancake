@@ -1504,8 +1504,15 @@ public class DeduceTypes2 {
 			assign_type_to_idte(ite, generatedFunction, aFd_ctx, aContext);
 		}
 		{
-			final @NotNull WorkManager               workManager = wm;//new WorkManager();
-			@NotNull final DeduceTypes2.Dependencies deps        = new Dependencies(/*phase, this, errSink*/workManager);
+			// TODO why are we doing this?
+			Resolve_each_typename ret = new Resolve_each_typename(phase, this, errSink);
+			for (TypeTableEntry typeTableEntry : generatedFunction.tte_list) {
+				ret.action(typeTableEntry);
+			}
+		}
+		{
+			final @NotNull WorkManager  workManager = wm;//new WorkManager();
+			@NotNull final Dependencies deps        = new Dependencies(this,/*phase, this, errSink*/workManager);
 			deps.subscribeTypes(generatedFunction.dependentTypesSubject());
 			deps.subscribeFunctions(generatedFunction.dependentFunctionSubject());
 //						for (@NotNull GenType genType : generatedFunction.dependentTypes()) {
