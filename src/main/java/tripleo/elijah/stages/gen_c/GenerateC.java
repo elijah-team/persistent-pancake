@@ -67,7 +67,7 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
  */
 public class GenerateC implements CodeGenerator, GenerateFiles {
 	private static final String  PHASE = "GenerateC";
-	private final        ErrSink errSink;
+	final                ErrSink errSink;
 	private final        ElLog   LOG;
 
 	public GenerateC(final @NotNull OutputFileFactoryParams p) {
@@ -670,18 +670,20 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 			//
 			if (input.getStatus() == BaseTableEntry.Status.UNCHECKED)
 				return "Error_UNCHECKED_Type";
-			if (attached.getType() == OS_Type.Type.USER_CLASS) {
+			switch (attached.getType()) {
+			case USER_CLASS:
 				return attached.getClassOf().name();
-			} else if (attached.getType() == OS_Type.Type.USER) {
+			case USER:
 				final TypeName typeName = attached.getTypeName();
-				final String   name;
+				final String name;
 				if (typeName instanceof NormalTypeName)
 					name = ((NormalTypeName) typeName).getName();
 				else
 					name = typeName.toString();
 				return String.format(Emit.emit("/*543*/") + "Z<%s>*", name);
-			} else
+			default:
 				throw new NotImplementedException();
+			}
 		}
 
 		static String getTypeNameForGenClass(@NotNull final GeneratedNode aGenClass) {
