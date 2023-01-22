@@ -769,10 +769,10 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 				final String name = ((RegularTypeName) typeName).getName(); // TODO convert to Z-name
 
 				return String.format("Z<%s>/*kklkl*/", name);
-//			return getTypeName(new OS_Type(typeName));
+//			    return getTypeName(new OS_Type(typeName));
 			}
 			errSink.reportError("Type is not fully deduced " + typeName);
-			return "" + typeName; // TODO type is not fully deduced
+			return String.format("Z<%s>/*kllkk*/", typeName); // TODO type is not fully deduced
 		}
 	}
 
