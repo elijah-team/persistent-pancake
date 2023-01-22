@@ -480,6 +480,131 @@ public class Generate_Code_For_Method {
 	}
 
 	private void action_DECL(final Instruction instruction, final BufferTabbedOutputStream tos, final BaseGeneratedFunction gf) {
+		final Operation2<EG_Statement> op = _action_DECL(instruction, tos, gf);
+
+		if (op.mode() == Mode.SUCCESS) {
+			tos.put_string_ln(op.success().getText());
+		} else {
+			//throw new
+			// ignore
+		}
+	}
+
+	private Operation2<EG_Statement> _action_DECL(final Instruction instruction, final BufferTabbedOutputStream tos, final BaseGeneratedFunction gf) {
+		final SymbolIA           decl_type   = (SymbolIA) instruction.getArg(0);
+		final IntegerIA          vte_num     = (IntegerIA) instruction.getArg(1);
+		final String             target_name = gc.getRealTargetName(gf, vte_num, AOG.GET);
+		final VariableTableEntry vte         = gf.getVarTableEntry(vte_num.getIndex());
+
+		final DeduceElement3_VariableTableEntry de_vte = (DeduceElement3_VariableTableEntry) vte.getDeduceElement3();
+		final Operation2<OS_Type>               diag1  = de_vte.decl_test_001(gf);
+
+		if (diag1.mode() == Mode.FAILURE) {
+			final Diagnostic      diag_ = diag1.failure();
+			final GCFM_Diagnostic diag  = (GCFM_Diagnostic) diag_;
+
+			switch (diag.severity()) {
+			case INFO:
+				LOG.info(diag._message());
+				break;
+			case ERROR:
+				LOG.err(diag._message());
+				break;
+			case LINT:
+			case WARN:
+			default:
+				throw new NotImplementedException();
+			}
+
+			return Operation2.failure(diag_);
+		}
+
+		final OS_Type x = diag1.success(); //vte.type.getAttached();
+
+		final GeneratedNode res = vte.resolvedType();
+		if (res instanceof GeneratedClass) {
+			final String z = GenerateC.GetTypeName.forGenClass((GeneratedClass) res);
+			final String s = String.format("%s* %s;", z, target_name);
+			return Operation2.success(new EG_SingleStatement(s, null));
+		}
+
+		if (x != null) {
+			switch (x.getType()) {
+			case USER_CLASS:
+				final String z = GenerateC.GetTypeName.forOSType(x, LOG);
+				final String s = String.format("%s* %s;", z, target_name);
+				return Operation2.success(new EG_SingleStatement(s, null));
+			case USER:
+				final TypeName typeName = x.getTypeName();
+				if (typeName instanceof NormalTypeName) {
+					final String z2;
+					if (((NormalTypeName) typeName).getName().equals("Any"))
+						z2 = "void *";  // TODO Technically this is wrong
+					else
+						z2 = GenerateC.GetTypeName.forTypeName(typeName, gc.errSink);
+					final String s1 = String.format("%s %s;", z2, target_name);
+					return Operation2.success(new EG_SingleStatement(s1, null));
+				}
+
+				if (typeName != null) {
+					//
+					// VARIABLE WASN'T FULLY DEDUCED YET
+					//
+					return Operation2.failure(new Diagnostic_8887(typeName));
+				}
+				break;
+			case BUILT_IN:
+				final Context context = gf.getFD().getContext();
+				assert context != null;
+				final OS_Type type = x.resolve(context);
+				final String s1;
+				if (type.isUnitType()) {
+					// TODO still should not happen
+					s1 = String.format("/*%s is declared as the Unit type*/", target_name);
+				} else {
+					// LOG.err("Bad potentialTypes size " + type);
+					final String z3 = gc.getTypeName(type);
+					s1 = String.format("/*535*/Z<%s> %s; /*%s*/", z3, target_name, type.getClassOf());
+				}
+				return Operation2.success(new EG_SingleStatement(s1, null));
+			}
+		}
+
+		//
+		// VARIABLE WASN'T FULLY DEDUCED YET
+		// MTL A TEMP VARIABLE
+		//
+		@NotNull final Collection<TypeTableEntry> pt_ = vte.potentialTypes();
+		final List<TypeTableEntry>                pt  = new ArrayList<TypeTableEntry>(pt_);
+		if (pt.size() == 1) {
+			final TypeTableEntry ty = pt.get(0);
+			if (ty.genType.node != null) {
+				final GeneratedNode node = ty.genType.node;
+				if (node instanceof GeneratedFunction) {
+					final int y = 2;
+//					((GeneratedFunction)node).typeDeferred()
+					// get signature
+					final String z = Emit.emit("/*552*/") + "void (*)()";
+					final String s = String.format("/*8889*/%s %s;", z, target_name);
+					return Operation2.success(new EG_SingleStatement(s, null));
+				}
+			} else {
+//				LOG.err("8885 " +ty.attached);
+				final @Nullable OS_Type attached = ty.getAttached();
+				final String            z;
+				if (attached != null)
+					z = gc.getTypeName(attached);
+				else
+					z = Emit.emit("/*763*/") + "Unknown";
+				final String s = String.format("/*8890*/Z<%s> %s;", z, target_name);
+				return Operation2.success(new EG_SingleStatement(s, null));
+			}
+		}
+
+		return Operation2.failure(new Diagnostic_8886());
+	}
+
+	private void __action_DECL(final Instruction instruction, final BufferTabbedOutputStream tos, final BaseGeneratedFunction gf) {
 		final SymbolIA           decl_type   = (SymbolIA) instruction.getArg(0);
 		final IntegerIA          vte_num     = (IntegerIA) instruction.getArg(1);
 		final String             target_name = gc.getRealTargetName(gf, vte_num, AOG.GET);
