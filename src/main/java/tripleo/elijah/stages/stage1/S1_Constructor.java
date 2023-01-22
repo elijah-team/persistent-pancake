@@ -3,7 +3,14 @@
  */
 package tripleo.elijah.stages.stage1;
 
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.FormalArgListItem;
+import tripleo.elijah.lang.FunctionItem;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions.S1toG_GC_Processor;
@@ -116,5 +123,10 @@ public class S1_Constructor {
 //			LOG.info(instruction);
 //		}
 //		GeneratedFunction.printTables(gf);
+	}
+
+	public void process(final S1toG_GC_Processor aProcessor, final boolean aB) {
+		process(aProcessor);
+		gf.fi = invocation;
 	}
 }

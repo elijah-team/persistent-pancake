@@ -1873,11 +1873,9 @@ public class GenerateFunctions {
 	                                                         final FunctionInvocation aFunctionInvocation) {
 		final S1_Constructor s1c = new S1_Constructor(aConstructorDef, parent, aFunctionInvocation);
 
-		s1c.process(new S1toG_GC_Processor(this));
+		s1c.process(new S1toG_GC_Processor(this), true);
 
 		final GeneratedConstructor gf = s1c.getGenerated();
-		gf.fi = aFunctionInvocation; // TODO smelly
-
 		return gf;
 	}
 
