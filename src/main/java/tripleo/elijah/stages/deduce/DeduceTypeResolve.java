@@ -195,7 +195,8 @@ public class DeduceTypeResolve {
 					identTableEntry.typeResolvePromise().done(new DoneCallback<GenType>() {
 						@Override
 						public void onDone(final GenType result) {
-							identTableEntry.type.setAttached(result);
+							if (identTableEntry.type != null) // TODO addPotentialType
+								identTableEntry.type.setAttached(result);
 						}
 					});
 				} else if (backlink instanceof VariableTableEntry) {
