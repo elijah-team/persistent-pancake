@@ -72,7 +72,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 //		lgc2.forEach(dp::finish);
 
 		// TODO duplication??
-		dp.generatedClasses.addAll(lgc);
+//		dp.generatedClasses.addAll(lgc);
 
 //		elLogs = dp.deduceLogs;
 	}
