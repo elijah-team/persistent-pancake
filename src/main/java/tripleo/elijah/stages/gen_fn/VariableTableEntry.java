@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceLocalVariable;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
@@ -228,6 +229,21 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 			_zero = new VTE_Zero(this);
 		}
 		return _zero;
+	}
+
+	public void setLikelyType(final GenType aGenType) {
+		final GenType bGenType = type.genType;
+
+		// 1. copy arg into member
+		bGenType.copy(aGenType);
+
+		// 2. set node when available
+		((ClassInvocation) bGenType.ci).resolvePromise().done(aGeneratedClass -> {
+			bGenType.node = aGeneratedClass;
+			resolveTypeToClass(aGeneratedClass);
+			genType = bGenType; // TODO who knows if this is necessary?
+		});
+
 	}
 
 //	public Promise<GenType, Void, Void> typeResolvePromise() {
