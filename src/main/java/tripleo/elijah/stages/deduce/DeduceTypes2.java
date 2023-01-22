@@ -195,8 +195,7 @@ public class DeduceTypes2 {
 		return errSink;
 	}
 
-	final List<FunctionInvocation> functionInvocations = new ArrayList<>();
-	@NotNull List<Runnable> onRunnables = new ArrayList<Runnable>();
+	@NotNull List<IStateRunnable> onRunnables = new ArrayList<>();
 
 	/**
 	 * Deduce functions or constructors contained in classes list
@@ -222,6 +221,7 @@ public class DeduceTypes2 {
 		}
 		return size;
 	}
+
 	@NotNull PromiseExpectations expectations = new PromiseExpectations();
 
 	public DeduceTypes2(@NotNull final OS_Module module, @NotNull final DeducePhase phase, final ElLog.Verbosity verbosity) {
