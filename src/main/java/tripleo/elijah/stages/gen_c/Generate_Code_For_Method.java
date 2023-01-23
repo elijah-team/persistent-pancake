@@ -492,7 +492,7 @@ public class Generate_Code_For_Method {
 	}
 
 	private void action_DECL(final Instruction instruction, final BufferTabbedOutputStream tos, final BaseGeneratedFunction gf) {
-		final Operation2<EG_Statement> op = _action_DECL(instruction, tos, gf);
+		final Operation2<EG_Statement> op = _action_DECL(instruction, gf);
 
 		if (op.mode() == Mode.SUCCESS) {
 			tos.put_string_ln(op.success().getText());
@@ -502,7 +502,7 @@ public class Generate_Code_For_Method {
 		}
 	}
 
-	private Operation2<EG_Statement> _action_DECL(final Instruction instruction, final BufferTabbedOutputStream tos, final BaseGeneratedFunction gf) {
+	private Operation2<EG_Statement> _action_DECL(final @NotNull Instruction instruction, final BaseGeneratedFunction gf) {
 		final SymbolIA           decl_type   = (SymbolIA) instruction.getArg(0);
 		final IntegerIA          vte_num     = (IntegerIA) instruction.getArg(1);
 		final String             target_name = gc.getRealTargetName(gf, vte_num, AOG.GET);
