@@ -31,6 +31,7 @@ import tripleo.elijah.nextgen.ClassDefinition;
 import tripleo.elijah.nextgen.diagnostic.CouldntGenerateClass;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.State;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenType;
@@ -303,6 +304,7 @@ public class DeducePhase {
 		pipelineLogic.addLog(LOG);
 		//
 		IStateRunnable.ST.register(this);
+		DeduceElement3_IdentTableEntry.ST.register(this);
 	}
 
 	public State register(final State aState) {
