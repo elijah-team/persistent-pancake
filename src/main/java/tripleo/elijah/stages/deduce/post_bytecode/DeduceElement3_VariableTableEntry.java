@@ -24,7 +24,6 @@ import tripleo.elijah.stages.deduce.post_bytecode.DED.DED_VTE;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.VariableTableType;
@@ -38,10 +37,10 @@ public class DeduceElement3_VariableTableEntry extends Stateful implements IDedu
 
 	private final VariableTableEntry principal;
 
-	private DeduceTypes2      deduceTypes2;
-	private GeneratedFunction generatedfunction;
-	private       GenType genType;
-	private final State   st;
+	private final State                 st;
+	private       DeduceTypes2          deduceTypes2;
+	private       BaseGeneratedFunction generatedFunction;
+	private       GenType               genType;
 
 	@Contract(pure = true)
 	public DeduceElement3_VariableTableEntry(final VariableTableEntry aVariableTableEntry) {
@@ -80,7 +79,7 @@ public class DeduceElement3_VariableTableEntry extends Stateful implements IDedu
 
 	@Override
 	public BaseGeneratedFunction generatedFunction() {
-		return generatedfunction;
+		return generatedFunction;
 	}
 
 	@Override
@@ -108,6 +107,11 @@ public class DeduceElement3_VariableTableEntry extends Stateful implements IDedu
 		}
 
 		return Operation2.success(x);
+	}
+
+	public void setDeduceTypes2(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction) {
+		deduceTypes2      = aDeduceTypes2;
+		generatedFunction = aGeneratedFunction;
 	}
 
 	public static class ST {
