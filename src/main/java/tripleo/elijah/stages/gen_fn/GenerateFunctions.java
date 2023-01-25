@@ -2574,22 +2574,24 @@ public class GenerateFunctions {
 	private void assign_variable(final @NotNull BaseGeneratedFunction gf, final int vte, @NotNull final IExpression value, final Context cctx) {
 		if (value == IExpression.UNASSIGNED) return; // default_expression
 		switch (value.getKind()) {
-			case PROCEDURE_CALL:
-				final ProcedureCallExpression pce = (ProcedureCallExpression) value;
-				final FnCallArgs fnCallArgs = new FnCallArgs(expression_to_call(pce, gf, cctx), gf);
-				final int ii2 = add_i(gf, InstructionName.AGN, List_of(new IntegerIA(vte, gf), fnCallArgs), cctx);
-				final VariableTableEntry vte_proccall = gf.getVarTableEntry(vte);
-				final InstructionArgument gg = fnCallArgs.expression_to_call.getArg(0);
-				@NotNull final TableEntryIV g;
-				if (gg instanceof IntegerIA) {
-					g = gf.getVarTableEntry(((IntegerIA) gg).getIndex());
-				} else if (gg instanceof IdentIA) {
-					g = gf.getIdentTableEntry(((IdentIA) gg).getIndex());
-				} else if (gg instanceof ProcIA) {
-					g = gf.getProcTableEntry(((ProcIA) gg).getIndex());
-				} else
-					throw new NotImplementedException();
-				final TypeTableEntry tte_proccall = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, value, g);
+		case PROCEDURE_CALL:
+			final ProcedureCallExpression pce = (ProcedureCallExpression) value;
+			final FnCallArgs fnCallArgs = new FnCallArgs(expression_to_call(pce, gf, cctx), gf);
+			final int ii2 = add_i(gf, InstructionName.AGN, List_of(new IntegerIA(vte, gf), fnCallArgs), cctx);
+			final VariableTableEntry vte_proccall = gf.getVarTableEntry(vte);
+			final InstructionArgument gg = fnCallArgs.expression_to_call.getArg(0);
+
+			@NotNull final TableEntryIV g;
+			if (gg instanceof IntegerIA) {
+				g = gf.getVarTableEntry(((IntegerIA) gg).getIndex());
+			} else if (gg instanceof IdentIA) {
+				g = gf.getIdentTableEntry(((IdentIA) gg).getIndex());
+			} else if (gg instanceof ProcIA) {
+				g = gf.getProcTableEntry(((ProcIA) gg).getIndex());
+			} else
+				throw new NotImplementedException();
+
+			final TypeTableEntry tte_proccall = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, value, g);
 				fnCallArgs.setType(tte_proccall);
 				vte_proccall.addPotentialType(ii2, tte_proccall);
 				break;
@@ -2815,7 +2817,7 @@ public class GenerateFunctions {
 			return expression_to_call_add_entry(gf, pce, left, x, cctx);
 		}
 		case PROCEDURE_CALL: {
-			int               y           = 2;
+			final int         y           = 2;
 			final Instruction instruction = new Instruction();
 			instruction.setName(InstructionName.NOP);
 			instruction.setArgs(List_of());

@@ -45,6 +45,16 @@ public class DeduceElement3_IdentTableEntry extends Stateful implements IDeduceE
 		deduceTypes2.resolveIdentIA_(aContext, aIdentIA, generatedFunction, aFoundElement);
 	}
 
+	public Operation2<GenType> resolve1(final IdentTableEntry ite, final @NotNull Context aContext) {
+		// FoundElement is the "disease"
+		try {
+			return Operation2.success(deduceTypes2.resolve_type(ite.type.getAttached(), aContext));
+		} catch (final ResolveError aE) {
+			return Operation2.failure(aE);
+		}
+	}
+
+	//	@NotNull final GenType xx = // TODO xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 	@Override
 	public void resolve(final Context aContext, final DeduceTypes2 aDeduceTypes2) {
 		//		deduceTypes2.resolveIdentIA_(aContext, aIdentIA, generatedFunction, aFoundElement);
