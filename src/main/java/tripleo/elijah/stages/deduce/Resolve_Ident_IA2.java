@@ -10,6 +10,8 @@ package tripleo.elijah.stages.deduce;
 
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.FailCallback;
+import org.jdeferred2.Promise;
+import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
@@ -441,44 +443,104 @@ class Resolve_Ident_IA2 {
 	}
 
 	private void ia2_IdentIA_VariableStatement(@NotNull final IdentTableEntry idte, @NotNull final VariableStatement vs, @NotNull final Context ctx) {
-		try {
-			final boolean has_initial_value = vs.initialValue() != IExpression.UNASSIGNED;
-			if (!vs.typeName().isNull()) {
-				final @NotNull TypeTableEntry tte;
-				@Nullable final GenType       attached;
-				if (has_initial_value) {
-					attached = DeduceLookupUtils.deduceExpression(deduceTypes2, vs.initialValue(), ctx);
-				} else { // if (vs.typeName() != null) {
-					attached = new GenType();
-					attached.set(new OS_Type(vs.typeName()));
-				}
+		final boolean has_initial_value = vs.initialValue() != IExpression.UNASSIGNED;
+		if (!vs.typeName().isNull()) {
+			final DeferredObject<GenType, Void, Void> attP = new DeferredObject<>();
 
-				@Nullable final IExpression initialValue;
+			final __ia2_IdentIA_VariableStatement__NULL_TYPENAME ivv = new __ia2_IdentIA_VariableStatement__NULL_TYPENAME(vs, ctx);
 
-				if (has_initial_value) {
-					initialValue = vs.initialValue();
-				} else {
-//					attached = new OS_Type(vs.typeName());
-					initialValue = null; // README presumably there is none, ie when generated
-				}
+			if (has_initial_value) {
+				final Promise<GenType, ResolveError, Void> x = ivv.promise();
+				x.then(attP::resolve);
+//					x.fail(); // TODO
+			} else { // if (vs.typeName() != null) {
+				final GenType attached = new GenType();
+				attached.set(new OS_Type(vs.typeName()));
+				attP.resolve(attached);
+			}
 
-				final OS_Type resolvedOrTypename = attached.resolved != null ? attached.resolved : attached.typeName;
-				tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, resolvedOrTypename, initialValue);
+			attP.then(attached1 -> {
+				final OS_Type                 resolvedOrTypename = attached1.resolved != null ? attached1.resolved : attached1.typeName;
+				@NotNull final TypeTableEntry tte                = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, resolvedOrTypename, ivv.initialValue());
 				idte.type = tte;
-			} else if (has_initial_value) {
-				@Nullable final GenType attached = DeduceLookupUtils.deduceExpression(deduceTypes2, vs.initialValue(), ctx);
-				final OS_Type resolvedOrTypename = attached.resolved != null ? attached.resolved : attached.typeName;
-				@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, resolvedOrTypename, vs.initialValue());
+			});
+		} else if (has_initial_value) {
+			final DeferredObject<GenType, Void, Void> attP = new DeferredObject<>();
+
+			final __ia2_IdentIA_VariableStatement__HAS_INITIAL_VALUE ivv = new __ia2_IdentIA_VariableStatement__HAS_INITIAL_VALUE(vs, ctx);
+
+			final Promise<GenType, ResolveError, Void> x = ivv.promise();
+			x.then(attP::resolve);
+
+			attP.then(attached1 -> {
+				final OS_Type                 resolvedOrTypename = attached1.resolved != null ? attached1.resolved : attached1.typeName;
+				@NotNull final TypeTableEntry tte                = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, resolvedOrTypename, ivv.initialValue());
 				idte.type = tte;
-			} else {
+			});
+		} else {
 				LOG.err("Empty Variable Expression");
 				throw new IllegalStateException("Empty Variable Expression");
 //				return; // TODO call noFoundElement, raise exception
 			}
+/*
 		} catch (final ResolveError aResolveError) {
 			LOG.err("1937 resolve error " + vs.getName());
 //			aResolveError.printStackTrace();
 			errSink.reportDiagnostic(aResolveError);
+		}
+*/
+	}
+
+	interface __ia2_IdentIA_VariableStatement {
+
+		Promise<GenType, ResolveError, Void> promise();
+
+		@NotNull IExpression initialValue();
+	}
+
+	class __ia2_IdentIA_VariableStatement__NULL_TYPENAME implements __ia2_IdentIA_VariableStatement {
+		private final VariableStatement vs;
+		private final Context           ctx;
+
+		__ia2_IdentIA_VariableStatement__NULL_TYPENAME(final VariableStatement aVs, final Context aCtx) {
+			vs  = aVs;
+			ctx = aCtx;
+		}
+
+		@Override
+		public Promise<GenType, ResolveError, Void> promise() {
+			return DeduceLookupUtils.deduceExpression_p(deduceTypes2, vs.initialValue(), ctx);
+		}
+
+		@Override
+		public @NotNull IExpression initialValue() {
+			final boolean              has_initial_value = vs.initialValue() != IExpression.UNASSIGNED;
+			@NotNull final IExpression initialValue;
+			if (has_initial_value) {
+				initialValue = vs.initialValue();
+			} else {
+//					attached = new OS_Type(vs.typeName());
+				initialValue = null; // README presumably there is none, ie when generated
+			}
+			return initialValue;
+		}
+	}
+
+	class __ia2_IdentIA_VariableStatement__HAS_INITIAL_VALUE implements __ia2_IdentIA_VariableStatement {
+		private final VariableStatement vs;
+		private final Context           ctx;
+
+		__ia2_IdentIA_VariableStatement__HAS_INITIAL_VALUE(final VariableStatement aVs, final Context aCtx) {
+			vs  = aVs;
+			ctx = aCtx;
+		}
+
+		public Promise<GenType, ResolveError, Void> promise() {
+			return DeduceLookupUtils.deduceExpression_p(deduceTypes2, vs.initialValue(), ctx);
+		}
+
+		public @NotNull IExpression initialValue() {
+			return vs.initialValue();
 		}
 	}
 
