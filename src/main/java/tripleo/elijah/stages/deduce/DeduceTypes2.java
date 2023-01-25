@@ -1475,6 +1475,7 @@ public class DeduceTypes2 {
 		for (final @NotNull VariableTableEntry vte : generatedFunction.vte_list) {
 //						LOG.info("704 "+vte.type.attached+" "+vte.potentialTypes());
 			final DeduceElement3_VariableTableEntry vte_de = (DeduceElement3_VariableTableEntry) vte.getDeduceElement3();
+			vte_de.setDeduceTypes2(this, generatedFunction);
 			vte_de.mvState(null, DeduceElement3_VariableTableEntry.ST.EXIT_CONVERT_USER_TYPES);
 		}
 		for (final @NotNull VariableTableEntry vte : generatedFunction.vte_list) {
