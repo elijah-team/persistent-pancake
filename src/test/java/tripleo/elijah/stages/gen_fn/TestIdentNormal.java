@@ -9,13 +9,24 @@
 package tripleo.elijah.stages.gen_fn;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.*;
+import org.junit.Ignore;
+import org.junit.Test;
+import tripleo.elijah.comp.AccessBus;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.IO;
+import tripleo.elijah.comp.PipelineLogic;
+import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.lang.*;
-import tripleo.elijah.stages.deduce.*;
+import tripleo.elijah.stages.deduce.ClassInvocation;
+import tripleo.elijah.stages.deduce.DeducePhase;
+import tripleo.elijah.stages.deduce.DeduceTypes2;
+import tripleo.elijah.stages.deduce.FoundElement;
+import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.test_help.Boilerplate;
 
 import java.util.List;
 
@@ -28,17 +39,20 @@ public class TestIdentNormal {
 
 //	@Test(expected = IllegalStateException.class) // TODO proves nothing
 	public void test() {
-		final Compilation comp = new CompilationImpl(new StdErrSink(), new IO());
-		final OS_Module mod = new OS_Module();//mock(OS_Module.class);
-		mod.setParent(comp);
-		final FunctionDef fd = mock(FunctionDef.class);
-		final Context ctx1 = mock(Context.class);
-		final Context ctx2 = mock(Context.class);
+		final Boilerplate b = new Boilerplate();
+		b.get();
+		final Compilation comp = b.comp;
+		final OS_Module mod = comp.moduleBuilder()
+		                          .addToCompilation()
+		                          .build();
+		final FunctionDef fd   = mock(FunctionDef.class);
+		final Context     ctx1 = mock(Context.class);
+		final Context     ctx2 = mock(Context.class);
 
-		final ElLog.Verbosity verbosity1 = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final AccessBus ab = new AccessBus(comp);
-		final PipelineLogic pl = new PipelineLogic(ab);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
+		final ElLog.Verbosity verbosity1    = Compilation.gitlabCIVerbosity();
+		final AccessBus       ab            = new AccessBus(comp);
+		final PipelineLogic   pl            = new PipelineLogic(ab);
+		final GeneratePhase   generatePhase = pl.generatePhase;
 //		GenerateFunctions generateFunctions = new GenerateFunctions(generatePhase, mod, pl);
 		final GenerateFunctions generateFunctions = generatePhase.getGenerateFunctions(mod);
 		final GeneratedFunction generatedFunction = new GeneratedFunction(fd);
@@ -51,7 +65,7 @@ public class TestIdentNormal {
 		pce.setLeft(new DotExpression(x, foo));
 
 		final InstructionArgument s = generateFunctions.simplify_expression(pce, generatedFunction, ctx2);
-		@NotNull final List<InstructionArgument> l = generatedFunction._getIdentIAPathList(s);
+		@NotNull final List<InstructionArgument> l = BaseGeneratedFunction._getIdentIAPathList(s);
 		System.out.println(l);
 //      System.out.println(generatedFunction.getIdentIAPathNormal());
 
@@ -71,11 +85,10 @@ public class TestIdentNormal {
 
 		final IdentIA identIA = new IdentIA(1, generatedFunction);
 
-		final DeducePhase phase = new DeducePhase(generatePhase, pl, verbosity1);
-		final DeduceTypes2 d2 = new DeduceTypes2(mod, phase);
+		final DeduceTypes2 d2 = new DeduceTypes2(mod, pl.dp);
 
-		final List<InstructionArgument> ss = generatedFunction._getIdentIAPathList(identIA);
-		d2.resolveIdentIA2_(ctx2, null, ss/*identIA*/, generatedFunction, new FoundElement(phase) {
+		final List<InstructionArgument> ss = BaseGeneratedFunction._getIdentIAPathList(identIA);
+		d2.resolveIdentIA2_(ctx2, null, ss/*identIA*/, generatedFunction, new FoundElement(pl.dp) {
 			@Override
 			public void foundElement(final OS_Element e) {
 				System.out.println(e);
@@ -83,24 +96,27 @@ public class TestIdentNormal {
 
 			@Override
 			public void noFoundElement() {
-				final int y=2;
+				final int y = 2;
 			}
 		});
 	}
 
-//	@Test // TODO just a mess
+	@Ignore
+	@Test // TODO just a mess
 	public void test2() {
-		final Compilation comp = new CompilationImpl(new StdErrSink(), new IO());
-		final OS_Module mod = new OS_Module();
-		mod.setParent(comp);
+		final Boilerplate b = new Boilerplate();
+		b.get();
+		final Compilation comp = b.comp;
+		final OS_Module   mod  = b.defaultMod();
+
 //		FunctionDef fd = mock(FunctionDef.class);
 		final Context ctx2 = mock(Context.class);
 
-		final ElLog.Verbosity verbosity1 = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
-		final AccessBus ab = new AccessBus(comp);
-		final PipelineLogic pl = new PipelineLogic(ab);
-		final GeneratePhase generatePhase = new GeneratePhase(verbosity1, pl);
-		final DeducePhase phase = new DeducePhase(generatePhase, pl, verbosity1);
+		final ElLog.Verbosity verbosity1    = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
+		final AccessBus       ab            = new AccessBus(comp);
+		final PipelineLogic   pl            = new PipelineLogic(ab);
+		final GeneratePhase   generatePhase = pl.generatePhase;
+		final DeducePhase     phase         = pl.dp;
 
 		final GenerateFunctions generateFunctions = generatePhase.getGenerateFunctions(mod);
 
@@ -108,7 +124,7 @@ public class TestIdentNormal {
 		//
 		//
 
-		final ClassStatement cs = new ClassStatement(mod, mod.getContext());
+		final ClassStatement  cs       = new ClassStatement(mod, mod.getContext());
 		final IdentExpression capitalX = IdentExpression.forString("X");
 		cs.setName(capitalX);
 		final FunctionDef fd = new FunctionDef(cs, cs.getContext());

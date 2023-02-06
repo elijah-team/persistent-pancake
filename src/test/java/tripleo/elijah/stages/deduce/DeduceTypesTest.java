@@ -8,20 +8,32 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import org.jdeferred2.Promise;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import tripleo.elijah.comp.AccessBus;
-import tripleo.elijah.comp.IO;
+import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.NormalTypeName;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.Qualident;
+import tripleo.elijah.lang.RegularTypeName;
+import tripleo.elijah.lang.Scope3;
+import tripleo.elijah.lang.VariableSequence;
+import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.VariableTypeName;
 import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.gen_fn.GeneratePhase;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.Helpers;
 
 /**
@@ -29,28 +41,32 @@ import tripleo.elijah.util.Helpers;
  */
 public class DeduceTypesTest {
 
-	private GenType x;
+	private GenType                              x;
+	private Promise<GenType, ResolveError, Void> xx;
 
 	@Before
 	public void setUp() throws ResolveError {
-		final OS_Module mod = new OS_Module();
-		mod.parent = new CompilationImpl(new StdErrSink(), new IO());
+		final Boilerplate b = new Boilerplate();
+		b.get();
+		final Compilation c   = b.comp;
+		final OS_Module   mod = b.defaultMod();
+
 		final ModuleContext mctx = new ModuleContext(mod);
 		mod.setContext(mctx);
 		final ClassStatement cs = new ClassStatement(mod, mctx);
 		cs.setName(Helpers.string_to_ident("Test"));
 		final FunctionDef fd = cs.funcDef();
 		fd.setName(Helpers.string_to_ident("test"));
-		final Scope3 scope3 = new Scope3(fd);
-		final VariableSequence vss = scope3.statementClosure().varSeq(fd.getContext());
-		final VariableStatement vs = vss.next();
+		final Scope3            scope3 = new Scope3(fd);
+		final VariableSequence  vss    = scope3.statementClosure().varSeq(fd.getContext());
+		final VariableStatement vs     = vss.next();
 		final IdentExpression x = Helpers.string_to_ident("x");
 		x.setContext(fd.getContext());
 		vs.setName(x);
 		final Qualident qu = new Qualident();
 		qu.append(Helpers.string_to_ident("Integer"));
 		((NormalTypeName) vs.typeName()).setName(qu);
-		((NormalTypeName) vs.typeName()).setContext(fd.getContext());
+		vs.typeName().setContext(fd.getContext());
 		fd.scope(scope3);
 		fd.postConstruct();
 		cs.postConstruct();
@@ -63,14 +79,14 @@ public class DeduceTypesTest {
 		//
 		//
 		//
-		final ElLog.Verbosity verbosity     = mod.parent.gitlabCIVerbosity();
-		final AccessBus       ab            = new AccessBus(mod.parent);
-		final PipelineLogic   pl            = new PipelineLogic(ab);
-		final GeneratePhase   generatePhase = new GeneratePhase(verbosity, pl);
-		final DeducePhase     dp            = new DeducePhase(generatePhase, pl, verbosity);
-		final DeduceTypes2    d             = dp.deduceModule(mod, verbosity);
+		final ElLog.Verbosity verbosity = Compilation.gitlabCIVerbosity();
+		final AccessBus       ab        = new AccessBus(mod.parent);
+		final PipelineLogic   pl        = new PipelineLogic(ab);
+		final DeducePhase     dp        = pl.dp;
+		final DeduceTypes2    d         = dp.deduceModule(mod, verbosity);
 //		final DeduceTypes d = new DeduceTypes(mod);
-		this.x = DeduceLookupUtils.deduceExpression(d, x1, fc);
+		this.xx = DeduceLookupUtils.deduceExpression_p(d, x1, fc);
+		xx.then(a -> this.x = a);
 		System.out.println(this.x);
 	}
 	/** TODO This test fails beacause we are comparing a BUILT_IN vs a USER OS_Type.
@@ -85,34 +101,46 @@ public class DeduceTypesTest {
 	 */
 	@Test
 	public void testDeduceIdentExpression2() {
-		final RegularTypeName tn = new RegularTypeName();
-		final Qualident tnq = new Qualident();
+		final RegularTypeName tn  = new RegularTypeName();
+		final Qualident       tnq = new Qualident();
 		tnq.append(Helpers.string_to_ident("Integer"));
 		tn.setName(tnq);
+
+		Assert.assertTrue("Promise not resolved", xx.isResolved());
+
 		Assert.assertTrue(genTypeTypenameEquals(new OS_Type(tn), x/*.getTypeName()*/));
 	}
+
+	@Contract(value = "null, _ -> false", pure = true)
+	private boolean genTypeTypenameEquals(final OS_Type aType, final @NotNull GenType genType) {
+		return genType.typeName.equals(aType);
+	}
+
 	@Test
 	public void testDeduceIdentExpression3() {
-		final VariableTypeName tn = new VariableTypeName();
-		final Qualident tnq = new Qualident();
+		final VariableTypeName tn  = new VariableTypeName();
+		final Qualident        tnq = new Qualident();
 		tnq.append(Helpers.string_to_ident("Integer"));
 		tn.setName(tnq);
+
+		Assert.assertTrue("Promise not resolved", xx.isResolved());
+
 		Assert.assertEquals(new OS_Type(tn).getTypeName(), x.typeName.getTypeName());
 		Assert.assertTrue(genTypeTypenameEquals(new OS_Type(tn), x));
 	}
+
 	@Test
 	public void testDeduceIdentExpression4() {
-		final VariableTypeName tn = new VariableTypeName();
-		final Qualident tnq = new Qualident();
+		final VariableTypeName tn  = new VariableTypeName();
+		final Qualident        tnq = new Qualident();
 		tnq.append(Helpers.string_to_ident("Integer"));
 		tn.setName(tnq);
+
+		Assert.assertTrue("Promise not resolved", xx.isResolved());
+
 		Assert.assertEquals(new OS_Type(tn).getTypeName(), x.typeName.getTypeName());
 		Assert.assertTrue(genTypeTypenameEquals(new OS_Type(tn), x));
 		Assert.assertEquals(new OS_Type(tn).toString(), x.typeName.toString());
-	}
-
-	private boolean genTypeTypenameEquals(final OS_Type aType, final GenType genType) {
-		return genType.typeName.equals(aType);
 	}
 
 }

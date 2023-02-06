@@ -14,10 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.DotExpression;
@@ -37,7 +34,7 @@ import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.VariableTableType;
-import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.Helpers;
 
 import static org.easymock.EasyMock.*;
@@ -107,11 +104,14 @@ public class GetIdentIAPathTest_ForC {
 
 		//		el1.add(vsq);
 		//
-		final CompilationImpl   c             = new CompilationImpl(new StdErrSink(), new IO());
-		final ElLog.Verbosity   verbosity1    = Compilation.gitlabCIVerbosity();
+		final Boilerplate b = new Boilerplate();
+		b.get();
+		final Compilation c = b.comp;
+//		final OS_Module mod = b.defaultMod();
+
 		final AccessBus         ab            = new AccessBus(c);
 		final PipelineLogic     pl            = new PipelineLogic(ab);
-		final GeneratePhase     generatePhase = new GeneratePhase(verbosity1, pl);
+		final GeneratePhase     generatePhase = pl.generatePhase;
 		final GenerateFunctions gen           = generatePhase.getGenerateFunctions(mod);
 		final Context           ctx           = mock(Context.class);
 		//
@@ -135,11 +135,14 @@ public class GetIdentIAPathTest_ForC {
 		final IdentExpression          x_ident   = Helpers.string_to_ident("x");
 		@NotNull final IdentExpression foo_ident = Helpers.string_to_ident("foo");
 		//
-		final CompilationImpl   c             = new CompilationImpl(new StdErrSink(), new IO());
-		final ElLog.Verbosity   verbosity1    = Compilation.gitlabCIVerbosity();
+		final Boilerplate b = new Boilerplate();
+		b.get();
+		final Compilation c = b.comp;
+//		final OS_Module mod = b.defaultMod();
+
 		final AccessBus         ab            = new AccessBus(c);
 		final PipelineLogic     pl            = new PipelineLogic(ab);
-		final GeneratePhase     generatePhase = new GeneratePhase(verbosity1, pl);
+		final GeneratePhase     generatePhase = pl.generatePhase;
 		final GenerateFunctions gen           = generatePhase.getGenerateFunctions(mod);
 		final Context           ctx           = mock(Context.class);
 		//
@@ -218,11 +221,14 @@ public class GetIdentIAPathTest_ForC {
 		//
 		final DotExpression expr = new DotExpression(x_ident, foo_ident);
 		//
-		final CompilationImpl     c             = new CompilationImpl(new StdErrSink(), new IO());
-		final ElLog.Verbosity     verbosity1    = Compilation.gitlabCIVerbosity();
+		final Boilerplate b = new Boilerplate();
+		b.get();
+		final Compilation c = b.comp;
+//		final OS_Module mod = b.defaultMod();
+
 		final AccessBus           ab            = new AccessBus(c);
 		final PipelineLogic       pl            = new PipelineLogic(ab);
-		final GeneratePhase       generatePhase = new GeneratePhase(verbosity1, pl);
+		final GeneratePhase       generatePhase = pl.generatePhase;
 		final GenerateFunctions   gen           = generatePhase.getGenerateFunctions(mod);
 		final InstructionArgument xx            = gen.simplify_expression(expr, gf, ctx);
 

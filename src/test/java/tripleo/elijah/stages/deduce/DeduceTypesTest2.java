@@ -10,23 +10,36 @@ package tripleo.elijah.stages.deduce;
 
 import org.junit.Assert;
 import org.junit.Test;
-import tripleo.elijah.comp.*;
-import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah.comp.AccessBus;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.NormalTypeName;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.Qualident;
+import tripleo.elijah.lang.Scope3;
+import tripleo.elijah.lang.VariableSequence;
+import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.VariableTypeName;
 import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.gen_fn.GeneratePhase;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.Helpers;
 
 public class DeduceTypesTest2 {
 
 	@Test
 	public void testDeduceIdentExpression() throws ResolveError {
-		final OS_Module   mod = new OS_Module();
-		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO());
-		mod.parent  = c;
+		final Boilerplate b = new Boilerplate();
+		b.get();
+		final Compilation c   = b.comp;
+		final OS_Module   mod = b.defaultMod();
+
 		mod.prelude = mod.parent.findPrelude("c").success();
 		final ModuleContext mctx = new ModuleContext(mod);
 		mod.setContext(mctx);
@@ -53,12 +66,11 @@ public class DeduceTypesTest2 {
 		//
 		//
 		//
-		final ElLog.Verbosity verbosity1    = c.gitlabCIVerbosity();
-		final AccessBus       ab            = new AccessBus(c);
-		final PipelineLogic   pl            = new PipelineLogic(ab);
-		final GeneratePhase   generatePhase = new GeneratePhase(verbosity1, pl);
-		final DeducePhase     dp            = new DeducePhase(generatePhase, pl, verbosity1);
-		final DeduceTypes2    d             = dp.deduceModule(mod, verbosity1);
+		final ElLog.Verbosity verbosity1 = Compilation.gitlabCIVerbosity();
+		final AccessBus       ab         = new AccessBus(c);
+		final PipelineLogic   pl         = new PipelineLogic(ab);
+		final DeducePhase     dp         = pl.dp;
+		final DeduceTypes2    d          = dp.deduceModule(mod, verbosity1);
 //		final DeduceTypes d = new DeduceTypes(mod);
 		final GenType x = DeduceLookupUtils.deduceExpression(d, x1, fc);
 		System.out.println(x);

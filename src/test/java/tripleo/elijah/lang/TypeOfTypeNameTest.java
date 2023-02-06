@@ -13,12 +13,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
-import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
@@ -72,12 +70,10 @@ public class TypeOfTypeNameTest {
 		//
 		// VERIFY EXPECTATIONS
 		//
-		final ElLog.Verbosity verbosity1    = Compilation.gitlabCIVerbosity();
-		final AccessBus       ab            = new AccessBus(c);
-		final PipelineLogic   pl            = new PipelineLogic(ab);
-		final GeneratePhase   generatePhase = new GeneratePhase(verbosity1, pl);
-		final DeduceTypes2    deduceTypes2  = new DeduceTypes2(mod, new DeducePhase(generatePhase, pl, verbosity1));
-		final TypeName        tn            = t.resolve(ctx, deduceTypes2);
+		final AccessBus     ab           = new AccessBus(c);
+		final PipelineLogic pl           = new PipelineLogic(ab);
+		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
+		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
 //		System.out.println(tn);
 		verify(ctx, mod);
 		Assert.assertEquals(typeNameString, tn.toString());
@@ -95,7 +91,6 @@ public class TypeOfTypeNameTest {
 		//
 		// CREATE VARIABLES
 		//
-		final ErrSink e = new StdErrSink();
 
 		final String typeNameString = "package.AbstractFactory";
 
@@ -127,12 +122,10 @@ public class TypeOfTypeNameTest {
 		//
 		// VERIFY EXPECTATIONS
 		//
-		final ElLog.Verbosity verbosity1    = Compilation.gitlabCIVerbosity();
-		final AccessBus       ab            = new AccessBus(c);
-		final PipelineLogic   pl            = new PipelineLogic(ab);
-		final GeneratePhase   generatePhase = new GeneratePhase(verbosity1, pl);
-		final DeduceTypes2 deduceTypes2 = new DeduceTypes2(mod, new DeducePhase(generatePhase, pl, verbosity1));
-		final TypeName tn = t.resolve(ctx, deduceTypes2);
+		final AccessBus     ab           = new AccessBus(c);
+		final PipelineLogic pl           = new PipelineLogic(ab);
+		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
+		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
 //		System.out.println(tn);
 		verify(ctx, mod);
 		Assert.assertEquals(typeNameString, tn.toString());
@@ -265,8 +258,8 @@ public class TypeOfTypeNameTest {
 		final ElLog.Verbosity verbosity1    = Compilation.gitlabCIVerbosity();
 		final AccessBus       ab            = new AccessBus(mod.parent);
 		final PipelineLogic   pl            = new PipelineLogic(ab);
-		final GeneratePhase   generatePhase = new GeneratePhase(verbosity1, pl);
-		final DeduceTypes2    deduceTypes2  = new DeduceTypes2(mod, new DeducePhase(generatePhase, pl, verbosity1));
+		final GeneratePhase   generatePhase = pl.generatePhase;
+		final DeduceTypes2    deduceTypes2  = new DeduceTypes2(mod, pl.dp);
 //		expect(mod.getFileName()).andReturn("foo.elijah");
 		expect(ctx.lookup("x")).andReturn(lrl);
 //		expect(ctx.lookup("y")).andReturn(lrl4);
