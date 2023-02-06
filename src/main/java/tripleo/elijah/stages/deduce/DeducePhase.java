@@ -17,6 +17,7 @@ import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.ClassStatement;
@@ -45,6 +46,7 @@ import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.stages.gen_fn.WlGenerateClass;
+import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkList;
@@ -67,16 +69,18 @@ import static tripleo.elijah.util.Helpers.List_of;
  */
 public class DeducePhase {
 
-	private final List<FoundElement> foundElements = new ArrayList<FoundElement>();
-	private final Map<IdentTableEntry, OnType> idte_type_callbacks = new HashMap<IdentTableEntry, OnType>();
-	public @NotNull GeneratedClasses generatedClasses = new GeneratedClasses();
-	public final GeneratePhase generatePhase;
+	public final    ICodeRegistrar               codeRegistrar;
+	public final    GeneratePhase                generatePhase;
+	private final   List<FoundElement>           foundElements       = new ArrayList<FoundElement>();
+	private final   Map<IdentTableEntry, OnType> idte_type_callbacks = new HashMap<IdentTableEntry, OnType>();
+	public @NotNull GeneratedClasses             generatedClasses    = new GeneratedClasses();
 
 	final PipelineLogic pipelineLogic;
 
 	private final @NotNull ElLog LOG;
 
 	private final List<State> registeredStates = new ArrayList<>();
+	private final Compilation _compilation;
 
 	public void addFunction(final GeneratedFunction generatedFunction, final FunctionDef fd) {
 		functionMap.put(fd, generatedFunction);
@@ -105,52 +109,21 @@ public class DeducePhase {
 //	Multimap<GeneratedClass, ClassInvocation> generatedClasses1 = ArrayListMultimap.create();
 @NotNull Multimap<ClassStatement, ClassInvocation> classInvocationMultimap = ArrayListMultimap.create();
 
-	public @Nullable ClassInvocation registerClassInvocation(@NotNull final ClassInvocation aClassInvocation) {
-		boolean put = false;
-		@Nullable ClassInvocation Result = null;
-
-		// 1. select which to return
-		final ClassStatement c = aClassInvocation.getKlass();
-		final Collection<ClassInvocation> cis = classInvocationMultimap.get(c);
-		for (@NotNull final ClassInvocation ci : cis) {
-			// don't lose information
-			if (ci.getConstructorName() != null)
-				if (!(ci.getConstructorName().equals(aClassInvocation.getConstructorName())))
-					continue;
-
-			final boolean i = equivalentGenericPart(aClassInvocation, ci);
-			if (i) {
-				Result = ci;
-				break;
-			}
-		}
-
-		if (Result == null) {
-			put = true;
-			Result = aClassInvocation;
-		}
-
-		// 2. Check and see if already done
-		final Collection<ClassInvocation> cls = classInvocationMultimap.get(Result.getKlass());
-		for (@NotNull final ClassInvocation ci : cls) {
-			if (equivalentGenericPart(ci, Result)) {
-				return ci;
-			}
-		}
-
-		if (put) {
-			classInvocationMultimap.put(aClassInvocation.getKlass(), aClassInvocation);
-		}
-
-		// 3. Generate new GeneratedClass
-		final @NotNull WorkList wl = new WorkList();
-		final @NotNull OS_Module mod = Result.getKlass().getContext().module();
-		wl.addJob(new WlGenerateClass(generatePhase.getGenerateFunctions(mod), Result, generatedClasses)); // TODO why add now?
-		generatePhase.wm.addJobs(wl);
-		generatePhase.wm.drain(); // TODO find a better place to put this
-
-		// 4. Return it
-		return Result;
+	public DeducePhase(final GeneratePhase aGeneratePhase,
+	                   final PipelineLogic aPipelineLogic,
+	                   final ElLog.Verbosity verbosity,
+	                   final Compilation aCompilation) {
+		generatePhase = aGeneratePhase;
+		pipelineLogic = aPipelineLogic;
+		//
+		LOG = new ElLog("(DEDUCE_PHASE)", verbosity, "DeducePhase");
+		pipelineLogic.addLog(LOG);
+		//
+		codeRegistrar = new DefaultCodeRegistrar(aCompilation);
+		_compilation  = aCompilation;
+		//
+		IStateRunnable.ST.register(this);
+		DeduceElement3_IdentTableEntry.ST.register(this);
 	}
 
 	public boolean equivalentGenericPart(@NotNull final ClassInvocation first, @NotNull final ClassInvocation second) {
@@ -220,28 +193,52 @@ public class DeducePhase {
 		return ci;
 	}
 
-	public @NotNull Promise<ClassDefinition, Diagnostic, Void> generateClass(final GenerateFunctions gf, final ClassInvocation ci) {
-		@Nullable final WlGenerateClass                         gen = new WlGenerateClass(gf, ci, generatedClasses);
-		final ClassDefinition[]                                 cds = new ClassDefinition[1];
-		final DeferredObject<ClassDefinition, Diagnostic, Void> ret = new DeferredObject<>();
+	public @Nullable ClassInvocation registerClassInvocation(@NotNull final ClassInvocation aClassInvocation) {
+		boolean put = false;
+		@Nullable ClassInvocation Result = null;
 
-		classGenerator.submit(new Runnable() {
-			@Override
-			public void run() {
-				gen.run(null);
-				final ClassDefinition cd       = new ClassDefinition(ci);
-				final GeneratedClass  genclass = gen.getResult();
-				if (genclass != null) {
-					cd.setNode(genclass);
-					cds[0] = cd;
-					ret.resolve(cd);
-				} else {
-					ret.reject(new CouldntGenerateClass(cd, gf, ci));
-				}
+		// 1. select which to return
+		final ClassStatement c = aClassInvocation.getKlass();
+		final Collection<ClassInvocation> cis = classInvocationMultimap.get(c);
+		for (@NotNull final ClassInvocation ci : cis) {
+			// don't lose information
+			if (ci.getConstructorName() != null)
+				if (!(ci.getConstructorName().equals(aClassInvocation.getConstructorName())))
+					continue;
+
+			final boolean i = equivalentGenericPart(aClassInvocation, ci);
+			if (i) {
+				Result = ci;
+				break;
 			}
-		});
+		}
 
-		return ret;
+		if (Result == null) {
+			put = true;
+			Result = aClassInvocation;
+		}
+
+		// 2. Check and see if already done
+		final Collection<ClassInvocation> cls = classInvocationMultimap.get(Result.getKlass());
+		for (@NotNull final ClassInvocation ci : cls) {
+			if (equivalentGenericPart(ci, Result)) {
+				return ci;
+			}
+		}
+
+		if (put) {
+			classInvocationMultimap.put(aClassInvocation.getKlass(), aClassInvocation);
+		}
+
+		// 3. Generate new GeneratedClass
+		final @NotNull WorkList wl = new WorkList();
+		final @NotNull OS_Module mod = Result.getKlass().getContext().module();
+		wl.addJob(new WlGenerateClass(generatePhase.getGenerateFunctions(mod), Result, generatedClasses, codeRegistrar)); // TODO why add now?
+		generatePhase.wm.addJobs(wl);
+		generatePhase.wm.drain(); // TODO find a better place to put this
+
+		// 4. Return it
+		return Result;
 	}
 
 	public @NotNull DeduceTypes2 deduceModule(@NotNull final OS_Module m, final ElLog.Verbosity verbosity) {
@@ -296,15 +293,28 @@ public class DeducePhase {
 		return deduceTypes2;
 	}
 
-	public DeducePhase(final GeneratePhase aGeneratePhase, final PipelineLogic aPipelineLogic, final ElLog.Verbosity verbosity) {
-		generatePhase = aGeneratePhase;
-		pipelineLogic = aPipelineLogic;
-		//
-		LOG = new ElLog("(DEDUCE_PHASE)", verbosity, "DeducePhase");
-		pipelineLogic.addLog(LOG);
-		//
-		IStateRunnable.ST.register(this);
-		DeduceElement3_IdentTableEntry.ST.register(this);
+	public @NotNull Promise<ClassDefinition, Diagnostic, Void> generateClass(final GenerateFunctions gf, final ClassInvocation ci) {
+		@Nullable final WlGenerateClass                         gen = new WlGenerateClass(gf, ci, generatedClasses, codeRegistrar);
+		final ClassDefinition[]                                 cds = new ClassDefinition[1];
+		final DeferredObject<ClassDefinition, Diagnostic, Void> ret = new DeferredObject<>();
+
+		classGenerator.submit(new Runnable() {
+			@Override
+			public void run() {
+				gen.run(null);
+				final ClassDefinition cd       = new ClassDefinition(ci);
+				final GeneratedClass  genclass = gen.getResult();
+				if (genclass != null) {
+					cd.setNode(genclass);
+					cds[0] = cd;
+					ret.resolve(cd);
+				} else {
+					ret.reject(new CouldntGenerateClass(cd, gf, ci));
+				}
+			}
+		});
+
+		return ret;
 	}
 
 	public State register(final State aState) {
@@ -318,6 +328,10 @@ public class DeducePhase {
 		}
 
 		return aState;
+	}
+
+	public Compilation _compilation() {
+		return _compilation;
 	}
 
 	static class ResolvedVariables {

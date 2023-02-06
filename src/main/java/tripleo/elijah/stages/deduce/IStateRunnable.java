@@ -1,12 +1,13 @@
 package tripleo.elijah.stages.deduce;
 
+import tripleo.elijah.stages.deduce.post_bytecode.DefaultStateful;
 import tripleo.elijah.stages.deduce.post_bytecode.State;
 import tripleo.elijah.stages.deduce.post_bytecode.Stateful;
 
-public abstract class IStateRunnable extends Stateful {
-	public abstract void run();
+public interface IStateRunnable extends Stateful {
+	void run();
 
-	public static class ST {
+	class ST {
 		public static State EXIT_RUN;
 
 		public static void register(final DeducePhase aDeducePhase) {
@@ -17,7 +18,7 @@ public abstract class IStateRunnable extends Stateful {
 			private boolean runAlready;
 
 			@Override
-			public void apply(final Stateful element) {
+			public void apply(final DefaultStateful element) {
 //				boolean b = ((StatefulBool) element).getValue();
 				if (!runAlready) {
 					runAlready = true;
@@ -31,7 +32,7 @@ public abstract class IStateRunnable extends Stateful {
 			}
 
 			@Override
-			public boolean checkState(final Stateful aElement3) {
+			public boolean checkState(final DefaultStateful aElement3) {
 				return true;
 			}
 

@@ -25,7 +25,7 @@ import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.util.NotImplementedException;
 
-public class DeduceElement3_IdentTableEntry extends Stateful implements IDeduceElement3 {
+public class DeduceElement3_IdentTableEntry extends DefaultStateful implements IDeduceElement3 {
 
 	public final IdentTableEntry       principal;
 	public       BaseGeneratedFunction generatedFunction;
@@ -113,7 +113,7 @@ public class DeduceElement3_IdentTableEntry extends Stateful implements IDeduceE
 			private int identity;
 
 			@Override
-			public void apply(final Stateful element) {
+			public void apply(final DefaultStateful element) {
 				final DeduceElement3_IdentTableEntry ite_de             = ((DeduceElement3_IdentTableEntry) element);
 				final IdentTableEntry                ite                = ite_de.principal;
 				final BaseGeneratedFunction          generatedFunction1 = ite_de.generatedFunction();
@@ -241,7 +241,7 @@ public class DeduceElement3_IdentTableEntry extends Stateful implements IDeduceE
 			}
 
 			@Override
-			public boolean checkState(final Stateful aElement3) {
+			public boolean checkState(final DefaultStateful aElement3) {
 				return true;
 			}
 		}

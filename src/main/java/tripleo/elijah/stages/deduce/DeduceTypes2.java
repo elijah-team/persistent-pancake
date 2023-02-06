@@ -231,11 +231,7 @@ public class DeduceTypes2 {
 	}
 
 	void onFinish(final Runnable r) {
-		onRunnables.add(new IStateRunnable() {
-			public void run() {
-				r.run();
-			}
-		});
+		onRunnables.add(new StatefulRunnable(r));
 	}
 
 	public void deduce_generated_function(final @NotNull GeneratedFunction generatedFunction) {
@@ -1146,11 +1142,11 @@ public class DeduceTypes2 {
 		}
 		if (genType.node == null) {
 			if (genType.ci instanceof ClassInvocation) {
-				final WlGenerateClass gen = new WlGenerateClass(getGenerateFunctions(module), (ClassInvocation) genType.ci, phase.generatedClasses);
+				final WlGenerateClass gen = new WlGenerateClass(getGenerateFunctions(module), (ClassInvocation) genType.ci, phase.generatedClasses, phase.codeRegistrar);
 				gen.run(null);
 				genType.node = gen.getResult();
 			} else if (genType.ci instanceof NamespaceInvocation) {
-				final WlGenerateNamespace gen = new WlGenerateNamespace(getGenerateFunctions(module), (NamespaceInvocation) genType.ci, phase.generatedClasses);
+				final WlGenerateNamespace gen = new WlGenerateNamespace(getGenerateFunctions(module), (NamespaceInvocation) genType.ci, phase.generatedClasses, phase.codeRegistrar);
 				gen.run(null);
 				genType.node = gen.getResult();
 			}
@@ -3214,20 +3210,20 @@ public class DeduceTypes2 {
 				case 1:
 					assert fi.pte.getArgs().size() == 0;
 					// default ctor
-					wl.addJob(new WlGenerateDefaultCtor(phase.generatePhase.getGenerateFunctions(module), fi));
+					wl.addJob(new WlGenerateDefaultCtor(phase.generatePhase.getGenerateFunctions(module), fi, phase.codeRegistrar));
 					break;
 				case 2:
-					wl.addJob(new WlGenerateCtor(phase.generatePhase.getGenerateFunctions(module), fi, fd2.getNameNode()));
+					wl.addJob(new WlGenerateCtor(phase.generatePhase.getGenerateFunctions(module), fi, fd2.getNameNode(), phase.codeRegistrar));
 					break;
 				case 3:
 					// README this is a special case to generate constructor
 					// TODO should it be GenerateDefaultCtor? (check args size and ctor-name)
 					final String constructorName = fi.getClassInvocation().getConstructorName();
 					final @NotNull IdentExpression constructorName1 = constructorName != null ? IdentExpression.forString(constructorName) : null;
-					wl.addJob(new WlGenerateCtor(phase.generatePhase.getGenerateFunctions(module), fi, constructorName1));
+					wl.addJob(new WlGenerateCtor(phase.generatePhase.getGenerateFunctions(module), fi, constructorName1, phase.codeRegistrar));
 					break;
 				case 4:
-					wl.addJob(new WlGenerateFunction(phase.generatePhase.getGenerateFunctions(module), fi));
+					wl.addJob(new WlGenerateFunction(phase.generatePhase.getGenerateFunctions(module), fi, phase.codeRegistrar));
 					break;
 				default:
 					throw new NotImplementedException();
@@ -3243,8 +3239,8 @@ public class DeduceTypes2 {
 
 			final NamespaceInvocation nsi = phase.registerNamespaceInvocation(aParent);
 
-			wl.addJob(new WlGenerateNamespace(phase.generatePhase.getGenerateFunctions(module1), nsi, phase.generatedClasses));
-			wl.addJob(new WlGenerateFunction(phase.generatePhase.getGenerateFunctions(module1), fi));
+			wl.addJob(new WlGenerateNamespace(phase.generatePhase.getGenerateFunctions(module1), nsi, phase.generatedClasses, phase.codeRegistrar));
+			wl.addJob(new WlGenerateFunction(phase.generatePhase.getGenerateFunctions(module1), fi, phase.codeRegistrar));
 
 			wm.addJobs(wl);
 		}

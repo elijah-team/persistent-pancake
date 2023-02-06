@@ -394,7 +394,8 @@ public class DeduceLookupUtils {
 
 		@Nullable
 		private static GenType do_deduceIdentExpression__VAR(final DeduceTypes2 aDeduceTypes2, final Context ctx, final @Nullable GenType R, final @Nullable VariableStatement vs) throws ResolveError {
-			final GenType[] result = new GenType[1];
+			final GenType[]      result = new GenType[1];
+			final ResolveError[] e      = {null};
 
 			if (!vs.typeName().isNull()) {
 				@Nullable final OS_Module                           lets_hope_we_dont_need_this = null;
@@ -408,6 +409,7 @@ public class DeduceLookupUtils {
 						result[0] = ty;
 					}
 				});
+				x.fail(aResolveError -> e[0] = aResolveError);
 			} else if (vs.initialValue() == IExpression.UNASSIGNED) {
 				R.typeName = new OS_UnknownType(vs);
 //				return deduceExpression(vs.initialValue(), ctx); // infinite recursion
@@ -416,6 +418,9 @@ public class DeduceLookupUtils {
 				final Promise<GenType, ResolveError, Void> x2 = deduceExpression_p(aDeduceTypes2, vs.initialValue(), vs.getContext());
 				x2.then(gt -> result[0] = gt);
 			}
+
+			if (e[0] != null) throw e[0];
+
 			return result[0];
 		}
 

@@ -11,7 +11,9 @@ package tripleo.elijah.comp.internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.DefaultCompilationAccess;
 import tripleo.elijah.comp.ErrSink;
+import tripleo.elijah.comp.ICompilationAccess;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
@@ -52,6 +54,9 @@ public class CompilationImpl extends Compilation {
 
 	private final @NotNull FluffyCompImpl _fluffyComp;
 
+	public ICompilationAccess _access() {
+		return new DefaultCompilationAccess(this);
+	}
 }
 
 //

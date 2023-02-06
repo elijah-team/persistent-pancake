@@ -11,10 +11,17 @@ package tripleo.elijah.stages.gen_fn;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.ConstructStatement;
+import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.lang.ExpressionBuilder;
+import tripleo.elijah.lang.ExpressionKind;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.Scope3;
 import tripleo.elijah.stages.deduce.ClassInvocation;
-import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.util.Holder;
 import tripleo.elijah.work.WorkJob;
 import tripleo.elijah.work.WorkManager;
@@ -25,13 +32,15 @@ import tripleo.elijah.work.WorkManager;
 public class WlGenerateDefaultCtor implements WorkJob {
 	private final GenerateFunctions     generateFunctions;
 	private final FunctionInvocation    functionInvocation;
+	private final ICodeRegistrar        codeRegistrar;
 	private       boolean               _isDone = false;
 	private       BaseGeneratedFunction Result;
 
 	@Contract(pure = true)
-	public WlGenerateDefaultCtor(@NotNull final GenerateFunctions aGenerateFunctions, final FunctionInvocation aFunctionInvocation) {
+	public WlGenerateDefaultCtor(@NotNull final GenerateFunctions aGenerateFunctions, final FunctionInvocation aFunctionInvocation, final ICodeRegistrar aCodeRegistrar) {
 		generateFunctions  = aGenerateFunctions;
 		functionInvocation = aFunctionInvocation;
+		codeRegistrar      = aCodeRegistrar;
 	}
 
 	@Override
@@ -61,7 +70,7 @@ public class WlGenerateDefaultCtor implements WorkJob {
 					final IExpression e = ExpressionBuilder.build(left, ExpressionKind.ASSIGNMENT, right);
 					scope3.add(new WrappedStatementWrapper(e, cd.getContext(), cd, varTableEntry.vs));
 				} else {
-					if (true || getPragma("auto_construct")) {
+					if (true) {
 						scope3.add(new ConstructStatement(cd, cd.getContext(), varTableEntry.nameToken, null, null));
 					}
 				}
@@ -76,7 +85,7 @@ public class WlGenerateDefaultCtor implements WorkJob {
 			ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
 				@Override
 				public void onDone(final @NotNull GeneratedClass result) {
-					gf.setCode(generateFunctions.module.parent.nextFunctionCode());
+					codeRegistrar.registerFunction(gf);
 					gf.setClass(result);
 					result.constructors.put(cd, gf);
 				}

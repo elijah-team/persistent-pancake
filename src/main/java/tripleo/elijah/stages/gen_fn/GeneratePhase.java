@@ -9,6 +9,7 @@
 package tripleo.elijah.stages.gen_fn;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.logging.ElLog;
@@ -26,10 +27,13 @@ public class GeneratePhase {
 	final         Map<OS_Module, GenerateFunctions> generateFunctions = new HashMap<OS_Module, GenerateFunctions>();
 	private final ElLog.Verbosity                   verbosity;
 	private final PipelineLogic                     pipelineLogic;
+	private final Compilation                       compilation;
 
-	public GeneratePhase(final ElLog.Verbosity aVerbosity, final PipelineLogic aPipelineLogic) {
+	public GeneratePhase(final ElLog.Verbosity aVerbosity, final PipelineLogic aPipelineLogic, final Compilation aCompilation) {
 		verbosity     = aVerbosity;
 		pipelineLogic = aPipelineLogic;
+
+		compilation = aCompilation;
 	}
 
 	@NotNull

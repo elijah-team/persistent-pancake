@@ -69,7 +69,7 @@ class Dependencies {
 			@NotNull final OS_Module           mod = genType.resolvedn.getContext().module();
 			final @NotNull GenerateFunctions   gf  = deduceTypes2.phase.generatePhase.getGenerateFunctions(mod);
 			final NamespaceInvocation          ni  = deduceTypes2.phase.registerNamespaceInvocation(genType.resolvedn);
-			@NotNull final WlGenerateNamespace gen = new WlGenerateNamespace(gf, ni, deduceTypes2.phase.generatedClasses);
+			@NotNull final WlGenerateNamespace gen = new WlGenerateNamespace(gf, ni, deduceTypes2.phase.generatedClasses, deduceTypes2.phase.codeRegistrar);
 
 			assert genType.ci == null || genType.ci == ni;
 			genType.ci = ni;
@@ -146,11 +146,11 @@ class Dependencies {
 				});
 			}
 			final @NotNull GenerateFunctions gf = deduceTypes2.getGenerateFunctions(mod);
-			gen = new WlGenerateDefaultCtor(gf, aDependentFunction);
+			gen = new WlGenerateDefaultCtor(gf, aDependentFunction, deduceTypes2._phase().codeRegistrar);
 		} else {
 			mod = function.getContext().module();
 			final @NotNull GenerateFunctions gf = deduceTypes2.getGenerateFunctions(mod);
-			gen = new WlGenerateFunction(gf, aDependentFunction);
+			gen = new WlGenerateFunction(gf, aDependentFunction, deduceTypes2._phase().codeRegistrar);
 		}
 		wl.addJob(gen);
 		final List<BaseGeneratedFunction> coll = new ArrayList<>();

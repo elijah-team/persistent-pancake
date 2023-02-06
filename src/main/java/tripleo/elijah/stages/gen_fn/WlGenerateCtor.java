@@ -12,9 +12,21 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.ConstructStatement;
+import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.lang.ExpressionBuilder;
+import tripleo.elijah.lang.ExpressionKind;
+import tripleo.elijah.lang.FormalArgListItem;
+import tripleo.elijah.lang.FunctionItem;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.Scope3;
+import tripleo.elijah.lang.StatementWrapper;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.util.Holder;
 import tripleo.elijah.work.WorkJob;
 import tripleo.elijah.work.WorkManager;
@@ -30,16 +42,18 @@ public class WlGenerateCtor implements WorkJob {
 	private final GenerateFunctions    generateFunctions;
 	private final FunctionInvocation   functionInvocation;
 	private final IdentExpression      constructorName;
+	private final ICodeRegistrar       codeRegistrar;
 	private       boolean              _isDone = false;
 	private       GeneratedConstructor result;
 
 	@Contract(pure = true)
 	public WlGenerateCtor(@NotNull final GenerateFunctions aGenerateFunctions,
 	                      @NotNull final FunctionInvocation aFunctionInvocation,
-	                      @Nullable final IdentExpression aConstructorName) {
+	                      @Nullable final IdentExpression aConstructorName, final ICodeRegistrar aCodeRegistrar) {
 		generateFunctions  = aGenerateFunctions;
 		functionInvocation = aFunctionInvocation;
 		constructorName    = aConstructorName;
+		codeRegistrar      = aCodeRegistrar;
 	}
 
 	@Override
@@ -147,7 +161,7 @@ public class WlGenerateCtor implements WorkJob {
 			ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
 				@Override
 				public void onDone(final GeneratedClass result) {
-					gf.setCode(generateFunctions.module.parent.nextFunctionCode());
+					codeRegistrar.registerFunction(gf);
 					gf.setClass(result);
 					result.constructors.put(cd, gf);
 				}

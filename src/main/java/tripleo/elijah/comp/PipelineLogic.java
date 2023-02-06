@@ -48,8 +48,8 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		final boolean sil = __ab.getCompilation().getSilence(); // ca.testSilence
 
 		verbosity     = sil ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
-		generatePhase = new GeneratePhase(verbosity, this);
-		dp            = new DeducePhase(generatePhase, this, verbosity);
+		generatePhase = new GeneratePhase(verbosity, this, __ab.getCompilation());
+		dp            = new DeducePhase(generatePhase, this, verbosity, __ab.getCompilation());
 
 		// FIXME examine if this is necessary and possibly or actually elsewhere
 		//  and/or just another section
@@ -206,7 +206,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 			final DeducePhase.@NotNull GeneratedClasses lgc = dp.generatedClasses;
 			@NotNull final List<GeneratedNode> resolved_nodes = new ArrayList<GeneratedNode>();
 
-			final Coder coder = new Coder();
+			final Coder coder = new Coder(deducePhase.codeRegistrar);
 
 			lgc.copy().stream().forEach(generatedNode -> coder.codeNodes(mod, resolved_nodes, generatedNode));
 

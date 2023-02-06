@@ -1,11 +1,11 @@
 package tripleo.elijah.stages.deduce;
 
-import tripleo.elijah.stages.deduce.post_bytecode.Stateful;
+import tripleo.elijah.stages.deduce.post_bytecode.DefaultStateful;
 
-class StatefulRunnable extends Stateful {
+class StatefulRunnable extends DefaultStateful implements IStateRunnable {
 	private final Runnable runnable;
 
-	private StatefulRunnable(final Runnable aRunnable) {
+	public StatefulRunnable(final Runnable aRunnable) {
 		runnable = aRunnable;
 	}
 

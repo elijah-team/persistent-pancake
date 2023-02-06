@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-class DefaultCompilationAccess implements ICompilationAccess {
+public class DefaultCompilationAccess implements ICompilationAccess {
 	protected final Compilation                                compilation;
 	private final   DeferredObject2<PipelineLogic, Void, Void> pipelineLogicDeferred = new DeferredObject2<>();
 

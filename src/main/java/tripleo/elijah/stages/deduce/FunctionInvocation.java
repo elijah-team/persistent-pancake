@@ -78,19 +78,20 @@ public class FunctionInvocation {
 		if (module == null)
 			module = classInvocation.getKlass().getContext().module(); // README for constructors
 		if (fd == ConstructorDef.defaultVirtualCtor) {
-			@NotNull final WlGenerateDefaultCtor wlgdc = new WlGenerateDefaultCtor(generatePhase.getGenerateFunctions(module), this);
+			@NotNull final WlGenerateDefaultCtor wlgdc = new WlGenerateDefaultCtor(generatePhase.getGenerateFunctions(module), this, aPhase.codeRegistrar);
 			wlgdc.run(null);
 //			GeneratedFunction gf = wlgdc.getResult();
 		} else {
-			@NotNull final WlGenerateFunction wlgf = new WlGenerateFunction(generatePhase.getGenerateFunctions(module), this);
+			@NotNull final WlGenerateFunction wlgf = new WlGenerateFunction(generatePhase.getGenerateFunctions(module), this, aPhase.codeRegistrar);
 			wlgf.run(null);
 			final GeneratedFunction gf = wlgf.getResult();
 			if (gf.getGenClass() == null) {
 				if (namespaceInvocation != null) {
 //					namespaceInvocation = aPhase.registerNamespaceInvocation(namespaceInvocation.getNamespace());
 					@NotNull final WlGenerateNamespace wlgn = new WlGenerateNamespace(generatePhase.getGenerateFunctions(module),
-							namespaceInvocation,
-							aPhase.generatedClasses);
+					  namespaceInvocation,
+					  aPhase.generatedClasses,
+					  aPhase.codeRegistrar);
 					wlgn.run(null);
 					final int y=2;
 				}

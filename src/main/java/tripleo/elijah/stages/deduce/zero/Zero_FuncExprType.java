@@ -22,7 +22,7 @@ public class Zero_FuncExprType implements IZero {
 		  null,
 		  null,
 		  aDeduceTypes2._phase().generatePhase);
-		final WlGenerateFunction gen = new WlGenerateFunction(genf, fi);
+		final WlGenerateFunction gen = new WlGenerateFunction(genf, fi, aDeduceTypes2._phase().codeRegistrar);
 		gen.run(null);
 		return gen.getResult();
 	}

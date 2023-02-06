@@ -33,7 +33,7 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Objects;
 
-public class DeduceElement3_VariableTableEntry extends Stateful implements IDeduceElement3 {
+public class DeduceElement3_VariableTableEntry extends DefaultStateful implements IDeduceElement3 {
 
 	private final VariableTableEntry principal;
 
@@ -129,7 +129,7 @@ public class DeduceElement3_VariableTableEntry extends Stateful implements IDedu
 			private int identity;
 
 			@Override
-			public void apply(final Stateful element) {
+			public void apply(final DefaultStateful element) {
 				final VariableTableEntry vte = ((DeduceElement3_VariableTableEntry) element).principal;
 
 				final DeduceTypes2         dt2     = ((DeduceElement3_VariableTableEntry) element).deduceTypes2();
@@ -190,7 +190,7 @@ public class DeduceElement3_VariableTableEntry extends Stateful implements IDedu
 			}
 
 			@Override
-			public boolean checkState(final Stateful aElement3) {
+			public boolean checkState(final DefaultStateful aElement3) {
 				return true;
 			}
 		}
@@ -199,7 +199,7 @@ public class DeduceElement3_VariableTableEntry extends Stateful implements IDedu
 			private int identity;
 
 			@Override
-			public void apply(final Stateful element) {
+			public void apply(final DefaultStateful element) {
 
 			}
 
@@ -209,7 +209,7 @@ public class DeduceElement3_VariableTableEntry extends Stateful implements IDedu
 			}
 
 			@Override
-			public boolean checkState(final Stateful aElement3) {
+			public boolean checkState(final DefaultStateful aElement3) {
 				return true;
 			}
 		}
@@ -218,7 +218,7 @@ public class DeduceElement3_VariableTableEntry extends Stateful implements IDedu
 			private int identity;
 
 			@Override
-			public void apply(final Stateful element) {
+			public void apply(final DefaultStateful element) {
 				final VariableTableEntry vte = ((DeduceElement3_VariableTableEntry) element).principal;
 				vte.resolve_var_table_entry_for_exit_function();
 			}
@@ -229,7 +229,7 @@ public class DeduceElement3_VariableTableEntry extends Stateful implements IDedu
 			}
 
 			@Override
-			public boolean checkState(final Stateful aElement3) {
+			public boolean checkState(final DefaultStateful aElement3) {
 				return ((DeduceElement3_VariableTableEntry) aElement3).st == ST.INITIAL;
 			}
 		}

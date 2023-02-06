@@ -16,6 +16,7 @@ import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.deduce.NamespaceInvocation;
+import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.work.WorkJob;
 import tripleo.elijah.work.WorkManager;
 
@@ -23,16 +24,18 @@ import tripleo.elijah.work.WorkManager;
  * Created 5/16/21 12:46 AM
  */
 public class WlGenerateFunction implements WorkJob {
-	private final FunctionDef functionDef;
-	private final GenerateFunctions generateFunctions;
+	private final FunctionDef        functionDef;
+	private final GenerateFunctions  generateFunctions;
 	private final FunctionInvocation functionInvocation;
-	private boolean _isDone = false;
-	private GeneratedFunction result;
+	private final ICodeRegistrar     codeRegistrar;
+	private       boolean            _isDone = false;
+	private       GeneratedFunction  result;
 
-	public WlGenerateFunction(final GenerateFunctions aGenerateFunctions, @NotNull final FunctionInvocation aFunctionInvocation) {
-		functionDef = (FunctionDef) aFunctionInvocation.getFunction();
-		generateFunctions = aGenerateFunctions;
+	public WlGenerateFunction(final GenerateFunctions aGenerateFunctions, @NotNull final FunctionInvocation aFunctionInvocation, final ICodeRegistrar aCodeRegistrar) {
+		functionDef        = (FunctionDef) aFunctionInvocation.getFunction();
+		generateFunctions  = aGenerateFunctions;
 		functionInvocation = aFunctionInvocation;
+		codeRegistrar      = aCodeRegistrar;
 	}
 
 	@Override
@@ -62,7 +65,7 @@ public class WlGenerateFunction implements WorkJob {
 					@Override
 					public void onDone(final GeneratedNamespace result) {
 						if (result.getFunction(functionDef) == null) {
-							gf.setCode(generateFunctions.module.parent.nextFunctionCode());
+							codeRegistrar.registerFunction(gf);
 							result.addFunction(functionDef, gf);
 						}
 						gf.setClass(result);
@@ -74,7 +77,7 @@ public class WlGenerateFunction implements WorkJob {
 					@Override
 					public void onDone(final GeneratedClass result) {
 						if (result.getFunction(functionDef) == null) {
-							gf.setCode(generateFunctions.module.parent.nextFunctionCode());
+							codeRegistrar.registerFunction(gf);
 							result.addFunction(functionDef, gf);
 						}
 						gf.setClass(result);

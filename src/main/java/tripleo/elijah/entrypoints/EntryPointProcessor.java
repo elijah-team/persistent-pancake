@@ -1,14 +1,19 @@
 package tripleo.elijah.entrypoints;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
 import tripleo.elijah.stages.gen_fn.WlGenerateClass;
 import tripleo.elijah.stages.gen_fn.WlGenerateFunction;
+import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.work.WorkList;
 
 public interface EntryPointProcessor {
@@ -45,12 +50,41 @@ public interface EntryPointProcessor {
 
 			assert ci != null;
 
-			final @NotNull WlGenerateClass job = new WlGenerateClass(generateFunctions, ci, deducePhase.generatedClasses);
+			final ICodeRegistrar codeRegistrar = new ICodeRegistrar() {
+				final Compilation compilation = deducePhase._compilation();
+
+				@Override
+				public void registerNamespace(final GeneratedNamespace aNamespace) {
+					assert false;
+				}
+
+				@Override
+				public void registerClass(final GeneratedClass aClass) {
+					if (MainClassEntryPoint.isMainClass(aClass.getKlass())) {
+						aClass.setCode(100);
+						//compilation.notifyClass(code, aClass);
+					} else
+						aClass.setCode(compilation.nextClassCode());
+				}
+
+				@Override
+				public void registerFunction(final BaseGeneratedFunction aFunction) {
+					if (aFunction.getFD() instanceof FunctionDef &&
+					  MainClassEntryPoint.is_main_function_with_no_args((FunctionDef) aFunction.getFD())) {
+						aFunction.setCode(1000);
+						//compilation.notifyFunction(code, aFunction);
+					} else
+						aFunction.setCode(compilation.nextClassCode());
+				}
+			};
+
+
+			final @NotNull WlGenerateClass job = new WlGenerateClass(generateFunctions, ci, deducePhase.generatedClasses, deducePhase.codeRegistrar);
 			wl.addJob(job);
 
 			final @NotNull FunctionInvocation fi = new FunctionInvocation(f, null, ci, deducePhase.generatePhase);
 //				fi.setPhase(phase);
-			final @NotNull WlGenerateFunction job1 = new WlGenerateFunction(generateFunctions, fi);
+			final @NotNull WlGenerateFunction job1 = new WlGenerateFunction(generateFunctions, fi, deducePhase.codeRegistrar);
 			wl.addJob(job1);
 		}
 	}
@@ -74,12 +108,12 @@ public interface EntryPointProcessor {
 			final @NotNull FunctionDef     f  = afep.getFunction();
 			@NotNull final ClassInvocation ci = deducePhase.registerClassInvocation((ClassStatement) afep.getParent());
 
-			final WlGenerateClass job = new WlGenerateClass(generateFunctions, ci, deducePhase.generatedClasses);
+			final WlGenerateClass job = new WlGenerateClass(generateFunctions, ci, deducePhase.generatedClasses, deducePhase.codeRegistrar);
 			wl.addJob(job);
 
 			final @NotNull FunctionInvocation fi = new FunctionInvocation(f, null, ci, deducePhase.generatePhase);
 //				fi.setPhase(phase);
-			final WlGenerateFunction job1 = new WlGenerateFunction(generateFunctions, fi);
+			final WlGenerateFunction job1 = new WlGenerateFunction(generateFunctions, fi, deducePhase.codeRegistrar);
 			wl.addJob(job1);
 		}
 	}
