@@ -13,26 +13,18 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.contexts.FunctionContext;
-import tripleo.elijah.contexts.ModuleContext;
-import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.lang.IdentExpression;
-import tripleo.elijah.lang.NormalTypeName;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.Qualident;
 import tripleo.elijah.lang.RegularTypeName;
-import tripleo.elijah.lang.Scope3;
-import tripleo.elijah.lang.VariableSequence;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.VariableTypeName;
+import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.Helpers;
 
@@ -45,57 +37,65 @@ public class DeduceTypesTest {
 	private Promise<GenType, ResolveError, Void> xx;
 
 	@Before
-	public void setUp() throws ResolveError {
+	public void setUp() {
 		final Boilerplate b = new Boilerplate();
 		b.get();
 		final Compilation c   = b.comp;
 		final OS_Module   mod = b.defaultMod();
 
-		final ModuleContext mctx = new ModuleContext(mod);
-		mod.setContext(mctx);
-		final ClassStatement cs = new ClassStatement(mod, mctx);
-		cs.setName(Helpers.string_to_ident("Test"));
-		final FunctionDef fd = cs.funcDef();
-		fd.setName(Helpers.string_to_ident("test"));
-		final Scope3            scope3 = new Scope3(fd);
-		final VariableSequence  vss    = scope3.statementClosure().varSeq(fd.getContext());
-		final VariableStatement vs     = vss.next();
-		final IdentExpression x = Helpers.string_to_ident("x");
-		x.setContext(fd.getContext());
-		vs.setName(x);
-		final Qualident qu = new Qualident();
-		qu.append(Helpers.string_to_ident("Integer"));
-		((NormalTypeName) vs.typeName()).setName(qu);
-		vs.typeName().setContext(fd.getContext());
-		fd.scope(scope3);
-		fd.postConstruct();
-		cs.postConstruct();
-		mod.postConstruct();
+		final DeduceTypeWatcher dtw = new DeduceTypeWatcher();
+
+		b.withModBuilder(mod)
+		 .addClass(cc -> {
+			 cc.name("Test");
+			 cc.addFunction(f -> {
+				 f.name("test");
+				 f.vars("x", "Integer", dtw);
+			 });
+		 });
+
+/*
+		final FunctionDef fd = null;
 		final FunctionContext fc = (FunctionContext) fd.getContext(); // TODO needs to be mocked
 		final IdentExpression x1 = Helpers.string_to_ident("x");
 		x1.setContext(fc);
-		//
-		mod.prelude = mod.parent.findPrelude("c").success();
-		//
-		//
-		//
-		final ElLog.Verbosity verbosity = Compilation.gitlabCIVerbosity();
-		final AccessBus       ab        = new AccessBus(mod.parent);
-		final PipelineLogic   pl        = new PipelineLogic(ab);
-		final DeducePhase     dp        = pl.dp;
-		final DeduceTypes2    d         = dp.deduceModule(mod, verbosity);
-//		final DeduceTypes d = new DeduceTypes(mod);
-		this.xx = DeduceLookupUtils.deduceExpression_p(d, x1, fc);
+*/
+
+		final DeduceTypes2 d = b.simpleDeduceModule3(mod);
+
+		final IdentExpression nameToken = ((VariableStatement) dtw.element()).getNameToken();
+		this.xx = DeduceLookupUtils.deduceExpression_p(d, nameToken, nameToken/*dtw.element()*/.getContext());
 		xx.then(a -> this.x = a);
+		xx.fail(e -> c.getErrSink().reportDiagnostic(e));
+		dtw.onType(a -> this.x = a);
 		System.out.println(this.x);
 	}
-	/** TODO This test fails beacause we are comparing a BUILT_IN vs a USER OS_Type.
+
+	/**
+	 * TODO This test fails beacause we are comparing a BUILT_IN vs a USER OS_Type.
 	 *   It fails because Integer is an interface and not a BUILT_IN
 	 */
-//	@Test
-//	public void testDeduceIdentExpression1() {
-//		Assert.assertEquals(new OS_Type(BuiltInTypes.SystemInteger).getBType(), x.getBType());
-//	}
+	@Ignore
+	@Test
+	public void testDeduceIdentExpression1() {
+//		assert x == null;
+
+		Assert.assertTrue("Promise not resolved", xx.isResolved());
+
+		xx.then(xxx -> {
+//			Assert.assertEquals(OS_Type.Type.USER, xxx.resolved.getType());
+			System.out.println("1 " + new OS_Type(BuiltInTypes.SystemInteger).getBType());
+			System.out.println("2 " + xxx.resolved.getBType());
+			System.out.println("2.5 " + xxx.resolved);
+			Assert.assertNotEquals(new OS_Type(BuiltInTypes.SystemInteger).getBType(), xxx.resolved.getBType());
+
+			assert false; // never reached
+		});
+//		xx.fail(() -> {
+//			if (false) throw new AssertionError();
+//		});
+	}
+
 	/**
 	 * Now comparing {@link RegularTypeName} to {@link VariableTypeName} works
 	 */

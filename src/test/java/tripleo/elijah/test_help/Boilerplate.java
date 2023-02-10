@@ -8,11 +8,14 @@ import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.ProcessRecord;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.deduce.DeducePhase;
+import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.OutputFileFactory;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
+import tripleo.elijah.stages.logging.ElLog;
 
 public class Boilerplate {
 	public Compilation        comp;
@@ -48,6 +51,7 @@ public class Boilerplate {
 	public OS_Module defaultMod() {
 		if (module == null) {
 			module = new OS_Module();
+			module.setContext(new ModuleContext(module));
 			if (comp != null)
 				module.setParent(comp);
 		}
@@ -57,5 +61,33 @@ public class Boilerplate {
 
 	public DeducePhase getDeducePhase() {
 		return pr.pipelineLogic.dp;
+	}
+
+	public BoilerplateModuleBuilder withModBuilder(final OS_Module aMod) {
+		return new BoilerplateModuleBuilder(aMod);
+	}
+
+	public DeduceTypes2 simpleDeduceModule3(final OS_Module aMod) {
+		final ElLog.Verbosity verbosity = Compilation.gitlabCIVerbosity();
+		@NotNull final String s         = Compilation.CompilationAlways.defaultPrelude();
+		return simpleDeduceModule2(aMod, s, verbosity);
+	}
+
+	public DeduceTypes2 simpleDeduceModule2(final OS_Module mod, final @NotNull String aS, final ElLog.Verbosity aVerbosity) {
+		final Compilation c = mod.getCompilation();
+
+		mod.prelude = c.findPrelude(aS).success();
+
+		return simpleDeduceModule(aVerbosity);
+	}
+
+	public DeduceTypes2 simpleDeduceModule(final ElLog.Verbosity verbosity) {
+//		final PipelineLogic pl = new PipelineLogic(new AccessBus(module.getCompilation()));
+//		final DeduceTypes2  d  = pl.dp.deduceModule(module, verbosity);
+
+		final DeduceTypes2 d = getDeducePhase().deduceModule(module, verbosity);
+
+//		d.processWachers();
+		return d;
 	}
 }

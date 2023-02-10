@@ -87,7 +87,7 @@ public class TestBasic {
 	}
 
 	@Test
-	public final void testBasic_listfolders4() throws Exception {
+	public final void testBasic_listfolders4() {
 		final String s = "test/basic/listfolders4/listfolders4.ez";
 
 		final ErrSink     eee = new StdErrSink();

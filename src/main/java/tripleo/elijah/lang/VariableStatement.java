@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang2.ElElementVisitor;
+import tripleo.elijah.stages.deduce.DeduceTypeWatcher;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ import java.util.List;
 
 public class VariableStatement implements OS_Element, @NotNull Locatable {
 
-	private final VariableSequence _parent;
+	private final VariableSequence  _parent;
+	public        DeduceTypeWatcher dtw;
 
 	private TypeName typeName = new VariableTypeName();
 	private IExpression initialValue = IExpression.UNASSIGNED;
