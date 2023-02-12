@@ -53,6 +53,12 @@ public class DeferredMemberFunction {
 		deduceTypes2       = aDeduceTypes2;
 		functionInvocation = aFunctionInvocation;
 		//
+
+		if (functionInvocation == null) {
+			System.out.println("**=== functionInvocation == null ");
+			return;
+		}
+
 		functionInvocation.generatePromise().then(new DoneCallback<BaseGeneratedFunction>() {
 			@Override
 			public void onDone(final BaseGeneratedFunction result) {

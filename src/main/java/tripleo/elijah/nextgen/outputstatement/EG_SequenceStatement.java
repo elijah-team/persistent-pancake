@@ -46,4 +46,8 @@ public class EG_SequenceStatement implements EG_Statement {
 	public EX_Explanation getExplanation() {
 		return null;
 	}
+
+	public List<EG_Statement> _list() {
+		return list;
+	}
 }

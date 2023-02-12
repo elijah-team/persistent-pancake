@@ -197,8 +197,11 @@ class Resolve_Ident_IA2 {
 			}
 		}
 		if (idte2.type != null) {
-			assert idte2.type.getAttached() != null;
-			if (findResolved(idte2, ectx)) return RIA_STATE.CONTINUE;
+			if (idte2.type.getAttached() != null) {
+				if (findResolved(idte2, ectx)) {
+					return RIA_STATE.CONTINUE;
+				}
+			}
 		} else {
 //			throw new IllegalStateException("who knows");
 			errSink.reportWarning("2010 idte2.type == null for " + text);

@@ -106,6 +106,40 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 			return Operation2.failure(diag);
 		}
 
+		if (x == null) {
+			return Operation2.failure(new GCFM_Diagnostic() {
+				@Override
+				public String _message() {
+					return "113/133 x is null";
+				}
+
+				@Override
+				public String code() {
+					return "133";
+				}
+
+				@Override
+				public Severity severity() {
+					return Severity.INFO;
+				}
+
+				@Override
+				public @NotNull Locatable primary() {
+					return null;
+				}
+
+				@Override
+				public @NotNull List<Locatable> secondary() {
+					return null;
+				}
+
+				@Override
+				public void report(final PrintStream stream) {
+					stream.printf("%s %s%n", code(), _message());
+				}
+			});
+		}
+
 		return Operation2.success(x);
 	}
 

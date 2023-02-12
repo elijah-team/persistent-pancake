@@ -7,7 +7,7 @@ import tripleo.elijah.ci.CompilerInstructions;
 import java.io.File;
 import java.util.Objects;
 
-interface ILazyCompilerInstructions {
+public interface ILazyCompilerInstructions {
 	@Contract(value = "_ -> new", pure = true)
 	static @NotNull ILazyCompilerInstructions of(final CompilerInstructions aCompilerInstructions) {
 		return new ILazyCompilerInstructions() {
@@ -26,7 +26,7 @@ interface ILazyCompilerInstructions {
 				try {
 					final @NotNull Operation<CompilerInstructions> parsed = c.parseEzFile(aFile);
 					return Objects.requireNonNull(parsed).success();
-				} catch (Exception aE) {
+				} catch (final Exception aE) {
 					throw new RuntimeException(aE); // TODO ugh
 				}
 			}

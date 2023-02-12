@@ -18,6 +18,7 @@ import io.reactivex.rxjava3.subjects.Subject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.functionality.f202.F202;
+import tripleo.elijah.comp.internal.CompilationBus;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.lang.ClassStatement;
@@ -92,12 +93,13 @@ public abstract class Compilation {
 		try {
 			final OptionsProcessor             op  = new ApacheOptionsProcessor();
 			final CompilerInstructionsObserver cio = new CompilerInstructionsObserver(this, op, _cis);
+			final CompilationBus               cb  = new CompilationBus(this);
 
 			final String[] args2;
-			args2 = op.process(this, args);
+			args2 = op.process(this, args, cb);
 
-			__cr = new CompilationRunner(this, _cis);
-			__cr.doFindCIs(args2);
+			__cr = new CompilationRunner(this, _cis, cb);
+			__cr.doFindCIs(args2, cb);
 		} catch (final Exception e) {
 			errSink.exception(e);
 			throw new RuntimeException(e);

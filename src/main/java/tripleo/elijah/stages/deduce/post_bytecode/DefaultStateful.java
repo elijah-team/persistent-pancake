@@ -9,8 +9,10 @@ public abstract class DefaultStateful implements Stateful {
 	public void mvState(final State aO, @NotNull final State aState) {
 		assert aO == null;
 
-		if (!aState.checkState(this))
-			throw new BadState();
+		if (!aState.checkState(this)) {
+			//throw new BadState();
+			return;
+		}
 
 		aState.apply(this);
 		this.setState(aState);

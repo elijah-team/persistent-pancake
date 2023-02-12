@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.diagnostic.TooManyEz_ActuallyNone;
 import tripleo.elijah.comp.diagnostic.TooManyEz_BeSpecific;
+import tripleo.elijah.comp.internal.CompilationBus;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.diagnostic.Diagnostic;
@@ -33,7 +34,7 @@ class CompilationRunner {
 	private final CCI                               cci;
 
 	@Contract(pure = true)
-	CompilationRunner(final Compilation aCompilation, final Compilation.CIS a_cis) {
+	CompilationRunner(final Compilation aCompilation, final Compilation.CIS a_cis, final CompilationBus aCb) {
 		compilation = aCompilation;
 		cis         = a_cis;
 		cci         = new CCI(compilation, a_cis);
@@ -160,12 +161,12 @@ class CompilationRunner {
 		return new QueryEzFileToModule(qp).calculate();
 	}
 
-	public void doFindCIs(final String[] args2) {
+	public void doFindCIs(final String[] args2, final ICompilationBus cb) {
 		final ErrSink errSink1 = compilation.getErrSink();
 		final IO      io       = compilation.getIO();
 
 		// TODO map + "extract"
-		find_cis(args2, compilation, errSink1, io);
+		find_cis(args2, compilation, errSink1, io, cb);
 
 		cis.almostComplete();
 	}
@@ -173,7 +174,8 @@ class CompilationRunner {
 	protected void find_cis(final @NotNull String @NotNull [] args2,
 	                        final @NotNull Compilation c,
 	                        final @NotNull ErrSink errSink,
-	                        final @NotNull IO io) {
+	                        final @NotNull IO io,
+	                        final ICompilationBus cb) {
 		CompilerInstructions ez_file;
 		for (int i = 0; i < args2.length; i++) {
 			final String  file_name = args2[i];
@@ -182,30 +184,34 @@ class CompilationRunner {
 			if (matches2) {
 				final ILazyCompilerInstructions ilci = ILazyCompilerInstructions.of(f, c);
 				cci.accept(new Maybe<>(ilci, null));
+
+				cb.inst(ilci);
 			} else {
 				//errSink.reportError("9996 Not an .ez file "+file_name);
 				if (f.isDirectory()) {
 					final List<CompilerInstructions> ezs = searchEzFiles(f, errSink, io, c);
 
 					switch (ezs.size()) {
-						case 0:
-							final Diagnostic d_toomany = new TooManyEz_ActuallyNone();
-							final Maybe<ILazyCompilerInstructions> m = new Maybe<>(null, d_toomany);
-							cci.accept(m);
-							break;
-						case 1:
-							ez_file = ezs.get(0);
-							cci.accept(new Maybe<>(ILazyCompilerInstructions.of(ez_file), null));
-							break;
-						default:
-							//final Diagnostic d_toomany = new TooManyEz_UseFirst();
-							//add_ci(ezs.get(0));
+					case 0:
+						final Diagnostic d_toomany = new TooManyEz_ActuallyNone();
+						final Maybe<ILazyCompilerInstructions> m = new Maybe<>(null, d_toomany);
+						cci.accept(m);
+						break;
+					case 1:
+						ez_file = ezs.get(0);
+						final ILazyCompilerInstructions ilci = ILazyCompilerInstructions.of(ez_file);
+						cci.accept(new Maybe<>(ilci, null));
+						cb.inst(ilci);
+						break;
+					default:
+						//final Diagnostic d_toomany = new TooManyEz_UseFirst();
+						//add_ci(ezs.get(0));
 
-							// more than 1 (negative is not possible)
-							final Diagnostic d_toomany2 = new TooManyEz_BeSpecific();
-							final Maybe<ILazyCompilerInstructions> m2 = new Maybe<>(null, d_toomany2);
-							cci.accept(m2);
-							break;
+						// more than 1 (negative is not possible)
+						final Diagnostic d_toomany2 = new TooManyEz_BeSpecific();
+						final Maybe<ILazyCompilerInstructions> m2 = new Maybe<>(null, d_toomany2);
+						cci.accept(m2);
+						break;
 					}
 				} else
 					errSink.reportError("9995 Not a directory " + f.getAbsolutePath());

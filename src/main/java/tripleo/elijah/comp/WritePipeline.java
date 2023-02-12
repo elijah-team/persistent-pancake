@@ -20,6 +20,7 @@ import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
 import tripleo.elijah.nextgen.outputstatement.GE_BuffersStatement;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
 import tripleo.elijah.stages.generate.ElSystem;
@@ -156,6 +157,9 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 //			}
 			x.accept(seq.getText());
 			((FileCharSink) x).close();
+
+			final @NotNull EOT_OutputTree cot = c.getOutputTree();
+			cot._putSeq(key, path, seq);
 		}
 	}
 

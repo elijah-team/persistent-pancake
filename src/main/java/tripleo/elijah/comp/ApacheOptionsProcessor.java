@@ -23,26 +23,24 @@ public class ApacheOptionsProcessor implements OptionsProcessor {
 
 	@Override
 	public String[] process(final @NotNull Compilation c,
-	                        final @NotNull List<String> args) throws Exception {
+	                        final @NotNull List<String> args,
+	                        final @NotNull ICompilationBus cb) throws Exception {
 		final CommandLine cmd;
-		//try {
+
 		cmd = clp.parse(options, args.toArray(new String[args.size()]));
-		//} catch (ParseException aE) {
-		//	throw new RuntimeException(aE);
-		//}
 
 		if (cmd.hasOption("s")) {
-			new CC_SetStage(cmd.getOptionValue('s')).apply(c);
+			cb.option(new CC_SetStage(cmd.getOptionValue('s')));
 		}
 		if (cmd.hasOption("showtree")) {
-			new CC_SetShowTree(true).apply(c);
+			cb.option(new CC_SetShowTree(true));
 		}
 		if (cmd.hasOption("out")) {
-			new CC_SetDoOut(true).apply(c);
+			cb.option(new CC_SetDoOut(true));
 		}
 
 		if (Compilation.isGitlab_ci() || cmd.hasOption("silent")) {
-			new CC_SetSilent(true).apply(c);
+			cb.option(new CC_SetSilent(true));
 		}
 
 		return cmd.getArgs();

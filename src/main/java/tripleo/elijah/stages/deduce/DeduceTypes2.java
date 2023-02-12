@@ -274,7 +274,7 @@ public class DeduceTypes2 {
 									if (identIA2 != null) {
 										@NotNull final IdentTableEntry idte2          = identIA.getEntry();
 										@Nullable final ProcTableEntry procTableEntry = idte2.getCallablePTE();
-										if (procTableEntry == pte) System.err.println("940 procTableEntry == pte");
+//										if (procTableEntry == pte) System.err.println("940 procTableEntry == pte");
 										if (procTableEntry != null) {
 											// TODO doesn't seem like we need this
 											procTableEntry.onFunctionInvocation(new DoneCallback<FunctionInvocation>() {
@@ -1496,7 +1496,10 @@ public class DeduceTypes2 {
 		expectations.check();
 	}
 
-	@NotNull DeferredMemberFunction deferred_member_function(final OS_Element aParent, @Nullable IInvocation aInvocation, final BaseFunctionDef aFunctionDef, final FunctionInvocation aFunctionInvocation) {
+	@NotNull DeferredMemberFunction deferred_member_function(final OS_Element aParent,
+	                                                         @Nullable IInvocation aInvocation,
+	                                                         final BaseFunctionDef aFunctionDef,
+	                                                         final FunctionInvocation aFunctionInvocation) {
 		if (aInvocation == null) {
 			if (aParent instanceof NamespaceStatement)
 				aInvocation = phase.registerNamespaceInvocation((NamespaceStatement) aParent);
@@ -2322,151 +2325,160 @@ public class DeduceTypes2 {
 			final LookupResultList     lrl  = DeduceLookupUtils.lookupExpression(gie.getLeft(), ctx, this);
 			final @Nullable OS_Element best = lrl.chooseBest(null);
 			if (best != null) {
-				if (best instanceof VariableStatement) { // TODO what about alias?
-					@NotNull final VariableStatement    vs     = (VariableStatement) best;
-					final String                        s      = vs.getName();
-					@Nullable final InstructionArgument vte_ia = generatedFunction.vte_lookup(s);
-					if (vte_ia != null) {
-						@NotNull final VariableTableEntry vte1 = generatedFunction.getVarTableEntry(to_int(vte_ia));
-						throw new NotImplementedException();
-					} else {
-						final IdentTableEntry idte = generatedFunction.getIdentTableEntryFor(vs.getNameToken());
-						assert idte != null;
-						@Nullable OS_Type ty = idte.type.getAttached();
-						idte.onType(phase, new OnType() {
-							@Override
-							public void typeDeduced(final @NotNull OS_Type ty) {
-								assert ty != null;
-								@NotNull GenType rtype = null;
-								try {
-									rtype = resolve_type(ty, ctx);
-								} catch (final ResolveError resolveError) {
-									//								resolveError.printStackTrace();
-									errSink.reportError("Cant resolve " + ty); // TODO print better diagnostic
-									return;
-								}
-								if (rtype.resolved != null && rtype.resolved.getType() == OS_Type.Type.USER_CLASS) {
-									final LookupResultList     lrl2  = rtype.resolved.getClassOf().getContext().lookup("__getitem__");
-									@Nullable final OS_Element best2 = lrl2.chooseBest(null);
-									if (best2 != null) {
-										if (best2 instanceof FunctionDef) {
-											@NotNull final FunctionDef     fd         = (FunctionDef) best2;
-											@Nullable final ProcTableEntry pte        = null;
-											final IInvocation              invocation = getInvocation((GeneratedFunction) generatedFunction);
-											forFunction(newFunctionInvocation(fd, pte, invocation, phase), new ForFunction() {
-												@Override
-												public void typeDecided(final @NotNull GenType aType) {
-													assert fd == generatedFunction.getFD();
-													//
-													if (idte.type == null) {
-														@NotNull final TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, gt(aType), idte); // TODO expression?
-														idte.type = tte1;
-													} else
-														idte.type.setAttached(gt(aType));
-												}
-											});
-										} else {
-											throw new NotImplementedException();
-										}
-									} else {
-										throw new NotImplementedException();
-									}
-								}
-							}
-
-							@Override
-							public void noTypeFound() {
-								throw new NotImplementedException();
-							}
-						});
-						if (ty == null) {
-							@NotNull final TypeTableEntry tte3 = generatedFunction.newTypeTableEntry(
-							  TypeTableEntry.Type.SPECIFIED, new OS_Type(vs.typeName()), vs.getNameToken());
-							idte.type = tte3;
-							ty        = idte.type.getAttached();
-						}
-					}
-
-					//				tte.attached = new OS_FuncType((FunctionDef) best); // TODO: what is this??
-					//vte.addPotentialType(instructionIndex, tte);
+				if (best instanceof VariableStatement) {
+					@NotNull final VariableStatement vs = (VariableStatement) best;
+					__do_assign_call_GET_ITEM__VariableStatement(generatedFunction, ctx, vs);
+					return;
 				} else if (best instanceof FormalArgListItem) {
-					final @Nullable FormalArgListItem   fali   = (FormalArgListItem) best;
-					final String                        s      = fali.name();
-					@Nullable final InstructionArgument vte_ia = generatedFunction.vte_lookup(s);
-					if (vte_ia != null) {
-						@NotNull final VariableTableEntry vte2 = generatedFunction.getVarTableEntry(to_int(vte_ia));
+					final @Nullable FormalArgListItem fali = (FormalArgListItem) best;
+					__do_assign_call_GET_ITEM__FALI(generatedFunction, ctx, fali);
+					return;
+				} else if (best instanceof AliasStatement) {
+					//
+				}
+			}
+		} catch (final ResolveError aResolveError) {
+//			aResolveError.printStackTrace();
+//			NotImplementedException.raise();
+			errSink.reportDiagnostic(aResolveError);
+		}
 
-						//					final @Nullable OS_Type ty2 = vte2.type.attached;
-						vte2.typePromise().done(new DoneCallback<GenType>() {
+		throw new NotImplementedException();
+	}
+
+	private void __do_assign_call_GET_ITEM__VariableStatement(final @NotNull BaseGeneratedFunction generatedFunction,
+	                                                          final @NotNull Context ctx,
+	                                                          final @NotNull VariableStatement vs) throws NotImplementedException {
+		final String                        s      = vs.getName();
+		@Nullable final InstructionArgument vte_ia = generatedFunction.vte_lookup(s);
+		if (vte_ia != null) {
+			@NotNull final VariableTableEntry vte1 = generatedFunction.getVarTableEntry(to_int(vte_ia));
+			throw new NotImplementedException();
+		} else {
+			final IdentTableEntry idte = generatedFunction.getIdentTableEntryFor(vs.getNameToken());
+			assert idte != null;
+			if (idte.type == null) return;
+
+			@Nullable OS_Type ty = idte.type.getAttached();
+			idte.onType(phase, new OnType() {
+				@Override
+				public void typeDeduced(final @NotNull OS_Type ty) {
+					__do_assign_call_GET_ITEM__VariableStatement__idte__typeDeduced(ty, ctx, generatedFunction, idte);
+				}
+
+				@Override
+				public void noTypeFound() {
+					throw new NotImplementedException();
+				}
+			});
+			if (ty == null) {
+				@NotNull final TypeTableEntry tte3 = generatedFunction.newTypeTableEntry(
+				  TypeTableEntry.Type.SPECIFIED, new OS_Type(vs.typeName()), vs.getNameToken());
+				idte.type = tte3;
+				ty        = idte.type.getAttached();
+			}
+		}
+
+		//				tte.attached = new OS_FuncType((FunctionDef) best); // TODO: what is this??
+		//vte.addPotentialType(instructionIndex, tte);
+	}
+
+	private void __do_assign_call_GET_ITEM__FALI(final BaseGeneratedFunction generatedFunction,
+	                                             final Context ctx,
+	                                             final FormalArgListItem fali) {
+		final String                        s      = fali.name();
+		@Nullable final InstructionArgument vte_ia = generatedFunction.vte_lookup(s);
+		if (vte_ia == null) {
+			return;
+		}
+
+
+		@NotNull final VariableTableEntry vte2 = generatedFunction.getVarTableEntry(to_int(vte_ia));
+
+		vte2.typePromise().done(vte2_gt -> {
+			//assert false; // TODO this code is never reached
+			final @Nullable OS_Type ty2 = vte2_gt.typeName;
+			assert ty2 != null;
+			@NotNull GenType rtype = null;
+			try {
+				rtype = resolve_type(ty2, ctx);
+			} catch (final ResolveError resolveError) {
+				//resolveError.printStackTrace();
+				errSink.reportError("Cant resolve " + ty2); // TODO print better diagnostic
+				return;
+			}
+			if (rtype.resolved != null && rtype.resolved.getType() == OS_Type.Type.USER_CLASS) {
+				final LookupResultList     lrl2  = rtype.resolved.getClassOf().getContext().lookup("__getitem__");
+				@Nullable final OS_Element best2 = lrl2.chooseBest(null);
+				if (best2 != null) {
+					if (best2 instanceof FunctionDef) {
+						@Nullable final FunctionDef    fd         = (FunctionDef) best2;
+						@Nullable final ProcTableEntry pte        = null;
+						final IInvocation              invocation = getInvocation((GeneratedFunction) generatedFunction);
+						forFunction(newFunctionInvocation(fd, pte, invocation, phase), new ForFunction() {
 							@Override
-							public void onDone(@NotNull final GenType result) {
-								//							assert false; // TODO this code is never reached
-								final @Nullable OS_Type ty2 = result.typeName/*.getAttached()*/;
-								assert ty2 != null;
-								@NotNull GenType rtype = null;
-								try {
-									rtype = resolve_type(ty2, ctx);
-								} catch (final ResolveError resolveError) {
-									//								resolveError.printStackTrace();
-									errSink.reportError("Cant resolve " + ty2); // TODO print better diagnostic
-									return;
-								}
-								if (rtype.resolved != null && rtype.resolved.getType() == OS_Type.Type.USER_CLASS) {
-									final LookupResultList     lrl2  = rtype.resolved.getClassOf().getContext().lookup("__getitem__");
-									@Nullable final OS_Element best2 = lrl2.chooseBest(null);
-									if (best2 != null) {
-										if (best2 instanceof FunctionDef) {
-											@Nullable final FunctionDef    fd         = (FunctionDef) best2;
-											@Nullable final ProcTableEntry pte        = null;
-											final IInvocation              invocation = getInvocation((GeneratedFunction) generatedFunction);
-											forFunction(newFunctionInvocation(fd, pte, invocation, phase), new ForFunction() {
-												@Override
-												public void typeDecided(final @NotNull GenType aType) {
-													assert fd == generatedFunction.getFD();
-													//
-													@NotNull final TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, gt(aType), vte2); // TODO expression?
-													vte2.type = tte1;
-												}
-											});
-										} else {
-											throw new NotImplementedException();
-										}
-									} else {
-										throw new NotImplementedException();
-									}
-								}
+							public void typeDecided(final @NotNull GenType aType) {
+								assert fd == generatedFunction.getFD();
+								//
+								@NotNull final TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, gt(aType), vte2); // TODO expression?
+								vte2.type = tte1;
 							}
 						});
-						//					vte2.onType(phase, new OnType() {
-						//						@Override public void typeDeduced(final OS_Type ty2) {
-						//						}
-						//
-						//						@Override
-						//						public void noTypeFound() {
-						//							throw new NotImplementedException();
-						//						}
-						//					});
-	/*
-						if (ty2 == null) {
-							@NotNull TypeTableEntry tte3 = generatedFunction.newTypeTableEntry(
-									TypeTableEntry.Type.SPECIFIED, new OS_Type(fali.typeName()), fali.getNameToken());
-							vte2.type = tte3;
-	//						ty2 = vte2.type.attached; // TODO this is final, but why assign anyway?
-						}
-	*/
+					} else {
+						throw new NotImplementedException();
 					}
 				} else {
-					final int y = 2;
+					throw new NotImplementedException();
+				}
+			}
+		});
+
+/*
+			if (ty2 == null) {
+				@NotNull TypeTableEntry tte3 = generatedFunction.newTypeTableEntry(
+						TypeTableEntry.Type.SPECIFIED, new OS_Type(fali.typeName()), fali.getNameToken());
+				vte2.type = tte3;
+//						ty2 = vte2.type.attached; // TODO this is final, but why assign anyway?
+			}
+*/
+	}
+
+	private void __do_assign_call_GET_ITEM__VariableStatement__idte__typeDeduced(final @NotNull OS_Type ty, final Context ctx, final BaseGeneratedFunction generatedFunction, final IdentTableEntry idte) {
+		assert ty != null;
+		@NotNull GenType rtype = null;
+		try {
+			rtype = resolve_type(ty, ctx);
+		} catch (final ResolveError resolveError) {
+			//								resolveError.printStackTrace();
+			errSink.reportError("Cant resolve " + ty); // TODO print better diagnostic
+			return;
+		}
+		if (rtype.resolved != null && rtype.resolved.getType() == OS_Type.Type.USER_CLASS) {
+			final LookupResultList     lrl2  = rtype.resolved.getClassOf().getContext().lookup("__getitem__");
+			@Nullable final OS_Element best2 = lrl2.chooseBest(null);
+			if (best2 != null) {
+				if (best2 instanceof FunctionDef) {
+					@NotNull final FunctionDef     fd         = (FunctionDef) best2;
+					@Nullable final ProcTableEntry pte        = null;
+					final IInvocation              invocation = getInvocation((GeneratedFunction) generatedFunction);
+					forFunction(newFunctionInvocation(fd, pte, invocation, phase), new ForFunction() {
+						@Override
+						public void typeDecided(final @NotNull GenType aType) {
+							assert fd == generatedFunction.getFD();
+							//
+							if (idte.type == null) {
+								@NotNull final TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, gt(aType), idte); // TODO expression?
+								idte.type = tte1;
+							} else
+								idte.type.setAttached(gt(aType));
+						}
+					});
+				} else {
 					throw new NotImplementedException();
 				}
 			} else {
-				final int y = 2;
 				throw new NotImplementedException();
 			}
-		} catch (final ResolveError aResolveError) {
-			aResolveError.printStackTrace();
-			final int y = 2;
-			throw new NotImplementedException();
 		}
 	}
 
@@ -3280,7 +3292,7 @@ public class DeduceTypes2 {
 		public void setCounter(final long aCounter) {
 			counter = aCounter;
 
-			LOG.info(String.format("Expectation (%s, %d) set: %s %s", DeduceTypes2.this, counter, desc, base.expectationString()));
+//			LOG.info(String.format("Expectation (%s, %d) set: %s %s", DeduceTypes2.this, counter, desc, base.expectationString()));
 		}
 	}
 

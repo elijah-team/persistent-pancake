@@ -12,6 +12,7 @@ package tripleo.elijah.stages.deduce;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.lang.AliasStatement;
 import tripleo.elijah.lang.BaseFunctionDef;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
@@ -257,12 +258,22 @@ public class DeduceLocalVariable {
 							Self = new DeduceTypes2.OS_SpecialVariable(((IntegerIA) self2).getEntry(), VariableTableType.SELF, generatedFunction);
 							((DeduceTypes2.OS_SpecialVariable) Self).memberInvocation = new MemberInvocation(b, MemberInvocation.Role.INHERITED);
 							break;
-						default:
-							throw new IllegalStateException();
+					default:
+						throw new IllegalStateException();
 					}
 				} else
 					Self = dp.getElement(dp.size() - 2); // TODO fix this
-				final @Nullable DeferredMemberFunction dm = deduceTypes2.deferred_member_function(Self, null, (BaseFunctionDef) procTableEntry.getResolvedElement(), procTableEntry.getFunctionInvocation());
+
+				OS_Element resolvedElement = procTableEntry.getResolvedElement();
+				while (resolvedElement instanceof AliasStatement) {
+					try {
+						resolvedElement = DeduceLookupUtils._resolveAlias2((AliasStatement) resolvedElement, deduceTypes2);
+					} catch (final ResolveError aE) {
+						throw new RuntimeException(aE); // TODO
+					}
+				}
+
+				final @Nullable DeferredMemberFunction dm = deduceTypes2.deferred_member_function(Self, null, (BaseFunctionDef) resolvedElement, procTableEntry.getFunctionInvocation());
 				dm.externalRef().then(new DoneCallback<BaseGeneratedFunction>() {
 					@Override
 					public void onDone(final BaseGeneratedFunction result) {
