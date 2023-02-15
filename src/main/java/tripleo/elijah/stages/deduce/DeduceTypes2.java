@@ -2173,15 +2173,11 @@ public class DeduceTypes2 {
 //					vte.addPotentialType(aInstructionIndex, result); // TODO!!
 				}
 			});
-			@NotNull final Runnable runnable = new Runnable() {
-				@Override
-				public void run() {
-					final DeduceElement3_VariableTableEntry vte_ = (DeduceElement3_VariableTableEntry) vte.getDeduceElement3();
-					vte_.setDeduceTypes2(DeduceTypes2.this, generatedFunction);
-					vte_.potentialTypesRunnableDo(vte_ia, p, LOG, vte1, errSink, ctx, e_text, vte);
-				}
-			};
-			onFinish(runnable);
+			onFinish(() -> {
+				final DeduceElement3_VariableTableEntry vte_ = (DeduceElement3_VariableTableEntry) vte.getDeduceElement3();
+				vte_.setDeduceTypes2(DeduceTypes2.this, generatedFunction);
+				vte_.potentialTypesRunnableDo(vte_ia, p, LOG, vte1, errSink, ctx, e_text, vte);
+			});
 		} else {
 			final int                      ia   = generatedFunction.addIdentTableEntry(aExpression, ctx);
 			@NotNull final IdentTableEntry idte = generatedFunction.getIdentTableEntry(ia);
