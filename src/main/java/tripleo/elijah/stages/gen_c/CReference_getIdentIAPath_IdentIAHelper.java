@@ -16,6 +16,7 @@ import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
+import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -144,19 +145,33 @@ class CReference_getIdentIAPath_IdentIAHelper {
 	}
 
 	private void _act_FunctionDef(final CReference aCReference) {
-		final OS_Element parent = getResolved_element().getParent();
-		int              code   = -1;
-		if (getResolved() != null) {
-			if (getResolved() instanceof BaseGeneratedFunction) {
-				((BaseGeneratedFunction) getResolved()).onGenClass(gc -> {
+		final OS_Element    parent        = getResolved_element().getParent();
+		int                 code          = -1;
+		final GeneratedNode resolved_node = getResolved();
+		if (resolved_node != null) {
+			if (resolved_node instanceof BaseGeneratedFunction) {
+				final BaseGeneratedFunction resolvedFunction = (BaseGeneratedFunction) resolved_node;
+
+				resolvedFunction.onGenClass(gc -> {
 //						GeneratedNode gc = rf.getGenClass();
 					if (gc instanceof GeneratedContainerNC) // and not another function
 						this.code = gc.getCode();
 					else
 						this.code = -2;
 				});
-			} else if (getResolved() instanceof GeneratedClass) {
-				final GeneratedClass generatedClass = (GeneratedClass) getResolved();
+
+				if (resolvedFunction.getGenClass() instanceof GeneratedNamespace) {
+					// FIXME sometimes genClass is not called so above wont work,
+					//  so check if a code was set and use it here
+					final GeneratedNamespace generatedNamespace = (GeneratedNamespace) resolvedFunction.getGenClass();
+					final int                cc                 = generatedNamespace.getCode();
+					if (cc > 0) {
+						this.code = cc;
+					}
+				}
+
+			} else if (resolved_node instanceof GeneratedClass) {
+				final GeneratedClass generatedClass = (GeneratedClass) resolved_node;
 				this.code = generatedClass.getCode();
 			}
 		}
