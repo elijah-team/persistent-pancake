@@ -20,6 +20,7 @@ import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.Stupidity;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -69,7 +70,7 @@ class CRI_Ident {
 				switch (state) {
 				case 1:
 					if (resolved == null) {
-						tripleo.elijah.util.Stupidity.println_err("***88*** resolved is null for " + ite);
+						Stupidity.println_err("***88*** resolved is null for " + ite);
 					}
 					if (sSize >= i + 1) {
 						_getIdentIAPath_IdentIAHelper(null, sl, i, sSize, resolved_element, generatedFunction, resolved, aValue, aCReference);
