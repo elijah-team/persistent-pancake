@@ -307,6 +307,8 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 				final @NotNull DeducePhase phase   = dt2._phase();
 				final @NotNull ElLog       LOG     = dt2._LOG();
 
+				if (vte.type == null) return; // TODO only for tests
+
 				final @Nullable OS_Type attached = vte.type.getAttached();
 
 				if (attached == null) return;

@@ -1803,20 +1803,22 @@ public class DeduceTypes2 {
 		if (vte_index != null) {
 			final @NotNull VariableTableEntry vte = generatedFunction.getVarTableEntry(to_int(vte_index));
 
-			if (vte.type.getAttached() != null) {
-				phase.typeDecided((GeneratedFunction) generatedFunction, vte.type.genType);
-			} else {
-				@NotNull final Collection<TypeTableEntry> pot1 = vte.potentialTypes();
-				@NotNull final ArrayList<TypeTableEntry>  pot  = new ArrayList<TypeTableEntry>(pot1);
-				if (pot.size() == 1) {
-					phase.typeDecided((GeneratedFunction) generatedFunction, pot.get(0).genType);
-				} else if (pot.size() == 0) {
-					@NotNull final GenType unitType = new GenType();
-					unitType.typeName = new OS_Type(BuiltInTypes.Unit);
-					phase.typeDecided((GeneratedFunction) generatedFunction, unitType);
+			if (vte.type != null) {
+				if (vte.type.getAttached() != null) {
+					phase.typeDecided((GeneratedFunction) generatedFunction, vte.type.genType);
 				} else {
-					// TODO report some kind of error/diagnostic and/or let ForFunction know...
-					errSink.reportWarning("Can't resolve type of `Result'. potentialTypes > 1 for " + vte);
+					@NotNull final Collection<TypeTableEntry> pot1 = vte.potentialTypes();
+					@NotNull final ArrayList<TypeTableEntry>  pot  = new ArrayList<TypeTableEntry>(pot1);
+					if (pot.size() == 1) {
+						phase.typeDecided((GeneratedFunction) generatedFunction, pot.get(0).genType);
+					} else if (pot.size() == 0) {
+						@NotNull final GenType unitType = new GenType();
+						unitType.typeName = new OS_Type(BuiltInTypes.Unit);
+						phase.typeDecided((GeneratedFunction) generatedFunction, unitType);
+					} else {
+						// TODO report some kind of error/diagnostic and/or let ForFunction know...
+						errSink.reportWarning("Can't resolve type of `Result'. potentialTypes > 1 for " + vte);
+					}
 				}
 			}
 		} else {
