@@ -2867,6 +2867,16 @@ public class DeduceTypes2 {
 		public @NotNull FunctionInvocation newFunctionInvocation(final BaseFunctionDef aFunctionDef, final ProcTableEntry aPte, final @NotNull IInvocation aInvocation) {
 			return deduceTypes2.newFunctionInvocation(aFunctionDef, aPte, aInvocation, deduceTypes2.phase);
 		}
+
+		public OS_Element resolveAlias(final AliasStatement aAliasStatement) {
+			try {
+				final OS_Element el = DeduceLookupUtils._resolveAlias2(aAliasStatement, deduceTypes2);
+				return el;
+			} catch (final ResolveError aE) {
+				return null;
+//				throw new RuntimeException(aE);
+			}
+		}
 	}
 
 	public static class OS_SpecialVariable implements OS_Element {

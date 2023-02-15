@@ -593,6 +593,10 @@ class Resolve_Ident_IA {
 						}
 					}
 					if (el != null) {
+						while (el instanceof AliasStatement) {
+							el = dc.resolveAlias((AliasStatement) el);
+						}
+
 						idte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
 
 						if (el.getContext() == null)
