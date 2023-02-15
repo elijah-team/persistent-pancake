@@ -171,9 +171,9 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 		return new ArrayList<TypeTableEntry>(vte.potentialTypes());
 	}
 
-	public void potentialTypesRunnableDo(final @Nullable InstructionArgument vte_ia, final Promise<GenType, Void, Void> aP, final @NotNull ElLog aLOG, final @NotNull VariableTableEntry aVte1, final ErrSink errSink, final Context ctx, final String aE_text, final @NotNull VariableTableEntry aVte) {
+	public void potentialTypesRunnableDo(final @Nullable InstructionArgument vte_ia, final @NotNull ElLog aLOG, final @NotNull VariableTableEntry aVte1, final ErrSink errSink, final Context ctx, final String aE_text, final @NotNull VariableTableEntry aVte) {
 		final @NotNull List<TypeTableEntry> ll = getPotentialTypesVte((GeneratedFunction) generatedFunction, vte_ia);
-		doLogic(ll, aP, aLOG, aVte1, errSink, ctx, aE_text, aVte);
+		doLogic(ll, aVte1.typePromise(), aLOG, aVte1, errSink, ctx, aE_text, aVte);
 	}
 
 	public void doLogic(@NotNull final List<TypeTableEntry> potentialTypes, final Promise<GenType, Void, Void> p, final @NotNull ElLog LOG, final @NotNull VariableTableEntry vte1, final ErrSink errSink, final Context ctx, final String e_text, final @NotNull VariableTableEntry vte) {

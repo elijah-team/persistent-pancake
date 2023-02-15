@@ -2176,7 +2176,7 @@ public class DeduceTypes2 {
 			onFinish(() -> {
 				final DeduceElement3_VariableTableEntry vte_ = (DeduceElement3_VariableTableEntry) vte.getDeduceElement3();
 				vte_.setDeduceTypes2(DeduceTypes2.this, generatedFunction);
-				vte_.potentialTypesRunnableDo(vte_ia, p, LOG, vte1, errSink, ctx, e_text, vte);
+				vte_.potentialTypesRunnableDo(vte_ia, LOG, vte1, errSink, ctx, e_text, vte);
 			});
 		} else {
 			final int                      ia   = generatedFunction.addIdentTableEntry(aExpression, ctx);
