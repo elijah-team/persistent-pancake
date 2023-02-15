@@ -1,5 +1,8 @@
 package tripleo.elijah.stages.deduce.post_bytecode;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import org.jdeferred2.Promise;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,11 +12,13 @@ import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang.AliasStatement;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.FormalArgListItem;
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.NormalTypeName;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeducePhase;
@@ -24,14 +29,22 @@ import tripleo.elijah.stages.deduce.post_bytecode.DED.DED_VTE;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
+import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.util.NotImplementedException;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 
 public class DeduceElement3_VariableTableEntry extends DefaultStateful implements IDeduceElement3 {
 
@@ -147,6 +160,129 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 		deduceTypes2      = aDeduceTypes2;
 		generatedFunction = aGeneratedFunction;
 	}
+
+	@NotNull
+	private static ArrayList<TypeTableEntry> getPotentialTypesVte(@NotNull final GeneratedFunction generatedFunction, @NotNull final InstructionArgument vte_index) {
+		return getPotentialTypesVte(generatedFunction.getVarTableEntry(to_int(vte_index)));
+	}
+
+	@NotNull
+	static ArrayList<TypeTableEntry> getPotentialTypesVte(@NotNull final VariableTableEntry vte) {
+		return new ArrayList<TypeTableEntry>(vte.potentialTypes());
+	}
+
+	public void potentialTypesRunnableDo(final @Nullable InstructionArgument vte_ia, final Promise<GenType, Void, Void> aP, final @NotNull ElLog aLOG, final @NotNull VariableTableEntry aVte1, final ErrSink errSink, final Context ctx, final String aE_text, final @NotNull VariableTableEntry aVte) {
+		final @NotNull List<TypeTableEntry> ll = getPotentialTypesVte((GeneratedFunction) generatedFunction, vte_ia);
+		doLogic(ll, aP, aLOG, aVte1, errSink, ctx, aE_text, aVte);
+	}
+
+	public void doLogic(@NotNull final List<TypeTableEntry> potentialTypes, final Promise<GenType, Void, Void> p, final @NotNull ElLog LOG, final @NotNull VariableTableEntry vte1, final ErrSink errSink, final Context ctx, final String e_text, final @NotNull VariableTableEntry vte) {
+		assert potentialTypes.size() >= 0;
+		switch (potentialTypes.size()) {
+		case 1:
+//							tte.attached = ll.get(0).attached;
+//							vte.addPotentialType(instructionIndex, ll.get(0));
+			if (p.isResolved()) {
+				LOG.info(String.format("1047 (vte already resolved) %s vte1.type = %s, gf = %s, tte1 = %s %n", vte1.getName(), vte1.type, generatedFunction, potentialTypes.get(0)));
+			} else {
+				final OS_Type attached = potentialTypes.get(0).getAttached();
+				if (attached == null) return;
+				switch (attached.getType()) {
+				case USER:
+					vte1.type.setAttached(attached); // !!
+					break;
+				case USER_CLASS:
+					final GenType gt = vte1.genType;
+					gt.resolved = attached;
+					vte1.resolveType(gt);
+					break;
+				default:
+					errSink.reportWarning("Unexpected value: " + attached.getType());
+//										throw new IllegalStateException("Unexpected value: " + attached.getType());
+				}
+			}
+			break;
+		case 0:
+			// README moved up here to elimiate work
+			if (p.isResolved()) {
+				System.out.printf("890-1 Already resolved type: vte1.type = %s, gf = %s %n", vte1.type, generatedFunction);
+				break;
+			}
+			final LookupResultList lrl = ctx.lookup(e_text);
+			@Nullable final OS_Element best = lrl.chooseBest(null);
+			if (best instanceof FormalArgListItem) {
+				@NotNull final FormalArgListItem fali   = (FormalArgListItem) best;
+				final @NotNull OS_Type           osType = new OS_Type(fali.typeName());
+				if (!osType.equals(vte.type.getAttached())) {
+					@NotNull final TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(
+					  TypeTableEntry.Type.SPECIFIED, osType, fali.getNameToken(), vte1);
+									/*if (p.isResolved())
+										System.out.printf("890 Already resolved type: vte1.type = %s, gf = %s, tte1 = %s %n", vte1.type, generatedFunction, tte1);
+									else*/
+					{
+						final OS_Type attached = tte1.getAttached();
+						switch (attached.getType()) {
+						case USER:
+							vte1.type.setAttached(attached); // !!
+							break;
+						case USER_CLASS:
+							final GenType gt = vte1.genType;
+							gt.resolved = attached;
+							vte1.resolveType(gt);
+							break;
+						default:
+							errSink.reportWarning("2853 Unexpected value: " + attached.getType());
+//												throw new IllegalStateException("Unexpected value: " + attached.getType());
+						}
+					}
+				}
+//								vte.type = tte1;
+//								tte.attached = tte1.attached;
+//								vte.setStatus(BaseTableEntry.Status.KNOWN, best);
+			} else if (best instanceof VariableStatement) {
+				final @NotNull VariableStatement vs = (VariableStatement) best;
+				//
+				assert vs.getName().equals(e_text);
+				//
+				@Nullable final InstructionArgument vte2_ia = generatedFunction.vte_lookup(vs.getName());
+				@NotNull final VariableTableEntry   vte2    = generatedFunction.getVarTableEntry(to_int(vte2_ia));
+				if (p.isResolved())
+					System.out.printf("915 Already resolved type: vte2.type = %s, gf = %s %n", vte1.type, generatedFunction);
+				else {
+					final GenType gt       = vte1.genType;
+					final OS_Type attached = vte2.type.getAttached();
+					gt.resolved = attached;
+					vte1.resolveType(gt);
+				}
+//								vte.type = vte2.type;
+//								tte.attached = vte.type.attached;
+				vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
+				vte2.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best)); // TODO ??
+			} else {
+				final int y = 2;
+				LOG.err("543 " + best.getClass().getName());
+				throw new NotImplementedException();
+			}
+			break;
+		default:
+			// TODO hopefully this works
+			final @NotNull ArrayList<TypeTableEntry> potentialTypes1 = new ArrayList<TypeTableEntry>(
+			  Collections2.filter(potentialTypes, new Predicate<TypeTableEntry>() {
+				  @Override
+				  public boolean apply(@org.jetbrains.annotations.Nullable final TypeTableEntry input) {
+					  assert input != null;
+					  return input.getAttached() != null;
+				  }
+			  }));
+			// prevent infinite recursion
+			if (potentialTypes1.size() < potentialTypes.size())
+				doLogic(potentialTypes1, p, LOG, vte1, errSink, ctx, e_text, vte);
+			else
+				LOG.info("913 Don't know");
+			break;
+		}
+	}
+
 
 	public static class ST {
 		public static State EXIT_RESOLVE;
