@@ -146,8 +146,9 @@ class CReference_getIdentIAPath_IdentIAHelper {
 
 	private void _act_FunctionDef(final CReference aCReference) {
 		final OS_Element    parent        = getResolved_element().getParent();
-		int                 code          = -1;
+		int                 our_code      = -1;
 		final GeneratedNode resolved_node = getResolved();
+
 		if (resolved_node != null) {
 			if (resolved_node instanceof BaseGeneratedFunction) {
 				final BaseGeneratedFunction resolvedFunction = (BaseGeneratedFunction) resolved_node;
@@ -179,12 +180,12 @@ class CReference_getIdentIAPath_IdentIAHelper {
 		assert getI() == getsSize() - 1; // Make sure we are ending with a ProcedureCall
 		getSl().clear();
 
-		code = this.code;
+		our_code = this.code;
 
-		if (code == -1) {
+		if (our_code == -1) {
 //				text2 = String.format("ZT%d_%d", enclosing_function._a.getCode(), closure_index);
 		}
-		final String text2 = String.format("Z%d%s", code, ((FunctionDef) getResolved_element()).name());
+		final String text2 = String.format("z%d%s", our_code, ((FunctionDef) getResolved_element()).name());
 		aCReference.addRef(text2, CReference.Ref.FUNCTION);
 	}
 

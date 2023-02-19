@@ -23,6 +23,8 @@ import tripleo.elijah.lang.Qualident;
 import tripleo.elijah.lang.RegularTypeName;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.VariableTypeName;
+import tripleo.elijah.lang.types.OS_BuiltinType;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.test_help.Boilerplate;
@@ -84,10 +86,10 @@ public class DeduceTypesTest {
 
 		xx.then(xxx -> {
 //			Assert.assertEquals(OS_Type.Type.USER, xxx.resolved.getType());
-			System.out.println("1 " + new OS_Type(BuiltInTypes.SystemInteger).getBType());
+			System.out.println("1 " + new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType());
 			System.out.println("2 " + xxx.resolved.getBType());
 			System.out.println("2.5 " + xxx.resolved);
-			Assert.assertNotEquals(new OS_Type(BuiltInTypes.SystemInteger).getBType(), xxx.resolved.getBType());
+			Assert.assertNotEquals(new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType(), xxx.resolved.getBType());
 
 			assert false; // never reached
 		});
@@ -108,7 +110,7 @@ public class DeduceTypesTest {
 
 		Assert.assertTrue("Promise not resolved", xx.isResolved());
 
-		Assert.assertTrue(genTypeTypenameEquals(new OS_Type(tn), x/*.getTypeName()*/));
+		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x/*.getTypeName()*/));
 	}
 
 	@Contract(value = "null, _ -> false", pure = true)
@@ -125,8 +127,8 @@ public class DeduceTypesTest {
 
 		Assert.assertTrue("Promise not resolved", xx.isResolved());
 
-		Assert.assertEquals(new OS_Type(tn).getTypeName(), x.typeName.getTypeName());
-		Assert.assertTrue(genTypeTypenameEquals(new OS_Type(tn), x));
+		Assert.assertEquals(new OS_UserType(tn).getTypeName(), x.typeName.getTypeName());
+		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
 	}
 
 	@Test
@@ -138,9 +140,9 @@ public class DeduceTypesTest {
 
 		Assert.assertTrue("Promise not resolved", xx.isResolved());
 
-		Assert.assertEquals(new OS_Type(tn).getTypeName(), x.typeName.getTypeName());
-		Assert.assertTrue(genTypeTypenameEquals(new OS_Type(tn), x));
-		Assert.assertEquals(new OS_Type(tn).toString(), x.typeName.toString());
+		Assert.assertEquals(new OS_UserType(tn).getTypeName(), x.typeName.getTypeName());
+		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
+		Assert.assertEquals(new OS_UserType(tn).toString(), x.typeName.toString());
 	}
 
 }

@@ -2,16 +2,35 @@
 
   package tripleo.elijjah;
 
-import antlr.*;
+import antlr.NoViableAltException;
+import antlr.ParserSharedInputState;
+import antlr.RecognitionException;
+import antlr.Token;
+import antlr.TokenBuffer;
+import antlr.TokenStream;
+import antlr.TokenStreamException;
 import antlr.collections.impl.BitSet;
 import tripleo.elijah.Out;
-import tripleo.elijah.contexts.*;
+import tripleo.elijah.contexts.CaseContext;
+import tripleo.elijah.contexts.ClassContext;
+import tripleo.elijah.contexts.FuncExprContext;
+import tripleo.elijah.contexts.FunctionContext;
+import tripleo.elijah.contexts.IfConditionalContext;
+import tripleo.elijah.contexts.ImportContext;
+import tripleo.elijah.contexts.LoopContext;
+import tripleo.elijah.contexts.MatchContext;
+import tripleo.elijah.contexts.ModuleContext;
+import tripleo.elijah.contexts.NamespaceContext;
+import tripleo.elijah.contexts.PackageContext;
+import tripleo.elijah.contexts.SyntacticBlockContext;
+import tripleo.elijah.contexts.WithContext;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang.builder.*;
 import tripleo.elijah.lang.imports.AssigningImportStatement;
 import tripleo.elijah.lang.imports.NormalImportStatement;
 import tripleo.elijah.lang.imports.QualifiedImportStatement;
 import tripleo.elijah.lang.imports.RootedImportStatement;
+import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.lang2.BuiltInTypes;
 
 import java.util.ArrayList;
@@ -160,7 +179,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop7;
+					break;
 				}
 				
 			} while (true);
@@ -199,7 +218,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop11;
+					break;
 				}
 				
 			} while (true);
@@ -271,7 +290,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 						}
 					}
 					else {
-						break _loop217;
+						break;
 					}
 					
 				} while (true);
@@ -338,7 +357,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop271;
+					break;
 				}
 				
 			} while (true);
@@ -665,7 +684,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop422;
+					break;
 				}
 				
 			} while (true);
@@ -704,7 +723,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop107;
+					break;
 				}
 				
 			} while (true);
@@ -806,7 +825,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 								match(IDENT);
 							}
 							else {
-								break _loop44;
+								break;
 							}
 							
 						} while (true);
@@ -890,7 +909,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop275;
+					break;
 				}
 				
 			} while (true);
@@ -999,7 +1018,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop22;
+					break;
 				}
 				
 			} while (true);
@@ -1083,7 +1102,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					if ( _cnt68>=1 ) { break _loop68; } else {throw new NoViableAltException(LT(1), getFilename());}
+					if ( _cnt68>=1 ) { break; } else {throw new NoViableAltException(LT(1), getFilename());}
 				}
 				
 				_cnt68++;
@@ -1470,7 +1489,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 								match(IDENT);
 							}
 							else {
-								break _loop50;
+								break;
 							}
 							
 						} while (true);
@@ -1548,7 +1567,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 							match(IDENT);
 						}
 						else {
-							break _loop56;
+							break;
 						}
 						
 					} while (true);
@@ -1567,7 +1586,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop57;
+					break;
 				}
 				
 			} while (true);
@@ -1635,7 +1654,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop279;
+					break;
 				}
 				
 			} while (true);
@@ -1695,7 +1714,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 								match(IDENT);
 							}
 							else {
-								break _loop62;
+								break;
 							}
 							
 						} while (true);
@@ -1784,7 +1803,7 @@ inputState.guessing--;
 						}
 					}
 					else {
-						if ( _cnt114>=1 ) { break _loop114; } else {throw new NoViableAltException(LT(1), getFilename());}
+						if ( _cnt114>=1 ) { break; } else {throw new NoViableAltException(LT(1), getFilename());}
 					}
 					
 					_cnt114++;
@@ -1946,7 +1965,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop201;
+					break;
 				}
 				
 			} while (true);
@@ -2143,7 +2162,7 @@ inputState.guessing--;
 					varStmt_i3(vsq.next());
 				}
 				else {
-					break _loop224;
+					break;
 				}
 				
 			} while (true);
@@ -2607,7 +2626,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop206;
+					break;
 				}
 				
 			} while (true);
@@ -2733,7 +2752,7 @@ inputState.guessing--;
 					varStmt_i2(vsqb);
 				}
 				else {
-					break _loop235;
+					break;
 				}
 				
 			} while (true);
@@ -2912,7 +2931,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop211;
+					break;
 				}
 				
 			} while (true);
@@ -3364,7 +3383,7 @@ inputState.guessing--;
 					opt_semi();
 				}
 				else {
-					break _loop128;
+					break;
 				}
 				
 			} while (true);
@@ -3415,7 +3434,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop73;
+					break;
 				}
 				
 			} while (true);
@@ -3506,7 +3525,7 @@ inputState.guessing--;
 					opt_semi();
 				}
 				else {
-					break _loop133;
+					break;
 				}
 				
 			} while (true);
@@ -3597,7 +3616,7 @@ inputState.guessing--;
 							importPart1((AssigningImportStatement)pc);
 						}
 						else {
-							break _loop80;
+							break;
 						}
 						
 					} while (true);
@@ -3634,7 +3653,7 @@ inputState.guessing--;
 								importPart2((QualifiedImportStatement)pc);
 							}
 							else {
-								break _loop84;
+								break;
 							}
 							
 						} while (true);
@@ -3653,7 +3672,7 @@ inputState.guessing--;
 								importPart3((NormalImportStatement)pc);
 							}
 							else {
-								break _loop86;
+								break;
 							}
 							
 						} while (true);
@@ -3706,7 +3725,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop264;
+					break;
 				}
 				
 			} while (true);
@@ -3844,7 +3863,7 @@ inputState.guessing--;
 							importPart1_(ib);
 						}
 						else {
-							break _loop92;
+							break;
 						}
 						
 					} while (true);
@@ -3880,7 +3899,7 @@ inputState.guessing--;
 								importPart2_(ib);
 							}
 							else {
-								break _loop96;
+								break;
 							}
 							
 						} while (true);
@@ -3896,7 +3915,7 @@ inputState.guessing--;
 								importPart3_(ib);
 							}
 							else {
-								break _loop98;
+								break;
 							}
 							
 						} while (true);
@@ -3947,7 +3966,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop267;
+					break;
 				}
 				
 			} while (true);
@@ -4056,7 +4075,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop258;
+					break;
 				}
 				
 			} while (true);
@@ -4231,7 +4250,7 @@ inputState.guessing--;
 					opt_semi();
 				}
 				else {
-					break _loop142;
+					break;
 				}
 				
 			} while (true);
@@ -4351,7 +4370,7 @@ inputState.guessing--;
 					opt_semi();
 				}
 				else {
-					break _loop158;
+					break;
 				}
 				
 			} while (true);
@@ -4470,7 +4489,7 @@ inputState.guessing--;
 					opt_semi();
 				}
 				else {
-					break _loop150;
+					break;
 				}
 				
 			} while (true);
@@ -5109,7 +5128,7 @@ inputState.guessing--;
 						opt_semi();
 					}
 					else {
-						break _loop173;
+						break;
 					}
 					
 				} while (true);
@@ -5279,7 +5298,7 @@ inputState.guessing--;
 						opt_semi();
 					}
 					else {
-						break _loop179;
+						break;
 					}
 					
 				} while (true);
@@ -5349,7 +5368,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop188;
+					break;
 				}
 				
 			} while (true);
@@ -5440,7 +5459,7 @@ inputState.guessing--;
 						}
 					}
 					else {
-						break _loop192;
+						break;
 					}
 					
 				} while (true);
@@ -5458,7 +5477,7 @@ inputState.guessing--;
 						}
 					}
 					else {
-						break _loop194;
+						break;
 					}
 					
 				} while (true);
@@ -5806,7 +5825,7 @@ inputState.guessing--;
 						formalArgListItem_priv(fal.next());
 					}
 					else {
-						break _loop429;
+						break;
 					}
 					
 				} while (true);
@@ -6018,7 +6037,7 @@ inputState.guessing--;
 					elseif_part(ifex.elseif());
 				}
 				else {
-					break _loop352;
+					break;
 				}
 				
 			} while (true);
@@ -6166,7 +6185,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					if ( _cnt358>=1 ) { break _loop358; } else {throw new NoViableAltException(LT(1), getFilename());}
+					if ( _cnt358>=1 ) { break; } else {throw new NoViableAltException(LT(1), getFilename());}
 				}
 				
 				_cnt358++;
@@ -6211,7 +6230,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop361;
+					break;
 				}
 				
 			} while (true);
@@ -6252,7 +6271,7 @@ inputState.guessing--;
 					loop.expr(expr);
 				}
 				if ( inputState.guessing==0 ) {
-					ctx=new LoopContext(cur, loop);loop.setContext((LoopContext)ctx);cur=ctx;
+					ctx=new LoopContext(cur, loop);loop.setContext(ctx);cur = ctx;
 				}
 				sco=scope3(loop);
 				if ( inputState.guessing==0 ) {
@@ -6267,7 +6286,7 @@ inputState.guessing--;
 					loop.type(LoopTypes.DO_WHILE);
 				}
 				if ( inputState.guessing==0 ) {
-					ctx=new LoopContext(cur, loop);loop.setContext((LoopContext)ctx);cur=ctx;
+					ctx=new LoopContext(cur, loop);loop.setContext(ctx);cur = ctx;
 				}
 				sco=scope3(loop);
 				if ( inputState.guessing==0 ) {
@@ -6561,7 +6580,7 @@ inputState.guessing--;
 					elseif_part2(ifb.new_expr());
 				}
 				else {
-					break _loop373;
+					break;
 				}
 				
 			} while (true);
@@ -6672,7 +6691,7 @@ inputState.guessing--;
 					scope2(mc.valNormalscope(i1));
 				}
 				else {
-					if ( _cnt379>=1 ) { break _loop379; } else {throw new NoViableAltException(LT(1), getFilename());}
+					if ( _cnt379>=1 ) { break; } else {throw new NoViableAltException(LT(1), getFilename());}
 				}
 				
 				_cnt379++;
@@ -6714,7 +6733,7 @@ inputState.guessing--;
 					scope2(mc.scope(expr));
 				}
 				else {
-					break _loop382;
+					break;
 				}
 				
 			} while (true);
@@ -7074,7 +7093,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop290;
+					break;
 				}
 				
 			} while (true);
@@ -7109,7 +7128,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop293;
+					break;
 				}
 				
 			} while (true);
@@ -7144,7 +7163,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop296;
+					break;
 				}
 				
 			} while (true);
@@ -7180,7 +7199,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop299;
+					break;
 				}
 				
 			} while (true);
@@ -7216,7 +7235,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop302;
+					break;
 				}
 				
 			} while (true);
@@ -7276,7 +7295,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop306;
+					break;
 				}
 				
 			} while (true);
@@ -7351,12 +7370,12 @@ inputState.guessing--;
 						}
 						e3=shiftExpression();
 						if ( inputState.guessing==0 ) {
-							ee=ExpressionBuilder.build(ee,e2,e3);
-																	ee.setType(new OS_Type(BuiltInTypes.Boolean));
+							ee = ExpressionBuilder.build(ee, e2, e3);
+							ee.setType(new OS_BuiltinType(BuiltInTypes.Boolean));
 						}
 					}
 					else {
-						break _loop311;
+						break;
 					}
 					
 				} while (true);
@@ -7436,7 +7455,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop315;
+					break;
 				}
 				
 			} while (true);
@@ -7495,7 +7514,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop319;
+					break;
 				}
 				
 			} while (true);
@@ -7562,7 +7581,7 @@ inputState.guessing--;
 					}
 				}
 				else {
-					break _loop323;
+					break;
 				}
 				
 			} while (true);
@@ -7816,7 +7835,7 @@ inputState.guessing--;
 					match(RPAREN);
 				}
 				else {
-					break _loop331;
+					break;
 				}
 				
 			} while (true);
@@ -8201,7 +8220,7 @@ inputState.guessing--;
 						classStatement(sc.getParent(), cur, null/*annotations*/);
 					}
 					else {
-						break _loop347;
+						break;
 					}
 					
 				} while (true);

@@ -16,20 +16,20 @@ import java.util.List;
 
 /**
  * @author Tripleo
- *
+ * <p>
  * Created 	Mar 30, 2020 at 7:41:52 AM
  */
 public class FuncExpr extends BaseFunctionDef implements IExpression, OS_Element {
 
-//	private FormalArgList argList = new FormalArgList();
-	private TypeName _returnType;
-	private OS_Type _type;
+	//	private FormalArgList argList = new FormalArgList();
+	private TypeName        _returnType;
+	private OS_Type         _type;
 	private FuncExprContext _ctx;
 //	private Scope3 scope3;
 
 	public void type(final TypeModifiers modifier) {
 		assert modifier == TypeModifiers.FUNCTION ||
-				modifier == TypeModifiers.PROCEDURE;
+		  modifier == TypeModifiers.PROCEDURE;
 	}
 
 	public TypeName returnType() {

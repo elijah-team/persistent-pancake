@@ -5,7 +5,13 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.OS_Type;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.lang.types.OS_UserClassType;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 
 class Resolve_var_table_entry {
 	private final DeduceTypes2 deduceTypes2;
@@ -20,7 +26,7 @@ class Resolve_var_table_entry {
 		{
 			if (vte.type.getAttached() == null && vte.constructable_pte != null) {
 				final ClassStatement   c        = vte.constructable_pte.getFunctionInvocation().getClassInvocation().getKlass();
-				final @NotNull OS_Type attached = new OS_Type(c);
+				final @NotNull OS_Type attached = new OS_UserClassType(c);
 				// TODO this should have been set somewhere already
 				//  typeName and nonGenericTypeName are not set
 				//  but at this point probably wont be needed

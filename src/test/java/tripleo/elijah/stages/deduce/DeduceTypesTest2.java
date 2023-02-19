@@ -20,12 +20,12 @@ import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.NormalTypeName;
 import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.Qualident;
 import tripleo.elijah.lang.Scope3;
 import tripleo.elijah.lang.VariableSequence;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.VariableTypeName;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.test_help.Boilerplate;
@@ -83,7 +83,7 @@ public class DeduceTypesTest2 {
 		tn.setContext(fd.getContext());
 
 //		Assert.assertEquals(new OS_Type(tn).getTypeName(), x.getTypeName());
-		Assert.assertTrue(genTypeEquals(d.resolve_type(new OS_Type(tn), tn.getContext()), x));
+		Assert.assertTrue(genTypeEquals(d.resolve_type(new OS_UserType(tn), tn.getContext()), x));
 //		Assert.assertEquals(new OS_Type(tn).toString(), x.toString());
 	}
 

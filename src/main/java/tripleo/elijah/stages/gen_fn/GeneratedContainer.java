@@ -19,6 +19,7 @@ import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.types.OS_UserType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +55,7 @@ public interface GeneratedContainer extends GeneratedNode {
 			nameToken    = aNameToken;
 			initialValue = aInitialValue;
 			typeName     = aTypeName;
-			varType      = new OS_Type(typeName);
+			varType      = new OS_UserType(typeName);
 			parent       = aElement;
 		}
 

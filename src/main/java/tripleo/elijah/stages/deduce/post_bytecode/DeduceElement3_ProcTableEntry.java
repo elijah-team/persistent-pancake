@@ -1,14 +1,29 @@
 package tripleo.elijah.stages.deduce.post_bytecode;
 
+import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.DotExpression;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.ProcedureCallExpression;
+import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
+import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
+import tripleo.elijah.stages.gen_fn.WlGenerateFunction;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.Instruction;
+import tripleo.elijah.stages.instructions.InstructionArgument;
+import tripleo.elijah.stages.instructions.IntegerIA;
 
 public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
     private final ProcTableEntry        principal;
@@ -78,5 +93,64 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 
     public void setInstruction(final Instruction aInstruction) {
         instruction = aInstruction;
+    }
+
+    public void doFunctionInvocation() {
+        final FunctionInvocation fi = principal.getFunctionInvocation();
+
+        if (fi == null) {
+            if (principal.expression instanceof ProcedureCallExpression) {
+                final ProcedureCallExpression exp  = ((ProcedureCallExpression) principal.expression);
+                final IExpression             left = exp.getLeft();
+
+                if (left instanceof DotExpression) {
+                    final DotExpression dotleft = ((DotExpression) left);
+
+                    if (dotleft.getLeft() instanceof IdentExpression && dotleft.getRight() instanceof IdentExpression) {
+                        final IdentExpression rl = ((IdentExpression) dotleft.getLeft());
+                        final IdentExpression rr = ((IdentExpression) dotleft.getRight());
+
+                        if (rl.getText().equals("a1")) {
+                            final GeneratedClass[] gc = new GeneratedClass[1];
+
+                            final InstructionArgument vrl = generatedFunction.vte_lookup(rl.getText());
+
+                            assert vrl != null;
+
+                            final VariableTableEntry vte = ((IntegerIA) vrl).getEntry();
+
+                            vte.typePromise().then(left_type -> {
+                                final ClassStatement cs = left_type.resolved.getClassOf(); // TODO we want a DeduceClass here. GeneratedClass may suffice
+
+                                final ClassInvocation ci = deduceTypes2._phase().registerClassInvocation(cs);
+                                ci.resolvePromise().then(gc2 -> {
+                                    gc[0] = gc2;
+                                });
+
+                                final LookupResultList     lrl  = cs.getContext().lookup(rr.getText());
+                                @Nullable final OS_Element best = lrl.chooseBest(null);
+
+                                if (best != null) {
+                                    final FunctionDef fun = (FunctionDef) best;
+
+                                    final FunctionInvocation fi2 = new FunctionInvocation(fun, null, ci, deduceTypes2._phase().generatePhase); // TODO pte??
+                                    fi2.generatePromise().then(gf -> {
+                                        final int y4 = 4;
+                                    });
+
+                                    principal.setFunctionInvocation(fi2); // TODO pte above
+
+                                    final WlGenerateFunction j = fi2.generateFunction(deduceTypes2, best);
+                                    j.run(null);
+
+                                    final int yy = 2;
+                                }
+                            });
+                            final int y = 2;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

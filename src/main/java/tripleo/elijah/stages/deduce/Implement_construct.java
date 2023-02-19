@@ -3,9 +3,32 @@ package tripleo.elijah.stages.deduce;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.*;
-import tripleo.elijah.stages.gen_fn.*;
-import tripleo.elijah.stages.instructions.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.NormalTypeName;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.TypeNameList;
+import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.Constructable;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
+import tripleo.elijah.stages.instructions.IdentIA;
+import tripleo.elijah.stages.instructions.Instruction;
+import tripleo.elijah.stages.instructions.InstructionArgument;
+import tripleo.elijah.stages.instructions.InstructionName;
+import tripleo.elijah.stages.instructions.IntegerIA;
+import tripleo.elijah.stages.instructions.ProcIA;
+import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.Collection;
@@ -74,7 +97,7 @@ class Implement_construct {
 						assert el3 instanceof VariableStatement;
 						@Nullable final VariableStatement vs = (VariableStatement) el3;
 						@NotNull final TypeName           tn = vs.typeName();
-						@NotNull final OS_Type            ty = new OS_Type(tn);
+						@NotNull final OS_Type            ty = new OS_UserType(tn);
 
 						if (idte2.type == null) {
 							// README Don't remember enough about the constructors to select a different one
@@ -100,7 +123,7 @@ class Implement_construct {
 								if (type.nonGenericTypeName == null) {
 									type.nonGenericTypeName = deducePath.getType(i - 1).nonGenericTypeName; // HACK. not guararnteed to work!
 								}
-								@NotNull final OS_Type ty = new OS_Type(type.nonGenericTypeName);
+								@NotNull final OS_Type ty = new OS_UserType(type.nonGenericTypeName);
 								implement_construct_type(idte2, ty, s);
 							}
 						} else {
@@ -159,7 +182,7 @@ class Implement_construct {
 				@NotNull final GenType typeName2;
 				try {
 					// TODO transition to GenType
-					typeName2 = deduceTypes2.resolve_type(new OS_Type(typeName), typeName.getContext());
+					typeName2 = deduceTypes2.resolve_type(new OS_UserType(typeName), typeName.getContext());
 					clsinv.set(i, gp.get(i), typeName2.resolved);
 				} catch (final ResolveError aResolveError) {
 					aResolveError.printStackTrace();

@@ -16,7 +16,22 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.BaseFunctionDef;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.LookupResult;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.NormalTypeName;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.ProcedureCallExpression;
+import tripleo.elijah.lang.Qualident;
+import tripleo.elijah.lang.RegularTypeName;
+import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.types.OS_UnknownType;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
@@ -338,7 +353,7 @@ class Resolve_Ident_IA2 {
 	}
 
 	private void ia2_IdentIA_FunctionDef(@NotNull final IdentTableEntry idte2) {
-		@Nullable final OS_Type       attached = new OS_UnknownType(el);
+		@Nullable final OS_Type       attached = new OS_UnknownType(el); // TODO Unknown
 		@NotNull final TypeTableEntry tte      = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, attached, null, idte2);
 		idte2.type = tte;
 
@@ -458,7 +473,7 @@ class Resolve_Ident_IA2 {
 //					x.fail(); // TODO
 			} else { // if (vs.typeName() != null) {
 				final GenType attached = new GenType();
-				attached.set(new OS_Type(vs.typeName()));
+				attached.set(new OS_UserType(vs.typeName()));
 				attP.resolve(attached);
 			}
 

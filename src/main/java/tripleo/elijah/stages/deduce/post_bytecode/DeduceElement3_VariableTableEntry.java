@@ -19,6 +19,7 @@ import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeducePhase;
@@ -212,7 +213,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 			@Nullable final OS_Element best = lrl.chooseBest(null);
 			if (best instanceof FormalArgListItem) {
 				@NotNull final FormalArgListItem fali   = (FormalArgListItem) best;
-				final @NotNull OS_Type           osType = new OS_Type(fali.typeName());
+				final @NotNull OS_Type           osType = new OS_UserType(fali.typeName());
 				if (!osType.equals(vte.type.getAttached())) {
 					@NotNull final TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(
 					  TypeTableEntry.Type.SPECIFIED, osType, fali.getNameToken(), vte1);

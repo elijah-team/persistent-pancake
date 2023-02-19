@@ -10,6 +10,7 @@
 package tripleo.elijah.stages.gen_fn;
 
 //import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;

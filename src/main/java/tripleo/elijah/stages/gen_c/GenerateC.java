@@ -11,6 +11,7 @@ package tripleo.elijah.stages.gen_c;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.types.OS_FuncExprType;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.lang2.SpecialVariables;
 import tripleo.elijah.nextgen.model.SM_ClassDeclaration;
@@ -796,54 +797,54 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 			case CALL: {
 				if (pte.expression_num == null) {
 //					assert false; // TODO synthetic methods
-						final IdentExpression ptex = (IdentExpression) pte.expression;
-						sb.append(ptex.getText());
-						sb.append(Emit.emit("/*671*/") + "(");
+					final IdentExpression ptex = (IdentExpression) pte.expression;
+					sb.append(ptex.getText());
+					sb.append(Emit.emit("/*671*/") + "(");
 
-						final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
-						sb.append(Helpers.String_join(", ", sll));
+					final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
+					sb.append(Helpers.String_join(", ", sll));
 
-						sb.append(")");
-					} else {
-						final IdentIA ia2 = (IdentIA) pte.expression_num;
-						final IdentTableEntry idte = ia2.getEntry();
-						if (idte.getStatus() == BaseTableEntry.Status.KNOWN) {
-							final CReference reference = new CReference();
-							final FunctionInvocation functionInvocation = pte.getFunctionInvocation();
-							if (functionInvocation == null || functionInvocation.getFunction() == ConstructorDef.defaultVirtualCtor) {
-								reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
-								final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
-								reference.args(sll);
-								final String path = reference.build();
-								sb.append(Emit.emit("/*829*/") + path);
-							} else {
-								final BaseGeneratedFunction pte_generated = functionInvocation.getGenerated();
-								if (idte.resolvedType() == null && pte_generated != null)
-									idte.resolveTypeToClass(pte_generated);
-								reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
-								final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
-								reference.args(sll);
-								final String path = reference.build();
-								sb.append(Emit.emit("/*827*/") + path);
-							}
+					sb.append(")");
+				} else {
+					final IdentIA         ia2  = (IdentIA) pte.expression_num;
+					final IdentTableEntry idte = ia2.getEntry();
+					if (idte.getStatus() == BaseTableEntry.Status.KNOWN) {
+						final CReference         reference          = new CReference();
+						final FunctionInvocation functionInvocation = pte.getFunctionInvocation();
+						if (functionInvocation == null || functionInvocation.getFunction() == ConstructorDef.defaultVirtualCtor) {
+							reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
+							final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
+							reference.args(sll);
+							final String path = reference.build();
+							sb.append(Emit.emit("/*829*/") + path);
 						} else {
-							final String path = gf.getIdentIAPathNormal(ia2);
-							sb.append(Emit.emit("/*828*/") + String.format("%s is UNKNOWN", path));
+							final BaseGeneratedFunction pte_generated = functionInvocation.getGenerated();
+							if (idte.resolvedType() == null && pte_generated != null)
+								idte.resolveTypeToClass(pte_generated);
+							reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
+							final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
+							reference.args(sll);
+							final String path = reference.build();
+							sb.append(Emit.emit("/*827*/") + path);
 						}
-					}
-					return sb.toString();
-				}
-				case CALLS: {
-					CReference reference = null;
-					if (pte.expression_num == null) {
-						final int y = 2;
-						final IdentExpression ptex = (IdentExpression) pte.expression;
-						sb.append(Emit.emit("/*684*/"));
-						sb.append(ptex.getText());
 					} else {
-						// TODO Why not expression_num?
-						reference = new CReference();
-						final IdentIA ia2 = (IdentIA) pte.expression_num;
+						final String path = gf.getIdentIAPathNormal(ia2);
+						sb.append(Emit.emit("/*828*/") + String.format("%s is UNKNOWN", path));
+					}
+				}
+				return sb.toString();
+			}
+			case CALLS: {
+				CReference reference = null;
+				if (pte.expression_num == null) {
+					final int             y    = 2;
+					final IdentExpression ptex = (IdentExpression) pte.expression;
+					sb.append(Emit.emit("/*684*/"));
+					sb.append(ptex.getText());
+				} else {
+					// TODO Why not expression_num?
+					reference = new CReference();
+					final IdentIA ia2 = (IdentIA) pte.expression_num;
 						reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
 						final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
 						reference.args(sll);

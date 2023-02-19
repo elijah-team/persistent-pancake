@@ -17,6 +17,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.types.OS_BuiltinType;
+import tripleo.elijah.lang.types.OS_UnknownType;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
@@ -186,11 +189,11 @@ public class DoAssignCall {
 			if (e instanceof SubExpression) e = ((SubExpression) e).getExpression();
 			switch (e.getKind()) {
 				case NUMERIC:
-					tte.setAttached(new OS_Type(BuiltInTypes.SystemInteger));
+					tte.setAttached(new OS_BuiltinType(BuiltInTypes.SystemInteger));
 					//vte.type = tte;
 					break;
 				case CHAR_LITERAL:
-					tte.setAttached(new OS_Type(BuiltInTypes.SystemCharacter));
+					tte.setAttached(new OS_BuiltinType(BuiltInTypes.SystemCharacter));
 					break;
 				case IDENT:
 					do_assign_call_args_ident(generatedFunction, ctx, vte, instructionIndex, pte, i, tte, (IdentExpression) e);
@@ -444,7 +447,7 @@ public class DoAssignCall {
 							@Nullable final OS_Element best = lrl.chooseBest(null);
 							if (best instanceof FormalArgListItem) {
 								@NotNull final FormalArgListItem fali   = (FormalArgListItem) best;
-								final @NotNull OS_Type           osType = new OS_Type(fali.typeName());
+								final @NotNull OS_Type           osType = new OS_UserType(fali.typeName());
 								if (!osType.equals(vte.type.getAttached())) {
 									@NotNull final TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(
 									  TypeTableEntry.Type.SPECIFIED, osType, fali.getNameToken(), vte1);
@@ -605,7 +608,7 @@ public class DoAssignCall {
 						});
 						if (ty == null) {
 							@NotNull final TypeTableEntry tte3 = generatedFunction.newTypeTableEntry(
-							  TypeTableEntry.Type.SPECIFIED, new OS_Type(vs.typeName()), vs.getNameToken());
+							  TypeTableEntry.Type.SPECIFIED, new OS_UserType(vs.typeName()), vs.getNameToken());
 							idte.type = tte3;
 //							ty = idte.type.getAttached();
 						}

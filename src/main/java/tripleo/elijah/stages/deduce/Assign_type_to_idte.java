@@ -19,6 +19,8 @@ import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.util.NotImplementedException;
 
+import java.util.Objects;
+
 class Assign_type_to_idte {
 	private final DeduceTypes2          aDeduceTypes2;
 	private final IdentTableEntry       ite;
@@ -88,7 +90,6 @@ class Assign_type_to_idte {
             if (ite.type.getAttached().getType() == OS_Type.Type.USER_CLASS) {
                 use_user_class(ite.type.getAttached(), ite);
             }
-	        return;
         }
 
         private void __foundElement__FUNCTION_type() {
@@ -131,16 +132,14 @@ class Assign_type_to_idte {
 					assert ite.type.getAttached() != null;
 
 					if (ite.type != null && ite.type.getAttached() != null) {
-						switch (ite.type.getAttached().getType()) {
-							case USER:
-								try {
-									@NotNull final GenType xx = aDeduceTypes2.resolve_type(ite.type.getAttached(), aFunctionContext);
-									ite.type.setAttached(xx);
-								} catch (final ResolveError resolveError) { // TODO double catch
-									aDeduceTypes2.LOG.info("210 Can't attach type to " + iteIdent);
-									aDeduceTypes2.errSink.reportDiagnostic(resolveError);
-								}
-								break;
+						if (Objects.requireNonNull(ite.type.getAttached().getType()) == OS_Type.Type.USER) {
+							try {
+								@NotNull final GenType xx = aDeduceTypes2.resolve_type(ite.type.getAttached(), aFunctionContext);
+								ite.type.setAttached(xx);
+							} catch (final ResolveError resolveError) { // TODO double catch
+								aDeduceTypes2.LOG.info("210 Can't attach type to " + iteIdent);
+								aDeduceTypes2.errSink.reportDiagnostic(resolveError);
+							}
 						}
 					}
 				} else {

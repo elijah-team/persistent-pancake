@@ -11,6 +11,7 @@ import tripleo.elijah.lang.FunctionItem;
 import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions.S1toG_GC_Processor;
@@ -83,7 +84,7 @@ public class S1_Constructor {
 			final GenType  genType  = new GenType();
 			final TypeName typeName = fali.typeName();
 			if (typeName != null) {
-				genType.typeName = new OS_Type(typeName);
+				genType.typeName = new OS_UserType(typeName);
 			}
 			genType.resolved = attached;
 

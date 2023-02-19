@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.types.OS_FuncExprType;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;

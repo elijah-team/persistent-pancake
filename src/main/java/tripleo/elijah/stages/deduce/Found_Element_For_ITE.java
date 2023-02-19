@@ -13,9 +13,28 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.AliasStatement;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.NamespaceStatement;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.PropertyStatement;
+import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.logging.ElLog;
 
@@ -80,7 +99,7 @@ class Found_Element_For_ITE {
 			if (!(typeName.isNull())) {
 				if (ite.type == null)
 					ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, vs.initialValue());
-				ite.type.setAttached(new OS_Type(typeName));
+				ite.type.setAttached(new OS_UserType(typeName));
 			} else {
 				final OS_Element parent = vs.getParent().getParent();
 				if (parent instanceof NamespaceStatement || parent instanceof ClassStatement) {
@@ -181,11 +200,11 @@ class Found_Element_For_ITE {
 		final OS_Type attached;
 		switch (ps.getTypeName().kindOfType()) {
 			case GENERIC:
-				attached = new OS_Type(ps.getTypeName());
+				attached = new OS_UserType(ps.getTypeName());
 				break;
 			case NORMAL:
 				try {
-					attached = (dc.resolve_type(new OS_Type(ps.getTypeName()), ctx).resolved.getClassOf()).getOS_Type();
+					attached = (dc.resolve_type(new OS_UserType(ps.getTypeName()), ctx).resolved.getClassOf()).getOS_Type();
 				} catch (final ResolveError resolveError) {
 					LOG.err("378 resolveError");
 					resolveError.printStackTrace();

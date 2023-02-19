@@ -6,23 +6,30 @@
  * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
  *
  */
+package tripleo.elijah.lang.types;
+
+import tripleo.elijah.lang.FuncExpr;
+import tripleo.elijah.lang.OS_Element;
+
 
 /**
- *
+ * Created 8/6/20 5:59 PM
  */
-package tripleo.elijah.lang;
-
-public class OS_FuncType extends OS_Type {
-	private final FunctionDef function_def;
+public class OS_FuncExprType extends __Abstract_OS_Type {
+	private final FuncExpr func_expr;
 
 	@Override
 	public OS_Element getElement() {
-		return function_def;
+		return func_expr;
 	}
 
-	public OS_FuncType(final FunctionDef functionDef) {
-		super(Type.FUNCTION);
-		this.function_def = functionDef;
+	@Override
+	public Type getType() {
+		return Type.FUNC_EXPR;
+	}
+
+	public OS_FuncExprType(final FuncExpr funcExpr) {
+		this.func_expr = funcExpr;
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +37,7 @@ public class OS_FuncType extends OS_Type {
 	 */
 	@Override
 	public String toString() {
-		return String.format("<OS_FuncType %s>", function_def);
+		return String.format("<OS_FuncExprType %s>", func_expr);
 	}
 
 }

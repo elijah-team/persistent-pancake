@@ -15,6 +15,7 @@ import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.AbstractCodeGen;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
@@ -132,7 +133,7 @@ public class DeduceTypeResolve {
 
 						@Override
 						public void visitPropertyStatement(final PropertyStatement aPropertyStatement) {
-							genType.typeName = new OS_Type(aPropertyStatement.getTypeName());
+							genType.typeName = new OS_UserType(aPropertyStatement.getTypeName());
 							// TODO resolve??
 						}
 

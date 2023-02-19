@@ -2,13 +2,20 @@
 
   package tripleo.elijjah;
 
-import antlr.*;
+import antlr.NoViableAltException;
+import antlr.ParserSharedInputState;
+import antlr.RecognitionException;
+import antlr.Token;
+import antlr.TokenBuffer;
+import antlr.TokenStream;
+import antlr.TokenStreamException;
 import antlr.collections.impl.BitSet;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.GenerateStatement;
 import tripleo.elijah.ci.IndexingStatement;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.lang2.BuiltInTypes;
 
 public class EzParser extends antlr.LLkParser       implements EzTokenTypes
@@ -137,7 +144,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop18;
+					break;
 				}
 				
 			} while (true);
@@ -186,7 +193,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop7;
+					break;
 				}
 				
 			} while (true);
@@ -223,7 +230,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop15;
+					break;
 				}
 				
 			} while (true);
@@ -291,7 +298,7 @@ public EzParser(final ParserSharedInputState state) {
 						expr=expression();
 					}
 					else {
-						break _loop12;
+						break;
 					}
 					
 				} while (true);
@@ -366,7 +373,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop41;
+					break;
 				}
 				
 			} while (true);
@@ -470,7 +477,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop22;
+					break;
 				}
 				
 			} while (true);
@@ -534,7 +541,7 @@ public EzParser(final ParserSharedInputState state) {
 						}
 					}
 					else {
-						if ( _cnt28>=1 ) { break _loop28; } else {throw new NoViableAltException(LT(1), getFilename());}
+						if ( _cnt28>=1 ) { break; } else {throw new NoViableAltException(LT(1), getFilename());}
 					}
 					
 					_cnt28++;
@@ -617,7 +624,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop33;
+					break;
 				}
 				
 			} while (true);
@@ -794,7 +801,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop37;
+					break;
 				}
 				
 			} while (true);
@@ -944,7 +951,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop51;
+					break;
 				}
 				
 			} while (true);
@@ -979,7 +986,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop54;
+					break;
 				}
 				
 			} while (true);
@@ -1014,7 +1021,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop57;
+					break;
 				}
 				
 			} while (true);
@@ -1050,7 +1057,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop60;
+					break;
 				}
 				
 			} while (true);
@@ -1086,7 +1093,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop63;
+					break;
 				}
 				
 			} while (true);
@@ -1146,7 +1153,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop67;
+					break;
 				}
 				
 			} while (true);
@@ -1220,12 +1227,12 @@ public EzParser(final ParserSharedInputState state) {
 					}
 					e3=shiftExpression();
 					if ( inputState.guessing==0 ) {
-						ee=ExpressionBuilder.build(ee,e2,e3);
-																ee.setType(new OS_Type(BuiltInTypes.Boolean));
+						ee = ExpressionBuilder.build(ee, e2, e3);
+						ee.setType(new OS_BuiltinType(BuiltInTypes.Boolean));
 					}
 				}
 				else {
-					break _loop72;
+					break;
 				}
 				
 			} while (true);
@@ -1293,7 +1300,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop76;
+					break;
 				}
 				
 			} while (true);
@@ -1352,7 +1359,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop80;
+					break;
 				}
 				
 			} while (true);
@@ -1419,7 +1426,7 @@ public EzParser(final ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop84;
+					break;
 				}
 				
 			} while (true);
@@ -1666,7 +1673,7 @@ public EzParser(final ParserSharedInputState state) {
 					match(RPAREN);
 				}
 				else {
-					break _loop92;
+					break;
 				}
 				
 			} while (true);

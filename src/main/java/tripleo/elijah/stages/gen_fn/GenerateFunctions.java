@@ -1806,6 +1806,10 @@ import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.types.OS_BuiltinType;
+import tripleo.elijah.lang.types.OS_FuncExprType;
+import tripleo.elijah.lang.types.OS_UnitType;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.lang2.SpecialFunctions;
 import tripleo.elijah.stages.deduce.ClassInvocation;
@@ -1905,7 +1909,7 @@ public class GenerateFunctions {
 				final GenType  genType  = new GenType();
 				final TypeName typeName = fali.typeName();
 				if (typeName != null)
-					genType.typeName = new OS_Type(typeName);
+					genType.typeName = new OS_UserType(typeName);
 				genType.resolved = attached;
 
 				final OS_Type attached1;
@@ -2077,9 +2081,9 @@ public class GenerateFunctions {
 		final OS_Type  returnType;
 		final TypeName returnType1 = fd.returnType();
 		if (returnType1 == null)
-			returnType = new OS_Type.OS_UnitType();
+			returnType = new OS_UnitType();
 		else
-			returnType = new OS_Type(returnType1);
+			returnType = new OS_UserType(returnType1);
 		gf.addVariableTableEntry("Result",
 		  VariableTableType.RESULT,
 		  gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, returnType, IdentExpression.forString("Result")),
@@ -2100,7 +2104,7 @@ public class GenerateFunctions {
 					final GenType  genType  = new GenType();
 					final TypeName typeName = fali.typeName();
 					if (typeName != null)
-						genType.typeName = new OS_Type(typeName);
+						genType.typeName = new OS_UserType(typeName);
 					genType.resolved = attached;
 
 					final OS_Type attached1;
@@ -2257,13 +2261,13 @@ public class GenerateFunctions {
 			case CAST_TO: {
 				final TypeCastExpression      tce       = (TypeCastExpression) expression;
 				final InstructionArgument     simp      = simplify_expression(tce.getLeft(), gf, cctx);
-				@NotNull final TypeTableEntry tte_index = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, new OS_Type(tce.getTypeName()));
+				@NotNull final TypeTableEntry tte_index = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, new OS_UserType(tce.getTypeName()));
 				final int                     x         = add_i(gf, InstructionName.CAST_TO, List_of(simp, new IntegerIA(tte_index.getIndex(), gf)), cctx);
 			}
 			case AS_CAST: {
 				final TypeCastExpression      tce       = (TypeCastExpression) expression;
 				final InstructionArgument     simp      = simplify_expression(tce.getLeft(), gf, cctx);
-				@NotNull final TypeTableEntry tte_index = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, new OS_Type(tce.getTypeName()));
+				@NotNull final TypeTableEntry tte_index = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, new OS_UserType(tce.getTypeName()));
 				final int                     x         = add_i(gf, InstructionName.AS_CAST, List_of(simp, new IntegerIA(tte_index.getIndex(), gf)), cctx);
 			}
 			case DOT_EXP: {
@@ -2342,7 +2346,7 @@ public class GenerateFunctions {
 					final TypeTableEntry tte_left  = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, left);
 					final TypeTableEntry tte_right = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, right);
 					final int            pte       = addProcTableEntry(expr_kind_name, null, List_of(tte_left, tte_right), gf);
-					final int            tmp       = addTempTableEntry(new OS_Type(BuiltInTypes.Boolean), gf); // README should be Boolean
+					final int            tmp       = addTempTableEntry(new OS_BuiltinType(BuiltInTypes.Boolean), gf); // README should be Boolean
 					add_i(gf, InstructionName.DECL, List_of(new SymbolIA("tmp"), new IntegerIA(tmp, gf)), cctx);
 					final Instruction inst = new Instruction();
 					inst.setName(InstructionName.CALLS);
@@ -2413,7 +2417,7 @@ public class GenerateFunctions {
 					final TypeTableEntry tte_left  = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, left);
 					final TypeTableEntry tte_right = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, right);
 					final int            pte       = addProcTableEntry(expr_kind_name, null, List_of(tte_left, tte_right), gf);
-					final int            tmp       = addTempTableEntry(new OS_Type(BuiltInTypes.Boolean), gf);
+					final int            tmp       = addTempTableEntry(new OS_BuiltinType(BuiltInTypes.Boolean), gf);
 					add_i(gf, InstructionName.DECL, List_of(new SymbolIA("tmp"), new IntegerIA(tmp, gf)), cctx);
 					final Instruction inst = new Instruction();
 					inst.setName(InstructionName.CALLS);
@@ -2447,7 +2451,7 @@ public class GenerateFunctions {
 //					TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, expr_kind_name);
 					final TypeTableEntry tte_left = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, left);
 					final int            pte      = addProcTableEntry(expr_kind_name, null, List_of(tte_left), gf);
-					final int            tmp      = addTempTableEntry(new OS_Type(BuiltInTypes.Boolean), gf);
+					final int            tmp      = addTempTableEntry(new OS_BuiltinType(BuiltInTypes.Boolean), gf);
 					add_i(gf, InstructionName.DECL, List_of(new SymbolIA("tmp"), new IntegerIA(tmp, gf)), cctx);
 					final Instruction inst = new Instruction();
 					inst.setName(InstructionName.CALLS);
@@ -2785,11 +2789,11 @@ public class GenerateFunctions {
 		//
 		for (final FormalArgListItem arg : args) {
 			final TypeTableEntry tte;
-			final OS_Type        ty;
+			final OS_UserType    ty;
 			if (arg.typeName() == null || arg.typeName().isNull())
 				ty = null;
 			else
-				ty = new OS_Type(arg.typeName());
+				ty = new OS_UserType(arg.typeName());
 
 			tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, ty, arg.getNameToken());
 
@@ -2952,7 +2956,7 @@ public class GenerateFunctions {
 
 							final int begin0 = add_i(gf, InstructionName.ES, null, cctx);
 
-							final int                tmp     = addTempTableEntry(new OS_Type(tn), id, gf, id); // TODO no context!
+							final int                tmp     = addTempTableEntry(new OS_UserType(tn), id, gf, id); // TODO no context!
 							final VariableTableEntry vte_tmp = gf.getVarTableEntry(tmp);
 							final TypeTableEntry     t       = vte_tmp.type;
 							add_i(gf, InstructionName.IS_A, List_of(i, new IntegerIA(t.getIndex(), gf), /*TODO not*/new LabelIA(label_next)), cctx);
@@ -3009,7 +3013,7 @@ public class GenerateFunctions {
 				final IExpression         expr   = ifc.getExpr();
 				final InstructionArgument i      = simplify_expression(expr, gf, cctx);
 //				LOG.info("711 " + i);
-				final int const_true = addConstantTableEntry("true", Boolean_true, new OS_Type(BuiltInTypes.Boolean), gf);
+				final int const_true = addConstantTableEntry("true", Boolean_true, new OS_BuiltinType(BuiltInTypes.Boolean), gf);
 				add_i(gf, InstructionName.JNE, List_of(i, new ConstTableIA(const_true, gf), label_next), cctx);
 				final int begin_1st = add_i(gf, InstructionName.ES, null, cctx);
 				final int begin_2nd = add_i(gf, InstructionName.ES, null, cctx);
@@ -3100,7 +3104,7 @@ public class GenerateFunctions {
 		private void generate_loop_EXPR_TYPE(@NotNull final Loop loop, @NotNull final BaseGeneratedFunction gf, final Context cctx) {
 			final int loop_iterator = addTempTableEntry(null, gf); // TODO deduce later
 			add_i(gf, InstructionName.DECL, List_of(new SymbolIA("tmp"), new IntegerIA(loop_iterator, gf)), cctx);
-			final int                 i2  = addConstantTableEntry("", new NumericExpression(0), new OS_Type(BuiltInTypes.SystemInteger), gf);
+			final int                 i2  = addConstantTableEntry("", new NumericExpression(0), new OS_BuiltinType(BuiltInTypes.SystemInteger), gf);
 			final InstructionArgument ia1 = new ConstTableIA(i2, gf);
 //			if (ia1 instanceof ConstTableIA)
 			add_i(gf, InstructionName.AGNK, List_of(new IntegerIA(loop_iterator, gf), ia1), cctx);
@@ -3166,7 +3170,7 @@ public class GenerateFunctions {
 					case 3: {
 						final TypeTableEntry tte;
 						if (initialValue == IExpression.UNASSIGNED && vs.typeName() != null) {
-							tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, new OS_Type(vs.typeName()), vs.getNameToken());
+							tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, new OS_UserType(vs.typeName()), vs.getNameToken());
 						} else {
 							tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, initialValue.getType(), vs.getNameToken());
 						}
@@ -3428,7 +3432,7 @@ public class GenerateFunctions {
 
 		public void string_literal(@NotNull final BaseGeneratedFunction gf, final IExpression left, final StringExpression right, final Context aContext) {
 			@NotNull final InstructionArgument agn_path = gf.get_assignment_path(left, GenerateFunctions.this, aContext);
-			final int                          cte      = addConstantTableEntry("", right, new OS_Type(BuiltInTypes.String_)/*right.getType()*/, gf);
+			final int                          cte      = addConstantTableEntry("", right, new OS_BuiltinType(BuiltInTypes.String_)/*right.getType()*/, gf);
 
 			final int agn_inst = add_i(gf, InstructionName.AGN, List_of(agn_path, new ConstTableIA(cte, gf)), aContext);
 			// TODO what now??

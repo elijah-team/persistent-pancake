@@ -27,6 +27,7 @@ import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.VariableSequence;
 import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.types.OS_UserClassType;
 import tripleo.elijah.stages.gen_c.CReference;
 import tripleo.elijah.stages.gen_c.Emit;
 import tripleo.elijah.stages.gen_c.Generate_Code_For_Method;
@@ -56,7 +57,7 @@ public class GetIdentIAPathTest_ForC {
 
 	@Test
 	public void testManualXDotFoo() {
-		@NotNull final IdentExpression x_ident = IdentExpression.forString("X");
+		@NotNull final IdentExpression x_ident   = IdentExpression.forString("X");
 		@NotNull final IdentExpression foo_ident = IdentExpression.forString("foo");
 		//
 		final VariableSequence vsq = new VariableSequence(null);
@@ -64,15 +65,15 @@ public class GetIdentIAPathTest_ForC {
 		final VariableStatement foo_vs = new VariableStatement(vsq);
 		foo_vs.setName(foo_ident);
 		//
-		final OS_Type type = null;
-		final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, x_ident);
-		final int int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, mock(VariableStatement.class));
-		final int ite_index = gf.addIdentTableEntry(foo_ident, null);
-		final IdentTableEntry ite = gf.getIdentTableEntry(ite_index);
+		final OS_Type         type      = null;
+		final TypeTableEntry  tte       = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, x_ident);
+		final int             int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, mock(VariableStatement.class));
+		final int             ite_index = gf.addIdentTableEntry(foo_ident, null);
+		final IdentTableEntry ite       = gf.getIdentTableEntry(ite_index);
 		ite.setResolvedElement(foo_vs);
 		ite.backlink = new IntegerIA(int_index, gf);
 		final IdentIA ident_ia = new IdentIA(ite_index, gf);
-		final String x = getIdentIAPath(ident_ia, gf);
+		final String  x        = getIdentIAPath(ident_ia, gf);
 		Assert.assertEquals("vvx->vmfoo", x);
 	}
 
@@ -215,7 +216,7 @@ public class GetIdentIAPathTest_ForC {
 		//
 
 		//
-		final OS_Type        type      = new OS_Type(classStatement);
+		final OS_Type        type      = new OS_UserClassType(classStatement);
 		final TypeTableEntry tte       = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, x_ident);
 		final int            int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, mock(VariableStatement.class));
 		//

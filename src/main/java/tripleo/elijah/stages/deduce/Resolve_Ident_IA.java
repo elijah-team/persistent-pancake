@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.zero.ITE_Zero;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
@@ -306,7 +307,7 @@ class Resolve_Ident_IA {
 					// for example from match conditional
 					final TypeName tn = ((MatchConditional.MatchArm_TypeMatch) el).getTypeName();
 					try {
-						final @NotNull GenType ty = dc.resolve_type(new OS_Type(tn), tn.getContext());
+						final @NotNull GenType ty = dc.resolve_type(new OS_UserType(tn), tn.getContext());
 						ectx = ty.resolved.getElement().getContext();
 					} catch (final ResolveError resolveError) {
 						resolveError.printStackTrace();

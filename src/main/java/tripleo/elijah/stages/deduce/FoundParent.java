@@ -7,12 +7,30 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.BaseFunctionDef;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.zero.ITE_Zero;
 import tripleo.elijah.stages.deduce.zero.PTE_Zero;
 import tripleo.elijah.stages.deduce.zero.VTE_Zero;
 import tripleo.elijah.stages.deduce.zero.Zero_PotentialTypes;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
+import tripleo.elijah.stages.gen_fn.GenericElementHolderWithType;
+import tripleo.elijah.stages.gen_fn.IElementHolder;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
@@ -160,7 +178,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 	private void postOnChange(@NotNull final IElementHolder eh) {
 		if (ite.type == null && eh.getElement() instanceof VariableStatement) {
 			@NotNull final TypeName typ = ((VariableStatement) eh.getElement()).typeName();
-			@NotNull final OS_Type  ty  = new OS_Type(typ);
+			@NotNull final OS_Type  ty  = new OS_UserType(typ);
 
 			try {
 				@Nullable final GenType ty2 = getTY2(typ, ty);
@@ -179,18 +197,18 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 		}
 	}
 
-	private @Nullable GenType getTY2(@NotNull final TypeName aTyp, @NotNull final OS_Type aTy) throws ResolveError {
-		if (aTy.getType() != OS_Type.Type.USER) {
+	private @Nullable GenType getTY2(@NotNull final TypeName aTyp, final @NotNull OS_Type ty) throws ResolveError {
+		if (ty.getType() != OS_Type.Type.USER) {
 			assert false;
 			@NotNull final GenType genType = new GenType();
-			genType.set(aTy);
+			genType.set(ty);
 			return genType;
 		}
 
 		@Nullable GenType ty2 = null;
 		if (!aTyp.isNull()) {
-			assert aTy.getTypeName() != null;
-			ty2 = deduceTypes2.resolve_type(aTy, aTy.getTypeName().getContext());
+			assert ty.getTypeName() != null;
+			ty2 = deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
 			return ty2;
 		}
 

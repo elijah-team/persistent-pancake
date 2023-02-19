@@ -9,6 +9,7 @@ import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.TypeNameList;
 import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.Constructable;
 import tripleo.elijah.stages.gen_fn.GenType;
@@ -64,7 +65,7 @@ class DTR_VariableStatement {
 			final DeduceTypes2                 dt2  = eh1.getDeduceTypes2();
 			final OS_Type                      type = eh1.getType();
 
-			genType.typeName = new OS_Type(normalTypeName);
+			genType.typeName = new OS_UserType(normalTypeName);
 			try {
 				final @NotNull GenType resolved = dt2.resolve_type(genType.typeName, variableStatement.getContext());
 				if (resolved.resolved.getType() == OS_Type.Type.GENERIC_TYPENAME) {
@@ -80,7 +81,7 @@ class DTR_VariableStatement {
 			}
 		} else if (eh instanceof DeduceElement3Holder) {
 		} else
-			genType.typeName = new OS_Type(normalTypeName);
+			genType.typeName = new OS_UserType(normalTypeName);
 	}
 
 	private void normalTypeName_notGeneric_typeProvided(final @NotNull GenType genType, final NormalTypeName normalTypeName, final @NotNull DeduceTypes2 dt2, final @NotNull OS_Type type) {
@@ -88,7 +89,7 @@ class DTR_VariableStatement {
 
 		assert normalTypeName == type.getTypeName();
 
-		final OS_Type typeName = new OS_Type(normalTypeName);
+		final OS_Type typeName = new OS_UserType(normalTypeName);
 		try {
 			final @NotNull GenType resolved = dt2.resolve_type(typeName, variableStatement.getContext());
 			genType.resolved = resolved.resolved;

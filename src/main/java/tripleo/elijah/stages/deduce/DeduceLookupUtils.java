@@ -13,6 +13,9 @@ import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.types.OS_BuiltinType;
+import tripleo.elijah.lang.types.OS_UnknownType;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.util.Helpers;
@@ -158,7 +161,7 @@ public class DeduceLookupUtils {
 			return gt[0];
 		case NUMERIC:
 			final @NotNull GenType genType = new GenType();
-			genType.resolved = new OS_Type(BuiltInTypes.SystemInteger);
+			genType.resolved = new OS_BuiltinType(BuiltInTypes.SystemInteger);
 			return genType;
 		case DOT_EXP:
 			final @NotNull DotExpression de = (DotExpression) n;
@@ -185,14 +188,14 @@ public class DeduceLookupUtils {
 					} else if (best instanceof FunctionDef) {
 						final @Nullable FunctionDef fd = (FunctionDef) best;
 						if (fd.returnType() != null && !fd.returnType().isNull()) {
-							result.resolved = new OS_Type(fd.returnType());
+							result.resolved = new OS_UserType(fd.returnType());
 						} else {
 							result.resolved = new OS_UnknownType(fd);// TODO still must register somewhere
 						}
 					} else if (best instanceof FuncExpr) {
 						final @NotNull FuncExpr funcExpr = (FuncExpr) best;
 						if (funcExpr.returnType() != null && !funcExpr.returnType().isNull()) {
-							result.resolved = new OS_Type(funcExpr.returnType());
+							result.resolved = new OS_UserType(funcExpr.returnType());
 						} else {
 							result.resolved = new OS_UnknownType(funcExpr);// TODO still must register somewhere
 						}
@@ -272,7 +275,7 @@ public class DeduceLookupUtils {
 					break;
 				case NUMERIC:
 					final @NotNull GenType genType = new GenType();
-					genType.resolved = new OS_Type(BuiltInTypes.SystemInteger);
+					genType.resolved = new OS_BuiltinType(BuiltInTypes.SystemInteger);
 					typePromise.resolve(genType);
 					return;
 				case DOT_EXP:
@@ -323,14 +326,14 @@ public class DeduceLookupUtils {
 				} else if (best instanceof FunctionDef) {
 					final @Nullable FunctionDef fd = (FunctionDef) best;
 					if (fd.returnType() != null && !fd.returnType().isNull()) {
-						result.resolved = new OS_Type(fd.returnType());
+						result.resolved = new OS_UserType(fd.returnType());
 					} else {
 						result.resolved = new OS_UnknownType(fd);// TODO still must register somewhere
 					}
 				} else if (best instanceof FuncExpr) {
 					final @NotNull FuncExpr funcExpr = (FuncExpr) best;
 					if (funcExpr.returnType() != null && !funcExpr.returnType().isNull()) {
-						result.resolved = new OS_Type(funcExpr.returnType());
+						result.resolved = new OS_UserType(funcExpr.returnType());
 					} else {
 						result.resolved = new OS_UnknownType(funcExpr);// TODO still must register somewhere
 					}
@@ -399,11 +402,11 @@ public class DeduceLookupUtils {
 
 			if (!vs.typeName().isNull()) {
 				@Nullable final OS_Module                           lets_hope_we_dont_need_this = null;
-				@NotNull final Promise<GenType, ResolveError, Void> x                           = aDeduceTypes2.resolve_type_p(lets_hope_we_dont_need_this, new OS_Type(vs.typeName()), ctx);
+				@NotNull final Promise<GenType, ResolveError, Void> x                           = aDeduceTypes2.resolve_type_p(lets_hope_we_dont_need_this, new OS_UserType(vs.typeName()), ctx);
 				final @Nullable GenType                             finalR                      = R;
 				x.then(ty -> {
 					if (ty == null) {
-						finalR.typeName = new OS_Type(vs.typeName());
+						finalR.typeName = new OS_UserType(vs.typeName());
 						result[0]       = finalR;
 					} else {
 						result[0] = ty;
@@ -436,10 +439,10 @@ public class DeduceLookupUtils {
 
 			if (!fali.typeName().isNull()) {
 				@Nullable final OS_Module lets_hope_we_dont_need_this = null;
-				@NotNull final GenType    ty                          = aDeduceTypes2.resolve_type(lets_hope_we_dont_need_this, new OS_Type(fali.typeName()), ctx);
+				@NotNull final GenType    ty                          = aDeduceTypes2.resolve_type(lets_hope_we_dont_need_this, new OS_UserType(fali.typeName()), ctx);
 				result = ty;
 				if (result == null) {
-					R.typeName = new OS_Type(fali.typeName());
+					R.typeName = new OS_UserType(fali.typeName());
 				}
 			} else {
 				R.typeName = new OS_UnknownType(fali);

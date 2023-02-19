@@ -21,9 +21,10 @@ import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.FormalArgListItem;
 import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.NormalTypeName;
-import tripleo.elijah.lang.OS_GenericTypeNameType;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.types.OS_GenericTypeNameType;
+import tripleo.elijah.lang.types.OS_UnitType;
 import tripleo.elijah.nextgen.outputstatement.EG_DottedStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
@@ -205,7 +206,7 @@ public class Generate_Code_For_Method {
 			state = 3;
 		else if (aGmh.tte.isResolved())
 			state = 1;
-		else if (aGmh.tte.getAttached() instanceof OS_Type.OS_UnitType)
+		else if (aGmh.tte.getAttached() instanceof OS_UnitType)
 			state = 4;
 
 		switch (state) {

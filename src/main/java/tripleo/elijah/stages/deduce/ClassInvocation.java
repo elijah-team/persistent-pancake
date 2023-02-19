@@ -14,8 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Type;
-import tripleo.elijah.lang.OS_UnknownType;
 import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.types.OS_UnknownType;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
 
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class ClassInvocation implements IInvocation {
 		if (genericPart1.size() > 0) {
 			genericPart = new HashMap<TypeName, OS_Type>(genericPart1.size());
 			for (final TypeName typeName : genericPart1) {
-				genericPart.put(typeName, new OS_UnknownType(null));
+				genericPart.put(typeName, new OS_UnknownType(null)); // TODO DeduceType here because deferred
 			}
 		} else {
 			genericPart = null;

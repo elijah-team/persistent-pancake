@@ -4,6 +4,9 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.types.OS_BuiltinType;
+import tripleo.elijah.lang.types.OS_FuncType;
+import tripleo.elijah.lang.types.OS_UserClassType;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
@@ -114,11 +117,11 @@ class Do_assign_call {
 			if (e == null) continue;
 			switch (e.getKind()) {
 				case NUMERIC:
-					tte.setAttached(new OS_Type(BuiltInTypes.SystemInteger));
+					tte.setAttached(new OS_BuiltinType(BuiltInTypes.SystemInteger));
 					//vte.type = tte;
 					break;
 				case CHAR_LITERAL:
-					tte.setAttached(new OS_Type(BuiltInTypes.SystemCharacter));
+					tte.setAttached(new OS_BuiltinType(BuiltInTypes.SystemCharacter));
 					break;
 				case IDENT:
 					deduceTypes2.do_assign_call_args_ident(generatedFunction, ctx, vte, instructionIndex, pte, i, tte, (IdentExpression) e);
@@ -181,7 +184,7 @@ class Do_assign_call {
 								tte.setAttached(new OS_FuncType((FunctionDef) best));
 								//vte.addPotentialType(instructionIndex, tte);
 							} else if (best instanceof ClassStatement) {
-								tte.setAttached(new OS_Type((ClassStatement) best));
+								tte.setAttached(new OS_UserClassType((ClassStatement) best));
 							} else if (best instanceof VariableStatement) {
 								final @NotNull VariableStatement    vs     = (VariableStatement) best;
 								@Nullable final InstructionArgument vte_ia = generatedFunction.vte_lookup(vs.getName());
@@ -285,7 +288,7 @@ class Do_assign_call {
 							});
 						} else if (el instanceof ClassStatement) {
 							@NotNull final ClassStatement kl   = (ClassStatement) el;
-							@NotNull final OS_Type        type = new OS_Type(kl);
+							@NotNull final OS_Type        type = new OS_UserClassType(kl);
 							@NotNull final TypeTableEntry tte  = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, type, pte.expression, pte);
 							vte.addPotentialType(instructionIndex, tte);
 							vte.setConstructable(pte);

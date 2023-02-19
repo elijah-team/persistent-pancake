@@ -2,7 +2,7 @@ package tripleo.elijah.stages.deduce.zero;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.BaseFunctionDef;
-import tripleo.elijah.lang.OS_FuncExprType;
+import tripleo.elijah.lang.types.OS_FuncExprType;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions;

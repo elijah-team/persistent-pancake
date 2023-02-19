@@ -14,8 +14,8 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.contexts.ClassContext;
+import tripleo.elijah.lang.types.OS_UserClassType;
 import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
 
@@ -34,20 +34,20 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 
 	private final OS_Element parent;
 	ClassInheritance _inh = new ClassInheritance(); // remove final for ClassBuilder
-	private ClassTypes   _type;
-	static final List<TypeName> emptyTypeNameList = ImmutableList.<TypeName>of();
-	private TypeNameList genericPart;
-	private      OS_Type        osType;
+	static final List<TypeName>   emptyTypeNameList = ImmutableList.of();
+	private      ClassTypes       _type;
+	private      TypeNameList     genericPart;
+	private      OS_UserClassType osType;
 
 	public ClassStatement(final OS_Element parentElement, final Context parentContext) {
 		parent = parentElement; // setParent
 
 		@NotNull final ElObjectType x = DecideElObjectType.getElObjectType(parentElement);
 		switch (x) {
-			case MODULE:
-				final OS_Module module = (OS_Module) parentElement;
-				//
-				this.setPackageName(module.pullPackageName());
+		case MODULE:
+			final OS_Module module = (OS_Module) parentElement;
+			//
+			this.setPackageName(module.pullPackageName());
 				_packageName.addElement(this);
 				module.add(this);
 				break;
@@ -237,7 +237,7 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 
 	public OS_Type getOS_Type() {
 		if (osType == null)
-			osType = new OS_Type(this);
+			osType = new OS_UserClassType(this);
 		return osType;
 	}
 }

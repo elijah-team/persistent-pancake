@@ -1,7 +1,7 @@
 package tripleo.elijah.stages.deduce.post_bytecode;
 
-import org.jdeferred2.impl.DeferredObject;
 import org.jdeferred2.Promise;
+import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -117,7 +117,7 @@ public interface PostBC_Processor {
 
         private static @NotNull DeduceType3 doNoTypeAttached__single_potential(final VariableTableEntry vte, final DeduceTypes2.@NotNull DeduceClient1 deduceTypes2) {
             final OS_Type     attached = deduceTypes2.getPotentialTypesVte(vte).get(0).getAttached();
-            final DeduceType3 r        = new DeduceType3(attached, null);
+	        final DeduceType3 r        = new DeduceType3(attached, null);
 
             // ... ZeroPotentialDiagnostic
             final ZeroPotentialDiagnostic zpd = new ZeroPotentialDiagnostic();
@@ -256,10 +256,10 @@ public interface PostBC_Processor {
     }
 
     class PostBC_Processor__VTE_RESULT extends PostBC_Processor.__PostBC_Processor__VTE {
-        private final VariableTableEntry         variableTableEntry;
-        private final Context                    fd_ctx;
-        private final OS_Type                    vte_type_attached;
-        private final DeduceTypes2.DeduceClient1 deduceTypes2;
+	    private final VariableTableEntry         variableTableEntry;
+	    private final Context                    fd_ctx;
+	    private final OS_Type                    vte_type_attached;
+	    private final DeduceTypes2.DeduceClient1 deduceTypes2;
 
         public PostBC_Processor__VTE_RESULT(final VariableTableEntry aVariableTableEntry, final Context aFd_ctx, final OS_Type aVte_type_attached, final DeduceTypes2.DeduceClient1 aDeduceTypes2) {
             variableTableEntry = aVariableTableEntry;

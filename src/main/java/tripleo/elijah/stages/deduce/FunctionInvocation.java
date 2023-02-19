@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.BaseFunctionDef;
 import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
@@ -151,6 +152,14 @@ public class FunctionInvocation {
 		if (classInvocation != aFunctionInvocation.classInvocation) return false;
 		if (namespaceInvocation != aFunctionInvocation.namespaceInvocation) return false;
 		return _generated == aFunctionInvocation._generated;
+	}
+
+	public WlGenerateFunction generateFunction(final DeduceTypes2 deduceTypes2, final @NotNull OS_Element aElement) {
+		return generateFunction(deduceTypes2, aElement.getContext().module());
+	}
+
+	public WlGenerateFunction generateFunction(final @NotNull DeduceTypes2 deduceTypes2, final @NotNull OS_Module aModule) {
+		return new WlGenerateFunction(deduceTypes2.getGenerateFunctions(aModule), this, deduceTypes2._phase().codeRegistrar);
 	}
 }
 

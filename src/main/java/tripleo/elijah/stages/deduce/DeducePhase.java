@@ -26,8 +26,8 @@ import tripleo.elijah.lang.NamespaceStatement;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Type;
-import tripleo.elijah.lang.OS_UnknownType;
 import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.types.OS_UnknownType;
 import tripleo.elijah.nextgen.ClassDefinition;
 import tripleo.elijah.nextgen.diagnostic.CouldntGenerateClass;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
@@ -537,7 +537,7 @@ public class DeducePhase {
 								final GeneratedContainer.@Nullable VarTableEntry v = result.getVariable(deferredMember.getVariableStatement().getName());
 								assert v != null;
 								// TODO varType, potentialTypes and _resolved: which?
-								final OS_Type varType = v.varType;
+								final OS_Type          varType = v.varType;
 								final @NotNull GenType genType = new GenType();
 								genType.set(varType);
 
