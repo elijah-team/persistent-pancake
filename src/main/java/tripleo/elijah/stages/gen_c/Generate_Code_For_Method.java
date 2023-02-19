@@ -248,7 +248,13 @@ public class Generate_Code_For_Method {
 	}
 
 	private void action_X(final Generate_Method_Header aGmh) {
-		if (is_constructor) return;
+		// TODO functions are being marked as constructor when they are not
+
+		if (is_constructor) {
+			tos.dec_tabs();
+			tos.put_string_ln("}");
+			return;
+		}
 
 		tos.dec_tabs();
 		tos.put_string_ln("}");
