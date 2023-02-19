@@ -1,5 +1,6 @@
 package tripleo.elijah.stages.deduce.post_bytecode;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
@@ -9,7 +10,9 @@ import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.ProcedureCallExpression;
+import tripleo.elijah.lang.types.OS_FuncType;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
@@ -17,6 +20,7 @@ import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.gen_fn.WlGenerateFunction;
@@ -134,15 +138,30 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                                     final FunctionDef fun = (FunctionDef) best;
 
                                     final FunctionInvocation fi2 = new FunctionInvocation(fun, null, ci, deduceTypes2._phase().generatePhase); // TODO pte??
-                                    fi2.generatePromise().then(gf -> {
-                                        final int y4 = 4;
-                                    });
 
                                     principal.setFunctionInvocation(fi2); // TODO pte above
 
                                     final WlGenerateFunction j = fi2.generateFunction(deduceTypes2, best);
                                     j.run(null);
 
+                                    final @NotNull IdentTableEntry ite      = ((IdentIA) principal.expression_num).getEntry();
+                                    final OS_Type                  attached = ite.type.getAttached();
+
+                                    fi2.generatePromise().then(gf -> {
+                                        final int y4 = 4;
+                                    });
+
+                                    if (attached instanceof OS_FuncType) {
+                                        final OS_FuncType funcType = (OS_FuncType) attached;
+
+                                        final GeneratedClass x = gc[0];
+
+                                        fi2.generatePromise().then(gf -> {
+                                            final int y4 = 4;
+                                        });
+
+                                        final int y = 2;
+                                    }
                                     final int yy = 2;
                                 }
                             });
