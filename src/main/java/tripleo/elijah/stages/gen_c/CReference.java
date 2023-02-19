@@ -51,6 +51,13 @@ public class CReference {
 
 	private final GI_Repo _repo = new GI_Repo();
 
+
+	//
+	//
+	private GeneratedClass _cheat = null;
+	//
+	//
+
 	public String getIdentIAPath(final @NotNull IdentIA ia2, final Generate_Code_For_Method.AOG aog, final String aValue) {
 		final BaseGeneratedFunction     generatedFunction = ia2.gf;
 		final List<InstructionArgument> s                 = _getIdentIAPathList(ia2);
@@ -69,9 +76,11 @@ public class CReference {
 				final VariableTableEntry vte = generatedFunction.getVarTableEntry(to_int(ia));
 
 				if (vte.getName().equals("a1")) {
-					final GenType gt1 = vte.genType;
-					final GenType gt2 = vte.type.genType;
+					final GenType        gt1 = vte.genType;
+					final GenType        gt2 = vte.type.genType;
 					final GeneratedClass gc1 = (GeneratedClass) vte.genType.node;
+
+					_cheat = gc1;
 
 					// only gt1.node is not null
 
@@ -100,7 +109,7 @@ public class CReference {
 				addRef(vte.getName(), Ref.LOCAL);
 			} else if (ia instanceof IdentIA) {
 				final IdentTableEntry idte = ((IdentIA) ia).getEntry();
-				text = CRI_Ident.of(idte, ((IdentIA) ia).gf).getIdentIAPath(i, sSize, aog, sl, aValue, refs::add, s, ia2, this);
+				text = CRI_Ident.of(idte, ((IdentIA) ia).gf).getIdentIAPath(i, sSize, aog, sl, aValue, refs::add, s, ia2, this, _cheat);
 			} else if (ia instanceof ProcIA) {
 				final ProcTableEntry prte = generatedFunction.getProcTableEntry(to_int(ia));
 				text = getIdentIAPath_Proc(prte);

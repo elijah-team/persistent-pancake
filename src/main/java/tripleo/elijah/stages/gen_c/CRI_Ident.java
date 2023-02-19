@@ -47,7 +47,7 @@ class CRI_Ident {
 	                             final Consumer<CReference.Reference> addRef,
 	                             final List<InstructionArgument> s,
 	                             final IdentIA ia2,
-	                             final CReference aCReference) {
+	                             final CReference aCReference, final GeneratedClass _cheat) {
 		final boolean[]  skip             = {false};
 		final OS_Element resolved_element = ite.getResolvedElement();
 		final String[]   text             = {null};
@@ -58,7 +58,7 @@ class CRI_Ident {
 				resolved = _re_is_ClassStatement();
 			} else if (resolved_element instanceof FunctionDef) {
 				@Nullable final ProcTableEntry pte = ite.getCallablePTE();
-				resolved = _re_is_FunctionDef(pte);
+				resolved = _re_is_FunctionDef(pte, _cheat);
 			} else if (resolved_element instanceof PropertyStatement) {
 				resolved = _re_is_PropertyStatement(addRef, aog, sSize, i, aValue, (x) -> skip[0] = true, (x) -> text[0] = x);
 			}
@@ -142,7 +142,7 @@ class CRI_Ident {
 		return resolved;
 	}
 
-	private GeneratedNode _re_is_FunctionDef(final @Nullable ProcTableEntry pte) {
+	private GeneratedNode _re_is_FunctionDef(final @Nullable ProcTableEntry pte, final GeneratedClass a_cheat) {
 		GeneratedNode resolved = null;
 		if (pte != null) {
 			final FunctionInvocation fi = pte.getFunctionInvocation();
@@ -165,6 +165,11 @@ class CRI_Ident {
 //								fi.setClassInvocation();
 			}
 		}
+
+		if (resolved == null) {
+			resolved = a_cheat;
+		}
+
 		return resolved;
 	}
 
