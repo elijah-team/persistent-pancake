@@ -47,4 +47,9 @@ public class OS_UserClassType extends __Abstract_OS_Type {
 			clsinv = (ClassInvocation) genType.ci;
 		return clsinv;
 	}
+
+	@Override
+	public ClassStatement getClassOf() {
+		return _classStatement;
+	}
 }
