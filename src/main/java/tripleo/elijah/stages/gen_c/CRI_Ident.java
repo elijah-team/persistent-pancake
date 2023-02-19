@@ -47,10 +47,12 @@ class CRI_Ident {
 	                             final Consumer<CReference.Reference> addRef,
 	                             final List<InstructionArgument> s,
 	                             final IdentIA ia2,
-	                             final CReference aCReference, final GeneratedClass _cheat) {
+	                             final CReference aCReference) {
 		final boolean[]  skip             = {false};
 		final OS_Element resolved_element = ite.getResolvedElement();
 		final String[]   text             = {null};
+
+		final GeneratedClass _cheat = aCReference._cheat;
 
 		if (resolved_element != null) {
 			GeneratedNode resolved = null;
