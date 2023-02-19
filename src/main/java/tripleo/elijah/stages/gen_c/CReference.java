@@ -13,8 +13,14 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.RegularTypeName;
+import tripleo.elijah.lang.types.OS_FuncType;
+import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
 import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry;
@@ -61,6 +67,35 @@ public class CReference {
 				// should only be the first element if at all
 				assert i == 0;
 				final VariableTableEntry vte = generatedFunction.getVarTableEntry(to_int(ia));
+
+				if (vte.getName().equals("a1")) {
+					final GenType gt1 = vte.genType;
+					final GenType gt2 = vte.type.genType;
+					final GeneratedClass gc1 = (GeneratedClass) vte.genType.node;
+
+					// only gt1.node is not null
+
+					assert gc1.getCode() == 106;
+					assert gc1.getName().equals("ConstString");
+
+					// gt2
+
+					assert gt2.resolvedn == null;
+					assert gt2.typeName instanceof OS_UserType;
+					assert gt2.nonGenericTypeName instanceof RegularTypeName;
+					assert gt2.resolved instanceof OS_FuncType; // wrong: should be usertype: GeneratedClass
+					assert ((ClassInvocation) gt2.ci).resolvePromise().isResolved();
+
+					((ClassInvocation) gt2.ci).resolvePromise().then(gc -> { // wrong: should be ConstString
+						assert gc.getCode() == 102;
+						assert gc.getKlass().getName().equals("Arguments");
+					});
+
+					assert gt2.functionInvocation == null;
+
+					final int y = 2;
+				}
+
 				text = "vv" + vte.getName();
 				addRef(vte.getName(), Ref.LOCAL);
 			} else if (ia instanceof IdentIA) {
