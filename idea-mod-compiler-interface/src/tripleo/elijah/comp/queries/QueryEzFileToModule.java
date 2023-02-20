@@ -39,6 +39,7 @@ public class QueryEzFileToModule {
 			return Operation.failure(aE);
 		}
 		final CompilerInstructions instructions = parser.ci;
+		instructions.setFilename(f);
 		return Operation.success(instructions);
 	}
 
