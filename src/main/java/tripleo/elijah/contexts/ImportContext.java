@@ -38,7 +38,7 @@ public class ImportContext extends Context {
 	@Override
 	public LookupResultList lookup(final String name, final int level, final LookupResultList Result, final List<Context> alreadySearched, final boolean one) {
 		alreadySearched.add(this);
-		tripleo.elijah.util.Stupidity.println_err2("2002 " + importStatement.importList());
+//		tripleo.elijah.util.Stupidity.println_err2("2002 " + this.carrier.importList());
 		final Compilation compilation = compilation();
 		for (final Qualident importStatementItem : carrier.parts()) {
 			tripleo.elijah.util.Stupidity.println_err2("2005 " + importStatementItem);

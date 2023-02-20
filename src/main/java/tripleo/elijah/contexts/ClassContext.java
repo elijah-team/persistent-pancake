@@ -116,7 +116,7 @@ public class ClassContext extends Context {
 	public Map<TypeName, ClassStatement> inheritance() {
 		if (!_didInheritance) {
 			for (final TypeName tn1 : carrier.classInheritance().tns) {
-				tripleo.elijah.util.Stupidity.println2("1001 " + tn);
+				tripleo.elijah.util.Stupidity.println2("1001 " + tn1);
 				final NormalTypeName       tn  = (NormalTypeName) tn1;
 				final @Nullable OS_Element best;
 				final LookupResultList     tnl = tn.getContext().lookup(tn.getName());

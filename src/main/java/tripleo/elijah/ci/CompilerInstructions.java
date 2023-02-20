@@ -22,11 +22,15 @@ import java.util.stream.Collectors;
  * Created 9/6/20 11:20 AM
  */
 public class CompilerInstructions {
-	private IndexingStatement _idx;
-	private GenerateStatement gen;
-	public List<LibraryStatementPart> lsps = new ArrayList<LibraryStatementPart>();
-	private String filename;
-	private String name;
+
+	public  List<LibraryStatementPart> lsps = new ArrayList<LibraryStatementPart>();
+	private IndexingStatement          _idx;
+	private GenerateStatement          gen;
+	private String                     filename;
+	private String                     name;
+	public CompilerInstructions() {
+		final int y = 2;
+	}
 
 	public IndexingStatement indexingStatement() {
 		if (_idx == null)

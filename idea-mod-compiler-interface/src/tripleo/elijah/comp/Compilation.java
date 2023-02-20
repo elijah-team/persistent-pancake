@@ -86,7 +86,7 @@ public abstract class Compilation {
 
 	public void feedCmdLine(final @NotNull List<String> args) {
 		if (args.size() == 0) {
-			tripleo.elijah.util.Stupidity.println_err2("Usage: eljc [--showtree] [-sE|O] <directory or .ez file names>");
+			System.out.println("Usage: eljc [--showtree] [-sE|O] <directory or .ez file names>");
 			return; // ab
 		}
 
