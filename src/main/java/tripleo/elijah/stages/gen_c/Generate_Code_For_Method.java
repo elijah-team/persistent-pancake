@@ -111,7 +111,7 @@ public class Generate_Code_For_Method {
 		gr.addFunction(gf, bufHdr, GenerateResult.TY.HEADER, lsp);
 	}
 
-	private void action_invariant(final BaseGeneratedFunction gf, final Generate_Method_Header aGmh) {
+	private void action_invariant(final @NotNull BaseGeneratedFunction gf, final Generate_Method_Header aGmh) {
 		tos.incr_tabs();
 		//
 		@NotNull final List<Instruction> instructions = gf.instructions();
@@ -196,7 +196,7 @@ public class Generate_Code_For_Method {
 
 	boolean is_constructor = false, is_unit_type = false;
 
-	private void action_E(final BaseGeneratedFunction gf, final Generate_Method_Header aGmh) {
+	private void action_E(final @NotNull BaseGeneratedFunction gf, final Generate_Method_Header aGmh) {
 		tos.put_string_ln("bool vsb;");
 		int state = 0;
 
@@ -258,13 +258,14 @@ public class Generate_Code_For_Method {
 
 		tos.dec_tabs();
 		tos.put_string_ln("}");
-		if (!is_unit_type)
+		if (!is_unit_type) {
 			if (aGmh.tte != null && aGmh.tte.isResolved()) {
 				tos.put_string_ln("return vsr;");
 			}
+		}
 	}
 
-	private void action_AGN(final BaseGeneratedFunction gf, final Instruction aInstruction) {
+	private void action_AGN(final BaseGeneratedFunction gf, final @NotNull Instruction aInstruction) {
 		final InstructionArgument target = aInstruction.getArg(0);
 		final InstructionArgument value  = aInstruction.getArg(1);
 
@@ -280,7 +281,7 @@ public class Generate_Code_For_Method {
 		tos.put_string_ln(s);
 	}
 
-	private void action_AGNK(final BaseGeneratedFunction gf, final Instruction aInstruction) {
+	private void action_AGNK(final BaseGeneratedFunction gf, final @NotNull Instruction aInstruction) {
 		final InstructionArgument target = aInstruction.getArg(0);
 		final InstructionArgument value  = aInstruction.getArg(1);
 
@@ -290,7 +291,7 @@ public class Generate_Code_For_Method {
 		tos.put_string_ln(s);
 	}
 
-	private void action_JE(final BaseGeneratedFunction gf, final Instruction aInstruction) {
+	private void action_JE(final @NotNull BaseGeneratedFunction gf, final @NotNull Instruction aInstruction) {
 		final InstructionArgument lhs    = aInstruction.getArg(0);
 		final InstructionArgument rhs    = aInstruction.getArg(1);
 		final InstructionArgument target = aInstruction.getArg(2);
@@ -317,7 +318,7 @@ public class Generate_Code_For_Method {
 		}
 	}
 
-	private void action_JNE(final BaseGeneratedFunction gf, final Instruction aInstruction) {
+	private void action_JNE(final @NotNull BaseGeneratedFunction gf, final @NotNull Instruction aInstruction) {
 		final InstructionArgument lhs    = aInstruction.getArg(0);
 		final InstructionArgument rhs    = aInstruction.getArg(1);
 		final InstructionArgument target = aInstruction.getArg(2);
@@ -344,7 +345,7 @@ public class Generate_Code_For_Method {
 		}
 	}
 
-	private void action_JL(final BaseGeneratedFunction gf, final Instruction aInstruction) {
+	private void action_JL(final @NotNull BaseGeneratedFunction gf, final @NotNull Instruction aInstruction) {
 		final InstructionArgument lhs    = aInstruction.getArg(0);
 		final InstructionArgument rhs    = aInstruction.getArg(1);
 		final InstructionArgument target = aInstruction.getArg(2);
@@ -371,7 +372,7 @@ public class Generate_Code_For_Method {
 		}
 	}
 
-	private void action_JMP(final Instruction aInstruction) {
+	private void action_JMP(final @NotNull Instruction aInstruction) {
 		final InstructionArgument target = aInstruction.getArg(0);
 //					InstructionArgument value  = instruction.getArg(1);
 
@@ -381,7 +382,7 @@ public class Generate_Code_For_Method {
 		final int y = 2;
 	}
 
-	private void action_CONSTRUCT(final BaseGeneratedFunction gf, final Instruction aInstruction) {
+	private void action_CONSTRUCT(final @NotNull BaseGeneratedFunction gf, final @NotNull Instruction aInstruction) {
 		final InstructionArgument _arg0 = aInstruction.getArg(0);
 		assert _arg0 instanceof ProcIA;
 		final ProcTableEntry       pte = gf.getProcTableEntry(((ProcIA) _arg0).getIndex());
@@ -412,7 +413,7 @@ public class Generate_Code_For_Method {
 		}
 	}
 
-	private void action_CALL(final BaseGeneratedFunction gf, final Instruction aInstruction) {
+	private void action_CALL(final @NotNull BaseGeneratedFunction gf, final @NotNull Instruction aInstruction) {
 		final StringBuilder sb = new StringBuilder();
 // 					LOG.err("9000 "+inst.getName());
 		final InstructionArgument x = aInstruction.getArg(0);
@@ -444,7 +445,7 @@ public class Generate_Code_For_Method {
 		tos.put_string_ln(sb.toString());
 	}
 
-	private void action_CALLS(final BaseGeneratedFunction gf, final Instruction aInstruction) {
+	private void action_CALLS(final @NotNull BaseGeneratedFunction gf, final @NotNull Instruction aInstruction) {
 		final StringBuilder       sb = new StringBuilder();
 		final InstructionArgument x  = aInstruction.getArg(0);
 		assert x instanceof ProcIA;
@@ -483,7 +484,7 @@ public class Generate_Code_For_Method {
 		tos.put_string_ln(sb.toString());
 	}
 
-	private void action_IS_A(final Instruction instruction, final BufferTabbedOutputStream tos, final BaseGeneratedFunction gf) {
+	private void action_IS_A(final @NotNull Instruction instruction, final @NotNull BufferTabbedOutputStream tos, final @NotNull BaseGeneratedFunction gf) {
 		final IntegerIA testing_var_  = (IntegerIA) instruction.getArg(0);
 		final IntegerIA testing_type_ = (IntegerIA) instruction.getArg(1);
 		final Label     target_label  = ((LabelIA) instruction.getArg(2)).label;
@@ -623,7 +624,7 @@ public class Generate_Code_For_Method {
 		return Operation2.failure(new Diagnostic_8886());
 	}
 
-	private void __action_DECL(final Instruction instruction, final BufferTabbedOutputStream tos, final BaseGeneratedFunction gf) {
+	private void __action_DECL(final @NotNull Instruction instruction, final BufferTabbedOutputStream tos, final BaseGeneratedFunction gf) {
 		final SymbolIA           decl_type   = (SymbolIA) instruction.getArg(0);
 		final IntegerIA          vte_num     = (IntegerIA) instruction.getArg(1);
 		final String             target_name = gc.getRealTargetName(gf, vte_num, AOG.GET);
@@ -716,7 +717,7 @@ public class Generate_Code_For_Method {
 		LOG.err("8886 y is null (No typename specified)");
 	}
 
-	private void action_CAST(final Instruction instruction, final BufferTabbedOutputStream tos, final BaseGeneratedFunction gf) {
+	private void action_CAST(final @NotNull Instruction instruction, final @NotNull BufferTabbedOutputStream tos, final BaseGeneratedFunction gf) {
 		final IntegerIA      vte_num_     = (IntegerIA) instruction.getArg(0);
 		final IntegerIA      vte_type_    = (IntegerIA) instruction.getArg(1);
 		final IntegerIA      vte_targ_    = (IntegerIA) instruction.getArg(2);
@@ -729,7 +730,7 @@ public class Generate_Code_For_Method {
 		tos.put_string_ln(String.format("%s = (%s)%s;", target_name, target_type, source_target));
 	}
 
-	void generateCodeForConstructor(final GeneratedConstructor gf, final GenerateResult gr, final WorkList aWorkList) {
+	void generateCodeForConstructor(final @NotNull GeneratedConstructor gf, final GenerateResult gr, final WorkList aWorkList) {
 		// TODO this code is only correct for classes and not meant for namespaces
 		final GeneratedClass x = (GeneratedClass) gf.getGenClass();
 		switch (x.getKlass().getType()) {
