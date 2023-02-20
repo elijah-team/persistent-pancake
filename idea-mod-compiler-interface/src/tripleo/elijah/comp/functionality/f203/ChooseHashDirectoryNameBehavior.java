@@ -14,11 +14,13 @@ import java.util.stream.Collectors;
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
 
 public class ChooseHashDirectoryNameBehavior implements ChooseDirectoryNameBehavior {
-	private final Compilation c;
+	private final Compilation   c;
+	private final LocalDateTime localDateTime;
 
 	@Contract(pure = true)
-	public ChooseHashDirectoryNameBehavior(final Compilation aC) {
-		c = aC;
+	public ChooseHashDirectoryNameBehavior(final Compilation aC, final LocalDateTime aLocalDateTime) {
+		c             = aC;
+		localDateTime = aLocalDateTime;
 	}
 
 	@Override
@@ -67,10 +69,7 @@ public class ChooseHashDirectoryNameBehavior implements ChooseDirectoryNameBehav
 		//
 		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss");
 
-		final LocalDateTime instance = LocalDateTime.now();
-		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_hh.mm.ss");
-
-		final String date = formatter.format(instance); //15-02-2022 12:43
+		final String date = formatter.format(localDateTime); //15-02-2022 12:43
 
 		final File fn00 = new File("COMP", c_name);
 		final File fn0 = new File(fn00, date);
