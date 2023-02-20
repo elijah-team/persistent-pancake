@@ -3,7 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>tripleo.elijah</groupId>
     <artifactId>elijah-v1-fluffy-umbrella</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
+    <modules>
+        <module>idea-mod-deduce</module>
+        <module>idea-mod-generate</module>
+    </modules>
     <version>0.0.9-flum-main-230119-001-rel</version>
     <name>eljc-v1-fluffy-umbrella</name>
     <url>http://github.com/elijah-team/fluffy-umbrella/</url>
