@@ -65,6 +65,7 @@ public class ChooseHashDirectoryNameBehavior implements ChooseDirectoryNameBehav
 		final String c_name = digestUtils.digestAsHex(sb1.toString());
 
 		//
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss");
 
 		final LocalDateTime instance = LocalDateTime.now();
 		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_hh.mm.ss");
