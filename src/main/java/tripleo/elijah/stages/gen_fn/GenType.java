@@ -128,7 +128,7 @@ public class GenType {
 				resolved = aType;
 				break;
 			default:
-				System.err.println("48 Unknown in set: " + aType);
+				tripleo.elijah.util.Stupidity.println_err2("48 Unknown in set: " + aType);
 		}
 	}
 

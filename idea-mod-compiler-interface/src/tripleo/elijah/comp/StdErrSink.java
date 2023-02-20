@@ -25,19 +25,19 @@ public class StdErrSink implements ErrSink {
 	@Override
 	public void exception(final Exception e) {
 		_errorCount++;
-		System.err.println("exception: " + e);
+		tripleo.elijah.util.Stupidity.println_err2("exception: " + e);
 		e.printStackTrace(System.err);
 	}
 
 	@Override
 	public void reportError(final String s) {
 		_errorCount++;
-		System.err.printf("ERROR: %s%n", s);
+		if (Compilation.CompilationAlways.VOODOO) System.err.printf("ERROR: %s%n", s);
 	}
 
 	@Override
 	public void reportWarning(final String s) {
-		System.err.printf("WARNING: %s%n", s);
+		if (Compilation.CompilationAlways.VOODOO) System.err.printf("WARNING: %s%n", s);
 	}
 
 	@Override
@@ -47,14 +47,15 @@ public class StdErrSink implements ErrSink {
 
 	@Override
 	public void info(final String message) {
-		System.err.printf("INFO: %s%n", message);
+		if (Compilation.CompilationAlways.VOODOO) System.err.printf("INFO: %s%n", message);
 	}
 
 	@Override
 	public void reportDiagnostic(final Diagnostic diagnostic) {
 		if (diagnostic.severity() == Diagnostic.Severity.ERROR)
 			_errorCount++;
-		diagnostic.report(System.err);
+		if (Compilation.CompilationAlways.VOODOO)
+			diagnostic.report(System.err);
 	}
 }
 

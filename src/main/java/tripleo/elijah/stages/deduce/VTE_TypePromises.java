@@ -97,7 +97,7 @@ public class VTE_TypePromises {
 			@Override
 			public void onDone(@NotNull final GenType result) {
 				if (result.resolved.getClassOf() != fd.getParent()) {
-					System.err.println("** Failed assertion");
+					tripleo.elijah.util.Stupidity.println_err2("** Failed assertion");
 				}
 
 				@NotNull final ProcTableListener.E_Is_FunctionDef e_Is_FunctionDef = aProcTableListener.new E_Is_FunctionDef(pte, fd, fd.getParent()).invoke(aVariableTableEntry.type.genType.nonGenericTypeName);
@@ -179,7 +179,7 @@ public class VTE_TypePromises {
 				final boolean found1 = aDeduceTypes2.lookup_name_calls(result.resolved.getClassOf().getContext(), pn, pte);
 				if (found1) {
 					final int y = 2;
-//					System.out.println("3071 "+pte.getStatus());
+//					tripleo.elijah.util.Stupidity.println2("3071 "+pte.getStatus());
 					final IInvocation invocation = result.ci;
 //							final BaseFunctionDef fd = gf.getFD();
 					final BaseFunctionDef fd = pte.getFunctionInvocation().getFunction();
@@ -187,11 +187,11 @@ public class VTE_TypePromises {
 						@NotNull final FunctionInvocation fi = aDeduceTypes2.newFunctionInvocation(fd, pte, invocation, aDeduceTypes2.phase);
 						pte.setFunctionInvocation(fi);
 					} else
-						System.out.println("175 pte.fi is not null");
+						tripleo.elijah.util.Stupidity.println2("175 pte.fi is not null");
 					aIntegerIA.gf.addDependentFunction(pte.getFunctionInvocation()); // TODO is this needed (here)?
 				} else {
 					final int y = 3;
-					System.out.println("3074");
+					tripleo.elijah.util.Stupidity.println2("3074");
 				}
 			}
 		});

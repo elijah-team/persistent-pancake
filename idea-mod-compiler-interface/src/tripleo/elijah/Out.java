@@ -12,12 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.ParserClosure;
-import tripleo.elijah.util.TabbedOutputStream;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Out {
 
@@ -30,11 +24,13 @@ public class Out {
 //		this.do_out = do_out;
 	}
 
+/*
 	private static TabbedOutputStream getTOSLog() throws FileNotFoundException {
 		final @NotNull SimpleDateFormat sdf      = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		final String                    filename = String.format("eljc-%s.out", sdf.format(new Date()));
 		return new TabbedOutputStream(new FileOutputStream(filename));
 	}
+*/
 
 	//@edu.umd.cs.findbugs.annotations.SuppressFBWarnings("NM_METHOD_NAMING_CONVENTION")
 	public void FinishModule() {
@@ -66,7 +62,7 @@ public class Out {
 	}
 
 	public static void println(final String s) {
-		System.out.println(s);
+		tripleo.elijah.util.Stupidity.println2(s);
 	}
 
 	private final ParserClosure pc;

@@ -87,11 +87,11 @@ public class EIT_ModuleList {
 //			for (final GeneratedNode gn : lgf) {
 //				if (gn instanceof GeneratedFunction) {
 //					GeneratedFunction gf = (GeneratedFunction) gn;
-//					System.out.println("----------------------------------------------------------");
-//					System.out.println(gf.name());
-//					System.out.println("----------------------------------------------------------");
+//					tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
+//					tripleo.elijah.util.Stupidity.println2(gf.name());
+//					tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
 //					GeneratedFunction.printTables(gf);
-//					System.out.println("----------------------------------------------------------");
+//					tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
 //				}
 //			}
 	}

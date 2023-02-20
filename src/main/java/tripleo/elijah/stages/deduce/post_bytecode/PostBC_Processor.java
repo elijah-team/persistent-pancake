@@ -279,8 +279,8 @@ public interface PostBC_Processor {
                 case USER:
                     try {
                         final GenType aGenType = deduceTypes2.resolve_type(attached, fd_ctx);
-                        System.out.println("xxxxxxxxxxxxxx " + aGenType);
-                        r = new Maybe<>(aGenType.resolved, null); // TODO incomplete!! (send whole GenType)
+                        tripleo.elijah.util.Stupidity.println2("xxxxxxxxxxxxxx " + aGenType);
+	                    r = new Maybe<>(aGenType.resolved, null); // TODO incomplete!! (send whole GenType)
                         // -------------------------- vte.type.setAttached(aGenType);
                     } catch (final ResolveError aResolveError) {
                         r = new Maybe<>(null, aResolveError);

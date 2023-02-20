@@ -55,7 +55,7 @@ public class DeferredMemberFunction {
 		//
 
 		if (functionInvocation == null) {
-			System.out.println("**=== functionInvocation == null ");
+			tripleo.elijah.util.Stupidity.println2("**=== functionInvocation == null ");
 			return;
 		}
 

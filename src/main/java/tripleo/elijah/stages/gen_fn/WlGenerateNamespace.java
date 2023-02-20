@@ -68,7 +68,7 @@ public class WlGenerateNamespace implements WorkJob {
 			throw new NotImplementedException();
 		}
 		_isDone = true;
-//		System.out.println(String.format("** GenerateNamespace %s at %s", namespaceInvocation.getNamespace().getName(), this));
+//		tripleo.elijah.util.Stupidity.println2(String.format("** GenerateNamespace %s at %s", namespaceInvocation.getNamespace().getName(), this));
 	}
 
 	@Override

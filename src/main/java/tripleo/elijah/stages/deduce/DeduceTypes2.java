@@ -280,7 +280,7 @@ public class DeduceTypes2 {
 									if (identIA2 != null) {
 										@NotNull final IdentTableEntry idte2          = identIA.getEntry();
 										@Nullable final ProcTableEntry procTableEntry = idte2.getCallablePTE();
-//										if (procTableEntry == pte) System.err.println("940 procTableEntry == pte");
+//										if (procTableEntry == pte) tripleo.elijah.util.Stupidity.println_err2("940 procTableEntry == pte");
 										if (procTableEntry != null) {
 											// TODO doesn't seem like we need this
 											procTableEntry.onFunctionInvocation(new DoneCallback<FunctionInvocation>() {
@@ -296,7 +296,7 @@ public class DeduceTypes2 {
 														if (functionInvocation.getClassInvocation() == fi.getClassInvocation() &&
 														  functionInvocation.getFunction() == fi.getFunction() &&
 														  functionInvocation.pte == fi.pte) {
-//														System.err.println("955 It seems like we are generating the same thing...");
+//														tripleo.elijah.util.Stupidity.println_err2("955 It seems like we are generating the same thing...");
 														} else {
 															final int ok = 2;
 														}
@@ -1387,7 +1387,7 @@ public class DeduceTypes2 {
 			try {
 				cte.getTypeTableEntry().setAttached(resolve_type(new OS_BuiltinType(aBuiltInType), aContext));
 			} catch (final ResolveError resolveError) {
-				System.out.println("117 Can't be here");
+				tripleo.elijah.util.Stupidity.println2("117 Can't be here");
 //				resolveError.printStackTrace(); // TODO print diagnostic
 			}
 		}

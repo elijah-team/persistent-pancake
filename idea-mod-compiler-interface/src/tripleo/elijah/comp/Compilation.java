@@ -86,7 +86,7 @@ public abstract class Compilation {
 
 	public void feedCmdLine(final @NotNull List<String> args) {
 		if (args.size() == 0) {
-			System.err.println("Usage: eljc [--showtree] [-sE|O] <directory or .ez file names>");
+			tripleo.elijah.util.Stupidity.println_err2("Usage: eljc [--showtree] [-sE|O] <directory or .ez file names>");
 			return; // ab
 		}
 
@@ -363,6 +363,8 @@ public abstract class Compilation {
 	}
 
 	public static class CompilationAlways {
+		public static boolean VOODOO = false;
+
 		@NotNull
 		public static String defaultPrelude() {
 			return "c";

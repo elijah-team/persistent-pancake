@@ -9,7 +9,17 @@
 package tripleo.elijah.contexts;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.FormalArgListItem;
+import tripleo.elijah.lang.FuncExpr;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.FunctionItem;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.NamespaceStatement;
+import tripleo.elijah.lang.OS_Element2;
+import tripleo.elijah.lang.VariableSequence;
+import tripleo.elijah.lang.VariableStatement;
 
 import java.util.List;
 
@@ -40,7 +50,7 @@ public class FuncExprContext extends FunctionContext {
 					Result.add(name, level, item, this);
 				}
 			} else if (item instanceof VariableSequence) {
-//				System.out.println("[FunctionContext#lookup] VariableSequence "+item);
+				tripleo.elijah.util.Stupidity.println2("[FunctionContext#lookup] VariableSequence " + item);
 				for (final VariableStatement vs : ((VariableSequence) item).items()) {
 					if (vs.getName().equals(name))
 						Result.add(name, level, vs, this);

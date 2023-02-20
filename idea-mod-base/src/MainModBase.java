@@ -1,5 +1,5 @@
 public class MainModBase {
 	public static void main(final String[] args) {
-		System.out.println("Hello world!");
+		tripleo.elijah.util.Stupidity.println2("Hello world!");
 	}
 }

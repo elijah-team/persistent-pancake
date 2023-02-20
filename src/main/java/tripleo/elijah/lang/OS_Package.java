@@ -55,7 +55,7 @@ public class OS_Package {
 
 	public String getName() {
 		if (_name == null) {
-//			System.err.println("*** name is null for package");
+//			tripleo.elijah.util.Stupidity.println_err2("*** name is null for package");
 			return "";
 		}
 		return _name.toString();

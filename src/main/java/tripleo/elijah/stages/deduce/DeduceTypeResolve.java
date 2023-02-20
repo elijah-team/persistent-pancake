@@ -105,12 +105,15 @@ public class DeduceTypeResolve {
 							} else
 								throw new IllegalStateException("invalid entry (bte) " + bte);
 
+							final String s;
 							if (attached != null)
-								System.err.printf("** FormalArgListItem %s attached is not null. Type is %s. Points to %s%n",
+								s = String.format("** FormalArgListItem %s attached is not null. Type is %s. Points to %s%n",
 								  aFormalArgListItem.name(), aFormalArgListItem.typeName(), attached);
 							else
-								System.err.printf("** FormalArgListItem %s attached is null. Type is %s.%n",
+								s = String.format("** FormalArgListItem %s attached is null. Type is %s.%n",
 								  aFormalArgListItem.name(), aFormalArgListItem.typeName());
+
+							Stupidity.println_err2(s);
 						}
 
 						@Override
@@ -154,7 +157,7 @@ public class DeduceTypeResolve {
 
 						@Override
 						public void defaultAction(final OS_Element anElement) {
-							System.err.println("158 " + anElement);
+							tripleo.elijah.util.Stupidity.println_err2("158 " + anElement);
 							throw new IllegalStateException();
 						}
 

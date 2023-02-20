@@ -102,7 +102,7 @@ class CompilationRunner {
 	private void logProgress(final int number, final String text) {
 		if (number == 130) return;
 
-		System.err.println("" + number + " " + text);
+		tripleo.elijah.util.Stupidity.println_err2("" + number + " " + text);
 	}
 
 	public Operation<CompilerInstructions> realParseEzFile(final String f,
@@ -129,7 +129,7 @@ class CompilationRunner {
 					final Exception e = cio.failure();
 					assert e != null;
 
-					System.err.println(("parser exception: " + e));
+					tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
 					e.printStackTrace(System.err);
 					//s.close();
 					return cio;
@@ -140,7 +140,7 @@ class CompilationRunner {
 				fn2ci.put(absolutePath, R);
 				return cio;
 			} catch (final ANTLRException e) {
-				System.err.println(("parser exception: " + e));
+				tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
 				e.printStackTrace(System.err);
 				return Operation.failure(e);
 			}
@@ -257,7 +257,7 @@ class CompilationRunner {
 /*
 		final String prelude;
 		final String xprelude = m.genLang();
-		System.err.println("230 " + prelude);
+		tripleo.elijah.util.Stupidity.println_err2("230 " + prelude);
 		if (xprelude == null)
 			prelude = CompilationAlways.defaultPrelude(); // TODO should be java for eljc
 		else

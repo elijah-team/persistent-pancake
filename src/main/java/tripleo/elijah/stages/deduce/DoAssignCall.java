@@ -283,7 +283,7 @@ public class DoAssignCall {
 				case MODULO:
 				case SUBTRACTION:
 					final int y = 2;
-					System.err.println("2363");
+					tripleo.elijah.util.Stupidity.println_err2("2363");
 					break;
 				case GET_ITEM: {
 					final @NotNull GetItemExpression gie = (GetItemExpression) e;

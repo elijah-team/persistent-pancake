@@ -222,7 +222,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 			@Override
 			public void accept(final Supplier<GenerateResult> aGenerateResultSupplier) {
 //				if (grs != null) {
-//					System.err.println("234 grs not null "+grs.getClass().getName());
+//					tripleo.elijah.util.Stupidity.println_err2("234 grs not null "+grs.getClass().getName());
 //					return;
 //				}
 //

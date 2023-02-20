@@ -46,7 +46,7 @@ public abstract class Context {
 //	}
 //
 //	public void add(OS_Element element, IExpression name) {
-//		System.out.println(String.format("104 Context.add: %s %s %s", this, element, name));
+//		tripleo.elijah.util.Stupidity.println2(String.format("104 Context.add: %s %s %s", this, element, name));
 //		members.put(name, element);
 //	}
 	
@@ -55,7 +55,7 @@ public abstract class Context {
 //	private NameTable nameTable = new NameTable();
 //
 //	public void add(OS_Element element, IExpression name, OS_Type dtype) {
-//		System.out.println(String.format("105 Context.add: %s %s %s %s", this, element, name, dtype));
+//		tripleo.elijah.util.Stupidity.println2(String.format("105 Context.add: %s %s %s %s", this, element, name, dtype));
 ////		element.setType(dtype);
 //		members.put(name, element);
 //	}

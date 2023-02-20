@@ -21,7 +21,7 @@ class CCI {
 		final ILazyCompilerInstructions cci = mcci.o;
 		final CompilerInstructions      ci  = cci.get();
 
-		System.err.println("*** " + ci.getName());
+		tripleo.elijah.util.Stupidity.println_err2("*** " + ci.getName());
 
 		_cis.onNext(ci);
 		//compilation.pushItem(ci);

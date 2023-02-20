@@ -61,8 +61,9 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 //			pipelineLogic.addModule(module);
 //		}
 
-		if (ms != null) System.err.println(ms.size());
-		System.err.println(ms1.size());
+		if (ms != null) tripleo.elijah.util.Stupidity.println_err2("ms.size() == " + ms.size());
+		else tripleo.elijah.util.Stupidity.println_err2("ms == null");
+		tripleo.elijah.util.Stupidity.println_err2("ms1.size() == " + ms1.size());
 
 //		final EIT_ModuleList eml = new EIT_ModuleList(ms1);
 

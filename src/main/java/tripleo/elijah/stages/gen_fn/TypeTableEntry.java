@@ -88,7 +88,7 @@ public class TypeTableEntry {
 				break;
 			default:
 //			throw new NotImplementedException();
-				System.err.println("73 " + aAttached);
+				tripleo.elijah.util.Stupidity.println_err2("73 " + aAttached);
 				break;
 		}
 	}

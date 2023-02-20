@@ -192,7 +192,7 @@ class USE {
 				final Exception e = om.failure();
 				assert e != null;
 
-				System.err.println(("parser exception: " + e));
+				tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
 				e.printStackTrace(System.err);
 				s.close();
 				return Operation.failure(e);
@@ -202,7 +202,7 @@ class USE {
 			s.close();
 			return Operation.success(R);
 		} catch (final ANTLRException e) {
-			System.err.println(("parser exception: " + e));
+			tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
 			e.printStackTrace(System.err);
 			s.close();
 			return Operation.failure(e);

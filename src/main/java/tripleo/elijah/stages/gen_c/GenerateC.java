@@ -119,7 +119,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 				final GenerateResult                     gr4 = ggc.generateCode(gn2, wm);
 				gr2.results().addAll(gr4.results());
 			} else {
-				System.out.println("2009 " + generatedNode.getClass().getName());
+				tripleo.elijah.util.Stupidity.println2("2009 " + generatedNode.getClass().getName());
 			}
 		}
 

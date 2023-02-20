@@ -106,7 +106,7 @@ class Assign_type_to_idte {
                     cpte.typePromise().then(new DoneCallback<GenType>() {
                         @Override
                         public void onDone(@NotNull final GenType result) {
-                            System.out.println("1483 " + result.resolved + " " + result.node);
+                            tripleo.elijah.util.Stupidity.println2("1483 " + result.resolved + " " + result.node);
                         }
                     });
                 }
@@ -163,7 +163,7 @@ class Assign_type_to_idte {
             final ClassStatement cs = aType.getClassOf();
             if (aEntry.constructable_pte != null) {
                 final int yyy = 3;
-                System.out.println("use_user_class: " + cs);
+	            tripleo.elijah.util.Stupidity.println2("use_user_class: " + cs);
             }
         }
 

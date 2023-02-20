@@ -52,7 +52,7 @@ public class TypeOfTypeName implements TypeName {
 	}
 
 	public TypeName resolve(final @NotNull Context ctx, final DeduceTypes2 deduceTypes2) throws ResolveError {
-//		System.out.println(_typeOf.toString());
+//		tripleo.elijah.util.Stupidity.println2(_typeOf.toString());
 		final LookupResultList lrl  = DeduceLookupUtils.lookupExpression(_typeOf, ctx, deduceTypes2);
 		final OS_Element       best = lrl.chooseBest(null);
 		if (best instanceof VariableStatement)

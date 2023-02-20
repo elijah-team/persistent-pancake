@@ -17,6 +17,7 @@ import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.deduce.NamespaceInvocation;
 import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
+import tripleo.elijah.util.Stupidity;
 import tripleo.elijah.work.WorkJob;
 import tripleo.elijah.work.WorkManager;
 
@@ -51,7 +52,8 @@ public class WlGenerateFunction implements WorkJob {
 				for (final TypeTableEntry tte : functionInvocation.getArgs()) {
 					i = i + 1;
 					if (tte.getAttached() == null) {
-						System.err.printf("4949 null tte #%d %s in %s%n", i, tte, gf);
+						final String s = String.format("4949 null tte #%d %s in %s%n", i, tte, gf);
+						Stupidity.println_err2(s);
 					}
 				}
 			}

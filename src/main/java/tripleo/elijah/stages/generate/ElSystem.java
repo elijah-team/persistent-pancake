@@ -42,7 +42,7 @@ public class ElSystem {
 		if (verbose) {
 			for (final GenerateResultItem ab : gr.results()) {
 				if (ab.node instanceof GeneratedFunction) continue;
-				System.out.println("** "+ab.node+" "+ab.output);
+				tripleo.elijah.util.Stupidity.println2("** " + ab.node + " " + ab.output);
 			}
 		}
 	}
@@ -53,7 +53,7 @@ public class ElSystem {
 		if (node instanceof GeneratedNamespace) {
 			final GeneratedNamespace generatedNamespace = (GeneratedNamespace) node;
 			s = outputStrategyC.nameForNamespace(generatedNamespace, ty);
-//			System.out.println("41 "+generatedNamespace+" "+s);
+//			tripleo.elijah.util.Stupidity.println2("41 "+generatedNamespace+" "+s);
 			for (final GeneratedFunction gf : generatedNamespace.functionMap.values()) {
 				ss = generateOutputs_Internal(gf, ty, outputStrategyC);
 				gfm_map.put(gf, ss);
@@ -61,7 +61,7 @@ public class ElSystem {
 		} else if (node instanceof GeneratedClass) {
 			final GeneratedClass generatedClass = (GeneratedClass) node;
 			s = outputStrategyC.nameForClass(generatedClass, ty);
-//			System.out.println("48 "+generatedClass+" "+s);
+//			tripleo.elijah.util.Stupidity.println2("48 "+generatedClass+" "+s);
 			for (final GeneratedFunction gf : generatedClass.functionMap.values()) {
 				ss = generateOutputs_Internal(gf, ty, outputStrategyC);
 				gfm_map.put(gf, ss);
@@ -69,11 +69,11 @@ public class ElSystem {
 		} else if (node instanceof GeneratedFunction) {
 			final GeneratedFunction generatedFunction = (GeneratedFunction) node;
 			s = outputStrategyC.nameForFunction(generatedFunction, ty);
-//			System.out.println("55 "+generatedFunction+" "+s);
+//			tripleo.elijah.util.Stupidity.println2("55 "+generatedFunction+" "+s);
 		} else if (node instanceof GeneratedConstructor) {
 			final GeneratedConstructor generatedConstructor = (GeneratedConstructor) node;
 			s = outputStrategyC.nameForConstructor(generatedConstructor, ty);
-//			System.out.println("55 "+generatedConstructor+" "+s);
+//			tripleo.elijah.util.Stupidity.println2("55 "+generatedConstructor+" "+s);
 		} else
 			throw new IllegalStateException("Can't be here.");
 		return s;

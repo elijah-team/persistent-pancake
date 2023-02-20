@@ -175,7 +175,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 			type.genType.copy(aGenType);
 		} else {
 			throw new IllegalStateException("idte-102 Attempting to set a null type");
-//			System.err.println("idte-102 Attempting to set a null type");
+//			tripleo.elijah.util.Stupidity.println_err2("idte-102 Attempting to set a null type");
 		}
 	}
 

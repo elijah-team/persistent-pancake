@@ -76,7 +76,7 @@ public class FluffyModuleImpl implements FluffyModule {
 
 //		assert aModule.entryPoints.size() == eps || aModule.entryPoints.size() == eps+1; // TODO this will fail one day
 
-//		System.out.println("243 " + entryPoints +" "+ _fileName);
+//		tripleo.elijah.util.Stupidity.println2("243 " + entryPoints +" "+ _fileName);
 //		break; // allow for "extend" class
 	}
 

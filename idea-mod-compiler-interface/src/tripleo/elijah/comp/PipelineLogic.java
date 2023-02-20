@@ -131,11 +131,11 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 //						if (identTableEntry/*.isResolved()*/.getStatus() == BaseTableEntry.Status.KNOWN) {
 ////							GeneratedNode node = identTableEntry.resolved();
 ////							resolved_nodes.add(node);
-//							System.out.println("91 Resolved IDENT "+ s);
+//							tripleo.elijah.util.Stupidity.println2("91 Resolved IDENT "+ s);
 //						} else {
 ////							assert identTableEntry.getStatus() == BaseTableEntry.Status.UNKNOWN;
 ////							identTableEntry.setStatus(BaseTableEntry.Status.UNKNOWN, null);
-//							System.out.println("92 Unresolved IDENT "+ s);
+//							tripleo.elijah.util.Stupidity.println2("92 Unresolved IDENT "+ s);
 //						}
 //					}
 //				}
@@ -219,11 +219,11 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 //		for (final GeneratedNode gn : lgf) {
 //			if (gn instanceof GeneratedFunction) {
 //				GeneratedFunction gf = (GeneratedFunction) gn;
-//				System.out.println("----------------------------------------------------------");
-//				System.out.println(gf.name());
-//				System.out.println("----------------------------------------------------------");
+//				tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
+//				tripleo.elijah.util.Stupidity.println2(gf.name());
+//				tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
 //				GeneratedFunction.printTables(gf);
-//				System.out.println("----------------------------------------------------------");
+//				tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
 //			}
 //		}
 

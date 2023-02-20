@@ -34,14 +34,14 @@ public class ElLog {
 		final long time = System.currentTimeMillis();
 		entries.add(new LogEntry(time, LogEntry.Level.ERROR, aMessage));
 		if (verbose == Verbosity.VERBOSE)
-			System.err.println(aMessage);
+			tripleo.elijah.util.Stupidity.println_err2(aMessage);
 	}
 
 	public void info(final String aMessage) {
 		final long time = System.currentTimeMillis();
 		entries.add(new LogEntry(time, LogEntry.Level.INFO, aMessage));
 		if (verbose == Verbosity.VERBOSE)
-			System.out.println(aMessage);
+			tripleo.elijah.util.Stupidity.println2(aMessage);
 	}
 
 	public String getFileName() {
