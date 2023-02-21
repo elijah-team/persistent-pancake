@@ -6,8 +6,10 @@ import antlr.TokenStreamException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.ci.CompilerInstructionsImpl;
 import tripleo.elijah.ci.GenerateStatement;
 import tripleo.elijah.ci.LibraryStatementPart;
+import tripleo.elijah.ci.LibraryStatementPartImpl;
 import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
 import tripleo.elijah.comp.diagnostic.FileNotFoundDiagnostic;
 import tripleo.elijah.comp.queries.QuerySourceFileToModule;
@@ -49,7 +51,7 @@ class USE {
 
 
 		final File instruction_dir = new File(compilerInstructions.getFilename()).getParentFile();
-		for (final LibraryStatementPart lsp : compilerInstructions.lsps) {
+		for (final LibraryStatementPart lsp : compilerInstructions.getLibraryStatementParts()) {
 			final String dir_name = Helpers.remove_single_quotes_from_string(lsp.getDirName());
 			final File   dir;// = new File(dir_name);
 			if (dir_name.equals(".."))
@@ -58,7 +60,7 @@ class USE {
 				dir = new File(instruction_dir, dir_name);
 			use_internal(dir, do_out, lsp);
 		}
-		final LibraryStatementPart lsp = new LibraryStatementPart();
+		final LibraryStatementPart lsp = new LibraryStatementPartImpl();
 		lsp.setName(Helpers.makeToken("default")); // TODO: make sure this doesn't conflict
 		lsp.setDirName(Helpers.makeToken(String.format("\"%s\"", instruction_dir)));
 		lsp.setInstructions(compilerInstructions);
@@ -91,13 +93,13 @@ class USE {
 
 			assert om.mode() == Mode.SUCCESS;
 
-			final CompilerInstructions instructions = new CompilerInstructions();
+			final CompilerInstructions instructions = new CompilerInstructionsImpl();
 			instructions.setName("prelude");
 			final GenerateStatement generateStatement = new GenerateStatement();
 			final StringExpression  expression        = new StringExpression(Helpers.makeToken("\"c\"")); // TODO
 			generateStatement.addDirective(Helpers.makeToken("gen"), expression);
 			instructions.add(generateStatement);
-			final LibraryStatementPart lsp = new LibraryStatementPart();
+			final LibraryStatementPart lsp = new LibraryStatementPartImpl();
 			lsp.setInstructions(instructions);
 //				lsp.setDirName();
 			final OS_Module module = om.success();

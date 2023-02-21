@@ -128,6 +128,8 @@ public class DeduceLookupUtils {
 		} else {
 			if (t.resolved instanceof OS_UnknownType)
 				return new LookupResultList(); // TODO is this right??
+			if (t.resolved == null)
+				return new LookupResultList(); // TODO is this right?? feb 20
 			final LookupResultList lrl = t.resolved.getElement()/*.getParent()*/.getContext().lookup(((IdentExpression) ss).getText());
 			return lrl;
 		}

@@ -273,19 +273,21 @@ public class DeduceLocalVariable {
 					}
 				}
 
-				final @Nullable DeferredMemberFunction dm = deduceTypes2.deferred_member_function(Self, null, (BaseFunctionDef) resolvedElement, procTableEntry.getFunctionInvocation());
-				dm.externalRef().then(new DoneCallback<BaseGeneratedFunction>() {
-					@Override
-					public void onDone(final BaseGeneratedFunction result) {
-						NotImplementedException.raise();
-					}
-				});
-				dm.typePromise().then(new DoneCallback<GenType>() {
-					@Override
-					public void onDone(final GenType result) {
-						procTableEntry.typeDeferred().resolve(result);
-					}
-				});
+				if (resolvedElement != null) { // TODO feb 20
+					final @Nullable DeferredMemberFunction dm = deduceTypes2.deferred_member_function(Self, null, (BaseFunctionDef) resolvedElement, procTableEntry.getFunctionInvocation());
+					dm.externalRef().then(new DoneCallback<BaseGeneratedFunction>() {
+						@Override
+						public void onDone(final BaseGeneratedFunction result) {
+							NotImplementedException.raise();
+						}
+					});
+					dm.typePromise().then(new DoneCallback<GenType>() {
+						@Override
+						public void onDone(final GenType result) {
+							procTableEntry.typeDeferred().resolve(result);
+						}
+					});
+				}
 				procTableEntry.typePromise().then(new DoneCallback<GenType>() {
 					@Override
 					public void onDone(final GenType result) {

@@ -3,13 +3,15 @@ package tripleo.elijah.comp;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.Compilation.CompilationAlways;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
-import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
+import tripleo.elijah.stages.gen_generic.OutputFileFactory;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Stupidity;
@@ -97,7 +99,7 @@ public class AccessBus {
 		final ElLog.Verbosity verbosity = aPipelineLogic.getVerbosity();
 
 		final OutputFileFactoryParams p         = new OutputFileFactoryParams(mod, aErrSink, verbosity, aPipelineLogic);
-		final GenerateC               generateC = new GenerateC(p);
+		final GenerateFiles           generateC = OutputFileFactory.create(CompilationAlways.defaultPrelude(), p);
 
 		final Compilation             ccc = mod.parent;
 		@NotNull final EOT_OutputTree cot = ccc.getOutputTree();

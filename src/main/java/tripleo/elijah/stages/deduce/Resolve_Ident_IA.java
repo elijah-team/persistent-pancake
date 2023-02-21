@@ -391,7 +391,9 @@ class Resolve_Ident_IA {
 			final @NotNull ProcIA         backlink_       = (ProcIA) ite.getBacklink();
 			@NotNull final ProcTableEntry backlink        = generatedFunction.getProcTableEntry(backlink_.getIndex());
 			final OS_Element              resolvedElement = backlink.getResolvedElement();
-			assert resolvedElement != null;
+
+			if (resolvedElement == null) return; //throw new AssertionError(); // TODO feb 20
+
 			try {
 				final LookupResultList     lrl2 = dc.lookupExpression(ite.getIdent(), resolvedElement.getContext());
 				@Nullable final OS_Element best = lrl2.chooseBest(null);

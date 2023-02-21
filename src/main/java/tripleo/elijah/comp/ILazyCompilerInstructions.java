@@ -24,7 +24,7 @@ public interface ILazyCompilerInstructions {
 			@Override
 			public CompilerInstructions get() {
 				try {
-					final @NotNull Operation<CompilerInstructions> parsed = c.parseEzFile(aFile);
+					final Operation<CompilerInstructions> parsed = c.parseEzFile(aFile);
 					return Objects.requireNonNull(parsed).success();
 				} catch (final Exception aE) {
 					throw new RuntimeException(aE); // TODO ugh

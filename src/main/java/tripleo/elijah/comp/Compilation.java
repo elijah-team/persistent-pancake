@@ -48,20 +48,20 @@ public abstract class Compilation {
 	public final  List<ElLog>             elLogs    = new LinkedList<ElLog>();
 	public final  CompilationConfig       cfg       = new CompilationConfig();
 	//
-	final         MOD                  mod = new MOD(this);
+	final         MOD                     mod = new MOD(this);
 	private final Pipeline                pipelines;
 	private final int                     _compilationNumber;
 	private final ErrSink                 errSink;
 	private final CIS                     _cis      = new CIS();
 	private final Map<String, OS_Package> _packages = new HashMap<String, OS_Package>();
-	private final USE                  use = new USE(this);
-	private final IO                   io;
+	private final USE                     use       = new USE(this);
+	private final IO                      io;
 	//
 	//
 	//
-	public        PipelineLogic        pipelineLogic;
-	private       CompilationRunner    __cr;
-	private       CompilerInstructions rootCI;
+	public        PipelineLogic           pipelineLogic;
+	private       CompilationRunner       __cr;
+	private       CompilerInstructions    rootCI;
 
 	public Compilation(final ErrSink aErrSink, final IO aIO) {
 		errSink            = aErrSink;

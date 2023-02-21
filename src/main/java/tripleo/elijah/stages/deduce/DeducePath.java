@@ -18,7 +18,13 @@ import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.OS_Element;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.GenericElementHolderWithIntegerIA;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
@@ -84,7 +90,10 @@ public class DeducePath {
 				final @NotNull ProcTableEntry procTableEntry = ((ProcIA) ia2).getEntry();
 				el = procTableEntry.getResolvedElement(); // .expression?
 				// TODO no setStatus here?
-				assert el != null;
+				if (el == null) {
+					final int y = 2; // TODO feb 20
+//					throw new AssertionError();
+				}
 			} else
 				el = null; // README shouldn't be calling for other subclasses
 			elements[aIndex] = el;

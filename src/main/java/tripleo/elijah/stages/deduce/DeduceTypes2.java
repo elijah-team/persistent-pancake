@@ -1357,18 +1357,21 @@ public class DeduceTypes2 {
 					}
 					case FUNCTION:
 					case GENERIC:
-					case TYPE_OF:
-						throw new NotImplementedException();
-					default:
-						throw new IllegalStateException("414 Unexpected value: " + tn1.kindOfType());
+				case TYPE_OF:
+					throw new NotImplementedException();
+				default:
+					throw new IllegalStateException("414 Unexpected value: " + tn1.kindOfType());
 				}
 			}
-			case USER_CLASS:
-				break;
-			case FUNCTION:
-				break;
-			default:
-				throw new IllegalStateException("565 Unexpected value: " + type.getType());
+		case USER_CLASS:
+			break;
+		case FUNCTION:
+			break;
+		case FUNC_EXPR:
+			final int y = 2;
+			break;
+		default:
+			throw new IllegalStateException("565 Unexpected value: " + type.getType());
 		}
 
 		return R;
@@ -2538,7 +2541,8 @@ public class DeduceTypes2 {
 		try {
 			ria.action();
 		} catch (final ResolveError aE) {
-			throw new RuntimeException(aE);
+			//throw new RuntimeException(aE);
+			System.err.printf("** ResolveError: %s not found!%n", aE.ident.getText());
 		}
 	}
 

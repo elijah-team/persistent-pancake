@@ -93,7 +93,11 @@ class Resolve_Variable_Table_Entry {
 			if (aPot.tableEntry instanceof ProcTableEntry) {
 				final @NotNull ProcTableEntry pte1 = (ProcTableEntry) aPot.tableEntry;
 				@Nullable final OS_Element    e    = DeduceLookupUtils.lookup(pte1.expression, ctx, deduceTypes2);
-				assert e != null;
+				if (e == null) {
+					System.err.println("** 97: " + pte1.expression);
+					return;
+					//throw new AssertionError();
+				}
 				if (e instanceof FunctionDef) {
 //						final FunctionDef fd = (FunctionDef) e;
 					@NotNull final IdentTableEntry ite1 = ((IdentIA) pte1.expression_num).getEntry();
