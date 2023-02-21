@@ -13,6 +13,7 @@ import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah.factory.comp.CompilationFactory;
 
 import static tripleo.elijah.util.Helpers.List_of;
 
@@ -40,7 +41,7 @@ public class ClassInstantiationTest {
 	@Test
 	public void classInstantiation3() throws Exception {
 		final String      f = "test/basic1/class_instantiation3/";
-		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation c = CompilationFactory.mkCompilation(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of(f));
 	}
