@@ -9,6 +9,7 @@
 package tripleo.elijah.lang;
 
 import tripleo.elijah.contexts.PackageContext;
+import tripleo.elijah.world.WorldGlobals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
  *
  */
 public class OS_Package {
-	public final static OS_Package       default_package = new OS_Package(null, 0);
+	public final static OS_Package       default_package = WorldGlobals.defaultPackage();
 	final               int              _code;
 	final               Qualident        _name;
 	private final       List<OS_Element> elements        = new ArrayList<OS_Element>();

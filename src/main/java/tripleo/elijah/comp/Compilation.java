@@ -32,6 +32,7 @@ import tripleo.elijah.stages.deduce.FunctionMapHook;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.world.impl.DefaultLivingRepo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,23 +46,24 @@ import java.util.Random;
 
 public abstract class Compilation {
 
-	public final  List<ElLog>             elLogs    = new LinkedList<ElLog>();
-	public final  CompilationConfig       cfg       = new CompilationConfig();
+	public final  List<ElLog>          elLogs    = new LinkedList<ElLog>();
+	public final  CompilationConfig    cfg       = new CompilationConfig();
 	//
-	final         MOD                     mod = new MOD(this);
-	private final Pipeline                pipelines;
-	private final int                     _compilationNumber;
-	private final ErrSink                 errSink;
-	private final CIS                     _cis      = new CIS();
-	private final Map<String, OS_Package> _packages = new HashMap<String, OS_Package>();
-	private final USE                     use       = new USE(this);
-	private final IO                      io;
+	final         MOD                  mod = new MOD(this);
+	private final Pipeline             pipelines;
+	private final int                  _compilationNumber;
+	private final ErrSink              errSink;
+	private final CIS                  _cis      = new CIS();
+	private final USE                  use       = new USE(this);
+	private final IO                   io;
+	//
+	private final DefaultLivingRepo    _repo     = new DefaultLivingRepo();
 	//
 	//
 	//
-	public        PipelineLogic           pipelineLogic;
-	private       CompilationRunner       __cr;
-	private       CompilerInstructions    rootCI;
+	public        PipelineLogic        pipelineLogic;
+	private       CompilationRunner    __cr;
+	private       CompilerInstructions rootCI;
 
 	public Compilation(final ErrSink aErrSink, final IO aIO) {
 		errSink            = aErrSink;
@@ -77,12 +79,6 @@ public abstract class Compilation {
 
 		__cr.start(rootCI, cfg.do_out);
 	}
-
-	//
-
-	private int _packageCode  = 1;
-	private int _classCode    = 101;
-	private int _functionCode = 1001;
 
 	public void feedCmdLine(final @NotNull List<String> args) {
 		if (args.size() == 0) {
@@ -223,11 +219,11 @@ public abstract class Compilation {
 	}
 
 	public int nextClassCode() {
-		return _classCode++;
+		return _repo.nextClassCode();
 	}
 
 	public int nextFunctionCode() {
-		return _functionCode++;
+		return _repo.nextFunctionCode();
 	}
 
 	// endregion
@@ -236,25 +232,12 @@ public abstract class Compilation {
 	// region PACKAGES
 	//
 
-	public boolean isPackage(final String pkg) {
-		return _packages.containsKey(pkg);
-	}
-
 	public OS_Package getPackage(final Qualident pkg_name) {
-		return _packages.get(pkg_name.toString());
+		return _repo._packages.get(pkg_name.toString());
 	}
 
 	public OS_Package makePackage(final Qualident pkg_name) {
-		if (!isPackage(pkg_name.toString())) {
-			final OS_Package newPackage = new OS_Package(pkg_name, nextPackageCode());
-			_packages.put(pkg_name.toString(), newPackage);
-			return newPackage;
-		} else
-			return _packages.get(pkg_name.toString());
-	}
-
-	private int nextPackageCode() {
-		return _packageCode++;
+		return _repo.makePackage(pkg_name);
 	}
 
 	// endregion
@@ -284,6 +267,10 @@ public abstract class Compilation {
 
 	public @NotNull List<GeneratedNode> getLGC() {
 		return getDeducePhase().generatedClasses.copy();
+	}
+
+	public boolean isPackage(final String aPackageName) {
+		return _repo.isPackage(aPackageName);
 	}
 
 	static class MOD {
@@ -370,6 +357,7 @@ public abstract class Compilation {
 			return "c";
 		}
 	}
+
 }
 
 //
