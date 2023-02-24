@@ -233,7 +233,7 @@ public abstract class Compilation {
 	//
 
 	public OS_Package getPackage(final Qualident pkg_name) {
-		return _repo._packages.get(pkg_name.toString());
+		return _repo.getPackage(pkg_name.toString());
 	}
 
 	public OS_Package makePackage(final Qualident pkg_name) {

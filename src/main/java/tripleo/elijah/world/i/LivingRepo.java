@@ -10,4 +10,6 @@ public interface LivingRepo {
 	LivingFunction addFunction(BaseFunctionDef fd);
 
 	LivingPackage addPackage(OS_Package pk);
+
+	OS_Package getPackage(String aPackageName);
 }

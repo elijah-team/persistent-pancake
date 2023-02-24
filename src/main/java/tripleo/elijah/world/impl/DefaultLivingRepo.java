@@ -58,4 +58,9 @@ public class DefaultLivingRepo implements LivingRepo {
 	public LivingPackage addPackage(final OS_Package pk) {
 		return null;
 	}
+
+	@Override
+	public OS_Package getPackage(final String aPackageName) {
+		return _packages.get(aPackageName);
+	}
 }
