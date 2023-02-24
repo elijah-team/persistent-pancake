@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main-cef/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main-mal/mal" isTestSource="false" />
     </content>
   </component>
 </module>
