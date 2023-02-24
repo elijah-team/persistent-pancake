@@ -6,7 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/main/java-cef"/>
+	<classpathentry kind="src" path="src/main-cef/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="idea-mod-compiler-interface/src"/>
 	<classpathentry kind="src" path="idea-mod-base/src"/>
