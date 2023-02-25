@@ -4,6 +4,7 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.Compilation.CompilationAlways;
+import tripleo.elijah.comp.internal.ProcessRecord;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
@@ -18,7 +19,9 @@ import tripleo.elijah.util.Stupidity;
 import tripleo.elijah.work.WorkManager;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,8 +31,9 @@ public class AccessBus {
 	private final DeferredObject<PipelineLogic, Void, Void>       pipeLineLogicPromise  = new DeferredObject<>();
 	private final DeferredObject<List<GeneratedNode>, Void, Void> lgcPromise            = new DeferredObject<>();
 	private final DeferredObject<EIT_ModuleList, Void, Void>      moduleListPromise     = new DeferredObject<>();
-	private final DeferredObject<GenerateResult, Void, Void>      generateResultPromise = new DeferredObject<>();
-	private       PipelineLogic                                   ____pl;
+	final         DeferredObject<GenerateResult, Void, Void>      generateResultPromise = new DeferredObject<>();
+	private       PipelineLogic                             ____pl;
+	private final Map<String, ProcessRecord.PipelinePlugin> pipelinePlugins = new HashMap<>();
 
 
 	public AccessBus(final Compilation aC) {
@@ -134,6 +138,16 @@ public class AccessBus {
 
 	public PipelineLogic __getPL() {
 		return ____pl; // TODO hack. remove soon
+	}
+
+	public void addPipelinePlugin(final ProcessRecord.PipelinePlugin aPlugin) {
+		pipelinePlugins.put(aPlugin.name(), aPlugin);
+	}
+
+	public ProcessRecord.PipelinePlugin getPipelinePlugin(final String aPipelineName) {
+		if (!(pipelinePlugins.containsKey(aPipelineName))) return null;
+
+		return pipelinePlugins.get(aPipelineName);
 	}
 
 	public interface AB_ModuleListListener {

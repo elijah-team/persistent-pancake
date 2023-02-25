@@ -5,9 +5,9 @@ import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ICompilationAccess;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.ProcessRecord;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah.comp.internal.ProcessRecord;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.deduce.DeducePhase;
@@ -32,7 +32,7 @@ public class Boilerplate {
 
 //		final RuntimeProcesses rt = StageToRuntime.get(ca.getStage(), ca, pr);
 
-		pipelineLogic = pr.pipelineLogic;
+		pipelineLogic = pr.ab.__getPL(); // FIXME make ab private
 		//getGenerateFiles(mod);
 
 		if (module != null) {
@@ -60,7 +60,7 @@ public class Boilerplate {
 	}
 
 	public DeducePhase getDeducePhase() {
-		return pr.pipelineLogic.dp;
+		return pr.ab.__getPL().dp;
 	}
 
 	public BoilerplateModuleBuilder withModBuilder(final OS_Module aMod) {
