@@ -20,6 +20,6 @@ public class CompilationBus implements ICompilationBus {
 
 	@Override
 	public void inst(final @NotNull ILazyCompilerInstructions aLazyCompilerInstructions) {
-		tripleo.elijah.util.Stupidity.println_out("** [ci] " + aLazyCompilerInstructions.get());
+		System.out.println("** [ci] " + aLazyCompilerInstructions.get());
 	}
 }

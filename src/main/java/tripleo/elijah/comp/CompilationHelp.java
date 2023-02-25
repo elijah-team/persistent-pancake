@@ -58,18 +58,18 @@ class RuntimeProcesses {
 		if (ca.getStage() == Stages.E) return;
 
 		// rt.prepare();
-		tripleo.elijah.util.Stupidity.println_err2("***** RuntimeProcess [prepare] named " + process);
+		System.err.println("***** RuntimeProcess [prepare] named " + process);
 		process.prepare();
 
 		// rt.run();
-		tripleo.elijah.util.Stupidity.println_err2("***** RuntimeProcess [run    ] named " + process);
+		System.err.println("***** RuntimeProcess [run    ] named " + process);
 		process.run();
 
 		// rt.postProcess(pr);
-		tripleo.elijah.util.Stupidity.println_err2("***** RuntimeProcess [postProcess] named " + process);
+		System.err.println("***** RuntimeProcess [postProcess] named " + process);
 		process.postProcess();
 
-		tripleo.elijah.util.Stupidity.println_err2("***** RuntimeProcess^ [postProcess/writeLogs]");
+		System.err.println("***** RuntimeProcess^ [postProcess/writeLogs]");
 		pr.writeLogs(ca);
 	}
 }
