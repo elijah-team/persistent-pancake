@@ -16,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
 import tripleo.elijah.stages.deduce.zero.ITE_Zero;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
@@ -37,7 +39,7 @@ import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.work.WorkList;
+import tripleo.elijah.work.WorkJob;
 
 import java.util.Collection;
 import java.util.List;
@@ -189,8 +191,7 @@ class Resolve_Ident_IA {
 		final InstructionArgument x = aS.get(/*aS.size()-1*/0);
 		if (x instanceof IntegerIA) {
 			@NotNull final VariableTableEntry y = ((IntegerIA) x).getEntry();
-			if (el instanceof VariableStatement) {
-				final @NotNull VariableStatement vs = (VariableStatement) el;
+			if (el instanceof final @NotNull VariableStatement vs) {
 				y.setStatus(BaseTableEntry.Status.KNOWN, dc.newGenericElementHolderWithType(el, vs.typeName()));
 			}
 			y.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolderWithDC(el, dc));
@@ -225,8 +226,7 @@ class Resolve_Ident_IA {
 		//
 		// TYPE INFORMATION IS CONTAINED IN VARIABLE DECLARATION
 		//
-		if (el instanceof VariableStatement) {
-			@NotNull final VariableStatement vs = (VariableStatement) el;
+		if (el instanceof @NotNull final VariableStatement vs) {
 			if (!vs.typeName().isNull()) {
 				ectx = vs.typeName().getContext();
 				return RIA_STATE.CONTINUE;
@@ -265,8 +265,7 @@ class Resolve_Ident_IA {
 		@NotNull final ProcTableEntry prte = ((ProcIA) ia).getEntry();
 		if (prte.getResolvedElement() == null) {
 			IExpression exp = prte.expression;
-			if (exp instanceof ProcedureCallExpression) {
-				final @NotNull ProcedureCallExpression pce = (ProcedureCallExpression) exp;
+			if (exp instanceof final @NotNull ProcedureCallExpression pce) {
 				exp = pce.getLeft(); // TODO might be another pce??!!
 				if (exp instanceof ProcedureCallExpression)
 					throw new IllegalStateException("double pce!");
@@ -337,8 +336,7 @@ class Resolve_Ident_IA {
 
 		if (tte.expression instanceof ProcedureCallExpression) {
 			if (tte.tableEntry != null) {
-				if (tte.tableEntry instanceof ProcTableEntry) {
-					@NotNull final ProcTableEntry  pte = (ProcTableEntry) tte.tableEntry;
+				if (tte.tableEntry instanceof @NotNull final ProcTableEntry pte) {
 					@NotNull final IdentIA         x   = (IdentIA) pte.expression_num;
 					@NotNull final IdentTableEntry y   = x.getEntry();
 					if (y.getResolvedElement() == null) {
@@ -366,20 +364,16 @@ class Resolve_Ident_IA {
 			if (fi.getFunction() instanceof ConstructorDef) {
 				@NotNull final GenType genType = new GenType(ci.getKlass());
 				genType.ci = ci;
-				ci.resolvePromise().then(new DoneCallback<GeneratedClass>() {
-					@Override
-					public void onDone(final GeneratedClass result) {
-						genType.node = result;
-					}
-				});
-				final @NotNull WorkList          wl                = new WorkList();
+				assert ci.resolvePromise().isResolved();
+				ci.resolvePromise().then(result -> genType.node = result);
 				final @NotNull OS_Module         module            = ci.getKlass().getContext().module();
 				final @NotNull GenerateFunctions generateFunctions = dc.getGenerateFunctions(module);
+				final WorkJob                    j;
 				if (fi.getFunction() == ConstructorDef.defaultVirtualCtor)
-					wl.addJob(new WlGenerateDefaultCtor(generateFunctions, fi, phase.codeRegistrar));
+					j = new WlGenerateDefaultCtor(generateFunctions, fi, phase.codeRegistrar);
 				else
-					wl.addJob(new WlGenerateCtor(generateFunctions, fi, null, phase.codeRegistrar));
-				dc.addJobs(wl);
+					j = new WlGenerateCtor(generateFunctions, fi, null, phase.codeRegistrar);
+				dc.addJobs(j);
 //				generatedFunction.addDependentType(genType);
 //				generatedFunction.addDependentFunction(fi);
 			}
@@ -387,50 +381,17 @@ class Resolve_Ident_IA {
 	}
 
 	private void action_002_no_resolved_element(final @NotNull ProcTableEntry pte, final @NotNull IdentTableEntry ite) {
-		if (ite.getBacklink() instanceof ProcIA) {
-			final @NotNull ProcIA         backlink_       = (ProcIA) ite.getBacklink();
-			@NotNull final ProcTableEntry backlink        = generatedFunction.getProcTableEntry(backlink_.getIndex());
-			final OS_Element              resolvedElement = backlink.getResolvedElement();
+		final InstructionArgument _backlink = ite.getBacklink();
+		if (_backlink instanceof final @NotNull ProcIA backlink_) {
+			@NotNull final ProcTableEntry backlink  = generatedFunction.getProcTableEntry(backlink_.getIndex());
 
-			if (resolvedElement == null) return; //throw new AssertionError(); // TODO feb 20
+			final DeduceElement3_ProcTableEntry pte_de3 = (DeduceElement3_ProcTableEntry) backlink.getDeduceElement3(this.dc._dt2(), this.generatedFunction);
+			pte_de3._action_002_no_resolved_element(_backlink, backlink, dc, ite, errSink, phase);
+		} else if (_backlink instanceof final @NotNull IntegerIA backlink_) {
+			@NotNull final VariableTableEntry backlink  = backlink_.getEntry();
 
-			try {
-				final LookupResultList     lrl2 = dc.lookupExpression(ite.getIdent(), resolvedElement.getContext());
-				@Nullable final OS_Element best = lrl2.chooseBest(null);
-				assert best != null;
-				ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
-			} catch (final ResolveError aResolveError) {
-				errSink.reportDiagnostic(aResolveError);
-				assert false;
-			}
-			action_002_1(pte, ite);
-		} else if (ite.getBacklink() instanceof IntegerIA) {
-			final @NotNull IntegerIA          backlink_       = (IntegerIA) ite.getBacklink();
-			@NotNull final VariableTableEntry backlink        = backlink_.getEntry();
-			final OS_Element                  resolvedElement = backlink.getResolvedElement();
-			assert resolvedElement != null;
-
-			if (resolvedElement instanceof IdentExpression) {
-				backlink.typePromise().then(new DoneCallback<GenType>() {
-					@Override
-					public void onDone(@NotNull final GenType result) {
-						try {
-							final Context context = result.resolved.getClassOf().getContext();
-							action_002_2(pte, ite, context);
-						} catch (final ResolveError aResolveError) {
-							errSink.reportDiagnostic(aResolveError);
-						}
-					}
-				});
-			} else {
-				try {
-					final Context context = resolvedElement.getContext();
-					action_002_2(pte, ite, context);
-				} catch (final ResolveError aResolveError) {
-					errSink.reportDiagnostic(aResolveError);
-					assert false;
-				}
-			}
+			final DeduceElement3_VariableTableEntry vte_de3 = (DeduceElement3_VariableTableEntry) backlink.getDeduceElement3();
+			vte_de3._action_002_no_resolved_element(errSink, pte, ite, dc, phase);
 		} else
 			assert false;
 	}
@@ -450,9 +411,8 @@ class Resolve_Ident_IA {
 				ci = new ClassInvocation((ClassStatement) resolvedElement, null);
 				ci = phase.registerClassInvocation(ci);
 				fi = new FunctionInvocation(null, pte, ci, phase.generatePhase);
-			} else if (resolvedElement instanceof FunctionDef) {
+			} else if (resolvedElement instanceof final FunctionDef functionDef) {
 				final IInvocation invocation  = dc.getInvocation((GeneratedFunction) generatedFunction);
-				final FunctionDef functionDef = (FunctionDef) resolvedElement;
 				fi = new FunctionInvocation(functionDef, pte, invocation, phase.generatePhase);
 				if (functionDef.getParent() instanceof ClassStatement) {
 					final ClassStatement classStatement = (ClassStatement) fi.getFunction().getParent();
@@ -514,17 +474,6 @@ class Resolve_Ident_IA {
 			generatedFunction.addDependentFunction(fi);
 	}
 
-	private void action_002_1(@NotNull final ProcTableEntry pte, @NotNull final IdentTableEntry ite) {
-		action_002_1(pte, ite, false);
-	}
-
-	private void action_002_2(final @NotNull ProcTableEntry pte, final @NotNull IdentTableEntry ite, final Context aAContext) throws ResolveError {
-		final LookupResultList     lrl2 = dc.lookupExpression(ite.getIdent(), aAContext);
-		@Nullable final OS_Element best = lrl2.chooseBest(null);
-		assert best != null;
-		ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
-		action_002_1(pte, ite);
-	}
 
 	static class GenericElementHolderWithDC implements IElementHolder {
 		private final OS_Element                 element;

@@ -2,6 +2,7 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +14,8 @@ import tripleo.elijah.lang.AliasStatement;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.FormalArgListItem;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.NormalTypeName;
 import tripleo.elijah.lang.OS_Element;
@@ -21,10 +24,13 @@ import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.nextgen.query.Operation2;
+import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
+import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.stages.deduce.IInvocation;
 import tripleo.elijah.stages.deduce.ResolveError;
 import tripleo.elijah.stages.deduce.post_bytecode.DED.DED_VTE;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
@@ -32,6 +38,8 @@ import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -211,8 +219,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 			}
 			final LookupResultList lrl = ctx.lookup(e_text);
 			@Nullable final OS_Element best = lrl.chooseBest(null);
-			if (best instanceof FormalArgListItem) {
-				@NotNull final FormalArgListItem fali   = (FormalArgListItem) best;
+			if (best instanceof @NotNull final FormalArgListItem fali) {
 				final @NotNull OS_Type           osType = new OS_UserType(fali.typeName());
 				if (!osType.equals(vte.type.getAttached())) {
 					@NotNull final TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(
@@ -240,8 +247,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 //								vte.type = tte1;
 //								tte.attached = tte1.attached;
 //								vte.setStatus(BaseTableEntry.Status.KNOWN, best);
-			} else if (best instanceof VariableStatement) {
-				final @NotNull VariableStatement vs = (VariableStatement) best;
+			} else if (best instanceof final @NotNull VariableStatement vs) {
 				//
 				assert vs.getName().equals(e_text);
 				//
@@ -284,6 +290,87 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 		}
 	}
 
+	public void _action_002_no_resolved_element(final ErrSink errSink, final ProcTableEntry pte, final IdentTableEntry ite, final DeduceTypes2.@NotNull DeduceClient3 dc, final @NotNull DeducePhase phase) {
+		final VariableTableEntry backlink = principal;
+
+		final OS_Element resolvedElement = backlink.getResolvedElement();
+		assert resolvedElement != null;
+
+		if (resolvedElement instanceof IdentExpression) {
+			backlink.typePromise().then(new DoneCallback<GenType>() {
+				@Override
+				public void onDone(@NotNull final GenType result) {
+					try {
+						final Context context = result.resolved.getClassOf().getContext();
+						action_002_2(pte, ite, context, dc, phase);
+					} catch (final ResolveError aResolveError) {
+						errSink.reportDiagnostic(aResolveError);
+					}
+				}
+			});
+		} else {
+			try {
+				final Context context = resolvedElement.getContext();
+				action_002_2(pte, ite, context, dc, phase);
+			} catch (final ResolveError aResolveError) {
+				errSink.reportDiagnostic(aResolveError);
+				assert false;
+			}
+		}
+	}
+
+	private void action_002_2(final @NotNull ProcTableEntry pte, final @NotNull IdentTableEntry ite, final Context aAContext, final DeduceTypes2.DeduceClient3 dc, final DeducePhase phase) throws ResolveError {
+		final LookupResultList     lrl2 = dc.lookupExpression(ite.getIdent(), aAContext);
+		@Nullable final OS_Element best = lrl2.chooseBest(null);
+		assert best != null;
+		ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
+		action_002_1(pte, ite, dc, phase);
+	}
+
+	private void action_002_1(@NotNull final ProcTableEntry pte, @NotNull final IdentTableEntry ite, final DeduceTypes2.DeduceClient3 dc, final DeducePhase phase) {
+		action_002_1(pte, ite, false, dc, phase);
+	}
+
+	private void action_002_1(@NotNull final ProcTableEntry pte, @NotNull final IdentTableEntry ite, final boolean setClassInvocation, final DeduceTypes2.DeduceClient3 dc, final DeducePhase phase) {
+		final OS_Element resolvedElement = ite.getResolvedElement();
+
+		assert resolvedElement != null;
+
+		ClassInvocation ci = null;
+
+		if (pte.getFunctionInvocation() == null) {
+			@NotNull final FunctionInvocation fi;
+
+			if (resolvedElement instanceof ClassStatement) {
+				// assuming no constructor name or generic parameters based on function syntax
+				ci = new ClassInvocation((ClassStatement) resolvedElement, null);
+				ci = phase.registerClassInvocation(ci);
+				fi = new FunctionInvocation(null, pte, ci, phase.generatePhase);
+			} else if (resolvedElement instanceof final FunctionDef functionDef) {
+				final IInvocation invocation  = dc.getInvocation((GeneratedFunction) generatedFunction);
+				fi = new FunctionInvocation(functionDef, pte, invocation, phase.generatePhase);
+				if (functionDef.getParent() instanceof ClassStatement) {
+					final ClassStatement classStatement = (ClassStatement) fi.getFunction().getParent();
+					ci = new ClassInvocation(classStatement, null); // TODO generics
+					ci = phase.registerClassInvocation(ci);
+				}
+			} else {
+				throw new IllegalStateException();
+			}
+
+			if (setClassInvocation) {
+				if (ci != null) {
+					pte.setClassInvocation(ci);
+				} else
+					tripleo.elijah.util.Stupidity.println_err2("542 Null ClassInvocation");
+			}
+
+			pte.setFunctionInvocation(fi);
+		}
+
+//		el   = resolvedElement;
+//		ectx = el.getContext();
+	}
 
 	public static class ST {
 		public static State EXIT_RESOLVE;

@@ -2,6 +2,7 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.DotExpression;
@@ -14,12 +15,18 @@ import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.ProcedureCallExpression;
 import tripleo.elijah.lang.types.OS_FuncType;
 import tripleo.elijah.stages.deduce.ClassInvocation;
+import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.stages.deduce.IInvocation;
+import tripleo.elijah.stages.deduce.ResolveError;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
@@ -103,16 +110,12 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
         final FunctionInvocation fi = principal.getFunctionInvocation();
 
         if (fi == null) {
-            if (principal.expression instanceof ProcedureCallExpression) {
-                final ProcedureCallExpression exp  = ((ProcedureCallExpression) principal.expression);
+            if (principal.expression instanceof final ProcedureCallExpression exp) {
                 final IExpression             left = exp.getLeft();
 
-                if (left instanceof DotExpression) {
-                    final DotExpression dotleft = ((DotExpression) left);
+                if (left instanceof final DotExpression dotleft) {
 
-                    if (dotleft.getLeft() instanceof IdentExpression && dotleft.getRight() instanceof IdentExpression) {
-                        final IdentExpression rl = ((IdentExpression) dotleft.getLeft());
-                        final IdentExpression rr = ((IdentExpression) dotleft.getRight());
+                    if (dotleft.getLeft() instanceof final IdentExpression rl && dotleft.getRight() instanceof final IdentExpression rr) {
 
                         if (rl.getText().equals("a1")) {
                             final GeneratedClass[] gc = new GeneratedClass[1];
@@ -151,8 +154,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                                         final int y4 = 4;
                                     });
 
-                                    if (attached instanceof OS_FuncType) {
-                                        final OS_FuncType funcType = (OS_FuncType) attached;
+                                    if (attached instanceof final OS_FuncType funcType) {
 
                                         final GeneratedClass x = gc[0];
 
@@ -172,4 +174,73 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
             }
         }
     }
+
+    public void _action_002_no_resolved_element(final InstructionArgument _backlink,
+                                                final ProcTableEntry backlink,
+                                                final DeduceTypes2.DeduceClient3 dc,
+                                                final IdentTableEntry ite,
+                                                final ErrSink errSink,
+                                                final DeducePhase phase) {
+        final OS_Element resolvedElement = backlink.getResolvedElement();
+
+        if (resolvedElement == null) return; //throw new AssertionError(); // TODO feb 20
+
+        try {
+            final LookupResultList     lrl2 = dc.lookupExpression(ite.getIdent(), resolvedElement.getContext());
+            @Nullable final OS_Element best = lrl2.chooseBest(null);
+            assert best != null;
+            ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
+        } catch (final ResolveError aResolveError) {
+            errSink.reportDiagnostic(aResolveError);
+            assert false;
+        }
+
+        action_002_1(principal, ite, false, phase, dc);
+    }
+
+    private void action_002_1(@NotNull final ProcTableEntry pte,
+                              @NotNull final IdentTableEntry ite,
+                              final boolean setClassInvocation,
+                              final DeducePhase phase, final DeduceTypes2.DeduceClient3 dc) {
+        final OS_Element resolvedElement = ite.getResolvedElement();
+
+        assert resolvedElement != null;
+
+        ClassInvocation ci = null;
+
+        if (pte.getFunctionInvocation() == null) {
+            @NotNull final FunctionInvocation fi;
+
+            if (resolvedElement instanceof ClassStatement) {
+                // assuming no constructor name or generic parameters based on function syntax
+                ci = new ClassInvocation((ClassStatement) resolvedElement, null);
+                ci = phase.registerClassInvocation(ci);
+                fi = new FunctionInvocation(null, pte, ci, phase.generatePhase);
+            } else if (resolvedElement instanceof final FunctionDef functionDef) {
+                final IInvocation invocation  = dc.getInvocation((GeneratedFunction) generatedFunction);
+                fi = new FunctionInvocation(functionDef, pte, invocation, phase.generatePhase);
+                if (functionDef.getParent() instanceof ClassStatement) {
+                    final ClassStatement classStatement = (ClassStatement) fi.getFunction().getParent();
+                    ci = new ClassInvocation(classStatement, null); // TODO generics
+                    ci = phase.registerClassInvocation(ci);
+                }
+            } else {
+                throw new IllegalStateException();
+            }
+
+            if (setClassInvocation) {
+                if (ci != null) {
+                    pte.setClassInvocation(ci);
+                } else
+                    tripleo.elijah.util.Stupidity.println_err2("542 Null ClassInvocation");
+            }
+
+            pte.setFunctionInvocation(fi);
+        }
+
+//        el   = resolvedElement;
+//        ectx = el.getContext();
+    }
+
+
 }
