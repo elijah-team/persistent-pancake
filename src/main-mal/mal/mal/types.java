@@ -41,12 +41,11 @@ public class types {
 					}
 				}
 				return true;
-			} else if (a instanceof MalHashMap) {
+			} else if (a instanceof final MalHashMap mhm) {
 				if (((MalHashMap) a).value.size() != ((MalHashMap) b).value.size()) {
 					return false;
 				}
 				//HashMap<String,MalVal> hm = (HashMap<String,MalVal>)a.value;
-				final MalHashMap              mhm = ((MalHashMap) a);
 				final HashMap<String, MalVal> hm  = (HashMap<String, MalVal>) mhm.value;
 				for (final String k : hm.keySet()) {
 					if (!_equal_Q(((MalVal) ((MalHashMap) a).value.get(k)),
@@ -111,7 +110,7 @@ public class types {
 	// Mal boxed types
 	//
 	abstract public static class MalVal {
-		MalVal meta = Nil;
+		static MalVal meta = Nil;
 
 		abstract public MalVal copy() throws MalThrowable;
 
@@ -279,7 +278,7 @@ public class types {
 		public MalList copy() throws MalThrowable {
 			final MalList new_ml = new MalList();
 			new_ml.value.addAll(value);
-			new_ml.meta = meta;
+			meta = meta;
 			return new_ml;
 		}
 
@@ -342,7 +341,7 @@ public class types {
 		public MalVector copy() throws MalThrowable {
 			final MalVector new_mv = new MalVector();
 			new_mv.value.addAll(value);
-			new_mv.meta = meta;
+			meta = meta;
 			return new_mv;
 		}
 
@@ -392,7 +391,7 @@ public class types {
 			final Map<String, MalVal> shallowCopy = new HashMap<String, MalVal>();
 			shallowCopy.putAll(value);
 			final MalHashMap new_hm = new MalHashMap(shallowCopy);
-			new_hm.meta = meta;
+			meta = meta;
 			return new_hm;
 		}
 

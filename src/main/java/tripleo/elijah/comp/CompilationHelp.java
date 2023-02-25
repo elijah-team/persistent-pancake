@@ -9,9 +9,11 @@
 package tripleo.elijah.comp;
 
 import com.google.common.base.Preconditions;
-import org.jdeferred2.impl.DeferredObject;
+import mal.stepA_mal;
+import mal.types;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.internal.ProcessRecord;
 
 interface RuntimeProcess {
 	void run();
@@ -119,12 +121,16 @@ class DStageProcess implements RuntimeProcess {
 class OStageProcess implements RuntimeProcess {
 	private final ProcessRecord      pr;
 	private final ICompilationAccess ca;
-
-	private final DeferredObject<PipelineLogic, Void, Void> ppl = new DeferredObject<>();
+	final         stepA_mal.MalEnv2  env;
 
 	OStageProcess(final ICompilationAccess aCa, final ProcessRecord aPr) {
 		ca = aCa;
 		pr = aPr;
+
+		env = new stepA_mal.MalEnv2(null); // TODO what does null mean?
+
+		Preconditions.checkNotNull(pr.ab);
+		env.set(new types.MalSymbol("add-pipeline"), new _AddPipeline__MAL(pr.ab));
 	}
 
 	@Override
@@ -152,31 +158,54 @@ class OStageProcess implements RuntimeProcess {
 	@Override
 	public void prepare() throws Exception {
 		Preconditions.checkNotNull(pr);
-		Preconditions.checkNotNull(pr.pipelineLogic);
 		Preconditions.checkNotNull(pr.ab.gr);
-
-		ppl.resolve(pr.pipelineLogic);
 
 		final AccessBus ab = pr.ab;
 
-//		ab.add(DeducePipeline::new);
-		ab.add(GeneratePipeline::new);
-		ab.add(WritePipeline::new);
-		ab.add(WriteMesonPipeline::new);
+//		env.re("(def! GeneratePipeline 'native)");
+		env.re("(add-pipeline 'DeducePipeline)"); // FIXME note moved from ...
 
-//		final DeducePipeline     dpl  = new DeducePipeline(ab);
-//		final GeneratePipeline   gpl  = new GeneratePipeline(ab);
-//		final WritePipeline      wpl  = new WritePipeline(ab);
-//		final WriteMesonPipeline wmpl = new WriteMesonPipeline(comp, pr, ppl, wpl);
-//
-//		List_of(dpl, gpl, wpl, wmpl)
-//		  .forEach(ca::addPipeline);
+//		ab.add(GeneratePipeline::new);
+//		ab.add(WritePipeline::new);
+//		ab.add(WriteMesonPipeline::new);
+		env.re("(add-pipeline 'GeneratePipeline)");
+		env.re("(add-pipeline 'WritePipeline)");
+		env.re("(add-pipeline 'WriteMesonPipeline)");
 
-		ppl.then(pl -> {
+		ab.subscribePipelineLogic(pl -> {
 			final Compilation comp = ca.getCompilation();
 
 			comp.mod.modules.stream().forEach(pl::addModule);
 		});
+	}
+
+	private static class _AddPipeline__MAL extends types.MalFunction {
+		private final AccessBus ab;
+
+		public _AddPipeline__MAL(final AccessBus aAb) {
+			ab = aAb;
+		}
+
+		public types.MalVal apply(final types.MalList args) throws types.MalThrowable {
+			final types.MalVal a0 = args.nth(0);
+
+			if (a0 instanceof final types.MalSymbol pipelineSymbol) {
+				// 0. accessors
+				final String pipelineName = pipelineSymbol.getName();
+
+				// 1. observe side effect
+				final ProcessRecord.PipelinePlugin pipelinePlugin = ab.getPipelinePlugin(pipelineName);
+				if (pipelinePlugin == null)
+					return types.False;
+
+				// 2. produce effect
+				ab.add(pipelinePlugin::instance);
+			} else {
+				return types.False;
+			} // TODO exception? errSink??
+
+			return types.True;
+		}
 	}
 }
 

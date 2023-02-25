@@ -275,53 +275,11 @@ public class stepA_mal {
 		RE(repl_env, "(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \"\nnil)\")))))");
 		RE(repl_env, "(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
 
-		Integer fileIdx = 0;
-		if (args.length > 0 && args[0].equals("--raw")) {
-			readline.mode = readline.Mode.JAVA;
-			fileIdx       = 1;
-		}
-		if (args.length > fileIdx) {
-			RE(repl_env, "(load-file \"" + args[fileIdx] + "\")");
-			return;
-		}
-
-		// repl loop
-		RE(repl_env, "(println (str \"Mal [\" *host-language* \"]\"))");
-		while (true) {
-			final String line;
-			try {
-				line = readline.readline(prompt);
-				if (line == null) {
-					continue;
-				}
-			} catch (final readline.EOFException e) {
-				break;
-			} catch (final IOException e) {
-				System.out.println("IOException: " + e.getMessage());
-				break;
-			}
-			try {
-				System.out.println(PRINT(RE(repl_env, line)));
-			} catch (final MalContinue e) {
-				continue;
-			} catch (final MalException e) {
-				System.out.println("Error: " + printer._pr_str(e.getValue(), false));
-				continue;
-			} catch (final MalThrowable t) {
-				System.out.println("Error: " + t.getMessage());
-				continue;
-			} catch (final Throwable t) {
-				System.out.println("Uncaught " + t + ": " + t.getMessage());
-				continue;
-			}
-		}
-	}
-
-	public class MalEnv2 {
+	public static class MalEnv2 {
 		final Env repl_env = new Env(null);
 
 		{
-			for (final String key : core.ns.keySet()) {
+			for (final String key : mal.core.ns.keySet()) {
 				repl_env.set(new MalSymbol(key), core.ns.get(key));
 			}
 			repl_env.set(new MalSymbol("eval"), new MalFunction() {
@@ -366,6 +324,10 @@ public class stepA_mal {
 
 		public void re(final String str) throws MalThrowable {
 			RE(repl_env, str);
+		}
+
+		public void set(final MalSymbol aSymbol, final MalFunction aFunction) {
+			repl_env.set(aSymbol, aFunction);
 		}
 	}
 }
