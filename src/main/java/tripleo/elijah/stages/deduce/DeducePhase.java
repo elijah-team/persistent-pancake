@@ -154,7 +154,8 @@ public class DeducePhase {
 		return nsi;
 	}
 
-	@NotNull List<FunctionMapHook> functionMapHooks = new ArrayList<FunctionMapHook>();
+	@NotNull
+	public List<FunctionMapHook> functionMapHooks = new ArrayList<FunctionMapHook>();
 
 	public void addFunctionMapHook(final FunctionMapHook aFunctionMapHook) {
 		functionMapHooks.add(aFunctionMapHook);
@@ -405,14 +406,12 @@ public class DeducePhase {
 	public void finish(@NotNull final GeneratedClasses lgc22) {
 		// TODO all GeneratedFunction nodes have a genClass member
 		for (final GeneratedNode generatedNode : lgc22) {
-			if (generatedNode instanceof GeneratedClass) {
-				final @NotNull GeneratedClass generatedClass = (GeneratedClass) generatedNode;
+			if (generatedNode instanceof final @NotNull GeneratedClass generatedClass) {
 				@NotNull final Collection<GeneratedFunction> functions = generatedClass.functionMap.values();
 				for (@NotNull final GeneratedFunction generatedFunction : functions) {
 					generatedFunction.setParent(generatedClass);
 				}
-			} else if (generatedNode instanceof GeneratedNamespace) {
-				final @NotNull GeneratedNamespace generatedNamespace = (GeneratedNamespace) generatedNode;
+			} else if (generatedNode instanceof final @NotNull GeneratedNamespace generatedNamespace) {
 				@NotNull final Collection<GeneratedFunction> functions = generatedNamespace.functionMap.values();
 				for (@NotNull final GeneratedFunction generatedFunction : functions) {
 					generatedFunction.setParent(generatedNamespace);
@@ -443,8 +442,7 @@ public class DeducePhase {
 		// TODO rewrite with classInvocationMultimap
 		for (final ClassStatement classStatement : onclasses.keySet()) {
 			for (final GeneratedNode generatedNode : lgc22) {
-				if (generatedNode instanceof GeneratedClass) {
-					final @NotNull GeneratedClass generatedClass = (GeneratedClass) generatedNode;
+				if (generatedNode instanceof final @NotNull GeneratedClass generatedClass) {
 					if (generatedClass.getKlass() == classStatement) {
 						final Collection<OnClass> ks = onclasses.get(classStatement);
 						for (@NotNull final OnClass k : ks) {
@@ -502,8 +500,7 @@ public class DeducePhase {
 			}
 		}
 		for (final GeneratedNode generatedNode : lgc22) {
-			if (generatedNode instanceof GeneratedContainer) {
-				final @NotNull GeneratedContainer generatedContainer = (GeneratedContainer) generatedNode;
+			if (generatedNode instanceof final @NotNull GeneratedContainer generatedContainer) {
 				final Collection<ResolvedVariables> x = resolved_variables.get(generatedContainer.getElement());
 				for (@NotNull final ResolvedVariables resolvedVariables : x) {
 					final GeneratedContainer.VarTableEntry variable = generatedContainer.getVariable(resolvedVariables.varName);
@@ -520,15 +517,13 @@ public class DeducePhase {
 		while (!all_resolve_var_table_entries) {
 			if (lgc22.size() == 0) break;
 			for (final GeneratedNode generatedNode : lgc22.copy()) {
-				if (generatedNode instanceof GeneratedClass) {
-					final @NotNull GeneratedClass generatedClass = (GeneratedClass) generatedNode;
+				if (generatedNode instanceof final @NotNull GeneratedClass generatedClass) {
 					all_resolve_var_table_entries = generatedClass.resolve_var_table_entries(this); // TODO use a while loop to get all classes
 				}
 			}
 		}
 		for (@NotNull final DeferredMember deferredMember : deferredMembers) {
-			if (deferredMember.getParent() instanceof NamespaceStatement) {
-				final @NotNull NamespaceStatement parent = (NamespaceStatement) deferredMember.getParent();
+			if (deferredMember.getParent() instanceof final @NotNull NamespaceStatement parent) {
 				final NamespaceInvocation nsi = registerNamespaceInvocation(parent);
 				nsi.resolveDeferred()
 						.done(new DoneCallback<GeneratedNamespace>() {
@@ -565,9 +560,8 @@ public class DeducePhase {
 */
 							}
 						});
-			} else if (deferredMember.getParent() instanceof ClassStatement) {
+			} else if (deferredMember.getParent() instanceof final ClassStatement parent) {
 				// TODO do something
-				final ClassStatement parent = (ClassStatement) deferredMember.getParent();
 				final String name = deferredMember.getVariableStatement().getName();
 
 				// because deferredMember.invocation is null, we must create one here
@@ -608,12 +602,10 @@ public class DeducePhase {
 
 	private void sanityChecks() {
 		for (final GeneratedNode generatedNode : generatedClasses) {
-			if (generatedNode instanceof GeneratedClass) {
-				final @NotNull GeneratedClass generatedClass = (GeneratedClass) generatedNode;
+			if (generatedNode instanceof final @NotNull GeneratedClass generatedClass) {
 				sanityChecks(generatedClass.functionMap.values());
 //				sanityChecks(generatedClass.constructors.values()); // TODO reenable
-			} else if (generatedNode instanceof GeneratedNamespace) {
-				final @NotNull GeneratedNamespace generatedNamespace = (GeneratedNamespace) generatedNode;
+			} else if (generatedNode instanceof final @NotNull GeneratedNamespace generatedNamespace) {
 				sanityChecks(generatedNamespace.functionMap.values());
 //				sanityChecks(generatedNamespace.constructors.values());
 			}
