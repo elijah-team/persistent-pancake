@@ -60,7 +60,7 @@ public class Boilerplate {
 	}
 
 	public DeducePhase getDeducePhase() {
-		return pr.ab.__getPL().dp;
+		return pipelineLogic.dp;
 	}
 
 	public BoilerplateModuleBuilder withModBuilder(final OS_Module aMod) {
