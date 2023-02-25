@@ -1,7 +1,6 @@
 package mal;
 
 import mal.env.Env;
-import mal.types.MalContinue;
 import mal.types.MalException;
 import mal.types.MalFunction;
 import mal.types.MalHashMap;
@@ -12,7 +11,6 @@ import mal.types.MalThrowable;
 import mal.types.MalVal;
 import mal.types.MalVector;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Iterator;
@@ -85,8 +83,7 @@ public class stepA_mal {
 	public static MalVal eval_ast(final MalVal ast, final Env env) throws MalThrowable {
 		if (ast instanceof MalSymbol) {
 			return env.get((MalSymbol) ast);
-		} else if (ast instanceof MalList) {
-			final MalList old_lst = (MalList) ast;
+		} else if (ast instanceof final MalList old_lst) {
 			final MalList new_lst = ast.list_Q() ? new MalList()
 			  : new MalVector();
 			for (final MalVal mv : (List<MalVal>) old_lst.value) {
@@ -130,8 +127,8 @@ public class stepA_mal {
 				return ast;
 			}
 			a0 = ast.nth(0);
-			final String a0sym = a0 instanceof MalSymbol ? ((MalSymbol) a0).getName()
-			  : "__<*fn*>__";
+			final String a0sym = a0 instanceof MalSymbol ? ((MalSymbol) a0).getName() : "__<*fn*>__";
+
 			switch (a0sym) {
 			case "def!":
 				a1 = ast.nth(1);
@@ -248,32 +245,74 @@ public class stepA_mal {
 		return EVAL(READ(str), env);
 	}
 
-	public static void main(final String[] args) throws MalThrowable {
-		final String prompt = "user> ";
-
-		final Env repl_env = new Env(null);
-
-		// core.java: defined using Java
-		for (final String key : core.ns.keySet()) {
-			repl_env.set(new MalSymbol(key), core.ns.get(key));
-		}
-		repl_env.set(new MalSymbol("eval"), new MalFunction() {
-			public MalVal apply(final MalList args) throws MalThrowable {
-				return EVAL(args.nth(0), repl_env);
-			}
-		});
-		final MalList _argv = new MalList();
-		for (Integer i = 1; i < args.length; i++) {
-			_argv.conj_BANG(new MalString(args[i]));
-		}
-		repl_env.set(new MalSymbol("*ARGV*"), _argv);
-
-
-		// core.mal: defined using the language itself
-		RE(repl_env, "(def! *host-language* \"java\")");
-		RE(repl_env, "(def! not (fn* (a) (if a false true)))");
-		RE(repl_env, "(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \"\nnil)\")))))");
-		RE(repl_env, "(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
+//	public static void main(final String[] args) throws MalThrowable {
+//		final String prompt = "user> ";
+//
+//		final Env repl_env = new Env(null);
+//
+//		// core.java: defined using Java
+//		for (final String key : mal.core.ns.keySet()) {
+//			repl_env.set(new MalSymbol(key), core.ns.get(key));
+//		}
+//		repl_env.set(new MalSymbol("eval"), new MalFunction() {
+//			public MalVal apply(final MalList args) throws MalThrowable {
+//				return EVAL(args.nth(0), repl_env);
+//			}
+//		});
+//		final MalList _argv = new MalList();
+//		for (Integer i = 1; i < args.length; i++) {
+//			_argv.conj_BANG(new MalString(args[i]));
+//		}
+//		repl_env.set(new MalSymbol("*ARGV*"), _argv);
+//
+//
+//		// core.mal: defined using the language itself
+//		RE(repl_env, "(def! *host-language* \"java\")");
+//		RE(repl_env, "(def! not (fn* (a) (if a false true)))");
+//		RE(repl_env, "(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \"\nnil)\")))))");
+//		RE(repl_env, "(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
+//
+//		Integer fileIdx = 0;
+//		if (args.length > 0 && args[0].equals("--raw")) {
+//			readline.mode = readline.Mode.JAVA;
+//			fileIdx       = 1;
+//		}
+//		if (args.length > fileIdx) {
+//			RE(repl_env, "(load-file \"" + args[fileIdx] + "\")");
+//			return;
+//		}
+//
+//		// repl loop
+//		RE(repl_env, "(println (str \"Mal [\" *host-language* \"]\"))");
+//		while (true) {
+//			final String line;
+//			try {
+//				line = readline.readline(prompt);
+//				if (line == null) {
+//					continue;
+//				}
+//			} catch (final readline.EOFException e) {
+//				break;
+//			} catch (final IOException e) {
+//				System.out.println("IOException: " + e.getMessage());
+//				break;
+//			}
+//			try {
+//				System.out.println(PRINT(RE(repl_env, line)));
+//			} catch (final MalContinue e) {
+//				continue;
+//			} catch (final MalException e) {
+//				System.out.println("Error: " + printer._pr_str(e.getValue(), false));
+//				continue;
+//			} catch (final MalThrowable t) {
+//				System.out.println("Error: " + t.getMessage());
+//				continue;
+//			} catch (final Throwable t) {
+//				System.out.println("Uncaught " + t + ": " + t.getMessage());
+//				continue;
+//			}
+//		}
+//	}
 
 	public static class MalEnv2 {
 		final Env repl_env = new Env(null);
