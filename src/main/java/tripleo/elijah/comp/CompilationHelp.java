@@ -135,10 +135,11 @@ class OStageProcess implements RuntimeProcess {
 
 	@Override
 	public void run() {
-		final Compilation comp = ca.getCompilation();
+		final AccessBus ab = pr.ab;
 
-		ppl.then((pl) -> {
-			final Pipeline ps = comp.getPipelines();
+		ab.subscribePipelineLogic((pl) -> {
+			final Compilation comp = ca.getCompilation();
+			final Pipeline    ps   = comp.getPipelines();
 
 			try {
 				ps.run();
@@ -147,7 +148,7 @@ class OStageProcess implements RuntimeProcess {
 				comp.getErrSink().exception(ex);
 			}
 
-			comp.writeLogs(comp.cfg.silent, comp.elLogs);
+			ab.writeLogs();
 		});
 	}
 

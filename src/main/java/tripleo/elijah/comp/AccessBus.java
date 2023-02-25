@@ -26,14 +26,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AccessBus {
-	public final GenerateResult gr = new GenerateResult();
+	public final  GenerateResult                                  gr                    = new GenerateResult();
 	private final Compilation                                     _c;
 	private final DeferredObject<PipelineLogic, Void, Void>       pipeLineLogicPromise  = new DeferredObject<>();
 	private final DeferredObject<List<GeneratedNode>, Void, Void> lgcPromise            = new DeferredObject<>();
 	private final DeferredObject<EIT_ModuleList, Void, Void>      moduleListPromise     = new DeferredObject<>();
 	final         DeferredObject<GenerateResult, Void, Void>      generateResultPromise = new DeferredObject<>();
-	private       PipelineLogic                             ____pl;
-	private final Map<String, ProcessRecord.PipelinePlugin> pipelinePlugins = new HashMap<>();
+	private final Map<String, ProcessRecord.PipelinePlugin>       pipelinePlugins       = new HashMap<>();
+	private       PipelineLogic                                   ____pl;
 
 
 	public AccessBus(final Compilation aC) {
@@ -111,8 +111,7 @@ public class AccessBus {
 		for (final GeneratedNode generatedNode : lgc) {
 			if (generatedNode.module() != mod) continue; // README curious
 
-			if (generatedNode instanceof GeneratedContainerNC) {
-				final GeneratedContainerNC nc = (GeneratedContainerNC) generatedNode;
+			if (generatedNode instanceof final GeneratedContainerNC nc) {
 
 				// 1.
 				nc.generateCode(generateC, gr);
@@ -134,6 +133,12 @@ public class AccessBus {
 		wm.drain();
 
 //		gr.additional(grx);
+	}
+
+	public void writeLogs() {
+		@NotNull final Compilation comp = getCompilation(); // this._c
+
+		comp.writeLogs(comp.cfg.silent, comp.elLogs);
 	}
 
 	public PipelineLogic __getPL() {

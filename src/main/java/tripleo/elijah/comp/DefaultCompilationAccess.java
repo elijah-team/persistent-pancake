@@ -2,8 +2,6 @@ package tripleo.elijah.comp;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import io.reactivex.rxjava3.functions.Consumer;
-import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.functionality.f202.F202;
 import tripleo.elijah.stages.deduce.FunctionMapHook;
@@ -22,32 +20,27 @@ public class DefaultCompilationAccess implements ICompilationAccess {
 		compilation = aCompilation;
 	}
 
-	void registerPipelineLogic(final Consumer<PipelineLogic> aPipelineLogicConsumer) {
-		pipelineLogicDeferred.then(new DoneCallback<PipelineLogic>() {
-			@Override
-			public void onDone(final PipelineLogic result) {
-				try {
-					aPipelineLogicConsumer.accept(result);
-				} catch (final Throwable aE) {
-					throw new RuntimeException(aE);
-				}
-			}
-		});
-	}
+//	void registerPipelineLogic(final Consumer<PipelineLogic> aPipelineLogicConsumer) {
+//		pipelineLogicDeferred.then(new DoneCallback<PipelineLogic>() {
+//			@Override
+//			public void onDone(final PipelineLogic result) {
+//				try {
+//					aPipelineLogicConsumer.accept(result);
+//				} catch (final Throwable aE) {
+//					throw new RuntimeException(aE);
+//				}
+//			}
+//		});
+//	}
 
 	@Override
 	public void setPipelineLogic(final PipelineLogic pl) {
-		compilation.pipelineLogic = pl;
-
-		pipelineLogicDeferred.resolve(pl);
+		throw new Error() {
+		};
+//		compilation.pipelineLogic = pl;
+//
+//		pipelineLogicDeferred.resolve(pl);
 	}
-
-/*
-	@Override
-	public void addPipeline(final PipelineMember pl) {
-		compilation.addPipeline(pl);
-	}
-*/
 
 	@Override
 	@NotNull
@@ -72,13 +65,8 @@ public class DefaultCompilationAccess implements ICompilationAccess {
 
 	@Override
 	public List<FunctionMapHook> functionMapHooks() {
-		return null;
+		return compilation.getDeducePhase().functionMapHooks;
 	}
-
-//	@Override
-//	public Pipeline pipelines() {
-//		return compilation.getPipelines();
-//	}
 
 	@Override
 	public Stages getStage() {
