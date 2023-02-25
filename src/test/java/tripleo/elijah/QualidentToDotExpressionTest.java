@@ -6,7 +6,7 @@ import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.Qualident;
 import tripleo.elijah.util.Helpers;
 
-public class QualidentToDotExpresstionTest {
+public class QualidentToDotExpressionTest {
 
     @Test
     public void qualidentToDotExpression2() {
