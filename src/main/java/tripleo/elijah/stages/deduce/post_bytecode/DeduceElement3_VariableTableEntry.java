@@ -86,7 +86,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 
 	@Override
 	public OS_Element getPrincipal() {
-		return principal.getDeduceElement3().getPrincipal();
+		return principal.getResolvedElement();
 	}
 
 	@Override
