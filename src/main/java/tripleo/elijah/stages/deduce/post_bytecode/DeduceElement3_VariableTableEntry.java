@@ -2,8 +2,10 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import org.jdeferred2.DoneCallback;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jdeferred2.Promise;
+import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -291,44 +293,36 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 	}
 
 	public void _action_002_no_resolved_element(final ErrSink errSink, final ProcTableEntry pte, final IdentTableEntry ite, final DeduceTypes2.@NotNull DeduceClient3 dc, final @NotNull DeducePhase phase) {
+		final DeferredObject<Context, Void, Void> d = new DeferredObject<Context, Void, Void>();
+		d.then(context -> {
+			try {
+//				final Context context = resolvedElement.getContext();
+				final LookupResultList     lrl2 = dc.lookupExpression(ite.getIdent(), context);
+				@Nullable final OS_Element best = lrl2.chooseBest(null);
+				assert best != null;
+				ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
+				action_002_1(pte, ite, false, dc, phase);
+			} catch (final ResolveError aResolveError) {
+				errSink.reportDiagnostic(aResolveError);
+				assert false;
+			}
+		});
+
 		final VariableTableEntry backlink = principal;
 
 		final OS_Element resolvedElement = backlink.getResolvedElement();
 		assert resolvedElement != null;
 
 		if (resolvedElement instanceof IdentExpression) {
-			backlink.typePromise().then(new DoneCallback<GenType>() {
-				@Override
-				public void onDone(@NotNull final GenType result) {
-					try {
-						final Context context = result.resolved.getClassOf().getContext();
-						action_002_2(pte, ite, context, dc, phase);
-					} catch (final ResolveError aResolveError) {
-						errSink.reportDiagnostic(aResolveError);
-					}
-				}
+			backlink.typePromise().then(result -> {
+				final Context context = result.resolved.getClassOf().getContext();
+				d.resolve(context);
 			});
 		} else {
-			try {
-				final Context context = resolvedElement.getContext();
-				action_002_2(pte, ite, context, dc, phase);
-			} catch (final ResolveError aResolveError) {
-				errSink.reportDiagnostic(aResolveError);
-				assert false;
-			}
+			final Context context = resolvedElement.getContext();
+			d.resolve(context);
 		}
-	}
 
-	private void action_002_2(final @NotNull ProcTableEntry pte, final @NotNull IdentTableEntry ite, final Context aAContext, final DeduceTypes2.DeduceClient3 dc, final DeducePhase phase) throws ResolveError {
-		final LookupResultList     lrl2 = dc.lookupExpression(ite.getIdent(), aAContext);
-		@Nullable final OS_Element best = lrl2.chooseBest(null);
-		assert best != null;
-		ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
-		action_002_1(pte, ite, dc, phase);
-	}
-
-	private void action_002_1(@NotNull final ProcTableEntry pte, @NotNull final IdentTableEntry ite, final DeduceTypes2.DeduceClient3 dc, final DeducePhase phase) {
-		action_002_1(pte, ite, false, dc, phase);
 	}
 
 	private void action_002_1(@NotNull final ProcTableEntry pte, @NotNull final IdentTableEntry ite, final boolean setClassInvocation, final DeduceTypes2.DeduceClient3 dc, final DeducePhase phase) {
@@ -336,40 +330,59 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 
 		assert resolvedElement != null;
 
-		ClassInvocation ci = null;
+		action_002_1_001(pte, setClassInvocation, dc, phase, resolvedElement);
+	}
 
-		if (pte.getFunctionInvocation() == null) {
-			@NotNull final FunctionInvocation fi;
+	private void action_002_1_001(final @NotNull ProcTableEntry pte,
+	                              final boolean setClassInvocation,
+	                              final DeduceTypes2.DeduceClient3 dc,
+	                              final DeducePhase phase,
+	                              final OS_Element resolvedElement) {
+		if (pte.getFunctionInvocation() != null) return;
 
-			if (resolvedElement instanceof ClassStatement) {
-				// assuming no constructor name or generic parameters based on function syntax
-				ci = new ClassInvocation((ClassStatement) resolvedElement, null);
-				ci = phase.registerClassInvocation(ci);
-				fi = new FunctionInvocation(null, pte, ci, phase.generatePhase);
-			} else if (resolvedElement instanceof final FunctionDef functionDef) {
-				final IInvocation invocation  = dc.getInvocation((GeneratedFunction) generatedFunction);
-				fi = new FunctionInvocation(functionDef, pte, invocation, phase.generatePhase);
-				if (functionDef.getParent() instanceof ClassStatement) {
-					final ClassStatement classStatement = (ClassStatement) fi.getFunction().getParent();
-					ci = new ClassInvocation(classStatement, null); // TODO generics
-					ci = phase.registerClassInvocation(ci);
-				}
-			} else {
-				throw new IllegalStateException();
-			}
+		final Pair<ClassInvocation, FunctionInvocation> p = action_002_1_002_1(pte, dc, phase, resolvedElement);
+		if (p == null)
+			throw new IllegalStateException();
+		final ClassInvocation    ci = p.getLeft();
+		final FunctionInvocation fi = p.getRight();
 
-			if (setClassInvocation) {
-				if (ci != null) {
-					pte.setClassInvocation(ci);
-				} else
-					tripleo.elijah.util.Stupidity.println_err2("542 Null ClassInvocation");
-			}
-
-			pte.setFunctionInvocation(fi);
+		if (setClassInvocation) {
+			if (ci != null) {
+				pte.setClassInvocation(ci);
+			} else
+				tripleo.elijah.util.Stupidity.println_err2("542 Null ClassInvocation");
 		}
 
-//		el   = resolvedElement;
-//		ectx = el.getContext();
+		pte.setFunctionInvocation(fi);
+	}
+
+	private @Nullable Pair<ClassInvocation, FunctionInvocation> action_002_1_002_1(final @NotNull ProcTableEntry pte, final DeduceTypes2.DeduceClient3 dc, final DeducePhase phase, final @NotNull OS_Element resolvedElement) {
+		final Pair<ClassInvocation, FunctionInvocation> p;
+		final FunctionInvocation                        fi;
+		ClassInvocation                                 ci;
+
+		if (resolvedElement instanceof ClassStatement) {
+			// assuming no constructor name or generic parameters based on function syntax
+			ci = new ClassInvocation((ClassStatement) resolvedElement, null);
+			ci = phase.registerClassInvocation(ci);
+			fi = new FunctionInvocation(null, pte, ci, phase.generatePhase);
+			p  = new ImmutablePair<ClassInvocation, FunctionInvocation>(ci, fi);
+		} else if (resolvedElement instanceof final FunctionDef functionDef) {
+			final IInvocation invocation = dc.getInvocation((GeneratedFunction) generatedFunction);
+			fi = new FunctionInvocation(functionDef, pte, invocation, phase.generatePhase);
+			if (functionDef.getParent() instanceof ClassStatement) {
+				final ClassStatement classStatement = (ClassStatement) fi.getFunction().getParent();
+				ci = new ClassInvocation(classStatement, null); // TODO generics
+				ci = phase.registerClassInvocation(ci);
+			} else {
+				ci = null;
+			}
+			p = new ImmutablePair<ClassInvocation, FunctionInvocation>(ci, fi);
+		} else {
+			p = null;
+		}
+
+		return p;
 	}
 
 	public static class ST {
