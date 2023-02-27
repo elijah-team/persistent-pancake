@@ -9,7 +9,6 @@
 package tripleo.elijah.comp;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.stages.deduce.DeducePhase;
@@ -26,8 +25,6 @@ import tripleo.elijah.stages.logging.ElLog;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Created 12/30/20 2:14 AM
@@ -56,36 +53,11 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		subscribeMods(this);
 	}
 
-	public void everythingBeforeGenerate(final List<GeneratedNode> lgc) {
-		resolveMods();
-
-		final List<PL_Run2> run2_work = mods.stream()
-				.map(mod -> new PL_Run2(mod, mod.entryPoints._getMods(), this::getGenerateFunctions, dp, this))
-				.collect(Collectors.toList());
-
-		final List<DeducePhase.GeneratedClasses> lgc2 = run2_work.stream()
-				.map(PL_Run2::run2)
-				.collect(Collectors.toList());
-
-//		List<List<EntryPoint>> entryPoints = mods.stream().map(mod -> mod.entryPoints).collect(Collectors.toList());
-
-//		lgc2.forEach(dp::finish);
-
-		// TODO duplication??
-//		dp.generatedClasses.addAll(lgc);
-
-//		elLogs = dp.deduceLogs;
-	}
-
 	public void subscribeMods(final AccessBus.AB_ModuleListListener l) {
 		__ab.subscribe_moduleList(l);
 	}
 
-	public void resolveMods() {
-//		__ab.resolveModuleList(mods);
-	}
-
-/*
+	/*
 	public void generate__new(List<GeneratedNode> lgc) {
 		final WorkManager wm = new WorkManager();
 		// README use any errSink, they should all be the same
@@ -109,8 +81,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		}
 	}
 
-	@NotNull
-	private GenerateFunctions getGenerateFunctions(final OS_Module mod) {
+	@NotNull GenerateFunctions getGenerateFunctions(final OS_Module mod) {
 		return generatePhase.getGenerateFunctions(mod);
 	}
 
@@ -178,59 +149,9 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		return __ab.gr;
 	}
 
-	static class PL_Run2 {
-		private final OS_Module                              mod;
-		private final List<EntryPoint>                       entryPoints;
-		private final DeducePhase                            dp;
-		private final Function<OS_Module, GenerateFunctions> mapper;
-		private final PipelineLogic                          pipelineLogic;
-
-		public PL_Run2(final OS_Module mod,
-		               final List<EntryPoint> entryPoints,
-					   final Function<OS_Module, GenerateFunctions> mapper,
-					   final DeducePhase dp,
-					   final PipelineLogic pipelineLogic) {
-			this.mod = mod;
-			this.entryPoints = entryPoints;
-			this.dp = dp;
-			this.mapper = mapper;
-			this.pipelineLogic = pipelineLogic;
-		}
-
-		protected DeducePhase.@NotNull GeneratedClasses run2() {
-			final GenerateFunctions gfm = mapper.apply(mod);
-			final DeducePhase deducePhase = pipelineLogic.dp;
-
-			gfm.generateFromEntryPoints(entryPoints, deducePhase);
-
-			final DeducePhase.@NotNull GeneratedClasses lgc = dp.generatedClasses;
-			@NotNull final List<GeneratedNode> resolved_nodes = new ArrayList<GeneratedNode>();
-
-			final Coder coder = new Coder(deducePhase.codeRegistrar);
-
-			lgc.copy().stream().forEach(generatedNode -> coder.codeNodes(mod, resolved_nodes, generatedNode));
-
-			resolved_nodes.forEach(generatedNode -> coder.codeNode(generatedNode, mod));
-
-			dp.deduceModule(mod, lgc, true, pipelineLogic.getVerbosity());
-
-			resolveCheck(lgc);
-
-//		for (final GeneratedNode gn : lgf) {
-//			if (gn instanceof GeneratedFunction) {
-//				GeneratedFunction gf = (GeneratedFunction) gn;
-//				tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
-//				tripleo.elijah.util.Stupidity.println2(gf.name());
-//				tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
-//				GeneratedFunction.printTables(gf);
-//				tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
-//			}
-//		}
-
-			return lgc;
-		}
+	public List<GeneratedNode> generatedClassesCopy() {
+		return dp.generatedClasses.copy();
 	}
-
 }
 
 //

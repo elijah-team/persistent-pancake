@@ -201,11 +201,11 @@ class OStageProcess implements RuntimeProcess {
 
 				// 2. produce effect
 				ab.add(pipelinePlugin::instance);
+				return types.True;
 			} else {
+				// TODO exception? errSink??
 				return types.False;
-			} // TODO exception? errSink??
-
-			return types.True;
+			}
 		}
 	}
 }

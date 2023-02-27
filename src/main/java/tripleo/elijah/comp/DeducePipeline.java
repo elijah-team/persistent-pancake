@@ -10,33 +10,27 @@ package tripleo.elijah.comp;
 
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
+import tripleo.elijah.stages.deduce.DeducePhase;
+import tripleo.elijah.stages.gen_fn.GenerateFunctions;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created 8/21/21 10:10 PM
  */
 public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListListener {
 	private final AccessBus __ab;
-	//	private final Compilation c;
-	List<GeneratedNode> lgc = new ArrayList<GeneratedNode>();
-
-	//
-	//
-	//
 	private PipelineLogic pipelineLogic;
 	private List<OS_Module> ms;
-	//
-	//
-	//
 
 	public DeducePipeline(final @NotNull AccessBus ab) {
-//		c = ab.getCompilation();
-
 		__ab = ab;
 
 		ab.subscribePipelineLogic(new DoneCallback<PipelineLogic>() {
@@ -45,35 +39,35 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 				pipelineLogic = result;
 			}
 		});
-
-//		ab.subscribe_moduleList(this);
 	}
 
 	@Override
 	public void run() {
 		// TODO move this into a latch and wait for pipelineLogic and modules
 
+/*
 		final List<OS_Module> ms1 = __ab.getCompilation().getModules();
-
-//		assert ms1 == ms && ms != null;
-
-//		for (final OS_Module module : ms1) {
-//			pipelineLogic.addModule(module);
-//		}
 
 		if (ms != null) tripleo.elijah.util.Stupidity.println_err2("ms.size() == " + ms.size());
 		else tripleo.elijah.util.Stupidity.println_err2("ms == null");
 		tripleo.elijah.util.Stupidity.println_err2("ms1.size() == " + ms1.size());
+*/
 
-//		final EIT_ModuleList eml = new EIT_ModuleList(ms1);
+		final List<GeneratedNode> lgc = pipelineLogic.generatedClassesCopy();
 
-//		__ab.resolveModuleList(eml);
-		__ab.resolveModuleList(pipelineLogic.mods);
+		resolveMods();
 
-		lgc = pipelineLogic.dp.generatedClasses.copy();
-		pipelineLogic.everythingBeforeGenerate(lgc);
+		final List<PL_Run2> run2_work = pipelineLogic.mods.stream()
+		                                                  .map(mod -> new PL_Run2(mod,
+		                                                    mod.entryPoints._getMods(),
+		                                                    pipelineLogic::getGenerateFunctions,
+		                                                    pipelineLogic))
+		                                                  .collect(Collectors.toList());
 
-//		if (lgc.size() > 0)
+		final List<DeducePhase.GeneratedClasses> lgc2 = run2_work.stream()
+		                                                         .map(PL_Run2::run2)
+		                                                         .collect(Collectors.toList());
+
 		__ab.resolveLgc(lgc);
 	}
 
@@ -82,6 +76,60 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 		final List<OS_Module> mods = aModuleList.getMods();
 
 		ms = mods;
+	}
+
+	public void resolveMods() {
+//		__ab.resolveModuleList(ms);
+	}
+
+	static class PL_Run2 {
+		private final OS_Module                              mod;
+		private final List<EntryPoint>                       entryPoints;
+		private final Function<OS_Module, GenerateFunctions> mapper;
+		private final PipelineLogic                          pipelineLogic;
+
+		public PL_Run2(final OS_Module mod,
+		               final List<EntryPoint> entryPoints,
+		               final Function<OS_Module, GenerateFunctions> mapper,
+		               final PipelineLogic pipelineLogic) {
+			this.mod           = mod;
+			this.entryPoints   = entryPoints;
+			this.mapper        = mapper;
+			this.pipelineLogic = pipelineLogic;
+		}
+
+		protected DeducePhase.@NotNull GeneratedClasses run2() {
+			final GenerateFunctions gfm         = mapper.apply(mod);
+			final DeducePhase       deducePhase = pipelineLogic.dp;
+
+			gfm.generateFromEntryPoints(entryPoints, deducePhase);
+
+			final DeducePhase.@NotNull GeneratedClasses lgc            = deducePhase.generatedClasses;
+			@NotNull final List<GeneratedNode>          resolved_nodes = new ArrayList<GeneratedNode>();
+
+			final Coder coder = new Coder(deducePhase.codeRegistrar);
+
+			lgc.copy().stream().forEach(generatedNode -> coder.codeNodes(mod, resolved_nodes, generatedNode));
+
+			resolved_nodes.forEach(generatedNode -> coder.codeNode(generatedNode, mod));
+
+			deducePhase.deduceModule(mod, lgc, true, pipelineLogic.getVerbosity());
+
+			PipelineLogic.resolveCheck(lgc);
+
+//		for (final GeneratedNode gn : lgf) {
+//			if (gn instanceof GeneratedFunction) {
+//				GeneratedFunction gf = (GeneratedFunction) gn;
+//				tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
+//				tripleo.elijah.util.Stupidity.println2(gf.name());
+//				tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
+//				GeneratedFunction.printTables(gf);
+//				tripleo.elijah.util.Stupidity.println2("----------------------------------------------------------");
+//			}
+//		}
+
+			return lgc;
+		}
 	}
 }
 
