@@ -143,12 +143,12 @@ class OStageProcess implements RuntimeProcess {
 
 			try {
 				ps.run();
+
+				ab.writeLogs();
 			} catch (final Exception ex) {
 //				Logger.getLogger(OStageProcess.class.getName()).log(Level.SEVERE, "Error during Piplines#run from OStageProcess", ex);
 				comp.getErrSink().exception(ex);
 			}
-
-			ab.writeLogs();
 		});
 	}
 
