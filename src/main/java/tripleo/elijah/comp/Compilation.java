@@ -18,7 +18,6 @@ import io.reactivex.rxjava3.subjects.Subject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.functionality.f202.F202;
-import tripleo.elijah.comp.internal.CompilationBus;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.lang.ClassStatement;
@@ -32,6 +31,7 @@ import tripleo.elijah.stages.deduce.FunctionMapHook;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.ut.UT_Controller;
 import tripleo.elijah.world.impl.DefaultLivingRepo;
 
 import java.io.File;
@@ -46,23 +46,23 @@ import java.util.Random;
 
 public abstract class Compilation {
 
-	public final  List<ElLog>          elLogs    = new LinkedList<ElLog>();
-	public final  CompilationConfig    cfg       = new CompilationConfig();
-	//
-	final         MOD                  mod = new MOD(this);
+	public final  List<ElLog>          elLogs = new LinkedList<ElLog>();
+	public final  CompilationConfig    cfg    = new CompilationConfig();
+	public final  CIS                  _cis   = new CIS();
 	private final Pipeline             pipelines;
 	private final int                  _compilationNumber;
 	private final ErrSink              errSink;
-	private final CIS                  _cis      = new CIS();
-	private final USE                  use       = new USE(this);
-	private final IO                   io;
 	//
-	private final DefaultLivingRepo    _repo     = new DefaultLivingRepo();
+	public final  DefaultLivingRepo    _repo  = new DefaultLivingRepo();
+	//
+	final         MOD                  mod    = new MOD(this);
+	private final IO                   io;
+	private final USE                  use    = new USE(this);
 	//
 	//
 	//
 	public        PipelineLogic        pipelineLogic;
-	private       CompilationRunner    __cr;
+	public        CompilationRunner    __cr;
 	private       CompilerInstructions rootCI;
 
 	public Compilation(final ErrSink aErrSink, final IO aIO) {
@@ -81,25 +81,7 @@ public abstract class Compilation {
 	}
 
 	public void feedCmdLine(final @NotNull List<String> args) {
-		if (args.size() == 0) {
-			System.out.println("Usage: eljc [--showtree] [-sE|O] <directory or .ez file names>");
-			return; // ab
-		}
-
-		try {
-			final OptionsProcessor             op  = new ApacheOptionsProcessor();
-			final CompilerInstructionsObserver cio = new CompilerInstructionsObserver(this, op, _cis);
-			final CompilationBus               cb  = new CompilationBus(this);
-
-			final String[] args2;
-			args2 = op.process(this, args, cb);
-
-			__cr = new CompilationRunner(this, _cis, cb);
-			__cr.doFindCIs(args2, cb);
-		} catch (final Exception e) {
-			errSink.exception(e);
-			throw new RuntimeException(e);
-		}
+		feedCmdLine(args, new DefaultCompilerController());
 	}
 
 	public String getProjectName() {
@@ -255,11 +237,6 @@ public abstract class Compilation {
 		return mod.size();
 	}
 
-	@Deprecated
-	public @NotNull List<OS_Module> getModules() {
-		return mod.modules();
-	}
-
 	@NotNull
 	public abstract EOT_OutputTree getOutputTree();
 
@@ -271,6 +248,22 @@ public abstract class Compilation {
 
 	public boolean isPackage(final String aPackageName) {
 		return _repo.isPackage(aPackageName);
+	}
+
+	public void feedCmdLine(final List<String> args, final CompilerController ctl) {
+		if (args.size() == 0) {
+			ctl.printUsage();
+			return; // ab
+		}
+
+		if (ctl instanceof DefaultCompilerController) {
+			((DefaultCompilerController) ctl)._set(this, args);
+		} else if (ctl instanceof UT_Controller uctl) {
+			uctl._set(this, args);
+		}
+
+		ctl.processOptions();
+		ctl.runner();
 	}
 
 	static class MOD {
