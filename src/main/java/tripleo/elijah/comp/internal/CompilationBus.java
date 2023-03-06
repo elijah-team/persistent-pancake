@@ -22,4 +22,9 @@ public class CompilationBus implements ICompilationBus {
 	public void inst(final @NotNull ILazyCompilerInstructions aLazyCompilerInstructions) {
 		System.out.println("** [ci] " + aLazyCompilerInstructions.get());
 	}
+
+	public void add(final CB_Action action) {
+		action.execute();
+	}
+
 }
