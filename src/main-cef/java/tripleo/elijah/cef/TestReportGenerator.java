@@ -1,4 +1,4 @@
-package me.friwi.jcefsampleapp;
+package tripleo.elijah.cef;
 
 import me.friwi.jcefmaven.EnumPlatform;
 import me.friwi.jcefmaven.UnsupportedPlatformException;

@@ -2,7 +2,7 @@
 // reserved. Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-package me.friwi.jcefsampleapp;
+package tripleo.elijah.cef;
 
 import me.friwi.jcefmaven.CefAppBuilder;
 import me.friwi.jcefmaven.CefInitializationException;
@@ -27,18 +27,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
-/**
- * This is a simple example application using JCEF.
- * It displays a JFrame with a JTextField at its top and a CefBrowser in its
- * center. The JTextField is used to enter and assign an URL to the browser UI.
- * No additional handlers or callbacks are used in this example.
- *
- * The number of used JCEF classes is reduced (nearly) to its minimum and should
- * assist you to get familiar with JCEF.
- *
- * For a more feature complete example have also a look onto the example code
- * within the package "tests.detailed".
- */
 public class MainFrame extends JFrame {
     private static final long serialVersionUID = -5570653778104813836L;
     private final JTextField address_;
@@ -196,12 +184,9 @@ public class MainFrame extends JFrame {
 
     public static void main(final String[] args) throws UnsupportedPlatformException, CefInitializationException, IOException, InterruptedException {
         //Print some info for the test reports. You can ignore this.
-        TestReportGenerator.print(args);
+//        TestReportGenerator.print(args);
         
-        // The simple example application is created as anonymous class and points
-        // to Google as the very first loaded page. Windowed rendering mode is used by
-        // default. If you want to test OSR mode set |useOsr| to true and recompile.
         final boolean useOsr = false;
-        new MainFrame("http://www.google.com", useOsr, false, args);
+        new MainFrame("http://localhost:9898/", useOsr, false, args);
     }
 }
