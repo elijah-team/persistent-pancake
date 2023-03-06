@@ -8,7 +8,6 @@
  */
 package tripleo.elijah.comp;
 
-import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.lang.OS_Module;
@@ -33,12 +32,7 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 	public DeducePipeline(final @NotNull AccessBus ab) {
 		__ab = ab;
 
-		ab.subscribePipelineLogic(new DoneCallback<PipelineLogic>() {
-			@Override
-			public void onDone(final PipelineLogic result) {
-				pipelineLogic = result;
-			}
-		});
+		ab.subscribePipelineLogic(result -> pipelineLogic = result);
 	}
 
 	@Override
@@ -104,18 +98,18 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 
 			gfm.generateFromEntryPoints(entryPoints, deducePhase);
 
-			final DeducePhase.@NotNull GeneratedClasses lgc            = deducePhase.generatedClasses;
-			@NotNull final List<GeneratedNode>          resolved_nodes = new ArrayList<GeneratedNode>();
+			final List<GeneratedNode>          lgc            = pipelineLogic.generatedClassesCopy();
+			@NotNull final List<GeneratedNode> resolved_nodes = new ArrayList<GeneratedNode>();
 
 			final Coder coder = new Coder(deducePhase.codeRegistrar);
 
-			lgc.copy().stream().forEach(generatedNode -> coder.codeNodes(mod, resolved_nodes, generatedNode));
+			lgc.stream().forEach(generatedNode -> coder.codeNodes(mod, resolved_nodes, generatedNode));
 
 			resolved_nodes.forEach(generatedNode -> coder.codeNode(generatedNode, mod));
 
 			deducePhase.deduceModule(mod, lgc, true, pipelineLogic.getVerbosity());
 
-			PipelineLogic.resolveCheck(lgc);
+//			PipelineLogic.resolveCheck(lgc);
 
 //		for (final GeneratedNode gn : lgf) {
 //			if (gn instanceof GeneratedFunction) {
@@ -128,7 +122,7 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 //			}
 //		}
 
-			return lgc;
+			return null;//lgc;
 		}
 	}
 }
