@@ -1,9 +1,15 @@
 package tripleo.elijah.world.impl;
 
+import tripleo.elijah.entrypoints.MainClassEntryPoint;
 import tripleo.elijah.lang.BaseFunctionDef;
 import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.lang.Qualident;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.world.i.LivingClass;
 import tripleo.elijah.world.i.LivingFunction;
 import tripleo.elijah.world.i.LivingPackage;
@@ -62,5 +68,60 @@ public class DefaultLivingRepo implements LivingRepo {
 	@Override
 	public OS_Package getPackage(final String aPackageName) {
 		return _packages.get(aPackageName);
+	}
+
+	@Override
+	public DefaultLivingFunction addFunction(final BaseGeneratedFunction aFunction, final Add addFlag) {
+		switch (addFlag) {
+		case NONE -> {
+			aFunction.setCode(nextFunctionCode());
+		}
+		case MAIN_FUNCTION -> {
+			if (aFunction.getFD() instanceof FunctionDef &&
+			  MainClassEntryPoint.is_main_function_with_no_args((FunctionDef) aFunction.getFD())) {
+				aFunction.setCode(1000);
+				//compilation.notifyFunction(code, aFunction);
+			} else {
+				throw new IllegalArgumentException("not a main function");
+			}
+		}
+		case MAIN_CLASS -> {
+			throw new IllegalArgumentException("not a class");
+		}
+		}
+
+		final DefaultLivingFunction living = new DefaultLivingFunction(aFunction);
+		aFunction._living = living;
+
+		return living;
+	}
+
+	@Override
+	public DefaultLivingClass addClass(final GeneratedClass aClass, final Add addFlag) {
+		switch (addFlag) {
+		case NONE -> {
+			aClass.setCode(nextClassCode());
+		}
+		case MAIN_FUNCTION -> {
+			throw new IllegalArgumentException("not a function");
+		}
+		case MAIN_CLASS -> {
+			final boolean isMainClass = MainClassEntryPoint.isMainClass(aClass.getKlass());
+			if (!isMainClass) {
+				throw new IllegalArgumentException("not a main class");
+			}
+			aClass.setCode(100);
+		}
+		}
+
+		final DefaultLivingClass living = new DefaultLivingClass(aClass);
+		aClass._living = living;
+
+		return living;
+	}
+
+	@Override
+	public void addNamespace(final GeneratedNamespace aNamespace, final Add aNone) {
+		throw new NotImplementedException();
 	}
 }
