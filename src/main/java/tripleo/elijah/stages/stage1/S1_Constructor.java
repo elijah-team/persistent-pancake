@@ -68,11 +68,8 @@ public class S1_Constructor {
 	}
 
 	public void parseArgs() {
-		final ConstructorDef     aConstructorDef     = source;
-		final FunctionInvocation aFunctionInvocation = this.invocation;
-
-		final List<FormalArgListItem> fali_args = aConstructorDef.fal().falis;
-		final List<TypeTableEntry>    fi_args   = aFunctionInvocation.getArgs();
+		final List<FormalArgListItem> fali_args = source.fal().falis;
+		final List<TypeTableEntry>    fi_args   = invocation.getArgs();
 
 		for (int i = 0; i < fali_args.size(); i++) {
 			final FormalArgListItem fali = fali_args.get(i);
