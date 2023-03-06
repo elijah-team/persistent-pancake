@@ -43,6 +43,7 @@ import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Holder;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.Stupidity;
+import tripleo.elijah.world.i.LivingFunction;
 import tripleo.util.range.Range;
 
 import java.util.ArrayList;
@@ -57,23 +58,24 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
  * Created 9/10/20 2:57 PM
  */
 public abstract class BaseGeneratedFunction extends AbstractDependencyTracker implements GeneratedNode, DeduceTypes2.ExpectationBase, IDependencyReferent {
-	public final @NotNull List<Instruction>                          instructionsList  = new ArrayList<Instruction>();
-	public final @NotNull List<Integer>                              deferred_calls    = new ArrayList<Integer>();
-	public final @NotNull List<ConstantTableEntry>                   cte_list          = new ArrayList<ConstantTableEntry>();
-	public final @NotNull List<VariableTableEntry>                   vte_list          = new ArrayList<VariableTableEntry>();
-	public final @NotNull List<ProcTableEntry>                       prte_list         = new ArrayList<ProcTableEntry>();
-	public final @NotNull List<TypeTableEntry>                       tte_list          = new ArrayList<TypeTableEntry>();
-	public final @NotNull List<IdentTableEntry>                      idte_list         = new ArrayList<IdentTableEntry>();
-	final                 Map<OS_Element, DeduceElement>             elements          = new HashMap<OS_Element, DeduceElement>();
-	private final         List<Label>                                labelList         = new ArrayList<Label>();
-	private final         Dependency                                 dependency        = new Dependency(this);
-	public                boolean                                    deducedAlready;
-	public                FunctionInvocation                         fi;
-	private               int                                        code              = 0;
-	private               int                                        instruction_index = 0;
-	private               int                                        label_count       = 0;
-	private               int                                        _nextTemp         = 0;
-	private       GeneratedContainerNC                       parent;
+	public final @NotNull List<Instruction>              instructionsList  = new ArrayList<Instruction>();
+	public final @NotNull List<Integer>                  deferred_calls    = new ArrayList<Integer>();
+	public final @NotNull List<ConstantTableEntry>       cte_list          = new ArrayList<ConstantTableEntry>();
+	public final @NotNull List<VariableTableEntry>       vte_list          = new ArrayList<VariableTableEntry>();
+	public final @NotNull List<ProcTableEntry>           prte_list         = new ArrayList<ProcTableEntry>();
+	public final @NotNull List<TypeTableEntry>           tte_list          = new ArrayList<TypeTableEntry>();
+	public final @NotNull List<IdentTableEntry>          idte_list         = new ArrayList<IdentTableEntry>();
+	final                 Map<OS_Element, DeduceElement> elements          = new HashMap<OS_Element, DeduceElement>();
+	private final         List<Label>                    labelList         = new ArrayList<Label>();
+	private final         Dependency                     dependency        = new Dependency(this);
+	public                boolean                        deducedAlready;
+	public                FunctionInvocation             fi;
+	public                LivingFunction                 _living;
+	private               int                            code              = 0;
+	private               int                            instruction_index = 0;
+	private               int                            label_count       = 0;
+	private               int                            _nextTemp         = 0;
+	private               GeneratedContainerNC           parent;
 
 	//
 	// region Ident-IA
@@ -316,8 +318,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 				throw new NotImplementedException();
 			case PROCEDURE_CALL: {
 				final ProcedureCallExpression pce = (ProcedureCallExpression) expression;
-				if (pce.getLeft() instanceof IdentExpression) {
-					final IdentExpression      identExpression = (IdentExpression) pce.getLeft();
+				if (pce.getLeft() instanceof final IdentExpression identExpression) {
 					final int                  idte_index      = addIdentTableEntry(identExpression, identExpression.getContext());
 					final IdentIA              identIA         = new IdentIA(idte_index, this);
 					final List<TypeTableEntry> args_types      = generateFunctions.get_args_types(pce.getArgs(), this, context);

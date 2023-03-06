@@ -20,6 +20,7 @@ import tripleo.elijah.stages.gen_generic.CodeGenerator;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.world.i.LivingClass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 	private final OS_Module                                 module;
 	private final ClassStatement                            klass;
 	public        ClassInvocation                           ci;
+	public        LivingClass                               _living;
 	private       boolean                                   resolve_var_table_entries_already = false;
 
 	public GeneratedClass(final ClassStatement klass, final OS_Module module) {
@@ -127,8 +129,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 			if (varTableEntry.potentialTypes.size() == 0 && (varTableEntry.varType == null || varTableEntry.typeName.isNull())) {
 				final TypeName tn = varTableEntry.typeName;
 				if (tn != null) {
-					if (tn instanceof NormalTypeName) {
-						final NormalTypeName tn2 = (NormalTypeName) tn;
+					if (tn instanceof final NormalTypeName tn2) {
 						if (!tn.isNull()) {
 							final LookupResultList lrl  = tn.getContext().lookup(tn2.getName());
 							OS_Element             best = lrl.chooseBest(null);
