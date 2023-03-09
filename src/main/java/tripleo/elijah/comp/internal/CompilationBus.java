@@ -5,6 +5,7 @@ import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.CompilationChange;
 import tripleo.elijah.comp.ICompilationBus;
 import tripleo.elijah.comp.ILazyCompilerInstructions;
+import tripleo.elijah.util.NotImplementedException;
 
 public class CompilationBus implements ICompilationBus {
 	private final Compilation c;
@@ -25,6 +26,11 @@ public class CompilationBus implements ICompilationBus {
 
 	public void add(final CB_Action action) {
 		action.execute();
+	}
+
+	@Override
+	public void add(final CB_Process aProcess) {
+		throw new NotImplementedException();
 	}
 
 }

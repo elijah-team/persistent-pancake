@@ -17,8 +17,8 @@ public class RoutingServer {
 	private static final HttpHandler ROUTES = new RoutingHandler()
 	  .get("/", new CompilationsListHandler(utr))
 	  .get("/start/*", new CompilationsStartHandler(utr))
-	  .post("/myRoute", RoutingHandlers.constantStringHandler("POST - My Route"))
-	  .get("/myOtherRoute", RoutingHandlers.constantStringHandler("GET - My Other Route"))
+	  .get("/do/*", new DoContinuationsHandler(utr))
+	  .post("/myOtherRoute", RoutingHandlers.constantStringHandler("GET - My Other Route"))
 	  // Wildcards and RoutingHandler had some bugs before version 1.4.8.Final
 	  .get("/myRoutePrefix*", RoutingHandlers.constantStringHandler("GET - My Prefixed Route"))
 	  // Pass a handler as a method reference.

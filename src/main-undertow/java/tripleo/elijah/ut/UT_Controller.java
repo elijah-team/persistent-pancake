@@ -7,6 +7,8 @@ import tripleo.elijah.comp.CompilerController;
 import tripleo.elijah.comp.CompilerInstructionsObserver;
 import tripleo.elijah.comp.ICompilationBus;
 import tripleo.elijah.comp.OptionsProcessor;
+import tripleo.elijah.comp.i.IProgressSink;
+import tripleo.elijah.comp.i.ProgressSinkComponent;
 
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class UT_Controller implements CompilerController {
 	ICompilationBus cb;
 	private final UT_Root     utr;
 	private       Compilation c;
+
 	public UT_Controller(final UT_Root aUtr) {
 		utr = aUtr;
 	}
@@ -29,7 +32,7 @@ public class UT_Controller implements CompilerController {
 	public void processOptions() {
 		final OptionsProcessor             op  = new ApacheOptionsProcessor();
 		final CompilerInstructionsObserver cio = new CompilerInstructionsObserver(c, op, c._cis);
-		cb = new UT_CompilationBus(c);
+		cb = new UT_CompilationBus(c, this);
 
 		try {
 			args2 = op.process(c, args, cb);
@@ -42,7 +45,15 @@ public class UT_Controller implements CompilerController {
 	@Override
 	public void runner() {
 		try {
-			c.__cr = new CompilationRunner(c, c._cis, cb);
+			c.__cr = new CompilationRunner(c, c._cis, cb, new IProgressSink() {
+				@Override
+				public void note(final int code, final ProgressSinkComponent component, final int type, final Object[] params) {
+					if (component.isPrintErr(code, type)) {
+						final String s = component.printErr(code, type, params);
+						System.err.println(s);
+					}
+				}
+			});
 			c.__cr.doFindCIs(args2, cb);
 		} catch (final Exception e) {
 			c.getErrSink().exception(e);
