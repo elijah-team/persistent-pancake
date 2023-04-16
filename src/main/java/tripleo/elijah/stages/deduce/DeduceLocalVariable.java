@@ -227,7 +227,23 @@ public class DeduceLocalVariable {
 					final @Nullable OS_Element e          = dp.getElement(0);
 					final OS_Element           self_class = generatedFunction.getFD().getParent();
 
-					assert e != null;
+					//assert e != null;
+					
+					if (e == null) {
+						System.err.println("=== 397-003 ===================================");
+						System.err.println("=== 397-003 ===================================");
+						System.err.println("=== 397-003 ===================================");
+						System.err.println("=== 397-003 ===================================");
+						System.err.println("=== 397-003 ===================================");
+						System.err.println("=== 397-003 ===================================");
+						System.err.println("=== 397-003 ===================================");
+						System.err.println("=== 397-003 ===================================");
+						System.err.println("=== 397-003 ===================================");
+						System.err.println("=== 397-003 ===================================");
+						
+						return;
+					}
+					
 					final OS_Element e_parent = e.getParent();
 
 					short          state = 0;

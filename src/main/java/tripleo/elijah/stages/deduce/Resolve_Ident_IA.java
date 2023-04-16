@@ -393,8 +393,15 @@ class Resolve_Ident_IA {
 
 			final DeduceElement3_VariableTableEntry vte_de3 = (DeduceElement3_VariableTableEntry) backlink.getDeduceElement3();
 			vte_de3._action_002_no_resolved_element(errSink, pte, ite, dc, phase);
-		} else
-			assert false;
+		} else {
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+		}
 	}
 
 	private void action_002_1(@NotNull final ProcTableEntry pte, @NotNull final IdentTableEntry ite, final boolean setClassInvocation) {

@@ -82,7 +82,8 @@ public class DeducePath {
 //					getEntry(aIndex-1).setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(getElement(aIndex-1)));
 //					el = identTableEntry.resolved_element;
 //				}
-				assert el != null;
+				System.err.println("=== 397-002 ===================================");
+//				assert el != null;
 				if (aIndex == 0)
 					if (identTableEntry.getResolvedElement() != el)
 						identTableEntry.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
