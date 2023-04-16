@@ -62,7 +62,16 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 		                                                         .map(PL_Run2::run2)
 		                                                         .collect(Collectors.toList());
 
-		__ab.resolveLgc(lgc);
+		final ArrayList<GeneratedNode> lgc3 = new ArrayList<>();
+
+		// TODO how to do this with streams
+		for (DeducePhase.GeneratedClasses generatedClasses : lgc2) {
+			for (GeneratedNode generatedClass : generatedClasses) {
+				lgc3.add(generatedClass);
+			}
+		}
+
+		__ab.resolveLgc(lgc3);
 	}
 
 	@Override

@@ -45,6 +45,8 @@ public class GeneratePipeline implements PipelineMember/*, AccessBus.AB_LgcListe
 		Preconditions.checkNotNull(pipelineLogic);
 		Preconditions.checkNotNull(lgc);
 
+		assert lgc.size() > 0;
+
 		/*pipelineLogic.*/
 		generate(lgc, errSink, pipelineLogic.mods, pipelineLogic.getVerbosity());
 	}
