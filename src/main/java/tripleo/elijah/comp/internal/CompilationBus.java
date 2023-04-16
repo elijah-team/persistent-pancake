@@ -30,7 +30,10 @@ public class CompilationBus implements ICompilationBus {
 
 	@Override
 	public void add(final CB_Process aProcess) {
-		throw new NotImplementedException();
+//		throw new NotImplementedException();
+
+		aProcess.steps().stream()
+		  .forEach(action -> {action.execute();});
 	}
 
 }
