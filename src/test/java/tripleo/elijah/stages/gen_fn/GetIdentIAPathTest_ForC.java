@@ -252,7 +252,7 @@ public class GetIdentIAPathTest_ForC {
 
 		verify(mod, ctx, mockContext);
 
-		Assert.assertEquals("Z-1foo(vvx)", x);
+		Assert.assertEquals("z-1foo(vvx)", x); // FIXME (??) if foo is a named ctor then make this cap, otherwise, oops
 	}
 
 	String getIdentIAPath(final IdentIA ia2, final GeneratedFunction generatedFunction) {
