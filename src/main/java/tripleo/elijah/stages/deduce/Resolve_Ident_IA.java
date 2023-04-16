@@ -382,7 +382,8 @@ class Resolve_Ident_IA {
 
 	private void action_002_no_resolved_element(final @NotNull ProcTableEntry pte, final @NotNull IdentTableEntry ite) {
 		final InstructionArgument _backlink = ite.getBacklink();
-		if (_backlink instanceof final @NotNull ProcIA backlink_) {
+		if (_backlink instanceof ProcIA) {
+			final @NotNull ProcIA         backlink_ = (ProcIA) _backlink;
 			@NotNull final ProcTableEntry backlink  = generatedFunction.getProcTableEntry(backlink_.getIndex());
 
 			final DeduceElement3_ProcTableEntry pte_de3 = (DeduceElement3_ProcTableEntry) backlink.getDeduceElement3(this.dc._dt2(), this.generatedFunction);
