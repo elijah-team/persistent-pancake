@@ -122,7 +122,7 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 //			}
 //		}
 
-			return null;//lgc;
+			return deducePhase.generatedClasses; // NOTE .clone/immutable, etc
 		}
 	}
 }
