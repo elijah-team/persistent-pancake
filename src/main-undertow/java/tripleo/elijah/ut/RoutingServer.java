@@ -1,6 +1,5 @@
 package tripleo.elijah.ut;
 
-import com.stubbornjava.examples.undertow.routing.ConstantStringHandler;
 import io.undertow.Undertow;
 import io.undertow.UndertowOptions;
 import io.undertow.server.HttpHandler;
@@ -17,10 +16,10 @@ public class RoutingServer {
 	private static final HttpHandler ROUTES = new RoutingHandler()
 	  .get("/", new CompilationsListHandler(utr))
 	  .get("/start/*", new CompilationsStartHandler(utr))
-	  .post("/myRoute", RoutingHandlers.constantStringHandler("POST - My Route"))
-	  .get("/myOtherRoute", RoutingHandlers.constantStringHandler("GET - My Other Route"))
+//	  .post("/myRoute", RoutingHandlers.constantStringHandler("POST - My Route"))
+//	  .get("/myOtherRoute", RoutingHandlers.constantStringHandler("GET - My Other Route"))
 	  // Wildcards and RoutingHandler had some bugs before version 1.4.8.Final
-	  .get("/myRoutePrefix*", RoutingHandlers.constantStringHandler("GET - My Prefixed Route"))
+//	  .get("/myRoutePrefix*", RoutingHandlers.constantStringHandler("GET - My Prefixed Route"))
 	  // Pass a handler as a method reference.
 	  .setFallbackHandler(RoutingHandlers::notFoundHandler);
 
@@ -86,9 +85,9 @@ public class RoutingServer {
 		 * them better organized and reduce some boilerplate. This will be shown
 		 * in future examples.
 		 */
-		public static HttpHandler constantStringHandler(final String value) {
-			return new ConstantStringHandler(value);
-		}
+//		public static HttpHandler constantStringHandler(final String value) {
+//			return new ConstantStringHandler(value);
+//		}
 		// {{end:handler}}
 
 		// {{start:anonymous}}
