@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,7 +48,7 @@ public class CompilationsStartHandler implements HttpHandler {
 		exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
 
 		final StringBuilder sb    = new StringBuilder();
-		final int           num   = Integer.valueOf(exchange.getRequestPath().substring(7));
+		final int           num   = Integer.valueOf(exchange.getRequestPath().substring(7)) - 1;
 		final List<Path>    paths = utr.paths;
 		final Path          p     = paths.get(num);
 		final Compilation   c     = CompilationFactory.mkCompilation(new StdErrSink(), new IO());
@@ -60,13 +61,19 @@ public class CompilationsStartHandler implements HttpHandler {
 
 		c.feedCmdLine(List_of(p.toString()), utc);
 
+		final ICompilationBus.CB_Process l = ((UT_CompilationBus) (((UT_Controller) utc).cb)).getLast();
+
 		sb.append("<html><body>\n");
+
+//		sb.append("<h3>"+l.name()+"</h3>\n");
 
 		final List<ICompilationBus.CB_Action> actions = ((UT_Controller) utc).actions();
 
-		for (int i = 0; i < paths.size(); i++) {
-			final Path x = paths.get(i);
-			sb.append("<a href=\"/start/" + i + "\">" + x + "</a><br>\n");
+		for (final ICompilationBus.CB_Action step : l.steps()) {
+			final String f = "" + new Random().nextInt();
+			sb.append("<a href=\"/do/" + f + "\">" + step.name() + "</a><br>");
+
+			utr.dcs(f, step);
 		}
 
 		sb.append("</body></html>\n");

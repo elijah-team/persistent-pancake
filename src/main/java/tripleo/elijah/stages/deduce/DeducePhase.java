@@ -640,7 +640,8 @@ public class DeducePhase {
 	}
 
 	public static class GeneratedClasses implements Iterable<GeneratedNode> {
-		@NotNull List<GeneratedNode> generatedClasses = new ArrayList<GeneratedNode>();
+		@NotNull
+		public List<GeneratedNode> generatedClasses = new ArrayList<GeneratedNode>();
 
 		public void add(final GeneratedNode aClass) {
 			generatedClasses.add(aClass);

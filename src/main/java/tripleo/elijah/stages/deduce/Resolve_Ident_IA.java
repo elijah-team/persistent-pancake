@@ -382,7 +382,8 @@ class Resolve_Ident_IA {
 
 	private void action_002_no_resolved_element(final @NotNull ProcTableEntry pte, final @NotNull IdentTableEntry ite) {
 		final InstructionArgument _backlink = ite.getBacklink();
-		if (_backlink instanceof final @NotNull ProcIA backlink_) {
+		if (_backlink instanceof ProcIA) {
+			final @NotNull ProcIA         backlink_ = (ProcIA) _backlink;
 			@NotNull final ProcTableEntry backlink  = generatedFunction.getProcTableEntry(backlink_.getIndex());
 
 			final DeduceElement3_ProcTableEntry pte_de3 = (DeduceElement3_ProcTableEntry) backlink.getDeduceElement3(this.dc._dt2(), this.generatedFunction);
@@ -392,8 +393,15 @@ class Resolve_Ident_IA {
 
 			final DeduceElement3_VariableTableEntry vte_de3 = (DeduceElement3_VariableTableEntry) backlink.getDeduceElement3();
 			vte_de3._action_002_no_resolved_element(errSink, pte, ite, dc, phase);
-		} else
-			assert false;
+		} else {
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+			System.err.println("=== 397 ===================================");
+		}
 	}
 
 	private void action_002_1(@NotNull final ProcTableEntry pte, @NotNull final IdentTableEntry ite, final boolean setClassInvocation) {

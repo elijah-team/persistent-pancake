@@ -10,12 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UT_CompilationBus implements ICompilationBus {
-	private final Compilation c;
+	private final Compilation   c;
+	private final UT_Controller utc;
 	List<CB_Action> actions = new ArrayList<>();
+	private       CB_Process       last;
+	private final List<CB_Process> p = new ArrayList<>();
 
 
-	public UT_CompilationBus(final Compilation aC) {
-		c = (aC);
+	public UT_CompilationBus(final Compilation aC, final UT_Controller aUTController) {
+		c   = (aC);
+		utc = aUTController;
+		//utc.cb = this;
 	}
 
 	@Override
@@ -25,7 +30,7 @@ public class UT_CompilationBus implements ICompilationBus {
 
 	@Override
 	public void inst(final @NotNull ILazyCompilerInstructions aLazyCompilerInstructions) {
-		System.out.println("** [ci] " + aLazyCompilerInstructions.get());
+		System.out.println("** [ci] " + aLazyCompilerInstructions.get().getFilename());
 	}
 
 	public void add(final CB_Action action) {
@@ -33,4 +38,13 @@ public class UT_CompilationBus implements ICompilationBus {
 		actions.add(action);
 	}
 
+	@Override
+	public void add(final CB_Process aProcess) {
+		last = aProcess;
+		p.add(last);
+	}
+
+	public CB_Process getLast() {
+		return last;
+	}
 }

@@ -89,7 +89,7 @@ public class DeduceTypesTest2 {
 
 	private boolean genTypeEquals(final GenType a, final GenType b) {
 		// TODO hack
-		return a.typeName.equals(b.typeName) &&
-				a.resolved.equals(b.resolved);
+		return a.typeName.isEqual(b.typeName) &&
+				a.resolved.isEqual(b.resolved);
 	}
 }
