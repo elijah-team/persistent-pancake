@@ -252,8 +252,8 @@
 
     <repositories>
         <repository>
-            <id>gitlab-maven</id>
-            <url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+            <id>gitlab-maven-elijah-team</id>
+            <url>https://gitlab.com/api/v4/projects/10309690/packages/maven</url>
         </repository>
         <repository>
             <id>gitlab-maven-buffers</id>

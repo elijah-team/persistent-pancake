@@ -12,7 +12,6 @@
         <option value="$PROJECT_DIR$/idea-mod-compiler-impl/pom.xml" />
         <option value="$PROJECT_DIR$/idea-mod-deduce/pom.xml" />
         <option value="$PROJECT_DIR$/idea-mod-generate/pom.xml" />
-        <option value="$PROJECT_DIR$/pom.xml" />
       </set>
     </option>
   </component>

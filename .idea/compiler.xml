@@ -9,7 +9,7 @@
         <module name="elijah-v1-fluffy-umbrella" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="16">
       <module name="fluffy-umbrella" target="1.8" />
       <module name="idea-mod-compiler-impl" target="17" />
       <module name="idea-mod-deduce" target="17" />
