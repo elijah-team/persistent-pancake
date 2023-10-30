@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.nextgen.query.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
+import tripleo.elijah.util.Operation;
 
 import java.io.File;
 import java.io.FileNotFoundException;

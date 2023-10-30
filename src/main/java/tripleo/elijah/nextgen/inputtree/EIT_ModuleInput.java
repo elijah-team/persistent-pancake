@@ -7,6 +7,7 @@ import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.comp.PipelineLogic;
+import tripleo.elijah.lang.ModuleItem;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_generic.GenerateFiles;
@@ -16,23 +17,54 @@ import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.work.WorkManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class EIT_ModuleInput implements EIT_Input {
-    private final OS_Module module;
-    private final Compilation c;
+	private final Compilation c;
+	private final OS_Module   module;
 
-    @Contract(pure = true)
-    public EIT_ModuleInput(final OS_Module module, final Compilation c) {
-        this.module = module;
-        this.c      = c;
-    }
+	@Contract(pure = true)
+	public EIT_ModuleInput(final OS_Module aModule, final Compilation aC) {
+		module = aModule;
+		c = aC;
+	}
 
-    @Override
-    public EIT_InputType getType() {
-        return EIT_InputType.ELIJAH_SOURCE;
-    }
+//	public @NotNull SM_Module computeSourceModel() {
+//		final SM_Module sm = new SM_Module() {
+//			@Override
+//			public @NotNull List<SM_ModuleItem> items() {
+//				final List<SM_ModuleItem> items = new ArrayList<>();
+//				for (final ModuleItem item : module.getItems()) {
+//					items.add(new SM_ModuleItem() {
+//						@Override
+//						public ModuleItem _carrier() {
+//							return item;
+//						}
+//					});
+//				}
+//				return items;
+//			}
+//		};
+//		return sm;
+//	}
+
+	@Override
+	public @NotNull EIT_InputType getType() {
+		return EIT_InputType.ELIJAH_SOURCE;
+	}
+
+	@NotNull
+	private String langOfModule() {
+		final LibraryStatementPart lsp = module.getLsp();
+		final CompilerInstructions ci = lsp.getInstructions();
+		final String lang = ci.genLang() == null ? Compilation.CompilationAlways.defaultPrelude() : ci.genLang();
+		// DEFAULT(compiler-default), SPECIFIED(gen-clause: codePoint), INHERITED(cp) //
+		// CodePoint??
+		return lang;
+	}
+
 
     public void doGenerate(final List<GeneratedNode> nodes,
                            final ErrSink aErrSink,
@@ -57,12 +89,5 @@ public class EIT_ModuleInput implements EIT_Input {
         resultConsumer.accept(gr2);
     }
 
-    @NotNull
-    private String langOfModule() {
-        final LibraryStatementPart lsp  = module.getLsp();
-        final CompilerInstructions ci   = lsp.getInstructions();
-        final String               lang = ci.genLang() == null ? Compilation.CompilationAlways.defaultPrelude() : ci.genLang();
-        // DEFAULT(compiler-default), SPECIFIED(gen-clause: codePoint), INHERITED(cp) // CodePoint??
-        return lang;
-    }
+
 }

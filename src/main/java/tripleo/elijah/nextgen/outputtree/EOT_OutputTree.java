@@ -1,25 +1,66 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package tripleo.elijah.nextgen.outputtree;
 
-import tripleo.elijah.nextgen.outputstatement.EG_Statement;
+import com.google.common.collect.*;
+import org.jetbrains.annotations.*;
+import tripleo.elijah.nextgen.outputstatement.*;
 
 import java.nio.file.Path;
-import java.util.List;
+import java.util.*;
 
 /**
- * @author olu
+ * @author tripleo
  */
 public class EOT_OutputTree {
-	public List<EOT_OutputFile> list;
+	private final List<EOT_OutputFile> list = new ArrayList<>();
 
-	public void set(final List<EOT_OutputFile> aLeof) {
-		list = aLeof;
+	public void add(final @NotNull EOT_OutputFile aOff) {
+		// 05/18 System.err.printf("[add] %s %s%n", aOff.getFilename(),
+		// aOff.getStatementSequence().getText());
+
+		list.add(aOff);
 	}
 
-	public void _putSeq(final String aKey, final Path aPath, final EG_Statement aStatement) {
-		System.err.printf("[_putSeq] %s %s %s%n", aKey, aPath, aStatement);
+	public void addAll(final @NotNull List<EOT_OutputFile> aLeof) {
+		list.addAll(aLeof);
+	}
+
+	public @NotNull List<EOT_OutputFile> getList() {
+		return list;
+	}
+
+	public void recompute() {
+		// TODO big wtf
+		final Multimap<String, EOT_OutputFile> mmfn = ArrayListMultimap.create();
+		for (EOT_OutputFile outputFile : list) {
+			mmfn.put(outputFile.getFilename(), outputFile);
+		}
+
+		for (Map.Entry<String, Collection<EOT_OutputFile>> sto : mmfn.asMap().entrySet()) {
+			var tt = sto.getValue();
+			if (tt.size() > 1) {
+				list.removeAll(tt);
+
+				var model = tt.iterator().next();
+
+				var type = model.getType();
+				var inputs = model.getInputs(); // FIXME can possibly contain others
+				var filename = sto.getKey();
+
+				final List<EG_Statement> list2 = _EOT_OutputTree__Utils._extractStatementSequenceFromAllOutputFiles(tt);
+
+				var seq = new EG_SequenceStatement(new EG_Naming("redone"), list2);
+				var ofn = new EOT_OutputFile(inputs, filename, type, seq);
+
+				list.add(ofn);
+			}
+		}
+	}
+
+	public void set(final @NotNull List<EOT_OutputFile> aLeof) {
+		list.addAll(aLeof);
+	}
+
+	public void _putSeq(final String aKey, final Path aPath, final EG_CompoundStatement aSeq) {
+		//_putSeq(aKey, aPath, aSeq);
 	}
 }

@@ -32,6 +32,7 @@ import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.ut.UT_Controller;
+import tripleo.elijah.util.Operation;
 import tripleo.elijah.world.impl.DefaultLivingRepo;
 
 import java.io.File;
@@ -352,6 +353,11 @@ public abstract class Compilation {
 		}
 	}
 
+	private final Finally _finally = new Finally();
+
+	public Finally reports() {
+		return _finally;
+	}
 }
 
 //

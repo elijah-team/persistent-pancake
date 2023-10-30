@@ -29,16 +29,10 @@ public class ChooseHashDirectoryNameBehavior implements ChooseDirectoryNameBehav
 	}
 
 	private @NotNull File choose_dir_name() {
-		final List<File> recordedreads = c.getIO().recordedreads;
+		final List<File> recordedreads = c.getIO().recordedreads();
 		final List<String> recordedread_filenames = recordedreads.stream()
 				.map(File::toString)
 				.collect(Collectors.toList());
-
-//		for (final File file : recordedreads) {
-//			final String fn = file.toString();
-//
-//			append_hash(buf, fn, c.getErrSink());
-//		}
 
 		// TODO can't use stream because of exception
 //		recordedread_filenames

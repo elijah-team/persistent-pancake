@@ -4,10 +4,10 @@ import antlr.RecognitionException;
 import antlr.TokenStreamException;
 import tripleo.elijah.Out;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.Operation;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.query.QueryDatabase;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.Operation;
 import tripleo.elijjah.ElijjahLexer;
 import tripleo.elijjah.ElijjahParser;
 

@@ -18,6 +18,7 @@ import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.nextgen.query.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
+import tripleo.elijah.util.Operation;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,7 @@ import java.util.regex.Pattern;
 import static tripleo.elijah.util.Helpers.List_of;
 
 public class CompilationRunner {
-	final         Map<String, CompilerInstructions> fn2ci = new HashMap<String, CompilerInstructions>();
+	final         Map<String, CompilerInstructions> fn2ci = new HashMap<>();
 	private final Compilation                       compilation;
 	private final Compilation.CIS                   cis;
 	private final CCI                               cci;

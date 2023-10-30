@@ -12,6 +12,7 @@
  */
 package tripleo.elijah.lang;
 
+import antlr.CommonToken;
 import antlr.Token;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +42,10 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 		this.text = r1;
 		this._a   = new Attached();
 		setContext(cur);
+	}
+
+	public IdentExpression(final Token aT, final String aS) {
+		this(aT);
 	}
 
 	@Override

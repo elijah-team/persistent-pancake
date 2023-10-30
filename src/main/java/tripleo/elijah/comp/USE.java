@@ -6,10 +6,11 @@ import antlr.TokenStreamException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.ci.CompilerInstructionsImpl;
 import tripleo.elijah.ci.GenerateStatement;
 import tripleo.elijah.ci.LibraryStatementPart;
-import tripleo.elijah.ci.LibraryStatementPartImpl;
+import tripleo.elijah.ci_impl.CompilerInstructionsImpl;
+import tripleo.elijah.ci_impl.GenerateStatementImpl;
+import tripleo.elijah.ci_impl.LibraryStatementPartImpl;
 import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
 import tripleo.elijah.comp.diagnostic.FileNotFoundDiagnostic;
 import tripleo.elijah.comp.queries.QuerySourceFileToModule;
@@ -20,6 +21,7 @@ import tripleo.elijah.lang.StringExpression;
 import tripleo.elijah.nextgen.query.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah.util.Operation;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -95,7 +97,7 @@ class USE {
 
 			final CompilerInstructions instructions = new CompilerInstructionsImpl();
 			instructions.setName("prelude");
-			final GenerateStatement generateStatement = new GenerateStatement();
+			final GenerateStatement generateStatement = new GenerateStatementImpl();
 			final StringExpression  expression        = new StringExpression(Helpers.makeToken("\"c\"")); // TODO
 			generateStatement.addDirective(Helpers.makeToken("gen"), expression);
 			instructions.add(generateStatement);

@@ -91,7 +91,7 @@ public class TestBasic {
 		if (c.errorCount() != 0)
 			System.err.printf("Error count should be 0 but is %d for %s%n", c.errorCount(), s);
 
-		Assert.assertEquals(12, c.getOutputTree().list.size());
+		Assert.assertEquals(12, c.getOutputTree().getList().size());
 		Assert.assertEquals(24, c.errorCount()); // TODO Error count obviously should be 0
 	}
 
@@ -124,13 +124,13 @@ public class TestBasic {
 
 		final @NotNull EOT_OutputTree cot = c.getOutputTree();
 
-		Assert.assertEquals(18, cot.list.size()); // TODO why not 6?
+		Assert.assertEquals(18, cot.getList().size()); // TODO why not 6?
 
-		select(cot.list, f -> f.getFilename().equals("/main2/Main.h"))
+		select(cot.getList(), f -> f.getFilename().equals("/main2/Main.h"))
 		  .then(f -> {
 			  System.out.println(((EG_SequenceStatement) f.getStatementSequence())._list().stream().map(EG_Statement::getText).collect(Collectors.toList()));
 		  });
-		select(cot.list, f -> f.getFilename().equals("/main2/Main.c"))
+		select(cot.getList(), f -> f.getFilename().equals("/main2/Main.c"))
 		  .then(f -> {
 			  System.out.println(((EG_SequenceStatement) f.getStatementSequence())._list().stream().map(EG_Statement::getText).collect(Collectors.toList()));
 		  });

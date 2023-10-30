@@ -15,6 +15,8 @@ import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.factory.comp.CompilationFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static tripleo.elijah.util.Helpers.List_of;
 
 /**
@@ -28,6 +30,9 @@ public class ClassInstantiationTest {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of(f));
+
+		assertEquals(0, c.errorCount());
+		assertTrue(c.reports().containsCodeOutput("foo"));
 	}
 
 	@Test

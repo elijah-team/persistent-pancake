@@ -26,11 +26,13 @@ import tripleo.elijah.stages.gen_generic.GenerateResultItem;
 import tripleo.elijah.stages.generate.ElSystem;
 import tripleo.elijah.stages.generate.OutputStrategy;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah.util.io.CharSink;
+import tripleo.elijah.util.io.FileCharSink;
 import tripleo.util.buffer.Buffer;
 import tripleo.util.buffer.DefaultBuffer;
 import tripleo.util.buffer.TextBuffer;
-import tripleo.util.io.CharSink;
-import tripleo.util.io.FileCharSink;
+
+
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -178,9 +180,9 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 //				append_hash(buf, fn);
 //			}
 
-		final List<File> recordedreads = c.getIO().recordedreads;
+		final List<File> recordedreads = c.getIO().recordedreads();
 		final List<String> recordedread_filenames = recordedreads.stream()
-				.map(file -> file.toString())
+				.map(File::toString)
 				.collect(Collectors.toList());
 
 		for (final @NotNull File file : recordedreads) {
@@ -197,7 +199,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	}
 
 	private void append_hash(final TextBuffer aBuf, final String aFilename, final ErrSink errSink) throws IOException {
-		@Nullable final String hh = Helpers.getHashForFilename(aFilename, errSink);
+		@Nullable final String hh = Helpers.getHashForFilename(aFilename).success();
 		if (hh != null) {
 			aBuf.append(hh);
 			aBuf.append(" ");
