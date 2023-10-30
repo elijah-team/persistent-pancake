@@ -58,10 +58,11 @@ public class OutputStrategyC {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("/");
 		final LibraryStatementPart lsp = generatedNamespace.module().getLsp();
-		if (lsp == null)
+		if (lsp == null || lsp.getInstructions() == null) {
 			sb.append("___________________");
-		else
+		} else {
 			sb.append(lsp.getInstructions().getName());
+		}
 		sb.append("/");
 		OS_Package pkg = generatedNamespace.getNamespaceStatement().getPackageName();
 		if (pkg != OS_Package.default_package) {

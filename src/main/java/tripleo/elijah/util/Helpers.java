@@ -147,6 +147,7 @@ public enum Helpers {
 
 	@NotNull
 	public static String remove_single_quotes_from_string(final @NotNull String s) {
+		if (s.length() < 2) return "";
 		return s.substring(1, s.length() - 1);
 	}
 

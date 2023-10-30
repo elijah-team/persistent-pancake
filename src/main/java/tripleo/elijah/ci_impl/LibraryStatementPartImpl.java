@@ -65,7 +65,7 @@ public class LibraryStatementPartImpl implements LibraryStatementPart {
 	}
 
 	@Override
-	public void setInstructions(CompilerInstructions instructions) {
+	public void setInstructions(final @NotNull CompilerInstructions instructions) {
 		ci = instructions;
 	}
 
