@@ -11,11 +11,11 @@ public class Finally {
 	}
 
 	public static class Input {
-		private final Nameable nameable;
+		private final @NotNull Nameable nameable;
 		private final Out2 ty;
 
-		public Input(final Nameable aNameable, final Out2 aTy) {
-			System.err.println("66 Add Input >> " + aNameable.getName());
+		public Input(final @NotNull Nameable aNameable, final Out2 aTy) {
+			System.err.println("66 Add Input >> " + aNameable.getNameableString());
 			nameable = aNameable;
 			ty = aTy;
 		}
@@ -31,17 +31,17 @@ public class Finally {
 //		}
 
 		public String name() {
-			return nameable.getName();
+			return nameable.getNameableString();
 		}
 
 		@Override
 		public String toString() {
-			return "Input{" + "name=" + nameable.getName() + ", ty=" + ty + '}';
+			return "Input{" + "name=" + nameable.getNameableString() + ", ty=" + ty + '}';
 		}
 	}
 
 	public interface Nameable {
-		String getName();
+		String getNameableString();
 	}
 
 	public enum Out2 {
