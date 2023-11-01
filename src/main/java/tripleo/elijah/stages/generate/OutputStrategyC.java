@@ -79,18 +79,21 @@ public class OutputStrategyC {
 	private OS_Package findPackage(OS_Element e) {
 		while (e != null) {
 			e = e.getParent();
-			if (e.getContext().getParent() == e.getContext())
+			assert e != null;
+			if (e.getContext().getParent() == e.getContext()) {
 				e = null;
-			else {
+			} else {
 				@NotNull final ElObjectType t = DecideElObjectType.getElObjectType(e);
 				switch (t) {
 					case NAMESPACE:
-						if (((NamespaceStatement) e).getPackageName() != null)
+						if (((NamespaceStatement) e).getPackageName() != null) {
 							return ((NamespaceStatement) e).getPackageName();
+						}
 						break;
 					case CLASS:
-						if (((ClassStatement) e).getPackageName() != null)
+						if (((ClassStatement) e).getPackageName() != null) {
 							return ((ClassStatement) e).getPackageName();
+						}
 						break;
 					case FUNCTION:
 						continue;
@@ -103,7 +106,7 @@ public class OutputStrategyC {
 		return null;
 	}
 
-	String strip_elijah_extension(String aFilename) {
+	String strip_elijah_extension(@NotNull String aFilename) {
 		if (aFilename.endsWith(".elijah")) {
 			aFilename = aFilename.substring(0, aFilename.length()-7);
 		} else if (aFilename.endsWith(".elijjah")) {
