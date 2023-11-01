@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static org.junit.Assert.*;
 import static tripleo.elijah.util.Helpers.List_of;
 
 /**
@@ -51,7 +52,7 @@ public class TestBasic {
 
 		c.feedCmdLine(args);
 
-		Assert.assertEquals(0, c.errorCount());
+		assertEquals(0, c.errorCount());
 	}
 
 	//	@Test
@@ -74,9 +75,9 @@ public class TestBasic {
 		}
 
 		// README this needs changing when running make
-		Assert.assertEquals(7, (int)errorCount.get(0)); // TODO Error count obviously should be 0
-		Assert.assertEquals(20, (int)errorCount.get(1)); // TODO Error count obviously should be 0
-		Assert.assertEquals(9, (int)errorCount.get(2)); // TODO Error count obviously should be 0
+		assertEquals(7, (int)errorCount.get(0)); // TODO Error count obviously should be 0
+		assertEquals(20, (int)errorCount.get(1)); // TODO Error count obviously should be 0
+		assertEquals(9, (int)errorCount.get(2)); // TODO Error count obviously should be 0
 	}
 
 	@Test
@@ -91,8 +92,8 @@ public class TestBasic {
 		if (c.errorCount() != 0)
 			System.err.printf("Error count should be 0 but is %d for %s%n", c.errorCount(), s);
 
-		Assert.assertEquals(12, c.getOutputTree().getList().size());
-		Assert.assertEquals(24, c.errorCount()); // TODO Error count obviously should be 0
+		assertEquals(12, c.getOutputTree().getList().size());
+		assertEquals(24, c.errorCount()); // TODO Error count obviously should be 0
 	}
 
 	@Test
@@ -107,7 +108,7 @@ public class TestBasic {
 		if (c.errorCount() != 0)
 			System.err.printf("Error count should be 0 but is %d for %s%n", c.errorCount(), s);
 
-		Assert.assertEquals(22, c.errorCount()); // TODO Error count obviously should be 0
+		assertEquals(22, c.errorCount()); // TODO Error count obviously should be 0
 	}
 
 	@Test
@@ -119,12 +120,13 @@ public class TestBasic {
 
 		c.feedCmdLine(List_of(s, "-sO"));
 
-		if (c.errorCount() != 0)
+		if (c.errorCount() != 0) {
 			System.err.printf("Error count should be 0 but is %d for %s%n", c.errorCount(), s);
+		}
 
 		final @NotNull EOT_OutputTree cot = c.getOutputTree();
 
-		Assert.assertEquals(18, cot.getList().size()); // TODO why not 6?
+		assertEquals(18, cot.getList().size()); // TODO why not 6?
 
 		select(cot.getList(), f -> f.getFilename().equals("/main2/Main.h"))
 		  .then(f -> {
@@ -136,7 +138,7 @@ public class TestBasic {
 		  });
 
 		// TODO Error count obviously should be 0
-		Assert.assertEquals(123, c.errorCount()); // FIXME why 123?? 04/15
+		assertEquals(123, c.errorCount()); // FIXME why 123?? 04/15
 	}
 
 	static <T> @NotNull Promise<T, Void, Void> select(@NotNull final List<T> list, final Predicate<T> p) {
