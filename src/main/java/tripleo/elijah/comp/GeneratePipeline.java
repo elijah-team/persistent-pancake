@@ -31,13 +31,13 @@ public class GeneratePipeline implements PipelineMember/*, AccessBus.AB_LgcListe
 	private       PipelineLogic       pipelineLogic;
 	private       List<GeneratedNode> lgc;
 
-	public GeneratePipeline(@NotNull final AccessBus ab) {
-		errSink = ab.getCompilation().getErrSink();
+	public GeneratePipeline(@NotNull final AccessBus ab0) {
+		__ab = ab0;
 
-		ab.subscribePipelineLogic(aPl -> pipelineLogic = aPl);
-		ab.subscribe_lgc(aLgc -> lgc = aLgc);
+		errSink = ab0.getCompilation().getErrSink();
 
-		__ab = ab;
+		ab0.subscribePipelineLogic(aPl -> pipelineLogic = aPl);
+		ab0.subscribe_lgc(aLgc -> lgc = aLgc);
 	}
 
 	@Override
@@ -45,10 +45,11 @@ public class GeneratePipeline implements PipelineMember/*, AccessBus.AB_LgcListe
 		Preconditions.checkNotNull(pipelineLogic);
 		Preconditions.checkNotNull(lgc);
 
-		assert lgc.size() > 0;
-
-		/*pipelineLogic.*/
-		generate(lgc, errSink, pipelineLogic.mods, pipelineLogic.getVerbosity());
+		if (!lgc.isEmpty()) {
+			generate(lgc, errSink, pipelineLogic.mods, pipelineLogic.getVerbosity());
+		} else {
+			throw new AssertionError();
+		}
 	}
 
 	protected void generate(final @NotNull List<GeneratedNode> lgc,
