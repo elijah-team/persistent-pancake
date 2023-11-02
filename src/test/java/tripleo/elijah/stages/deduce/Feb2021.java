@@ -24,7 +24,7 @@ import static tripleo.elijah.util.Helpers.List_of;
 public class Feb2021 {
 
 	@Test
-	public void testProperty() throws Exception {
+	public void testProperty() {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/property/"));
@@ -44,24 +44,39 @@ public class Feb2021 {
 		assertTrue(c.reports().containsCodeOutput("null/Prelude/Prelude.c"));
 		assertTrue(c.reports().containsCodeOutput("null/Prelude/ConstString.h"));
 
+		assertEquals(12, c.reports().codeOutputSize());
 	}
 
 	@Test
-	public void testFunction() throws Exception {
+	public void testFunction() {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/function/"));
 
-		assertEquals(0, c.errorCount());
+		assertEquals(1, c.errorCount());
+
+		assertTrue(c.reports().containsCodeOutput("null/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("null/Main.h"));
+
+		assertEquals(2, c.reports().codeOutputSize());
 	}
 
 	@Test
-	public void testHier() throws Exception {
+	public void testHier() {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/hier/"));
 
 		assertEquals(0, c.errorCount());
+
+		assertTrue(c.reports().containsCodeOutput("null/Bar.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("null/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Foo.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Foo.c"));
+		assertTrue(c.reports().containsCodeOutput("null/Bar.c"));
+
+		assertEquals(6, c.reports().codeOutputSize());
 	}
 
 }
