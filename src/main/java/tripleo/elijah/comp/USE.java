@@ -49,7 +49,9 @@ class USE {
 	public void use(final @NotNull CompilerInstructions compilerInstructions, final boolean do_out) throws Exception {
 		// TODO
 
-		if (compilerInstructions.getFilename() == null) return;
+		if (compilerInstructions.getFilename() == null) {
+			return;
+		}
 
 
 		final File instruction_dir = new File(compilerInstructions.getFilename()).getParentFile();
@@ -61,6 +63,9 @@ class USE {
 			else
 				dir = new File(instruction_dir, dir_name);
 			use_internal(dir, do_out, lsp);
+			if (lsp.getInstructions() == null) {
+				lsp.setInstructions(compilerInstructions);
+			}
 		}
 		final LibraryStatementPart lsp = new LibraryStatementPartImpl();
 		lsp.setName(Helpers.makeToken("default")); // TODO: make sure this doesn't conflict
