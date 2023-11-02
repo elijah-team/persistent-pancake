@@ -1,6 +1,5 @@
 package tripleo.vendor.mal;
 
-import tripleo.vendor.mal.env.Env;
 import tripleo.vendor.mal.types.MalException;
 import tripleo.vendor.mal.types.MalFunction;
 import tripleo.vendor.mal.types.MalHashMap;
@@ -19,7 +18,7 @@ import java.util.Map;
 
 public class stepA_mal {
 	// read
-	public static types.MalVal READ(final String str) throws MalThrowable {
+	public static MalVal READ(final String str) throws MalThrowable {
 		return reader.read_str(str);
 	}
 
@@ -56,7 +55,7 @@ public class stepA_mal {
 		return res;
 	}
 
-	public static Boolean is_macro_call(final MalVal ast, final Env env)
+	public static Boolean is_macro_call(final MalVal ast, final env.Env env)
 	  throws MalThrowable {
 		if (ast instanceof MalList) {
 			final MalVal a0 = ((MalList) ast).nth(0);
@@ -70,7 +69,7 @@ public class stepA_mal {
 		return false;
 	}
 
-	public static MalVal macroexpand(MalVal ast, final Env env)
+	public static MalVal macroexpand(MalVal ast, final env.Env env)
 	  throws MalThrowable {
 		while (is_macro_call(ast, env)) {
 			final MalSymbol   a0  = (MalSymbol) ((MalList) ast).nth(0);
@@ -80,7 +79,7 @@ public class stepA_mal {
 		return ast;
 	}
 
-	public static MalVal eval_ast(final MalVal ast, final Env env) throws MalThrowable {
+	public static MalVal eval_ast(final MalVal ast, final env.Env env) throws MalThrowable {
 		if (ast instanceof MalSymbol) {
 			return env.get((MalSymbol) ast);
 		} else if (ast instanceof final MalList old_lst) {
@@ -103,7 +102,7 @@ public class stepA_mal {
 		}
 	}
 
-	public static MalVal EVAL(MalVal orig_ast, Env env) throws MalThrowable {
+	public static MalVal EVAL(MalVal orig_ast, env.Env env) throws MalThrowable {
 		MalVal  a0, a1, a2, a3, res;
 		MalList el;
 
@@ -141,7 +140,7 @@ public class stepA_mal {
 				a2 = ast.nth(2);
 				MalSymbol key;
 				MalVal val;
-				final Env let_env = new Env(env);
+				final tripleo.vendor.mal.env.Env let_env = new env.Env(env);
 				for (int i = 0; i < ((MalList) a1).size(); i += 2) {
 					key = (MalSymbol) ((MalList) a1).nth(i);
 					val = ((MalList) a1).nth(i + 1);
@@ -186,7 +185,7 @@ public class stepA_mal {
 								exc = new MalString(t.getMessage() + ": " + tstr);
 							}
 							return EVAL(((MalList) a2).nth(2),
-							  new Env(env, ((MalList) a2).slice(1, 2),
+							  new env.Env(env, ((MalList) a2).slice(1, 2),
 								new MalList(exc)));
 						}
 					}
@@ -214,10 +213,10 @@ public class stepA_mal {
 			case "fn*":
 				final MalList a1f = (MalList) ast.nth(1);
 				final MalVal a2f = ast.nth(2);
-				final Env cur_env = env;
+				final tripleo.vendor.mal.env.Env cur_env = env;
 				return new MalFunction(a2f, env, a1f) {
 					public MalVal apply(final MalList args) throws MalThrowable {
-						return EVAL(a2f, new Env(cur_env, a1f, args));
+						return EVAL(a2f, new env.Env(cur_env, a1f, args));
 					}
 				};
 			default:
@@ -241,7 +240,7 @@ public class stepA_mal {
 	}
 
 	// repl
-	public static MalVal RE(final Env env, final String str) throws MalThrowable {
+	public static MalVal RE(final env.Env env, final String str) throws MalThrowable {
 		return EVAL(READ(str), env);
 	}
 
@@ -315,7 +314,7 @@ public class stepA_mal {
 //	}
 
 	public static class MalEnv2 {
-		final Env repl_env = new Env(null);
+		final env.Env repl_env = new env.Env(null);
 
 		{
 			for (final String key : core.ns.keySet()) {

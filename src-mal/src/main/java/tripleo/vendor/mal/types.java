@@ -1,7 +1,5 @@
 package tripleo.vendor.mal;
 
-import tripleo.vendor.mal.env.Env;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -443,15 +441,15 @@ public class types {
 
 	public static abstract class MalFunction extends MalVal
 	  implements ILambda, java.lang.Cloneable {
-		public MalVal  ast    = null;
-		public Env     env    = null;
-		public MalList params = null;
+		public MalVal                     ast    = null;
+		public tripleo.vendor.mal.env.Env env    = null;
+		public MalList                    params = null;
 		public Boolean macro  = false;
 
 		public MalFunction() {
 		}
 
-		public MalFunction(final MalVal ast, final Env env, final MalList params) {
+		public MalFunction(final MalVal ast, final tripleo.vendor.mal.env.Env env, final MalList params) {
 			this.ast    = ast;
 			this.env    = env;
 			this.params = params;
@@ -481,7 +479,7 @@ public class types {
 			return ast;
 		}
 
-		public Env getEnv() {
+		public tripleo.vendor.mal.env.Env getEnv() {
 			return env;
 		}
 
@@ -489,8 +487,8 @@ public class types {
 			return params;
 		}
 
-		public Env genEnv(final MalList args) {
-			return new Env(env, params, args);
+		public tripleo.vendor.mal.env.Env genEnv(final MalList args) {
+			return new env.Env(env, params, args);
 		}
 
 		public Boolean isMacro() {
