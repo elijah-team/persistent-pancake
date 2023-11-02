@@ -31,20 +31,20 @@ public class Feb2021 {
 
 		assertEquals(96, c.errorCount());
 
-		assertTrue(c.reports().containsCodeOutput("null/Pr.h"));
-		assertTrue(c.reports().containsCodeOutput("null/Prelude/ConstString.c"));
-		assertTrue(c.reports().containsCodeOutput("null/Main.c"));
-		assertTrue(c.reports().containsCodeOutput("null/Pr.c"));
-		assertTrue(c.reports().containsCodeOutput("null/Prelude/IPrintable.h"));
-		assertTrue(c.reports().containsCodeOutput("null/Main.h"));
-		assertTrue(c.reports().containsCodeOutput("null/Foo.h"));
-		assertTrue(c.reports().containsCodeOutput("null/Prelude/IPrintable.c"));
-		assertTrue(c.reports().containsCodeOutput("null/Foo.c"));
-		assertTrue(c.reports().containsCodeOutput("null/Prelude/Prelude.h"));
-		assertTrue(c.reports().containsCodeOutput("null/Prelude/Prelude.c"));
-		assertTrue(c.reports().containsCodeOutput("null/Prelude/ConstString.h"));
+		assertTrue(c.reports().containsCodeOutput("property/Pr.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/ConstString.c"));
+		assertTrue(c.reports().containsCodeOutput("property/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("property/Pr.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.h"));
+		assertTrue(c.reports().containsCodeOutput("property/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("property/Foo.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.c"));
+		assertTrue(c.reports().containsCodeOutput("property/Foo.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Prelude.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Prelude.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/ConstString.h"));
 
-		assertEquals(12, c.reports().codeOutputSize());
+		assertEquals(24, c.reports().codeOutputSize());
 	}
 
 	@Test
@@ -69,12 +69,12 @@ public class Feb2021 {
 
 		assertEquals(0, c.errorCount());
 
-		assertTrue(c.reports().containsCodeOutput("null/Bar.h"));
-		assertTrue(c.reports().containsCodeOutput("null/Main.c"));
-		assertTrue(c.reports().containsCodeOutput("null/Main.h"));
-		assertTrue(c.reports().containsCodeOutput("null/Foo.h"));
-		assertTrue(c.reports().containsCodeOutput("null/Foo.c"));
-		assertTrue(c.reports().containsCodeOutput("null/Bar.c"));
+		assertTrue(c.reports().containsCodeOutput("hier/Bar.h"));
+		assertTrue(c.reports().containsCodeOutput("hier/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("hier/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("hier/Foo.h"));
+		assertTrue(c.reports().containsCodeOutput("hier/Foo.c"));
+		assertTrue(c.reports().containsCodeOutput("hier/Bar.c"));
 
 		assertEquals(6, c.reports().codeOutputSize());
 	}
