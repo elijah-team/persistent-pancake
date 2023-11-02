@@ -10,6 +10,7 @@ package tripleo.elijah.stages.generate;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
@@ -34,9 +35,10 @@ public class ElSystem {
 		final @NotNull OutputStrategyC outputStrategyC = new OutputStrategyC(this.outputStrategy);
 
 		for (final GenerateResultItem ab : gr.results()) {
-			final String s = generateOutputs_Internal(ab.node, ab.ty, outputStrategyC);
-			assert s != null;
-			ab.output = s;
+			final EOT_OutputFile.FileNameProvider fn = generateOutputs_Internal2(ab.node, ab.ty, outputStrategyC);
+
+			assert fn.getFilename() != null;
+			ab.output = fn.getFilename();
 		}
 
 		if (verbose) {
@@ -47,12 +49,12 @@ public class ElSystem {
 		}
 	}
 
-	String generateOutputs_Internal(final GeneratedNode node, final GenerateResult.TY ty, final OutputStrategyC outputStrategyC) {
-		final String s;
-		String ss;
+	private EOT_OutputFile.FileNameProvider generateOutputs_Internal2(final GeneratedNode node, final GenerateResult.TY ty, final OutputStrategyC outputStrategyC) {
+		final EOT_OutputFile.FileNameProvider s;
+		String                                ss;
 		if (node instanceof GeneratedNamespace) {
 			final GeneratedNamespace generatedNamespace = (GeneratedNamespace) node;
-			s = outputStrategyC.nameForNamespace(generatedNamespace, ty);
+			s = outputStrategyC.nameForNamespace2(generatedNamespace, ty);
 //			tripleo.elijah.util.Stupidity.println2("41 "+generatedNamespace+" "+s);
 			for (final GeneratedFunction gf : generatedNamespace.functionMap.values()) {
 				ss = generateOutputs_Internal(gf, ty, outputStrategyC);
@@ -60,7 +62,7 @@ public class ElSystem {
 			}
 		} else if (node instanceof GeneratedClass) {
 			final GeneratedClass generatedClass = (GeneratedClass) node;
-			s = outputStrategyC.nameForClass(generatedClass, ty);
+			s = outputStrategyC.nameForClass2(generatedClass, ty);
 //			tripleo.elijah.util.Stupidity.println2("48 "+generatedClass+" "+s);
 			for (final GeneratedFunction gf : generatedClass.functionMap.values()) {
 				ss = generateOutputs_Internal(gf, ty, outputStrategyC);
@@ -68,15 +70,20 @@ public class ElSystem {
 			}
 		} else if (node instanceof GeneratedFunction) {
 			final GeneratedFunction generatedFunction = (GeneratedFunction) node;
-			s = outputStrategyC.nameForFunction(generatedFunction, ty);
+			s = outputStrategyC.nameForFunction2(generatedFunction, ty);
 //			tripleo.elijah.util.Stupidity.println2("55 "+generatedFunction+" "+s);
 		} else if (node instanceof GeneratedConstructor) {
 			final GeneratedConstructor generatedConstructor = (GeneratedConstructor) node;
-			s = outputStrategyC.nameForConstructor(generatedConstructor, ty);
+			s = outputStrategyC.nameForConstructor2(generatedConstructor, ty);
 //			tripleo.elijah.util.Stupidity.println2("55 "+generatedConstructor+" "+s);
-		} else
+		} else {
 			throw new IllegalStateException("Can't be here.");
+		}
 		return s;
+	}
+
+	String generateOutputs_Internal(final GeneratedNode node, final GenerateResult.TY ty, final OutputStrategyC outputStrategyC) {
+		return generateOutputs_Internal2(node, ty, outputStrategyC).getFilename();
 	}
 
 	public void setOutputStrategy(final OutputStrategy outputStrategy) {

@@ -103,7 +103,7 @@ public class CompilerInstructionsImpl implements CompilerInstructions {
 
 	@Override
 	public String getName() {
-		return null;
+		return name;
 	}
 
 	@Override
