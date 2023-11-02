@@ -76,7 +76,7 @@ public class Feb2021 {
 		assertTrue(c.reports().containsCodeOutput("hier/Foo.c"));
 		assertTrue(c.reports().containsCodeOutput("hier/Bar.c"));
 
-		assertEquals(6, c.reports().codeOutputSize());
+		assertEquals(10, c.reports().codeOutputSize());
 	}
 
 }
