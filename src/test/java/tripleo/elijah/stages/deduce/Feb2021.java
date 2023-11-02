@@ -55,10 +55,10 @@ public class Feb2021 {
 
 		assertEquals(1, c.errorCount());
 
-		assertTrue(c.reports().containsCodeOutput("null/Main.c"));
-		assertTrue(c.reports().containsCodeOutput("null/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("function/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("function/Main.h"));
 
-		assertEquals(2, c.reports().codeOutputSize());
+		assertEquals(6, c.reports().codeOutputSize());
 	}
 
 	@Test
