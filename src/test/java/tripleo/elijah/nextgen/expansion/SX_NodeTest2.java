@@ -21,7 +21,9 @@ import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.nextgen.small.ES_Symbol;
 import tripleo.elijah.util.Helpers;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static tripleo.elijah.util.Helpers.List_of;
@@ -165,11 +167,15 @@ public class SX_NodeTest2 extends TestCase {
 
 		final List<EOT_OutputFile> l   = rt.getList();
 		final int                  yyy = 2;
-		final List<EOT_OutputFile> wmainl = l.stream()
+		final List<EOT_OutputFile> wmainl_ = l.stream()
 		                                     .filter(eof -> eof.getFilename().equals("/while100/Main.c"))
 		                                     .collect(Collectors.toList());
+
+		final Set<EOT_OutputFile> wmainl = new HashSet<EOT_OutputFile>(wmainl_);
+
 		assert wmainl.size() == 1;
-		final EOT_OutputFile wmain = wmainl.get(0);
+
+		final EOT_OutputFile wmain = wmainl.stream().findFirst().get();
 		final EG_Statement   seqs  = wmain.getStatementSequence();
 		System.out.println(seqs.getText());
 	}
