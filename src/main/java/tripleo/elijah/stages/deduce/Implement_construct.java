@@ -151,10 +151,12 @@ class Implement_construct {
 			final TypeName tyn = aTy.getTypeName();
 			if (tyn instanceof NormalTypeName) {
 				final @NotNull NormalTypeName tyn1 = (NormalTypeName) tyn;
-				_implement_construct_type(co, constructorName, (NormalTypeName) tyn);
+				_implement_construct_type(co, constructorName, tyn1);
 			}
-		} else
-			throw new NotImplementedException();
+		} else {
+//			throw new NotImplementedException();
+			return;
+		}
 		if (co != null) {
 			co.setConstructable(pte);
 			final ClassInvocation best = pte.getClassInvocation();

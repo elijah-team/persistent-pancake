@@ -53,8 +53,9 @@ public class OutputStrategyC {
 			final File moduleFile = new File(moduleFileName);
 			filename = moduleFile.getName();
 			filename = strip_elijah_extension(filename);
-		} else
+		} else {
 			filename = generatedNamespace.getName();
+		}
 		final StringBuilder sb = new StringBuilder();
 		sb.append("/");
 		final LibraryStatementPart lsp = generatedNamespace.module().getLsp();
@@ -66,8 +67,9 @@ public class OutputStrategyC {
 		sb.append("/");
 		OS_Package pkg = generatedNamespace.getNamespaceStatement().getPackageName();
 		if (pkg != OS_Package.default_package) {
-			if (pkg == null)
+			if (pkg == null) {
 				pkg = findPackage(generatedNamespace.getNamespaceStatement());
+			}
 			sb.append(pkg.getName());
 			sb.append("/");
 		}
@@ -85,21 +87,21 @@ public class OutputStrategyC {
 			} else {
 				@NotNull final ElObjectType t = DecideElObjectType.getElObjectType(e);
 				switch (t) {
-					case NAMESPACE:
-						if (((NamespaceStatement) e).getPackageName() != null) {
-							return ((NamespaceStatement) e).getPackageName();
-						}
-						break;
-					case CLASS:
-						if (((ClassStatement) e).getPackageName() != null) {
-							return ((ClassStatement) e).getPackageName();
-						}
-						break;
-					case FUNCTION:
-						continue;
-					default:
-						// datatype, enum, alias
-						continue;
+				case NAMESPACE:
+					final NamespaceStatement namespaceStatement = (NamespaceStatement) e;
+					if (namespaceStatement.getPackageName() != null) {
+						return namespaceStatement.getPackageName();
+					}
+				case CLASS:
+					final ClassStatement classStatement = (ClassStatement) e;
+					if (classStatement.getPackageName() != null) {
+						return classStatement.getPackageName();
+					}
+				case FUNCTION:
+					continue;
+				default:
+					// datatype, enum, alias
+					continue;
 				}
 			}
 		}
@@ -137,26 +139,28 @@ public class OutputStrategyC {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("/");
 		final LibraryStatementPart lsp = generatedClass.module().getLsp();
-		if (lsp == null)
+		if (lsp == null || lsp.getInstructions() == null) {
 			sb.append("______________");
-		else
-//			sb.append(generatedClass.module.lsp.getName());
+		} else {
 			sb.append(lsp.getInstructions().getName());
+		}
 		sb.append("/");
 		OS_Package pkg = generatedClass.getKlass().getPackageName();
 		if (pkg != OS_Package.default_package) {
-			if (pkg == null)
+			if (pkg == null) {
 				pkg = findPackage(generatedClass.getKlass());
+			}
 			sb.append(pkg.getName());
 			sb.append("/");
 		}
 		switch (outputStrategy.per()) {
 		case PER_CLASS:
 			{
-				if (generatedClass.isGeneric())
+				if (generatedClass.isGeneric()) {
 					sb.append(generatedClass.getNumberedName());
-				else
+				} else {
 					sb.append(generatedClass.getName());
+				}
 			}
 			break;
 		case PER_MODULE:
@@ -177,10 +181,10 @@ public class OutputStrategyC {
 				final String pkgName;
 				if (pkg2 != OS_Package.default_package) {
 					pkgName = "$default_package";
-				} else
+				} else {
 					pkgName = pkg2.getName();
+				}
 				sb.append(pkgName);
-//					sb.append('/');
 			}
 			break;
 		case PER_PROGRAM:
@@ -188,7 +192,6 @@ public class OutputStrategyC {
 				final CompilerInstructions xx = lsp.getInstructions();
 				final String n = xx.getName();
 				sb.append(n);
-//					sb.append('/');
 			}
 			break;
 		default:
