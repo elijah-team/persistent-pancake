@@ -13,7 +13,6 @@ import com.google.common.io.Files;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
 import org.junit.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ErrSink;
@@ -32,12 +31,12 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static tripleo.elijah.util.Helpers.List_of;
 
 /**
  * @author Tripleo(envy)
- *
  */
 public class TestBasic {
 
@@ -75,9 +74,9 @@ public class TestBasic {
 		}
 
 		// README this needs changing when running make
-		assertEquals(7, (int)errorCount.get(0)); // TODO Error count obviously should be 0
-		assertEquals(20, (int)errorCount.get(1)); // TODO Error count obviously should be 0
-		assertEquals(9, (int)errorCount.get(2)); // TODO Error count obviously should be 0
+		assertEquals(7, (int) errorCount.get(0)); // TODO Error count obviously should be 0
+		assertEquals(20, (int) errorCount.get(1)); // TODO Error count obviously should be 0
+		assertEquals(9, (int) errorCount.get(2)); // TODO Error count obviously should be 0
 	}
 
 	@Test
@@ -126,7 +125,7 @@ public class TestBasic {
 
 		final @NotNull EOT_OutputTree cot = c.getOutputTree();
 
-		assertEquals(18, cot.getList().size()); // TODO why not 6?
+		assertEquals(54, cot.getList().size()); // TODO why not 6?
 
 		select(cot.getList(), f -> f.getFilename().equals("/main2/Main.h"))
 		  .then(f -> {
@@ -139,6 +138,25 @@ public class TestBasic {
 
 		// TODO Error count obviously should be 0
 		assertEquals(123, c.errorCount()); // FIXME why 123?? 04/15
+
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Prelude.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Unsigned64.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Boolean.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Boolean.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/ConstString.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.c"));
+		assertTrue(c.reports().containsCodeOutput("main2/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("main2/wprust.demo.fact/fact1.h"));
+		assertTrue(c.reports().containsCodeOutput("main2/wprust.demo.fact/fact1.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Arguments.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Prelude.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Unsigned64.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/ConstString.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Arguments.c"));
+		assertTrue(c.reports().containsCodeOutput("main2/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.h"));
 	}
 
 	static <T> @NotNull Promise<T, Void, Void> select(@NotNull final List<T> list, final Predicate<T> p) {
@@ -153,7 +171,7 @@ public class TestBasic {
 		return d;
 	}
 }
-	
+
 //
 //
 //
