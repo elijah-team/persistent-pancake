@@ -25,18 +25,18 @@ public EzLexer(final LexerSharedInputState state) {
 	caseSensitiveLiterals = true;
 	setCaseSensitive(true);
 	literals = new Hashtable();
-	literals.put(new ANTLRHashString("lib", this), new Integer(9));
-	literals.put(new ANTLRHashString("this", this), new Integer(62));
-	literals.put(new ANTLRHashString("false", this), new Integer(61));
-	literals.put(new ANTLRHashString("true", this), new Integer(60));
-	literals.put(new ANTLRHashString("indexing", this), new Integer(16));
-	literals.put(new ANTLRHashString("generate", this), new Integer(15));
-	literals.put(new ANTLRHashString("end", this), new Integer(8));
-	literals.put(new ANTLRHashString("libraries", this), new Integer(10));
-	literals.put(new ANTLRHashString("null", this), new Integer(63));
-	literals.put(new ANTLRHashString("library", this), new Integer(5));
-	literals.put(new ANTLRHashString("shared", this), new Integer(6));
-	literals.put(new ANTLRHashString("program", this), new Integer(4));
+	literals.put(new ANTLRHashString("lib", this), (9));
+	literals.put(new ANTLRHashString("this", this), (62));
+	literals.put(new ANTLRHashString("false", this), (61));
+	literals.put(new ANTLRHashString("true", this), (60));
+	literals.put(new ANTLRHashString("indexing", this), (16));
+	literals.put(new ANTLRHashString("generate", this), (15));
+	literals.put(new ANTLRHashString("end", this), (8));
+	literals.put(new ANTLRHashString("libraries", this), (10));
+	literals.put(new ANTLRHashString("null", this), (63));
+	literals.put(new ANTLRHashString("library", this), (5));
+	literals.put(new ANTLRHashString("shared", this), (6));
+	literals.put(new ANTLRHashString("program", this), (4));
 }
 
 public Token nextToken() throws TokenStreamException {

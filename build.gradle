@@ -60,8 +60,8 @@ sourceSets {
          java {
             srcDirs = [
                     'src/main/java'
-                    ,'src-cef/main/java'
-                    ,'src-mal/main/java'
+                    ,'src-cef/src/main/java'
+                    ,'src-mal/src/main/java'
                     ,'src-undertow/main/java'
                     ,'tripleo-small/main/java'
                     ,'elijah-ek/main/java'

@@ -8,6 +8,9 @@
       <module name="el-fluffy-umbrella__wont-stop2.untitled" target="17" />
       <module name="el-fluffy-umbrella__wont-stop2.untitled.main" target="17" />
       <module name="el-fluffy-umbrella__wont-stop2.untitled.test" target="17" />
+      <module name="el-fluffy-umbrella__wont-stop2_buildSrc" target="17" />
+      <module name="el-fluffy-umbrella__wont-stop2_buildSrc_main" target="17" />
+      <module name="el-fluffy-umbrella__wont-stop2_buildSrc_test" target="17" />
       <module name="elijah-v1-fluffy-umbrella" target="16" />
       <module name="elijah-v1-fluffy-umbrella.buildSrc" target="17" />
       <module name="elijah-v1-fluffy-umbrella.buildSrc.main" target="17" />
