@@ -31,7 +31,7 @@ import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.Helpers;
 
-public class DeduceTypesTest2 {
+public class DeduceTypesSecondTest {
 
 	@Test
 	public void testDeduceIdentExpression() throws ResolveError {

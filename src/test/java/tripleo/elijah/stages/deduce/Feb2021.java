@@ -14,6 +14,8 @@ import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static tripleo.elijah.util.Helpers.List_of;
 
 /**
@@ -26,6 +28,22 @@ public class Feb2021 {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/property/"));
+
+		assertEquals(96, c.errorCount());
+
+		assertTrue(c.reports().containsCodeOutput("null/Pr.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/ConstString.c"));
+		assertTrue(c.reports().containsCodeOutput("null/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("null/Pr.c"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/IPrintable.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Foo.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/IPrintable.c"));
+		assertTrue(c.reports().containsCodeOutput("null/Foo.c"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/Prelude.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/Prelude.c"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/ConstString.h"));
+
 	}
 
 	@Test
@@ -33,6 +51,8 @@ public class Feb2021 {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/function/"));
+
+		assertEquals(0, c.errorCount());
 	}
 
 	@Test
@@ -40,6 +60,8 @@ public class Feb2021 {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/hier/"));
+
+		assertEquals(0, c.errorCount());
 	}
 
 }
