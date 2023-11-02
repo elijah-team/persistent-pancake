@@ -222,6 +222,10 @@ public class OS_Module implements OS_Element, OS_Container {
 
 	public void setLsp(final @NotNull LibraryStatementPart aLsp) {
 		lsp = aLsp;
+
+//		if (lsp.getInstructions() == null) {
+//			throw new AssertionError();
+//		}
 	}
 
 	public Compilation getCompilation() {

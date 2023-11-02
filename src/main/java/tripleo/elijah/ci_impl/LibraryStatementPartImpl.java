@@ -19,16 +19,6 @@ import java.util.*;
  * Created 9/6/20 12:06 PM
  */
 public class LibraryStatementPartImpl implements LibraryStatementPart {
-	public static class Directive {
-		private final IExpression expression;
-		private final String name;
-
-		public Directive(final @NotNull Token token_, final IExpression expression_) {
-			name = token_.getText();
-			expression = expression_;
-		}
-	}
-
 	private CompilerInstructions ci;
 	private String dirName;
 
@@ -74,6 +64,15 @@ public class LibraryStatementPartImpl implements LibraryStatementPart {
 		name = i1.getText();
 	}
 
+	public static class Directive {
+		private final IExpression expression;
+		private final String name;
+
+		public Directive(final @NotNull Token token_, final IExpression expression_) {
+			name = token_.getText();
+			expression = expression_;
+		}
+	}
 }
 
 //

@@ -45,13 +45,16 @@ public class EOT_OutputFile {
 		_inputs.addAll(inputs);
 	}
 
-	public EOT_OutputFile(final @NotNull List<EIT_Input> inputs, final @NotNull String filename,
-			final @NotNull EOT_OutputType type, final @NotNull EG_Statement sequence) {
+	public EOT_OutputFile(final @NotNull List<EIT_Input> inputs,
+	                      final @NotNull String filename,
+	                      final @NotNull EOT_OutputType type,
+	                      final @NotNull EG_Statement sequence) {
 		this(inputs, new DefaultFileNameProvider(filename), type, sequence);
 	}
 
 	public String getFilename() {
-		return _filename.getFilename();
+		final String filename = _filename.getFilename();
+		return filename;
 	}
 
 	public @NotNull List<EIT_Input> getInputs() {
