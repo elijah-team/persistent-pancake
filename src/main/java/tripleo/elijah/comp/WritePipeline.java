@@ -109,6 +109,8 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 			final EOT_OutputFile eof = EOT_OutputFile.bufferSetToOutputFile(s, vs, c, modmap.get(s));
 			leof.add(eof);
+
+			c.reports().addCodeOutput(()-> remove_initial_slash(s), eof);
 		}
 
 		c.getOutputTree().set(leof);
@@ -116,6 +118,14 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 		final File fn1 = choose_dir_name();
 
 		__rest(mb, fn1, leof);
+	}
+
+	@NotNull
+	private static String remove_initial_slash(final String s) {
+		if (s.length() > 1 && s.charAt(0) == '/') {
+			return s.substring(1);
+		}
+		return s;
 	}
 
 	private @NotNull File choose_dir_name() {
