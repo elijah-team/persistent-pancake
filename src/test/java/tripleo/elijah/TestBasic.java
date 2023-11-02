@@ -91,8 +91,21 @@ public class TestBasic {
 		if (c.errorCount() != 0)
 			System.err.printf("Error count should be 0 but is %d for %s%n", c.errorCount(), s);
 
-		assertEquals(12, c.getOutputTree().getList().size());
+		assertEquals(46, c.getOutputTree().getList().size());
 		assertEquals(24, c.errorCount()); // TODO Error count obviously should be 0
+
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Boolean.c"));
+		assertTrue(c.reports().containsCodeOutput("listfolders3/wpkotlin_c.demo.list_folders/MainLogic.c"));
+		assertTrue(c.reports().containsCodeOutput("listfolders3/wpkotlin_c.demo.list_folders/__MODULE__.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Boolean.h"));
+		assertTrue(c.reports().containsCodeOutput("listfolders3/wpkotlin_c.demo.list_folders/MainLogic.h"));
+		assertTrue(c.reports().containsCodeOutput("listfolders3/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("listfolders3/wpkotlin_c.demo.list_folders/__MODULE__.c"));
+		assertTrue(c.reports().containsCodeOutput("listfolders3/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Arguments.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Arguments.c"));
 	}
 
 	@Test
