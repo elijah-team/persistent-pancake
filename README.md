@@ -1,4 +1,4 @@
-# Elijah programming language/system
+# Elijah programming language/system 
 
 **Elijjah** is a high-level language suitable for replacement of C/C++ and Java.
 
