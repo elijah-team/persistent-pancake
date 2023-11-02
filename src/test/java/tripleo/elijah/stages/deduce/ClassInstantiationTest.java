@@ -59,7 +59,6 @@ public class ClassInstantiationTest {
 		assertTrue(c.reports().containsCodeOutput("null/Prelude/ConstString.h"));
 		assertTrue(c.reports().containsCodeOutput("______________/Main.c"));
 		assertTrue(c.reports().containsCodeOutput("______________/Bar_109.h"));
-
 	}
 
 	@Test
@@ -68,6 +67,61 @@ public class ClassInstantiationTest {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of(f));
+
+		assertEquals(128, c.errorCount());
+
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_127.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_104.c"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/IPrintable.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_102.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_118.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_116.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_114.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/IPrintable.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_112.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_118.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Foo.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/ConstString.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Foo.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_115.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_111.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_113.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_111.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_127.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_106.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_104.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_106.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_102.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/ConstString.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_105.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_120.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_103.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_120.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_119.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_117.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_115.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_119.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_117.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_113.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/Prelude.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/Prelude.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/Integer64.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_110.h"));
+		assertTrue(c.reports().containsCodeOutput("null/Prelude/Integer64.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_116.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_114.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_112.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_110.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_107.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_105.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_103.h"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_109.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_107.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("______________/Bar_109.h"));
+
+
 	}
 
 	@Test
