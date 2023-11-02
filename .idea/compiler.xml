@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <annotationProcessing>
-      <profile name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="elijah-v1-fluffy-umbrella" />
-      </profile>
-    </annotationProcessing>
     <bytecodeTargetLevel target="16">
-      <module name="fluffy-umbrella" target="1.8" />
-      <module name="idea-mod-compiler-impl" target="17" />
-      <module name="idea-mod-deduce" target="17" />
-      <module name="idea-mod-generate" target="17" />
+      <module name="el-fluffy-umbrella__wont-stop2.buildSrc" target="17" />
+      <module name="el-fluffy-umbrella__wont-stop2.buildSrc.main" target="17" />
+      <module name="el-fluffy-umbrella__wont-stop2.buildSrc.test" target="17" />
+      <module name="el-fluffy-umbrella__wont-stop2.untitled" target="17" />
+      <module name="el-fluffy-umbrella__wont-stop2.untitled.main" target="17" />
+      <module name="el-fluffy-umbrella__wont-stop2.untitled.test" target="17" />
+      <module name="elijah-v1-fluffy-umbrella" target="16" />
+      <module name="elijah-v1-fluffy-umbrella.buildSrc" target="17" />
+      <module name="elijah-v1-fluffy-umbrella.buildSrc.main" target="17" />
+      <module name="elijah-v1-fluffy-umbrella.buildSrc.test" target="17" />
+      <module name="elijah-v1-fluffy-umbrella.elijah-ek" target="17" />
+      <module name="elijah-v1-fluffy-umbrella.elijah-ek.main" target="17" />
+      <module name="elijah-v1-fluffy-umbrella.elijah-ek.test" target="17" />
+      <module name="elijah-v1-fluffy-umbrella.elijah-util" target="17" />
+      <module name="elijah-v1-fluffy-umbrella.elijah-util.main" target="17" />
+      <module name="elijah-v1-fluffy-umbrella.elijah-util.test" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

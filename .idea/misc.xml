@@ -12,10 +12,11 @@
         <option value="$PROJECT_DIR$/idea-mod-compiler-impl/pom.xml" />
         <option value="$PROJECT_DIR$/idea-mod-deduce/pom.xml" />
         <option value="$PROJECT_DIR$/idea-mod-generate/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
       </set>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="semeru 17.0.6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="semeru 17.0.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
