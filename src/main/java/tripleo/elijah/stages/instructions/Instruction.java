@@ -68,6 +68,10 @@ public class Instruction {
 		return args.size();
 	}
 
+	public boolean isEmpty() {
+		return getArgsSize() == 0;
+	}
+
 //	public List<InstructionArgument> getArgs() {
 //		return args;
 //	}
