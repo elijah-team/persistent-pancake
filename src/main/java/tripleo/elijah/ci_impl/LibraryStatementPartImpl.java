@@ -19,8 +19,7 @@ import java.util.*;
  * Created 9/6/20 12:06 PM
  */
 public class LibraryStatementPartImpl implements LibraryStatementPart {
-	public class Directive {
-
+	public static class Directive {
 		private final IExpression expression;
 		private final String name;
 
@@ -39,8 +38,9 @@ public class LibraryStatementPartImpl implements LibraryStatementPart {
 
 	@Override
 	public void addDirective(final @NotNull Token token, final IExpression iExpression) {
-		if (dirs == null)
+		if (dirs == null) {
 			dirs = new ArrayList<>();
+		}
 		dirs.add(new Directive(token, iExpression));
 	}
 

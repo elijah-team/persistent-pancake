@@ -258,7 +258,8 @@ public abstract class Compilation {
 		}
 
 		if (ctl instanceof DefaultCompilerController) {
-			((DefaultCompilerController) ctl)._set(this, args);
+			final DefaultCompilerController dctl = (DefaultCompilerController) ctl;
+			dctl._set(this, args);
 		} else if (ctl instanceof UT_Controller) {
 			UT_Controller uctl = (UT_Controller) ctl;
 			uctl._set(this, args);
