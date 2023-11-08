@@ -11,6 +11,7 @@ package tripleo.elijah.contexts;
 import tripleo.elijah.lang.BaseFunctionDef;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.DecideElObjectType;
 import tripleo.elijah.lang.FormalArgListItem;
 import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.lang.FunctionItem;
@@ -29,7 +30,6 @@ import java.util.List;
  * Created 	Mar 26, 2020 at 6:13:58 AM
  */
 public class FunctionContext extends Context {
-
 	private final BaseFunctionDef carrier;
 	private final Context _parent;
 
@@ -39,23 +39,31 @@ public class FunctionContext extends Context {
 	}
 
 	@Override public LookupResultList lookup(final String name, final int level, final LookupResultList Result, final List<Context> alreadySearched, final boolean one) {
-		alreadySearched.add(carrier.getContext());
+		//alreadySearched.add(carrier.getContext());
 		for (final FunctionItem item: carrier.getItems()) {
-			if (!(item instanceof ClassStatement) &&
-				!(item instanceof NamespaceStatement) &&
-				!(item instanceof FunctionDef) &&
-				!(item instanceof VariableSequence)
-			) continue;
-			if (item instanceof OS_Element2) {
+
+			switch (DecideElObjectType.getElObjectType(item)) {
+
+			case CLASS, NAMESPACE, FUNCTION, CONSTRUCTOR /*DEF, */ -> {
 				if (((OS_Element2) item).name().equals(name)) {
 					Result.add(name, level, item, this);
 				}
-			} else if (item instanceof VariableSequence) {
+			}
+			case VAR -> {
 				tripleo.elijah.util.Stupidity.println2("[FunctionContext#lookup] VariableSequence " + item);
 				for (final VariableStatement vs : ((VariableSequence) item).items()) {
-					if (vs.getName().equals(name))
+					if (vs.getName().equals(name)) {
 						Result.add(name, level, vs, this);
+					}
 				}
+			}
+			default -> {
+				// README 11/07 if I made a mistake scream
+				if (item instanceof OS_Element2) {
+					assert false;
+				}
+			}
+
 			}
 		}
 		for (final FormalArgListItem arg : carrier.getArgs()) {
@@ -63,11 +71,17 @@ public class FunctionContext extends Context {
 				Result.add(name, level, arg, this);
 			}
 		}
+
 		if (carrier.getParent() != null) {
-			final Context context = getParent()/*carrier.getParent().getContext()*/;
-			if (!alreadySearched.contains(context) || !one)
+			final Context context = getParent();
+		//	if (!alreadySearched.contains(context) || !one)
+			if (context != null) {
 				return context.lookup(name, level + 1, Result, alreadySearched, false);
+			} else {
+				assert false;
+			}
 		}
+
 		return Result;
 	}
 

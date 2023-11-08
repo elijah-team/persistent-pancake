@@ -1,14 +1,13 @@
 package tripleo.elijah.stages.deduce.post_bytecode;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.diagnostic.Locatable;
@@ -187,17 +186,76 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 		doLogic(ll, aVte1.typePromise(), aLOG, aVte1, errSink, ctx, aE_text, aVte);
 	}
 
-	public void doLogic(@NotNull final List<TypeTableEntry> potentialTypes, final Promise<GenType, Void, Void> p, final @NotNull ElLog LOG, final @NotNull VariableTableEntry vte1, final ErrSink errSink, final Context ctx, final String e_text, final @NotNull VariableTableEntry vte) {
-		assert potentialTypes.size() >= 0;
+	public void doLogic(@NotNull final List<TypeTableEntry> potentialTypes,
+	                    final Eventual<GenType> p,
+	                    final @NotNull ElLog LOG,
+	                    final @NotNull VariableTableEntry vte1,
+	                    final ErrSink errSink,
+	                    final Context ctx,
+	                    final String e_text,
+	                    final @NotNull VariableTableEntry vte) {
 		switch (potentialTypes.size()) {
-		case 1:
-//							tte.attached = ll.get(0).attached;
-//							vte.addPotentialType(instructionIndex, ll.get(0));
-			if (p.isResolved()) {
-				LOG.info(String.format("1047 (vte already resolved) %s vte1.type = %s, gf = %s, tte1 = %s %n", vte1.getName(), vte1.type, generatedFunction, potentialTypes.get(0)));
-			} else {
-				final OS_Type attached = potentialTypes.get(0).getAttached();
-				if (attached == null) return;
+		case 1  -> __doLogic__pot_size_is_1(potentialTypes, p, LOG, vte1, errSink);
+		case 0  -> __doLogic__pot_size_is_0(p, LOG, vte1, errSink, ctx, e_text, vte);
+		default -> __doLogic__pot_size_is_other(potentialTypes, p, LOG, vte1, errSink, ctx, e_text, vte);
+		}
+	}
+
+	private void __doLogic__pot_size_is_other(final @NotNull List<TypeTableEntry> potentialTypes,
+	                                          final Eventual<GenType> p,
+	                                          final @NotNull ElLog LOG,
+	                                          final @NotNull VariableTableEntry vte1,
+	                                          final ErrSink errSink,
+	                                          final Context ctx,
+	                                          final String e_text,
+	                                          final @NotNull VariableTableEntry vte) {
+		// TODO hopefully this works
+		final @NotNull List<TypeTableEntry> potentialTypes1 = new ArrayList<>(Collections2.filter(potentialTypes, input -> input.getAttached() != null));
+		// prevent infinite recursion
+		if (potentialTypes1.size() < potentialTypes.size()) {
+			doLogic(potentialTypes1, p, LOG, vte1, errSink, ctx, e_text, vte);
+		} else {
+			LOG.info("913 Don't know");
+		}
+	}
+
+	private void __doLogic__pot_size_is_0(final @NotNull Eventual<GenType> p,
+	                                      final @NotNull ElLog LOG,
+	                                      final @NotNull VariableTableEntry vte1,
+	                                      final ErrSink errSink,
+	                                      final Context ctx,
+	                                      final String e_text,
+	                                      final @NotNull VariableTableEntry vte) {
+		// README moved up here to elimiate work
+		if (p.isResolved()) {
+			System.out.printf("890-1 Already resolved type: vte1.type = %s, gf = %s %n", vte1.type, generatedFunction);
+			return;
+		}
+
+		final LookupResultList     lrl  = ctx.lookup(e_text);
+		final @Nullable OS_Element best = lrl.chooseBest(null);
+
+		if (best instanceof @NotNull final FormalArgListItem fali) {
+			__dlpsi0__FormalArgListItem(vte1, errSink, vte, fali);
+		} else if (best instanceof final @NotNull VariableStatement vs) {
+			__dlpsi0__VariableStatement(p, vte1, e_text, vte, vs);
+		} else {
+			final int y = 2;
+			LOG.err("543 " + best.getClass().getName());
+			throw new NotImplementedException();
+		}
+	}
+
+	private void __dlpsi0__FormalArgListItem(final @NotNull VariableTableEntry vte1, final ErrSink errSink, final @NotNull VariableTableEntry vte, final @NotNull FormalArgListItem fali) {
+		final @NotNull OS_Type osType = new OS_UserType(fali.typeName());
+		if (!osType.equals(vte.type.getAttached())) {
+			@NotNull final TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(
+			  TypeTableEntry.Type.SPECIFIED, osType, fali.getNameToken(), vte1);
+							/*if (p.isResolved())
+								System.out.printf("890 Already resolved type: vte1.type = %s, gf = %s, tte1 = %s %n", vte1.type, generatedFunction, tte1);
+							else*/
+			{
+				final OS_Type attached = tte1.getAttached();
 				switch (attached.getType()) {
 				case USER:
 					vte1.type.setAttached(attached); // !!
@@ -208,87 +266,64 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 					vte1.resolveType(gt);
 					break;
 				default:
-					errSink.reportWarning("Unexpected value: " + attached.getType());
-//										throw new IllegalStateException("Unexpected value: " + attached.getType());
-				}
-			}
-			break;
-		case 0:
-			// README moved up here to elimiate work
-			if (p.isResolved()) {
-				System.out.printf("890-1 Already resolved type: vte1.type = %s, gf = %s %n", vte1.type, generatedFunction);
-				break;
-			}
-			final LookupResultList lrl = ctx.lookup(e_text);
-			@Nullable final OS_Element best = lrl.chooseBest(null);
-			if (best instanceof @NotNull final FormalArgListItem fali) {
-				final @NotNull OS_Type           osType = new OS_UserType(fali.typeName());
-				if (!osType.equals(vte.type.getAttached())) {
-					@NotNull final TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(
-					  TypeTableEntry.Type.SPECIFIED, osType, fali.getNameToken(), vte1);
-									/*if (p.isResolved())
-										System.out.printf("890 Already resolved type: vte1.type = %s, gf = %s, tte1 = %s %n", vte1.type, generatedFunction, tte1);
-									else*/
-					{
-						final OS_Type attached = tte1.getAttached();
-						switch (attached.getType()) {
-						case USER:
-							vte1.type.setAttached(attached); // !!
-							break;
-						case USER_CLASS:
-							final GenType gt = vte1.genType;
-							gt.resolved = attached;
-							vte1.resolveType(gt);
-							break;
-						default:
-							errSink.reportWarning("2853 Unexpected value: " + attached.getType());
+					errSink.reportWarning("2853 Unexpected value: " + attached.getType());
 //												throw new IllegalStateException("Unexpected value: " + attached.getType());
-						}
-					}
 				}
+			}
+		}
 //								vte.type = tte1;
 //								tte.attached = tte1.attached;
 //								vte.setStatus(BaseTableEntry.Status.KNOWN, best);
-			} else if (best instanceof final @NotNull VariableStatement vs) {
-				//
-				assert vs.getName().equals(e_text);
-				//
-				@Nullable final InstructionArgument vte2_ia = generatedFunction.vte_lookup(vs.getName());
-				@NotNull final VariableTableEntry   vte2    = generatedFunction.getVarTableEntry(to_int(vte2_ia));
-				if (p.isResolved())
-					System.out.printf("915 Already resolved type: vte2.type = %s, gf = %s %n", vte1.type, generatedFunction);
-				else {
-					final GenType gt       = vte1.genType;
-					final OS_Type attached = vte2.type.getAttached();
-					gt.resolved = attached;
-					vte1.resolveType(gt);
-				}
+	}
+
+	private void __dlpsi0__VariableStatement(final @NotNull Eventual<GenType> p,
+	                                         final @NotNull VariableTableEntry vte1,
+	                                         final String e_text,
+	                                         final @NotNull VariableTableEntry vte,
+	                                         final @NotNull VariableStatement vs) {
+		assert vs.getName().equals(e_text);
+		//
+		@Nullable final InstructionArgument vte2_ia = generatedFunction.vte_lookup(vs.getName());
+		@NotNull final VariableTableEntry   vte2    = generatedFunction.getVarTableEntry(to_int(vte2_ia));
+		if (p.isResolved())
+			System.out.printf("915 Already resolved type: vte2.type = %s, gf = %s %n", vte1.type, generatedFunction);
+		else {
+			final GenType gt       = vte1.genType;
+			final OS_Type attached = vte2.type.getAttached();
+			gt.resolved = attached;
+			vte1.resolveType(gt);
+		}
 //								vte.type = vte2.type;
 //								tte.attached = vte.type.attached;
-				vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
-				vte2.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best)); // TODO ??
-			} else {
-				final int y = 2;
-				LOG.err("543 " + best.getClass().getName());
-				throw new NotImplementedException();
+		// README 11/07 fails in {@code  tripleo.elijah.stages.deduce.DoAssignCall_ArgsIdent1_Test#f1_eq_factorial_b1
+		if (DeduceNames.sameName(vs, vte)) {
+			vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(vs));
+		}
+		assert DeduceNames.sameName(vs, vte2);
+		vte2.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(vs)); // TODO ??
+	}
+
+	private void __doLogic__pot_size_is_1(final @NotNull List<TypeTableEntry> potentialTypes, final Eventual<GenType> p, final @NotNull ElLog LOG, final @NotNull VariableTableEntry vte1, final ErrSink errSink) {
+		//							tte.attached = ll.get(0).attached;
+//							vte.addPotentialType(instructionIndex, ll.get(0));
+		if (p.isResolved()) {
+			LOG.info(String.format("1047 (vte already resolved) %s vte1.type = %s, gf = %s, tte1 = %s %n", vte1.getName(), vte1.type, generatedFunction, potentialTypes.get(0)));
+		} else {
+			final OS_Type attached = potentialTypes.get(0).getAttached();
+			if (attached == null) return;
+			switch (attached.getType()) {
+			case USER:
+				vte1.type.setAttached(attached); // !!
+				break;
+			case USER_CLASS:
+				final GenType gt = vte1.genType;
+				gt.resolved = attached;
+				vte1.resolveType(gt);
+				break;
+			default:
+				errSink.reportWarning("Unexpected value: " + attached.getType());
+//										throw new IllegalStateException("Unexpected value: " + attached.getType());
 			}
-			break;
-		default:
-			// TODO hopefully this works
-			final @NotNull ArrayList<TypeTableEntry> potentialTypes1 = new ArrayList<TypeTableEntry>(
-			  Collections2.filter(potentialTypes, new Predicate<TypeTableEntry>() {
-				  @Override
-				  public boolean apply(@org.jetbrains.annotations.Nullable final TypeTableEntry input) {
-					  assert input != null;
-					  return input.getAttached() != null;
-				  }
-			  }));
-			// prevent infinite recursion
-			if (potentialTypes1.size() < potentialTypes.size())
-				doLogic(potentialTypes1, p, LOG, vte1, errSink, ctx, e_text, vte);
-			else
-				LOG.info("913 Don't know");
-			break;
 		}
 	}
 

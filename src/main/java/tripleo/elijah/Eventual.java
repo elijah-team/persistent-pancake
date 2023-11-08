@@ -42,4 +42,8 @@ public class Eventual<P> {
 	public void reject(Diagnostic aDiagnostic) {
 		prom.reject(aDiagnostic);
 	}
+
+	public boolean isPending() {
+		return prom.isPending();
+	}
 }

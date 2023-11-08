@@ -1917,7 +1917,23 @@ public class DeduceTypes2 {
 											LOG.err("2041 type already found " + vte);
 											return; // type already found
 										}
+
+
+
+
+
+
+
+
+
 										// I'm not sure if below is ever called
+
+										// README 11/08 let's test it out
+										assert false;
+
+
+
+
 										@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, gt(aType), pte.expression, pte);
 										vte.addPotentialType(instructionIndex, tte);
 									}

@@ -1,12 +1,13 @@
 package tripleo.elijah.stages.deduce;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
-import tripleo.elijah.contexts.FunctionContext;
+import tripleo.elijah.context_mocks.FunctionContextMock;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.FunctionDef;
@@ -70,19 +71,25 @@ public class DoAssignCall_ArgsIdent1_Test {
 		final TypeTableEntry    b1_type           = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, sts_int);
 		final OS_Type           b1_attached       = sts_int;
 		b1_type.setAttached(sts_int);
-		final int             index_b1 = generatedFunction.addVariableTableEntry("b1", VariableTableType.VAR, b1_type, null);
-		final FunctionContext ctx      = mock(FunctionContext.class);
+
+		final String          b1_name       = "b1";
+		final int             index_b1 = generatedFunction.addVariableTableEntry(b1_name, VariableTableType.VAR, b1_type, null);
+		final Context ctx      = new FunctionContextMock();
 
 		final LookupResultList  lrl_b1 = new LookupResultList();
 		final VariableSequence  vs     = new VariableSequence();
-		final VariableStatement b1_var = new VariableStatement(vs);
-		b1_var.setName(Helpers.string_to_ident("b1"));
-		final Context b1_ctx = mock(Context.class);
-		lrl_b1.add("b1", 1, b1_var, b1_ctx);
 
-		expect(ctx.lookup("b1")).andReturn(lrl_b1);
+		final Pair<VariableStatement, Context> x      = b_variable(vs, b1_name);
+		final VariableStatement                result = x.getLeft();
+		final Context                          b1_ctx = x.getRight();
+		lrl_b1.add(b1_name, 1, result, b1_ctx);
 
-		replay(fd, /*generatedFunction,*/ ctx, b1_ctx);
+
+		ctx.expect(b1_name, result).andContributeResolve(b1_ctx);
+
+//		expect(ctx.lookup(b1_name)).andReturn(lrl_b1);
+
+		replay(fd, /*generatedFunction,*/ b1_ctx);
 
 		final TypeTableEntry vte_tte = null;
 		final OS_Element     el      = null;
@@ -92,13 +99,21 @@ public class DoAssignCall_ArgsIdent1_Test {
 		final ProcTableEntry pte              = new ProcTableEntry(-2, null, null, new ArrayList()/*List_of()*/);
 		final int            i                = 0;
 		final TypeTableEntry tte = new TypeTableEntry(-3, TypeTableEntry.Type.SPECIFIED, null, null, null);
-		final IdentExpression identExpression = Helpers.string_to_ident("b1"); // TODO ctx
+		final IdentExpression identExpression = Helpers.string_to_ident(b1_name); // TODO ctx
 
 		d.do_assign_call_args_ident(generatedFunction, ctx, vte, instructionIndex, pte, i, tte, identExpression);
 
 		d.onExitFunction(generatedFunction, ctx, ctx);
 
-		verify(mod, fd, /*generatedFunction,*/ ctx);
+		verify(mod, fd /*,generatedFunction*/);
+	}
+
+	private static Pair<VariableStatement, Context> b_variable(final VariableSequence vs, final String aName) {
+		final VariableStatement result = new VariableStatement(vs);
+		result.setName(Helpers.string_to_ident(aName));
+
+		final Context b1_ctx = mock(Context.class);
+		return Pair.of(result,b1_ctx);
 	}
 
 }

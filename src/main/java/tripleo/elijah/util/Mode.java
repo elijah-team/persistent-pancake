@@ -1,4 +1,4 @@
-package tripleo.elijah.nextgen.query;
+package tripleo.elijah.util;
 
 public enum Mode {
 	SUCCESS, FAILURE, NOTHING
