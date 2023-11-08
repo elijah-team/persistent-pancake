@@ -1,12 +1,13 @@
 package tripleo.elijah.ut;
 
-import com.stubbornjava.examples.undertow.routing.ConstantStringHandler;
 import io.undertow.Undertow;
 import io.undertow.UndertowOptions;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.RoutingHandler;
 import io.undertow.util.Headers;
+import tripleo.vendor.com.stubbornjava.examples.undertow.routing.ConstantStringHandler;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
