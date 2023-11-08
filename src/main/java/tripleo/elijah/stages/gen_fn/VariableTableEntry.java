@@ -172,7 +172,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 				}
 			} else {
 				_resolveTypeCalled = aGenType;
-				typeDeferred.reset();
+//				typeDeferred.reset();
 				typeDeferred.resolve(aGenType);
 			}
 			return;

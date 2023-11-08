@@ -15,6 +15,8 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang.types.OS_BuiltinType;
@@ -399,7 +401,7 @@ public class DoAssignCall {
 //		LOG.info("10000 "+vte_ia);
 		if (vte_ia != null) {
 			final @NotNull VariableTableEntry  vte1 = generatedFunction.getVarTableEntry(to_int(vte_ia));
-			final Promise<GenType, Void, Void> p    = VTE_TypePromises.do_assign_call_args_ident_vte_promise(aTte, vte1);
+			final Eventual<GenType> p    = VTE_TypePromises.do_assign_call_args_ident_vte_promise(aTte, vte1);
 			@NotNull final Runnable runnable = new Runnable() {
 				boolean isDone;
 

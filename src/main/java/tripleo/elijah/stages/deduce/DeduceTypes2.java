@@ -15,6 +15,7 @@ import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.lang.*;
@@ -2052,9 +2053,9 @@ public class DeduceTypes2 {
 		final @Nullable InstructionArgument vte_ia = generatedFunction.vte_lookup(e_text);
 //		LOG.info("10000 "+vte_ia);
 		if (vte_ia != null) {
-			final @NotNull VariableTableEntry  vte1 = generatedFunction.getVarTableEntry(to_int(vte_ia));
-			final Promise<GenType, Void, Void> p    = vte1.typePromise();
-			p.done(new DoneCallback<GenType>() {
+			final @NotNull VariableTableEntry vte1 = generatedFunction.getVarTableEntry(to_int(vte_ia));
+			final Eventual<GenType>           p    = vte1.typePromise();
+			p.then(new DoneCallback<GenType>() {
 				@Override
 				public void onDone(final GenType result) {
 //					assert vte != vte1;
@@ -2177,7 +2178,7 @@ public class DeduceTypes2 {
 
 		@NotNull final VariableTableEntry vte2 = generatedFunction.getVarTableEntry(to_int(vte_ia));
 
-		vte2.typePromise().done(vte2_gt -> {
+		vte2.typePromise().then((final GenType vte2_gt) -> {
 			//assert false; // TODO this code is never reached
 			final @Nullable OS_Type ty2 = vte2_gt.typeName;
 			assert ty2 != null;

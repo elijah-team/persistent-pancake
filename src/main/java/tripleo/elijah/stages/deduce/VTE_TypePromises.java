@@ -10,9 +10,9 @@
 package tripleo.elijah.stages.deduce;
 
 import org.jdeferred2.DoneCallback;
-import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.lang.BaseFunctionDef;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.FunctionDef;
@@ -116,7 +116,7 @@ public class VTE_TypePromises {
 	                        final @NotNull Context ctx,
 	                        final @NotNull VariableTableEntry aVte2,
 	                        final @NotNull DeduceTypes2 aDeduceTypes2) {
-		aVte2.typePromise().done(new DoneCallback<GenType>() {
+		aVte2.typePromise().then(new DoneCallback<GenType>() {
 			@Override
 			public void onDone(@NotNull final GenType result) {
 				final @Nullable OS_Type ty2 = result.typeName/*.getAttached()*/;
@@ -156,9 +156,9 @@ public class VTE_TypePromises {
 		});
 	}
 
-	static Promise<GenType, Void, Void> do_assign_call_args_ident_vte_promise(final @NotNull TypeTableEntry aTte, final @NotNull VariableTableEntry aVte1) {
-		final Promise<GenType, Void, Void> p = aVte1.typePromise();
-		p.done(new DoneCallback<GenType>() {
+	static Eventual<GenType> do_assign_call_args_ident_vte_promise(final @NotNull TypeTableEntry aTte, final @NotNull VariableTableEntry aVte1) {
+		final var p = aVte1.typePromise();
+		p.then(new DoneCallback<GenType>() {
 			@Override
 			public void onDone(final GenType result) {
 //					assert vte != vte1;
@@ -202,34 +202,31 @@ public class VTE_TypePromises {
 	                         final VariableTableEntry aBte,
 	                         final IdentTableEntry ite,
 	                         final DeduceTypes2 aDeduceTypes2) {
-		aBte.typePromise().done(new DoneCallback<GenType>() {
-			@Override
-			public void onDone(@NotNull final GenType result) {
-				aPromiseExpectation.satisfy(result);
-				final OS_Type attached1 = result.resolved != null ? result.resolved : result.typeName;
-				if (attached1 != null) {
-					switch (attached1.getType()) {
-						case USER_CLASS:
-							if (ite.type.getAttached() == null)
-								ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, attached1);
-							else {
-								aDeduceTypes2.LOG.err(String.format("3603 Trying to set %s to %s", ite.type.getAttached(), attached1));
-							}
-							break;
-						case USER:
-							try {
-								@NotNull final GenType ty3 = aDeduceTypes2.resolve_type(attached1, attached1.getTypeName().getContext());
-								// no expression or TableEntryIV below
-								@NotNull final TypeTableEntry tte4 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null);
-								// README trying to keep genType up to date
-								tte4.setAttached(attached1);
-								tte4.setAttached(ty3);
-								ite.type = tte4; // or ty2?
-							} catch (final ResolveError aResolveError) {
-								aResolveError.printStackTrace();
-							}
-							break;
-					}
+		aBte.typePromise().then((final GenType result) -> {
+			aPromiseExpectation.satisfy(result);
+			final OS_Type attached1 = result.resolved != null ? result.resolved : result.typeName;
+			if (attached1 != null) {
+				switch (attached1.getType()) {
+					case USER_CLASS:
+						if (ite.type.getAttached() == null)
+							ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, attached1);
+						else {
+							aDeduceTypes2.LOG.err(String.format("3603 Trying to set %s to %s", ite.type.getAttached(), attached1));
+						}
+						break;
+					case USER:
+						try {
+							@NotNull final GenType ty3 = aDeduceTypes2.resolve_type(attached1, attached1.getTypeName().getContext());
+							// no expression or TableEntryIV below
+							@NotNull final TypeTableEntry tte4 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null);
+							// README trying to keep genType up to date
+							tte4.setAttached(attached1);
+							tte4.setAttached(ty3);
+							ite.type = tte4; // or ty2?
+						} catch (final ResolveError aResolveError) {
+							aResolveError.printStackTrace();
+						}
+						break;
 				}
 			}
 		});
