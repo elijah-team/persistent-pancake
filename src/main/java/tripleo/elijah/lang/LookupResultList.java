@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -31,11 +33,12 @@ public class LookupResultList {
 	private final List<LookupResult> _results = new ArrayList<LookupResult>();
 
 	public void add(final String name, final int level, final OS_Element element, final Context aContext) {
-		for (final LookupResult result : _results) {
-			if (result.getElement() == element)
-				return; // TODO hack for bad algorithm
+		final Optional<LookupResult> pres = _results.stream()
+		                                            .filter(input -> Objects.equals(input.getElement(), element))
+		                                            .findAny();
+		if (true || !pres.isPresent()) {
+			_results.add(new LookupResult(name, element, level, aContext));
 		}
-		_results.add(new LookupResult(name, element, level, aContext));
 	}
 
 	public void add(final String name, final int level, final OS_Element element, final Context aContext, final ContextInfo aImportInfo) {
