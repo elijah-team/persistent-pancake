@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.ParserClosure;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 public class Out {
 
@@ -62,7 +63,7 @@ public class Out {
 	}
 
 	public static void println(final String s) {
-		tripleo.elijah.util.Stupidity.println2(s);
+		SimplePrintLoggerToRemoveSoon.println2(s);
 	}
 
 	private final ParserClosure pc;

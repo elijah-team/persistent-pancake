@@ -36,6 +36,7 @@ import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 /**
  * Created 9/10/21 3:42 AM
@@ -181,7 +182,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 	                                                                final FunctionDef aFd,
 	                                                                final VariableStatement aParent) {
 //		throw new IllegalStateException();
-		tripleo.elijah.util.Stupidity.println2("***** 169");
+		SimplePrintLoggerToRemoveSoon.println2("***** 169");
 //		resolved_element_pte_FunctionDef_VariableStatement(aCo, aPte, aDepTracker, aPte, aFd, aParent);
 	}
 
@@ -214,7 +215,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 						if (parent instanceof ClassStatement) {
 							// TODO might be wrong in the case of generics. check.
 							typeName = null;//new OS_Type((ClassStatement) parent);
-							tripleo.elijah.util.Stupidity.println_err2("NOTE ineresting in genericA/__preinc__");
+							SimplePrintLoggerToRemoveSoon.println_err2("NOTE ineresting in genericA/__preinc__");
 						}
 					}
 				}
@@ -233,7 +234,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 
 		if (depTracker != null) {
 			if (aGenType == null)
-				tripleo.elijah.util.Stupidity.println_err2("247 genType is null");
+				SimplePrintLoggerToRemoveSoon.println_err2("247 genType is null");
 
 			if (/*aGenType == null &&*/ aFi.getFunction() instanceof ConstructorDef) {
 				final @NotNull ClassStatement c        = aFi.getClassInvocation().getKlass();

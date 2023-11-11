@@ -22,6 +22,7 @@ import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Operation;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -201,7 +202,7 @@ class USE {
 				final Exception e = om.failure();
 				assert e != null;
 
-				tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
+				SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
 				e.printStackTrace(System.err);
 				s.close();
 				return Operation.failure(e);
@@ -211,7 +212,7 @@ class USE {
 			s.close();
 			return Operation.success(R);
 		} catch (final ANTLRException e) {
-			tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
+			SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
 			e.printStackTrace(System.err);
 			s.close();
 			return Operation.failure(e);

@@ -48,6 +48,7 @@ import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -385,7 +386,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 			if (ci != null) {
 				pte.setClassInvocation(ci);
 			} else
-				tripleo.elijah.util.Stupidity.println_err2("542 Null ClassInvocation");
+				SimplePrintLoggerToRemoveSoon.println_err2("542 Null ClassInvocation");
 		}
 
 		pte.setFunctionInvocation(fi);

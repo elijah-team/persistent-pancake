@@ -24,6 +24,7 @@ import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 public class DeduceElement3_IdentTableEntry extends DefaultStateful implements IDeduceElement3 {
 
@@ -173,7 +174,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 											cpte.typePromise().then(new DoneCallback<GenType>() {
 												@Override
 												public void onDone(@NotNull final GenType result) {
-													tripleo.elijah.util.Stupidity.println2("1483 " + result.resolved + " " + result.node);
+													SimplePrintLoggerToRemoveSoon.println2("1483 " + result.resolved + " " + result.node);
 												}
 											});
 										}
@@ -222,7 +223,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 							final ClassStatement cs = aType.getClassOf();
 							if (aEntry.constructable_pte != null) {
 								final int yyy = 3;
-								tripleo.elijah.util.Stupidity.println2("use_user_class: " + cs);
+								SimplePrintLoggerToRemoveSoon.println2("use_user_class: " + cs);
 							}
 						}
 

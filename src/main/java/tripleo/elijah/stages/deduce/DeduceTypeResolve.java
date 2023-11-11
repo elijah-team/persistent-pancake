@@ -30,7 +30,7 @@ import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
-import tripleo.elijah.util.Stupidity;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 /**
  * Created 11/18/21 12:02 PM
@@ -73,7 +73,7 @@ public class DeduceTypeResolve {
 							              x[0] = xx;
 						              });
 
-						Stupidity.println_err("** typeResolution already resolved for " + eh.getElement() + " to " + x[0]);
+						SimplePrintLoggerToRemoveSoon.println_err("** typeResolution already resolved for " + eh.getElement() + " to " + x[0]);
 					} else {
 						if (!genType.isNull())
 							typeResolution.resolve(genType);
@@ -89,7 +89,7 @@ public class DeduceTypeResolve {
 
 						@Override
 						public void visitAliasStatement(final AliasStatement aAliasStatement) {
-							Stupidity.println_err(String.format("** AliasStatement %s points to %s%n", aAliasStatement.name(), aAliasStatement.getExpression()));
+							SimplePrintLoggerToRemoveSoon.println_err(String.format("** AliasStatement %s points to %s%n", aAliasStatement.name(), aAliasStatement.getExpression()));
 						}
 
 						@Override
@@ -113,7 +113,7 @@ public class DeduceTypeResolve {
 								s = String.format("** FormalArgListItem %s attached is null. Type is %s.%n",
 								  aFormalArgListItem.name(), aFormalArgListItem.typeName());
 
-							Stupidity.println_err2(s);
+							SimplePrintLoggerToRemoveSoon.println_err2(s);
 						}
 
 						@Override
@@ -152,12 +152,12 @@ public class DeduceTypeResolve {
 
 						@Override
 						public void visitDefFunction(final DefFunctionDef aDefFunctionDef) {
-							Stupidity.println_err(String.format("** DefFunctionDef %s is %s%n", aDefFunctionDef.name(), ((StatementWrapper) aDefFunctionDef.getItems().iterator().next()).getExpr()));
+							SimplePrintLoggerToRemoveSoon.println_err(String.format("** DefFunctionDef %s is %s%n", aDefFunctionDef.name(), ((StatementWrapper) aDefFunctionDef.getItems().iterator().next()).getExpr()));
 						}
 
 						@Override
 						public void defaultAction(final OS_Element anElement) {
-							tripleo.elijah.util.Stupidity.println_err2("158 " + anElement);
+							SimplePrintLoggerToRemoveSoon.println_err2("158 " + anElement);
 							throw new IllegalStateException();
 						}
 

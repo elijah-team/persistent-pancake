@@ -22,7 +22,7 @@ import tripleo.elijah.stages.gen_fn.GenericElementHolder;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
-import tripleo.elijah.util.Stupidity;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 public class VTE_Zero {
     private final VariableTableEntry  vte;
@@ -106,7 +106,7 @@ public class VTE_Zero {
         try {
             final IdentExpression iteIdent = ite.getIdent();
 
-            Stupidity.println_out("*** Looking for " + iteIdent.getText());
+            SimplePrintLoggerToRemoveSoon.println_out("*** Looking for " + iteIdent.getText());
 
             switch (ty.getType()) {
                 case USER:
@@ -134,7 +134,7 @@ public class VTE_Zero {
             //
             //
 
-            Stupidity.println_out("*** Looking for " + iteIdent.getText() + " ; found " + ele2);
+            SimplePrintLoggerToRemoveSoon.println_out("*** Looking for " + iteIdent.getText() + " ; found " + ele2);
 
             //
             //
@@ -151,7 +151,7 @@ public class VTE_Zero {
             //
 
 //			Stupidity.println_out("*** Looking for " + iteIdent.getText() + " ; found "+ ele2);
-            Stupidity.println_out("*** Second lookup failed");
+            SimplePrintLoggerToRemoveSoon.println_out("*** Second lookup failed");
 
             //
             //

@@ -15,6 +15,7 @@ import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.stages.deduce.ClassInvocation;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,7 @@ public class TypeTableEntry {
 				break;
 			default:
 //			throw new NotImplementedException();
-				tripleo.elijah.util.Stupidity.println_err2("73 " + aAttached);
+				SimplePrintLoggerToRemoveSoon.println_err2("73 " + aAttached);
 				break;
 		}
 	}

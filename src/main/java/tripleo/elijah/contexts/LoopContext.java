@@ -24,6 +24,7 @@ import tripleo.elijah.lang.OS_Element2;
 import tripleo.elijah.lang.StatementItem;
 import tripleo.elijah.lang.VariableSequence;
 import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class LoopContext extends Context {
 				}
 			}
 			if (item instanceof VariableSequence) {
-				tripleo.elijah.util.Stupidity.println2("1102 " + item);
+				SimplePrintLoggerToRemoveSoon.println2("1102 " + item);
 				for (final VariableStatement vs : ((VariableSequence) item).items()) {
 					if (vs.getName().equals(name))
 						Result.add(name, level, vs, this);

@@ -49,6 +49,7 @@ import tripleo.elijah.util.BufferTabbedOutputStream;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.IFixedList;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.work.WorkJob;
 import tripleo.elijah.work.WorkList;
 import tripleo.elijah.work.WorkManager;
@@ -119,7 +120,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 				final GenerateResult                     gr4 = ggc.generateCode(gn2, wm);
 				gr2.results().addAll(gr4.results());
 			} else {
-				tripleo.elijah.util.Stupidity.println2("2009 " + generatedNode.getClass().getName());
+				SimplePrintLoggerToRemoveSoon.println2("2009 " + generatedNode.getClass().getName());
 			}
 		}
 

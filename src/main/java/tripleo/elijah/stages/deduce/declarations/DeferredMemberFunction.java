@@ -23,6 +23,7 @@ import tripleo.elijah.stages.deduce.IInvocation;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 /**
  * Created 11/21/21 6:32 AM
@@ -55,7 +56,7 @@ public class DeferredMemberFunction {
 		//
 
 		if (functionInvocation == null) {
-			tripleo.elijah.util.Stupidity.println2("**=== functionInvocation == null ");
+			SimplePrintLoggerToRemoveSoon.println2("**=== functionInvocation == null ");
 			return;
 		}
 

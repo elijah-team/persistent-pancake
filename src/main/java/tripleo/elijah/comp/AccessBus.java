@@ -15,7 +15,7 @@ import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.OutputFileFactory;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
-import tripleo.elijah.util.Stupidity;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.work.WorkManager;
 
 import java.util.Collection;
@@ -126,7 +126,7 @@ public class AccessBus {
 				final GenerateResult                     gr3 = generateC.generateCode(gn2, wm);
 				gr.additional(gr3);
 			} else {
-				Stupidity.println_out("2009 " + generatedNode.getClass().getName());
+				SimplePrintLoggerToRemoveSoon.println_out("2009 " + generatedNode.getClass().getName());
 			}
 		}
 

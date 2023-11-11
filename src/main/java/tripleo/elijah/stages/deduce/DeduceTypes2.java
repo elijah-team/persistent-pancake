@@ -50,6 +50,7 @@ import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.work.WorkJob;
 import tripleo.elijah.work.WorkList;
 import tripleo.elijah.work.WorkManager;
@@ -1375,7 +1376,7 @@ public class DeduceTypes2 {
 			try {
 				cte.getTypeTableEntry().setAttached(resolve_type(new OS_BuiltinType(aBuiltInType), aContext));
 			} catch (final ResolveError resolveError) {
-				tripleo.elijah.util.Stupidity.println2("117 Can't be here");
+				SimplePrintLoggerToRemoveSoon.println2("117 Can't be here");
 //				resolveError.printStackTrace(); // TODO print diagnostic
 			}
 		}

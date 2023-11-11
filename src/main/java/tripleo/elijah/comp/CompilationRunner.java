@@ -19,6 +19,7 @@ import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
 import tripleo.elijah.util.Operation;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.File;
 import java.io.IOException;
@@ -256,7 +257,7 @@ public class CompilationRunner {
 					final Exception e = cio.failure();
 					assert e != null;
 
-					tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
+					SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
 					e.printStackTrace(System.err);
 					//s.close();
 					return cio;
@@ -267,7 +268,7 @@ public class CompilationRunner {
 				fn2ci.put(absolutePath, R);
 				return cio;
 			} catch (final ANTLRException e) {
-				tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
+				SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
 				e.printStackTrace(System.err);
 				return Operation.failure(e);
 			}

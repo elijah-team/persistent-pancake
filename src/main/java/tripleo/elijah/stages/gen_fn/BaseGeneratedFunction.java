@@ -42,7 +42,7 @@ import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Holder;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.Stupidity;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.world.i.LivingFunction;
 import tripleo.util.range.Range;
 
@@ -82,25 +82,25 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	//
 
 	public static void printTables(final GeneratedFunction gf) {
-		tripleo.elijah.util.Stupidity.println_out("VariableTable ");
+		SimplePrintLoggerToRemoveSoon.println_out("VariableTable ");
 		for (final VariableTableEntry variableTableEntry : gf.vte_list) {
-			tripleo.elijah.util.Stupidity.println_out("\t" + variableTableEntry);
+			SimplePrintLoggerToRemoveSoon.println_out("\t" + variableTableEntry);
 		}
-		tripleo.elijah.util.Stupidity.println_out("ConstantTable ");
+		SimplePrintLoggerToRemoveSoon.println_out("ConstantTable ");
 		for (final ConstantTableEntry constantTableEntry : gf.cte_list) {
-			tripleo.elijah.util.Stupidity.println_out("\t" + constantTableEntry);
+			SimplePrintLoggerToRemoveSoon.println_out("\t" + constantTableEntry);
 		}
-		tripleo.elijah.util.Stupidity.println_out("ProcTable     ");
+		SimplePrintLoggerToRemoveSoon.println_out("ProcTable     ");
 		for (final ProcTableEntry procTableEntry : gf.prte_list) {
-			tripleo.elijah.util.Stupidity.println_out("\t" + procTableEntry);
+			SimplePrintLoggerToRemoveSoon.println_out("\t" + procTableEntry);
 		}
-		tripleo.elijah.util.Stupidity.println_out("TypeTable     ");
+		SimplePrintLoggerToRemoveSoon.println_out("TypeTable     ");
 		for (final TypeTableEntry typeTableEntry : gf.tte_list) {
-			tripleo.elijah.util.Stupidity.println_out("\t" + typeTableEntry);
+			SimplePrintLoggerToRemoveSoon.println_out("\t" + typeTableEntry);
 		}
-		tripleo.elijah.util.Stupidity.println_out("IdentTable    ");
+		SimplePrintLoggerToRemoveSoon.println_out("IdentTable    ");
 		for (final IdentTableEntry identTableEntry : gf.idte_list) {
-			tripleo.elijah.util.Stupidity.println_out("\t" + identTableEntry);
+			SimplePrintLoggerToRemoveSoon.println_out("\t" + identTableEntry);
 		}
 	}
 
@@ -500,7 +500,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 		else {
 			final Holder<GenType> holder = new Holder<GenType>();
 			typeDeferred.then(result -> holder.set(result));
-			Stupidity.println_err(String.format("Trying to resolve function twice 1) %s 2) %s", holder.get().asString(), aType.asString()));
+			SimplePrintLoggerToRemoveSoon.println_err(String.format("Trying to resolve function twice 1) %s 2) %s", holder.get().asString(), aType.asString()));
 		}
 	}
 

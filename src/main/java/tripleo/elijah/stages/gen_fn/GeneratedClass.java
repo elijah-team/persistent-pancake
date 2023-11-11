@@ -20,6 +20,7 @@ import tripleo.elijah.stages.gen_generic.CodeGenerator;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.world.i.LivingClass;
 
 import java.util.ArrayList;
@@ -147,7 +148,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 					// must be unknown
 				}
 			} else {
-				tripleo.elijah.util.Stupidity.println_err(String.format("108 %s %s", varTableEntry.nameToken, varTableEntry.potentialTypes));
+				SimplePrintLoggerToRemoveSoon.println_err(String.format("108 %s %s", varTableEntry.nameToken, varTableEntry.potentialTypes));
 				if (varTableEntry.potentialTypes.size() == 1) {
 					final TypeTableEntry potentialType = varTableEntry.potentialTypes.get(0);
 					if (potentialType.resolved() == null) {
@@ -188,13 +189,13 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 							Result = true;
 						} else {
 							final int y = 2;
-							tripleo.elijah.util.Stupidity.println_err("177 not a USER_CLASS " + potentialType.getAttached());
+							SimplePrintLoggerToRemoveSoon.println_err("177 not a USER_CLASS " + potentialType.getAttached());
 						}
 					}
 					if (potentialType.resolved() != null)
 						varTableEntry.resolve(potentialType.resolved());
 					else {
-						tripleo.elijah.util.Stupidity.println_err("114 Can't resolve " + varTableEntry);
+						SimplePrintLoggerToRemoveSoon.println_err("114 Can't resolve " + varTableEntry);
 					}
 				}
 			}

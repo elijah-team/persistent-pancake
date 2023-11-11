@@ -12,7 +12,6 @@ package tripleo.elijah.stages.deduce;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import org.jdeferred2.DoneCallback;
-import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,6 +42,7 @@ import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -285,7 +285,7 @@ public class DoAssignCall {
 				case MODULO:
 				case SUBTRACTION:
 					final int y = 2;
-					tripleo.elijah.util.Stupidity.println_err2("2363");
+					SimplePrintLoggerToRemoveSoon.println_err2("2363");
 					break;
 				case GET_ITEM: {
 					final @NotNull GetItemExpression gie = (GetItemExpression) e;

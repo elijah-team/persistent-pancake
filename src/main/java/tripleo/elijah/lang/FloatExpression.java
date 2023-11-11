@@ -16,6 +16,7 @@ package tripleo.elijah.lang;
 
 import antlr.Token;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 public class FloatExpression implements IExpression {
 
@@ -50,7 +51,7 @@ public class FloatExpression implements IExpression {
 	@Override
 	public void setKind(final ExpressionKind aType) {
 		// log and ignore
-		tripleo.elijah.util.Stupidity.println_err2("Trying to set ExpressionType of FloatExpression to " + aType.toString());
+		SimplePrintLoggerToRemoveSoon.println_err2("Trying to set ExpressionType of FloatExpression to " + aType.toString());
 	}
 	
 	@Override

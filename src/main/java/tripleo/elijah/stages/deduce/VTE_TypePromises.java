@@ -33,6 +33,7 @@ import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 /**
  * Created 11/27/21 12:51 PM
@@ -97,7 +98,7 @@ public class VTE_TypePromises {
 			@Override
 			public void onDone(@NotNull final GenType result) {
 				if (result.resolved.getClassOf() != fd.getParent()) {
-					tripleo.elijah.util.Stupidity.println_err2("** Failed assertion");
+					SimplePrintLoggerToRemoveSoon.println_err2("** Failed assertion");
 				}
 
 				@NotNull final ProcTableListener.E_Is_FunctionDef e_Is_FunctionDef = aProcTableListener.new E_Is_FunctionDef(pte, fd, fd.getParent()).invoke(aVariableTableEntry.type.genType.nonGenericTypeName);
@@ -187,11 +188,11 @@ public class VTE_TypePromises {
 						@NotNull final FunctionInvocation fi = aDeduceTypes2.newFunctionInvocation(fd, pte, invocation, aDeduceTypes2.phase);
 						pte.setFunctionInvocation(fi);
 					} else
-						tripleo.elijah.util.Stupidity.println2("175 pte.fi is not null");
+						SimplePrintLoggerToRemoveSoon.println2("175 pte.fi is not null");
 					aIntegerIA.gf.addDependentFunction(pte.getFunctionInvocation()); // TODO is this needed (here)?
 				} else {
 					final int y = 3;
-					tripleo.elijah.util.Stupidity.println2("3074");
+					SimplePrintLoggerToRemoveSoon.println2("3074");
 				}
 			}
 		});

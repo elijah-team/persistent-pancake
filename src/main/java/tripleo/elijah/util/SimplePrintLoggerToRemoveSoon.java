@@ -1,6 +1,6 @@
 package tripleo.elijah.util;
 
-public class Stupidity {
+public class SimplePrintLoggerToRemoveSoon {
 	public static void println_err(final String aS) {
 //		System.err.println(aS);
 	}

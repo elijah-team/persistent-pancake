@@ -28,6 +28,7 @@ import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.deduce.IInvocation;
 import tripleo.elijah.stages.deduce.NamespaceInvocation;
 import tripleo.elijah.stages.deduce.zero.Zero_FuncExprType;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.Objects;
 
@@ -128,7 +129,7 @@ public class GenType {
 				resolved = aType;
 				break;
 			default:
-				tripleo.elijah.util.Stupidity.println_err2("48 Unknown in set: " + aType);
+				SimplePrintLoggerToRemoveSoon.println_err2("48 Unknown in set: " + aType);
 		}
 	}
 

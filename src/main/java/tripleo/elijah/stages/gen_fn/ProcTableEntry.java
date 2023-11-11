@@ -29,6 +29,7 @@ import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,10 +87,10 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 			case 0:
 				throw new IllegalStateException();
 			case 1:
-				tripleo.elijah.util.Stupidity.println_err2("136 pte not finished resolving " + this);
+				SimplePrintLoggerToRemoveSoon.println_err2("136 pte not finished resolving " + this);
 				break;
 			case 2:
-				tripleo.elijah.util.Stupidity.println_err2("138 Internal compiler error");
+				SimplePrintLoggerToRemoveSoon.println_err2("138 Internal compiler error");
 				break;
 		case 3:
 			if (completeDeferred.isPending())

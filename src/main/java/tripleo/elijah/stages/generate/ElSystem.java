@@ -18,6 +18,7 @@ import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class ElSystem {
 		if (verbose) {
 			for (final GenerateResultItem ab : gr.results()) {
 				if (ab.node instanceof GeneratedFunction) continue;
-				tripleo.elijah.util.Stupidity.println2("** " + ab.node + " " + ab.output);
+				SimplePrintLoggerToRemoveSoon.println2("** " + ab.node + " " + ab.output);
 			}
 		}
 	}
