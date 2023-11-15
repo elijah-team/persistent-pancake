@@ -63,10 +63,19 @@ class Resolve_Ident_IA {
 	Context ectx;
 
 	public void action() {
-		final @NotNull List<InstructionArgument> s = generatedFunction._getIdentIAPathList(identIA);
+		DeduceElementIdent dei = new DeduceElementIdent(identIA.getEntry());
+		dei.setDeduceTypes2(this.dc.deduceTypes2, context, generatedFunction);
 
-		ectx = context;
-		el = null;
+		dei.resolvedElementPromise().then((el2) -> {
+
+			//final OS_Element                         el2 = dei.getResolvedElement();
+
+			System.out.println("  70 " + el2);
+
+			final @NotNull List<InstructionArgument> s = generatedFunction._getIdentIAPathList(identIA);
+
+			ectx = context;
+			el   = null;
 
 /*
 		for (final InstructionArgument ia : s) {
@@ -99,13 +108,15 @@ class Resolve_Ident_IA {
 			} else
 				throw new IllegalStateException("Really cant be here");
 */
-		if (!process(s.get(0), s)) return;
+			if (!process(s.get(0), s)) return;
 
-		preUpdateStatus(s);
-		updateStatus(s);
+			preUpdateStatus(s);
+			updateStatus(s);
+		});
 	}
 
-	private boolean process(InstructionArgument ia, final @NotNull List<InstructionArgument> aS) {
+	@Contract("null, _ -> fail")
+	private boolean process(@NotNull InstructionArgument ia, final @NotNull List<InstructionArgument> aS) {
 		if (ia instanceof IntegerIA) {
 			@NotNull RIA_STATE state = action_IntegerIA(ia);
 			if (state == RIA_STATE.RETURN) {
@@ -426,6 +437,7 @@ class Resolve_Ident_IA {
 				idte.resolveExpectation.satisfy(normal_path);
 		} else if (idte.getStatus() == BaseTableEntry.Status.KNOWN) {
 			final String normal_path = generatedFunction.getIdentIAPathNormal(identIA);
+ 			assert idte.resolveExpectation.isSatisfied();
  			if (!idte.resolveExpectation.isSatisfied())
 				idte.resolveExpectation.satisfy(normal_path);
 

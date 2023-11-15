@@ -9,17 +9,22 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import org.jdeferred2.Deferred;
+import org.jdeferred2.Promise;
+import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
+import tripleo.elijah.util.Holder;
 
 /**
  * Created 11/22/21 8:23 PM
  */
-public class DeduceElementIdent {
+public class DeduceElementIdent implements IDeduceElement_old {
 	private final IdentTableEntry identTableEntry;
 	private DeduceTypes2 deduceTypes2;
 	private Context context;
@@ -35,10 +40,39 @@ public class DeduceElementIdent {
 		generatedFunction = aGeneratedFunction;
 	}
 
+	private final Deferred<OS_Element, Void, Void> _resolvedElementPromise = new DeferredObject<>();
+
+	public Promise<OS_Element, Void, Void> resolvedElementPromise() {
+		return _resolvedElementPromise.promise();
+	}
+
+	public void resolveElement(final OS_Element aElement) {
+		_resolvedElementPromise.resolve(aElement);
+	}
+
 	public OS_Element getResolvedElement() {
-		DeduceTypes2.Holder<OS_Element> holder = new DeduceTypes2.Holder<>();
-		final IdentIA identIA = new IdentIA(identTableEntry.getIndex(), generatedFunction);
-		if (deduceTypes2 != null) { // TODO remove this ASAP. Should never happen
+		if (deduceTypes2 == null) { // TODO remove this ASAP. Should never happen
+			System.err.println("5454 Should never happen. gf is not deduced.");
+			return null;
+		}
+
+		final Holder<OS_Element> holder  = new Holder<>();
+
+		boolean rp = false;
+
+		if (deduceTypes2.hasResolvePending(identTableEntry)) {
+			identTableEntry.elementPromise(holder::set, null);
+			final DeducePath      dp  = identTableEntry.buildDeducePath(generatedFunction);
+			final IDeduceElement3 de3 = identTableEntry.getDeduceElement3(deduceTypes2, generatedFunction);
+
+			rp = true;
+		} else {
+			deduceTypes2.addResolvePending(identTableEntry, this, holder);
+		}
+
+		if (!rp) { // eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+			final IdentIA identIA = new IdentIA(identTableEntry.getIndex(), generatedFunction);
+
 			deduceTypes2.resolveIdentIA_(context, identIA, generatedFunction, new FoundElement(deduceTypes2.phase) {
 				@Override
 				public void foundElement(final OS_Element e) {
@@ -47,12 +81,13 @@ public class DeduceElementIdent {
 
 				@Override
 				public void noFoundElement() {
-					deduceTypes2.LOG.err("DeduceElementIdent: can't resolve element for "+identTableEntry);
+					deduceTypes2.LOG.err("DeduceElementIdent: can't resolve element for " + identTableEntry);
 				}
 			});
-		} else
-			System.err.println("5454 Should never happen. gf is not deduced.");
-		return holder.get();
+		}
+		final OS_Element R = holder.get();
+		System.err.println("8989 "+(R!=null));
+		return R;
 	}
 }
 

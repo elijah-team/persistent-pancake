@@ -76,10 +76,16 @@ public class DeducePath {
 //					getEntry(aIndex-1).setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(getElement(aIndex-1)));
 //					el = identTableEntry.resolved_element;
 //				}
-				assert el != null;
-				if (aIndex == 0)
-					if (identTableEntry.getResolvedElement() != el)
-						identTableEntry.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
+				if (el == null) {
+					//throw new AssertionError();
+					identTableEntry.getDeduceElemnt().resolvedElementPromise().then((x) -> {
+						identTableEntry.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(x));
+					});
+				} else {
+					if (aIndex == 0)
+						if (identTableEntry.getResolvedElement() != el)
+							identTableEntry.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
+				}
 			} else if (ia2 instanceof ProcIA) {
 				final @NotNull ProcTableEntry procTableEntry = ((ProcIA) ia2).getEntry();
 				el = procTableEntry.getResolvedElement(); // .expression?

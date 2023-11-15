@@ -8,6 +8,7 @@
  */
 package tripleo.elijah;
 
+import org.hamcrest.core.IsEqual;
 import org.junit.Assert;
 import org.junit.Test;
 import tripleo.elijah.comp.Compilation;
@@ -27,7 +28,7 @@ import static tripleo.elijah.util.Helpers.List_of;
 public class CompilationTest {
 
 	@Test
-	public final void testEz() {
+	public final void testEz() throws Exception {
 		final List<String> args = List_of("test/comp_test/main3", "-sE"/*, "-out"*/);
 		final ErrSink eee = new StdErrSink();
 		final Compilation c = new Compilation(eee, new IO());
@@ -37,7 +38,13 @@ public class CompilationTest {
 		Assert.assertTrue(c.getIO().recordedRead(new File("test/comp_test/main3/main3.ez")));
 		Assert.assertTrue(c.getIO().recordedRead(new File("test/comp_test/main3/main3.elijah")));
 		Assert.assertTrue(c.getIO().recordedRead(new File("test/comp_test/fact1.elijah")));
-		Assert.assertTrue(c.cis.size() > 0);
+
+		Assert.assertTrue(c.instructionCount() > 0);
+
+		c.modules
+				.stream()
+				.forEach(mod -> System.out.println(String.format("**48** %s %s", mod, mod.getFileName())));
+//		Assert.assertThat(c.modules.size(), new IsEqual<Integer>(3));
 		Assert.assertTrue(c.modules.size() > 2);
 	}
 

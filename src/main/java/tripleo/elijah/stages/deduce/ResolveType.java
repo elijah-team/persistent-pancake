@@ -13,9 +13,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.NotImplementedException;
+
+import java.util.function.Consumer;
 
 /**
  * Created 11/18/21 10:51 PM
@@ -36,7 +39,7 @@ public class ResolveType {
 			resolve_built_in(module, type, dt2, R);
 			break;
 		case USER:
-			resolve_user(type, LOG, dt2, R);
+			resolve_user2(type, LOG, dt2, R::copy);
 			break;
 		case USER_CLASS:
 			R.resolved = type;
@@ -53,7 +56,34 @@ public class ResolveType {
 		return R;
 	}
 
-	private static void resolve_user(final @NotNull OS_Type type, final ElLog LOG, final DeduceTypes2 dt2, final @NotNull GenType aR) throws ResolveError {
+	private static void resolve_user2(final @NotNull OS_Type type,
+									  final ElLog LOG,
+									  final DeduceTypes2 dt2,
+									  final @NotNull Consumer<GenType> cgt) throws ResolveError {
+		final GenType ggg = new GenType();
+		resolve_user(type, LOG, dt2, ggg::copy);
+		cgt.accept(ggg);
+	}
+
+	private static void resolve_user(final @NotNull IDeduceElement3 aDeduceElement3,
+									 final @NotNull OS_Type type1,
+									 final @NotNull ElLog LOG,
+									 final @NotNull Consumer<GenType> cgt) throws ResolveError {
+		final @NotNull OS_Type type = aDeduceElement3.genType().resolved;
+		assert type1 == type;
+
+		//final @NotNull ElLog LOG;
+		final @NotNull DeduceTypes2 dt2 = aDeduceElement3.deduceTypes2();
+
+		resolve_user(type, LOG, dt2, cgt);
+	}
+
+	private static void resolve_user(final @NotNull OS_Type type,
+									 final @NotNull ElLog LOG,
+									 final @NotNull DeduceTypes2 dt2,
+									 final @NotNull Consumer<GenType> cgt) throws ResolveError {
+		final GenType ggg = new GenType();
+
 		final TypeName tn1 = type.getTypeName();
 		switch (tn1.kindOfType()) {
 		case NORMAL:
@@ -67,15 +97,15 @@ public class ResolveType {
 			}
 			if (best == null) {
 				if (tn.asSimpleString().equals("Any"))
-					/*return*/ aR.resolved = new OS_AnyType(); // TODO not a class
+					/*return*/ ggg.resolved = new OS_AnyType(); // TODO not a class
 				throw new ResolveError(tn1, lrl);
 			}
 
 			if (best instanceof ClassContext.OS_TypeNameElement) {
 				/*return*/
-				aR.resolved = new OS_GenericTypeNameType((ClassContext.OS_TypeNameElement) best); // TODO not a class
+				ggg.resolved = new OS_GenericTypeNameType((ClassContext.OS_TypeNameElement) best); // TODO not a class
 			} else
-				aR.resolved = ((ClassStatement) best).getOS_Type();
+				ggg.resolved = ((ClassStatement) best).getOS_Type();
 			break;
 		}
 		case FUNCTION:
@@ -87,7 +117,7 @@ public class ResolveType {
 				final Qualident q = type_of.typeOf();
 				if (q.parts().size() == 1 && q.parts().get(0).equals("self")) {
 					assert type_of.getContext() instanceof ClassContext;
-					aR.resolved = ((ClassContext) type_of.getContext()).getCarrier().getOS_Type();
+					ggg.resolved = ((ClassContext) type_of.getContext()).getCarrier().getOS_Type();
 				}
 				int y=2;
 
@@ -97,6 +127,8 @@ public class ResolveType {
 		default:
 			throw new IllegalStateException("414 Unexpected value: " + tn1.kindOfType());
 		}
+
+		cgt.accept(ggg);
 	}
 
 	private static void resolve_built_in(final OS_Module module, final @NotNull OS_Type type, final DeduceTypes2 dt2, final @NotNull GenType aR) throws ResolveError {

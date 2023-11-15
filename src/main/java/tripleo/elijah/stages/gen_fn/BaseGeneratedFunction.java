@@ -20,6 +20,7 @@ import tripleo.elijah.stages.deduce.FoundElement;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.instructions.*;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah.util.Holder;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.util.range.Range;
 
@@ -455,7 +456,7 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 		if (typeDeferred.isPending())
 			typeDeferred.resolve(aType);
 		else {
-			final DeduceTypes2.Holder<GenType> holder = new DeduceTypes2.Holder<GenType>();
+			final Holder<GenType> holder = new Holder<GenType>();
 			typeDeferred.then(new DoneCallback<GenType>() {
 				@Override
 				public void onDone(final GenType result) {
@@ -469,6 +470,23 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 	Map<OS_Element, DeduceElement> elements = new HashMap<OS_Element, DeduceElement>();
 	public void addElement(final OS_Element aElement, final DeduceElement aDeduceElement) {
 		elements.put(aElement, aDeduceElement);
+	}
+
+	public String getFunctionName() {
+		// TODO change to abstract with override??
+		if (this instanceof GeneratedConstructor) {
+			int y = 2;
+			final IdentExpression constructorName = this.getFD().getNameNode();
+			final String constructorNameText;
+			if (constructorName == ConstructorDef.emptyConstructorName) {
+				constructorNameText = "";
+			} else {
+				constructorNameText = constructorName.getText();
+			}
+			return constructorNameText;
+		} else {
+			return getFD().getNameNode().getText();
+		}
 	}
 }
 

@@ -8,47 +8,62 @@
  */
 package tripleo.elijah.comp;
 
-import tripleo.elijah.lang.OS_Module;
+import org.jdeferred2.DoneCallback;
+import org.jdeferred2.impl.DeferredObject;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.stages.deduce.pipeline_impl.DeducePipelineImpl;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import tripleo.elijah.stages.gen_generic.GenerateResult;
+import tripleo.elijah.util.NotImplementedException;
 
 /**
  * Created 8/21/21 10:10 PM
  */
-public class DeducePipeline implements PipelineMember {
-	private final Compilation c;
-	List<GeneratedNode> lgc = new ArrayList<GeneratedNode>();
+public class DeducePipeline implements PipelineMember, Consumer<Supplier<GenerateResult>> {
+	protected void logProgress(final String g) {
+		System.err.println(g);
+	}
 
-	public DeducePipeline(Compilation aCompilation) {
-		c = aCompilation;
+	private final DeducePipelineImpl impl;
+
+	public DeducePipeline(final @NotNull ICompilationAccess aCa) {
+		logProgress("***** Hit DeducePipeline constructor");
+		impl = new DeducePipelineImpl(aCa.getCompilation());
 	}
 
 	@Override
 	public void run() {
-		for (final OS_Module module : c.modules) {
-			if (false) {
-/*
-				new DeduceTypes(module).deduce();
-				for (final OS_Element2 item : module.items()) {
-					if (item instanceof ClassStatement || item instanceof NamespaceStatement) {
-						System.err.println("8001 "+item);
-					}
-				}
-				new TranslateModule(module).translate();
-*/
-//				new ExpandFunctions(module).expand();
-//
-//  			final JavaCodeGen visit = new JavaCodeGen();
-//	       		module.visitGen(visit);
-			} else {
-				c.pipelineLogic.addModule(module);
-			}
-		}
-		c.pipelineLogic.everythingBeforeGenerate(lgc);
-		lgc = c.pipelineLogic.dp.generatedClasses.copy();
+		logProgress("***** Hit DeducePipeline #run");
+		impl.run();
 	}
+
+	//public void setPipelineLogic(final PipelineLogic aPipelineLogic) {
+	//	logProgress("***** Hit DeducePipeline #setPipeline");
+	//	impl.setPipelineLogic(aPipelineLogic);
+	//}
+
+	//public @NotNull List<GeneratedNode> lgc() {
+	//	return impl.lgc; // almost caught myself java'ing and returning a Supplier (but how is this *not* correct?)
+	//}
+
+	@Override
+	public void accept(final Supplier<GenerateResult> t) {
+		NotImplementedException.raise();
+	}
+
+	public void lgcp(final DoneCallback<List<GeneratedNode>> aListDoneCallback) {
+		_lgcp.then(aListDoneCallback);
+	}
+
+	public void lgcpdd(final List<GeneratedNode> lgn) {
+		_lgcp.resolve(lgn);
+	}
+
+	private final DeferredObject<List<GeneratedNode>, Void, Void> _lgcp = new DeferredObject<>();
 }
 
 //

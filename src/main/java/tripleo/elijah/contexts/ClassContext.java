@@ -8,7 +8,7 @@
  */
 package tripleo.elijah.contexts;
 
-import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.lang.*;
 
 import java.util.HashMap;
@@ -123,8 +123,13 @@ public class ClassContext extends Context {
 		return _inheritance;
 	}
 
+	/**
+	 * An Element that only holds a {@link TypeName}.
+	 *
+	 * NOTE: It seems to be connected to {@link ClassContext}
+	 */
 	public class OS_TypeNameElement implements OS_Element {
-		private TypeName typeName;
+		private final TypeName typeName;
 
 		public TypeName getTypeName() {
 			return typeName;
@@ -135,7 +140,7 @@ public class ClassContext extends Context {
 		}
 
 		@Override
-		public void visitGen(ICodeGen visit) {
+		public void visitGen(ElElementVisitor visit) {
 			visit.visitTypeNameElement(this);
 		}
 

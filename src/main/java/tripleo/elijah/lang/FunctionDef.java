@@ -13,17 +13,12 @@
  */
 package tripleo.elijah.lang;
 
-import antlr.Token;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.contexts.FunctionContext;
-import tripleo.elijah.gen.ICodeGen;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import tripleo.elijah.lang2.ElElementVisitor;
 
 // TODO FunctionDef is not a Container is it?
-public class FunctionDef extends BaseFunctionDef implements Documentable, ClassItem, OS_Container, OS_Element2 {
+public class FunctionDef extends BaseFunctionDef implements Documentable, ClassItem, OS_Element2 {
 
 	private TypeName _returnType = null;
 
@@ -85,7 +80,7 @@ public class FunctionDef extends BaseFunctionDef implements Documentable, ClassI
 	}
 
 	@Override
-	public void visitGen(final ICodeGen visit) {
+	public void visitGen(final ElElementVisitor visit) {
 		visit.visitFunctionDef(this);
 	}
 

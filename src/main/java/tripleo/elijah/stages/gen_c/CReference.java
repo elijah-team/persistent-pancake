@@ -11,9 +11,26 @@ package tripleo.elijah.stages.gen_c;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.AliasStatement;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.lang.DefFunctionDef;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.NamespaceStatement;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.PropertyStatement;
+import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
+import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
+import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
@@ -31,9 +48,9 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
  * Created 1/9/21 7:12 AM
  */
 public class CReference {
-	String rtext = null;
+	private String rtext = null;
 	private List<String> args;
-	List<Reference> refs;
+	private List<Reference> refs;
 
 	static class Reference {
 		final String              text;
@@ -51,10 +68,118 @@ public class CReference {
 			type = aType;
 			value = null;
 		}
+
+		public void buildHelper(final BuildState st) {
+			type.buildHelper(this, st);
+		}
 	}
 
 	enum Ref {
-		LOCAL, MEMBER, PROPERTY_GET, PROPERTY_SET, INLINE_MEMBER, CONSTRUCTOR, DIRECT_MEMBER, LITERAL, FUNCTION
+		// https://www.baeldung.com/a-guide-to-java-enums
+		LOCAL {
+			@Override
+			public void buildHelper(final Reference ref, final BuildState sb) {
+				String text = "vv" + ref.text;
+				sb.appendText(text, false);
+			}
+		},
+		MEMBER {
+			@Override
+			public void buildHelper(final Reference ref, final BuildState sb) {
+				String text = "->vm" + ref.text;
+
+				final StringBuilder sb1 = new StringBuilder();
+
+				sb1.append(text);
+				if (ref.value != null) {
+					sb1.append(" = ");
+					sb1.append(ref.value);
+					sb1.append(";");
+				}
+
+				sb.appendText(sb1.toString(), false);
+			}
+		},
+		PROPERTY_GET {
+			@Override
+			public void buildHelper(final Reference ref, final BuildState sb) {
+				String text;
+				final String s = sb.toString();
+				text = String.format("%s%s)", ref.text, s);
+				sb.open = false;
+//				if (!s.equals(""))
+				sb.needs_comma = false;
+				sb.appendText(text, true);
+			}
+		},
+		PROPERTY_SET {
+			@Override
+			public void buildHelper(final Reference ref, final BuildState sb) {
+				String text;
+				final String s = sb.toString();
+				text = String.format("%s%s, %s);", ref.text, s, ref.value);
+				sb.open = false;
+//				if (!s.equals(""))
+				sb.needs_comma = false;
+				sb.appendText(text, true);
+			}
+		},
+		INLINE_MEMBER {
+			@Override
+			public void buildHelper(final Reference ref, final BuildState sb) {
+				String text = Emit.emit("/*219*/") + ".vm" + ref.text;
+				sb.appendText(text, false);
+			}
+		},
+		CONSTRUCTOR {
+			@Override
+			public void buildHelper(final Reference ref, final BuildState sb) {
+				String text;
+				final String s = sb.toString();
+				text = String.format("%s(%s", ref.text, s);
+				sb.open = false;
+				if (!s.equals("")) sb.needs_comma = true;
+				sb.appendText(text + ")", true);
+			}
+		},
+		DIRECT_MEMBER {
+			@Override
+			public void buildHelper(final Reference ref, final BuildState sb) {
+				String text;
+				text = Emit.emit("/*124*/")+"vsc->vm" + ref.text;
+
+				final StringBuilder sb1 = new StringBuilder();
+
+				sb1.append(text);
+				if (ref.value != null) {
+					sb1.append(" = ");
+					sb1.append(ref.value);
+					sb1.append(";");
+				}
+
+				sb.appendText(sb1.toString(), false);
+			}
+		},
+		LITERAL {
+			@Override
+			public void buildHelper(final Reference ref, final BuildState sb) {
+				String text = ref.text;
+				sb.appendText(text, false);
+			}
+		},
+		FUNCTION {
+			@Override
+			public void buildHelper(final Reference ref, final BuildState sb) {
+				String text;
+				final String s = sb.toString();
+				text = String.format("%s(%s", ref.text, s);
+				sb.open = true;
+				if (!s.equals("")) sb.needs_comma = true;
+				sb.appendText(text, true);
+			}
+		};
+
+		public abstract void buildHelper(final Reference ref, final BuildState sb);
 	}
 
 	void addRef(String text, Ref type) {
@@ -186,21 +311,32 @@ public class CReference {
 						}
 					}
 				} else {
-					if (ia2.getEntry().getStatus() == BaseTableEntry.Status.KNOWN) {
+					switch (ia2.getEntry().getStatus()) {
+					case KNOWN:
 						assert false;
-					} else {
+						break;
+					case UNCHECKED:
+						final String path2 = generatedFunction.getIdentIAPathNormal(ia2);
+						final String text3 = String.format("<<UNCHECKED ia2: %s>>", path2/*idte.getIdent().getText()*/);
+						text = text3;
+//						assert false;
+						break;
+					case UNKNOWN:
 						final String path = generatedFunction.getIdentIAPathNormal(ia2);
 						final String text1 = idte.getIdent().getText();
 //						assert false;
-						// TODO make tests pass but I dont like this (should throw an exception: not enough information)
+						// TODO make tests pass but I dont like this (should emit a dummy function or placeholder)
 						if (sl.size() == 0) {
-							text = Emit.emit("/*149*/") + text1; // TODO check if it belongs somewhere else
+							text = Emit.emit("/*149*/") + text1; // TODO check if it belongs somewhere else (what does this mean?)
 						} else {
 							text = Emit.emit("/*152*/") + "vm" + text1;
 						}
-						System.err.println("119 "+idte.getIdent()+" "+idte.getStatus());
+						System.err.println("119 " + idte.getIdent() + " " + idte.getStatus());
 						String text2 = (Emit.emit("/*114*/") + String.format("%s is UNKNOWN", text1));
 						addRef(text2, Ref.MEMBER);
+						break;
+					default:
+						throw new IllegalStateException("Unexpected value: " + ia2.getEntry().getStatus());
 					}
 				}
 			} else if (ia instanceof ProcIA) {
@@ -217,29 +353,25 @@ public class CReference {
 	}
 
 	public String getIdentIAPath_Proc(ProcTableEntry aPrte) {
-		String text;
+		final String text;
 		final BaseGeneratedFunction generated = aPrte.getFunctionInvocation().getGenerated();
 
 		if (generated == null)
 			throw new IllegalStateException();
 
+		final GeneratedContainerNC genClass = (GeneratedContainerNC) generated.getGenClass();
+
 		if (generated instanceof GeneratedConstructor) {
 			int y = 2;
-			final GeneratedContainerNC genClass = (GeneratedContainerNC) generated.getGenClass();
-			final IdentExpression constructorName = generated.getFD().getNameNode();
-			final String constructorNameText;
-			if (constructorName == ConstructorDef.emptyConstructorName) {
-				constructorNameText = "";
-			} else {
-				constructorNameText = constructorName.getText();
-			}
+			final String constructorNameText = generated.getFunctionName();
+
 			text = String.format("ZC%d%s", genClass.getCode(), constructorNameText);
 			addRef(text, Ref.CONSTRUCTOR);
 		} else {
-			final GeneratedContainerNC genClass = (GeneratedContainerNC) generated.getGenClass();
-			text = String.format("Z%d%s", genClass.getCode(), generated.getFD().getNameNode().getText());
+			text = String.format("Z%d%s", genClass.getCode(), generated.getFunctionName());
 			addRef(text, Ref.FUNCTION);
 		}
+
 		return text;
 	}
 
@@ -423,97 +555,54 @@ public class CReference {
 		return s;
 	}
 
-	@NotNull
-	public String build() {
+	private final static class BuildState {
 		StringBuilder sb = new StringBuilder();
 		boolean open = false, needs_comma = false;
-//		List<String> sl = new ArrayList<String>();
-		String text = "";
+
+		public void appendText(final String text, final boolean erase) {
+			if (erase)
+				sb = new StringBuilder();
+
+			sb.append(text);
+		}
+	}
+
+	@NotNull
+	public String build() {
+		final BuildState st = new BuildState();
+
 		for (Reference ref : refs) {
 			switch (ref.type) {
 			case LITERAL:
-				text = ref.text;
-				sb.append(text);
-				break;
-			case LOCAL:
-				text = "vv" + ref.text;
-				sb.append(text);
-				break;
-			case MEMBER:
-				text = "->vm" + ref.text;
-				sb.append(text);
-				if (ref.value != null) {
-					sb.append(" = ");
-					sb.append(ref.value);
-					sb.append(";");
-				}
-				break;
-			case INLINE_MEMBER:
-				text = Emit.emit("/*219*/")+".vm" + ref.text;
-				sb.append(text);
-				break;
 			case DIRECT_MEMBER:
-				text = Emit.emit("/*124*/")+"vsc->vm" + ref.text;
-				sb.append(text);
-				if (ref.value != null) {
-					sb.append(" = ");
-					sb.append(ref.value);
-					sb.append(";");
-				}
+			case INLINE_MEMBER:
+			case MEMBER:
+			case LOCAL:
+			case FUNCTION:
+			case PROPERTY_GET:
+			case PROPERTY_SET:
+			case CONSTRUCTOR:
+				ref.buildHelper(st);
 				break;
-			case FUNCTION: {
-				final String s = sb.toString();
-				text = String.format("%s(%s", ref.text, s);
-				sb = new StringBuilder();
-				open = true;
-				if (!s.equals("")) needs_comma = true;
-				sb.append(text);
-				break;
-			}
-			case CONSTRUCTOR: {
-				final String s = sb.toString();
-				text = String.format("%s(%s", ref.text, s);
-				sb = new StringBuilder();
-				open = false;
-				if (!s.equals("")) needs_comma = true;
-				sb.append(text);
-				sb.append(")");
-				break;
-			}
-			case PROPERTY_GET: {
-				final String s = sb.toString();
-				text = String.format("%s%s)", ref.text, s);
-				sb = new StringBuilder();
-				open = false;
-//				if (!s.equals(""))
-				needs_comma = false;
-				sb.append(text);
-				break;
-			}
-			case PROPERTY_SET: {
-				final String s = sb.toString();
-				text = String.format("%s%s, %s);", ref.text, s, ref.value);
-				sb = new StringBuilder();
-				open = false;
-//				if (!s.equals(""))
-				needs_comma = false;
-				sb.append(text);
-				break;
-			}
 			default:
 				throw new IllegalStateException("Unexpected value: " + ref.type);
 			}
 //			sl.add(text);
 		}
 //		return Helpers.String_join("->", sl);
-		if (needs_comma && args != null && args.size() > 0)
+
+		final StringBuilder sb = st.sb;
+
+		if (st.needs_comma && args != null && args.size() > 0)
 			sb.append(", ");
-		if (open) {
+
+		if (st.open) {
 			if (args != null) {
 				sb.append(Helpers.String_join(", ", args));
 			}
 			sb.append(")");
 		}
+
 		return sb.toString();
 	}
 
