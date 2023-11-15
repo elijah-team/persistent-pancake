@@ -8,7 +8,7 @@
  */
 package tripleo.elijah.gen.nodes;
 
-import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.util.NotImplementedException;
 
 /**
  * @author Tripleo(sb)
@@ -40,7 +40,7 @@ public class LocalAgnTmpNode {
 //		this.declared ="vt"+n;
 //	}
 	
-	public LocalAgnTmpNode(TmpSSACtxNode tmpSSACtxNode, IExpressionNode node) {
+	public LocalAgnTmpNode(final TmpSSACtxNode tmpSSACtxNode, final IExpressionNode node) {
 		// TODO Auto-generated constructor stub
 		this.agnTo = tmpSSACtxNode;
 //		this.expr = expression;
@@ -60,11 +60,16 @@ public class LocalAgnTmpNode {
 		//
 	}
 	
+	public LocalAgnTmpNode(final String string) {
+		// TODO Auto-generated constructor stub
+		NotImplementedException.raise();
+	}
+
 	public IExpressionNode getRight() {
 		return agnWhat;
 	}
 	
-	public void setRight(IExpressionNode agnWhat) {
+	public void setRight(final IExpressionNode agnWhat) {
 		this.agnWhat = agnWhat;
 	}
 	

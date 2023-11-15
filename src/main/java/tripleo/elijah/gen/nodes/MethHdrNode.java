@@ -11,16 +11,17 @@
  */
 package tripleo.elijah.gen.nodes;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.jdt.annotation.NonNull;
-
+import tripleo.elijah.comp.GenBuffer;
+import tripleo.elijah.gen.CompilerContext;
 import tripleo.elijah.gen.Node;
 import tripleo.elijah.gen.TypeRef;
-import tripleo.elijah.lang.OS_Ident;
+import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.TypeModifiers;
 import tripleo.elijah.util.NotImplementedException;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Tripleo(sb)
@@ -33,10 +34,10 @@ public class MethHdrNode implements Node {
 	public int argCount;
 	final public MethNameNode methName;
 	public TypeNameNode returnType;
-	private List<ArgumentNode> argument_types;
+	private final List<ArgumentNode> argument_types;
 	private final int _code;
 	
-	public MethHdrNode(Node parent, @NonNull OS_Ident return_type, String method_name, List<ArgumentNode> argument_types, int code) {
+	public MethHdrNode(final Node parent, @NonNull final IdentExpression return_type, final String method_name, final List<ArgumentNode> argument_types, final int code) {
 		_parent = parent;
 		_code = code;
 		methName = new MethNameNode(method_name, this);
@@ -47,7 +48,7 @@ public class MethHdrNode implements Node {
 		returnType2 = null;
 	}
 	
-	public MethHdrNode(TypeRef retType, Node parent, String methodName, List<ArgumentNode> argumentTypes, int code) {
+	public MethHdrNode(final TypeRef retType, final Node parent, final String methodName, final List<ArgumentNode> argumentTypes, final int code) {
 		_parent = parent;
 		_code = code;
 		methName=new MethNameNode(methodName, this);
@@ -58,17 +59,17 @@ public class MethHdrNode implements Node {
 		returnType=null;
 	}
 	
-	public ArgumentNode argument(int c) {
+	public ArgumentNode argument(final int c) {
 		// TODO Auto-generated method stub
 //		if (c>=argument_types.size()) return null;
 		return (argument_types.get(c));
 	}
 	
-	public void addAnnotation(AnnotationNode node) {
+	public void addAnnotation(final AnnotationNode node) {
 		NotImplementedException.raise();
 	}
 	
-	public void addModifier(TypeModifiers mod) {
+	public void addModifier(final TypeModifiers mod) {
 		NotImplementedException.raise();
 	}
 	
@@ -85,17 +86,17 @@ public class MethHdrNode implements Node {
 		
 					@Override
 					public boolean hasNext() {
-						MethHdrNode node=MethHdrNode.this;
+						final MethHdrNode node=MethHdrNode.this;
 						return c<node.argCount;
 					}
 		
 					@Override
 					public ArgumentNode next() {
-						MethHdrNode node=MethHdrNode.this;
+						final MethHdrNode node=MethHdrNode.this;
 						return node.argument(c++);
 					}
 				};
-			};
+			}
 		};
 	}
 	
@@ -103,6 +104,7 @@ public class MethHdrNode implements Node {
 		return returnType2;
 	}
 	
+	@Override
 	public int getCode() {
 		return _code;
 	}
@@ -114,4 +116,20 @@ public class MethHdrNode implements Node {
 	public String genName() {
 		return methName.genName;
 	}
+
+	public void GenMethHdr(final CompilerContext cctx, final GenBuffer gbn) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void BeginMeth(final CompilerContext cctx, final GenBuffer gbn) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void EndMeth(final CompilerContext cctx, final GenBuffer gbn) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

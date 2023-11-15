@@ -12,68 +12,51 @@
 package tripleo.elijah.gen.nodes;
 
 import tripleo.elijah.gen.TypeRef;
-import tripleo.elijah.lang.OS_Ident;
+import tripleo.elijah.lang.IdentExpression;
 
 /**
- * @author olu
+ * @author Tripleo(acer)
  *
  */
 public class ArgumentNode {
 	
-	private final TypeRef _typeRef;
-	private OS_Ident ident;
+	private final TypeRef typeRef;
+	private IdentExpression ident;
 	private String genType;
-	private String _varName;
+	private String varName;
 
-//	public ArgumentNode(OS_Ident ident) {
-//		// TODO Auto-generated constructor stub
-//		this.ident = ident;
-//		_typeRef = null;
-//	}
-//
-//	/**
-//	 * @param _varName
-//	 * @param genType
-//	 */
-//	public ArgumentNode(String _varName, String genType) {
-//		super();
-//		this._varName = _varName;
-//		this.genType = genType;
-//		_typeRef = null;
-//	}
-
-	public ArgumentNode(String varName, TypeRef genType) {
-		super();
-		this.setVarName(varName);
-		this._typeRef = genType;
+	public ArgumentNode(final String varName, final TypeRef typeRef) {
+		this.varName = varName;
+		this.typeRef = typeRef;
 	}
 	
 	public TypeRef getTypeRef() {
-		return _typeRef;
+		return typeRef;
 	}
 	
-	public OS_Ident getIdent() {
+	public IdentExpression getIdent() {
 		return ident;
 	}
 	
-	public void setIdent(OS_Ident ident) {
+	public void setIdent(final IdentExpression ident) {
 		this.ident = ident;
 	}
 	
 	public String getGenType() {
-		return _typeRef.genType();
+		// return typeRef.genGenType(); // TODO ??
+		return typeRef.genType();
 	}
 	
-	public void setGenType(String genType) {
+	public void setGenType(final String genType) {
 		this.genType = genType;
 	}
 	
 	public String getVarName() {
-		return _varName;
+		return varName;
 	}
 	
-	public void setVarName(String _varName) {
-		this._varName = _varName;
+	public void setVarName(final String _varName) {
+		this.varName = _varName;
 	}
 	
 	public String getGenName() {

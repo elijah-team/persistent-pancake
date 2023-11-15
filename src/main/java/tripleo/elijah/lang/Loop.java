@@ -8,29 +8,35 @@
  */
 package tripleo.elijah.lang;
 
-import java.io.IOException;
+import tripleo.elijah.contexts.LoopContext;
+import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.util.NotImplementedException;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import antlr.Token;
-import tripleo.elijah.gen.ICodeGen;
-import tripleo.elijah.lang.FunctionDef.StatementWrapper;
-import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.TabbedOutputStream;
+public class Loop implements  StatementItem, FunctionItem, OS_Element {
 
-// Referenced classes of package pak2:
-//			Statement, LoopTypes, Scope
+	private final Scope _scope = new LoopScope(this);
+	private final List<StatementItem> items = new ArrayList<StatementItem>();
+	private final OS_Element parent;
 
-public class Loop implements Statement, LoopTypes, StatementItem, FunctionItem {
-
-	private Scope _scope = new LoopScope();
-	private List<String> docstrings = new ArrayList<String>();
-	private List<StatementItem> items = new ArrayList<StatementItem>();
-
-	public Loop() {
+	@Deprecated public Loop(final OS_Element aParent) {
+		// document assumption
+		if (!(aParent instanceof FunctionDef) && !(aParent instanceof Loop))
+			System.out.println("parent is not FunctionDef or Loop");
+		parent = aParent;
 	}
 
-	public void type(int aType) {
+	public Loop(final OS_Element aParent, final Context ctx) {
+		// document assumption
+		if (!(aParent instanceof FunctionDef) && !(aParent instanceof Loop))
+			System.out.println("parent is not FunctionDef or Loop");
+		parent = aParent;
+		_a.setContext(new LoopContext(ctx, this));
+	}
+
+	public void type(final LoopTypes aType) {
 		type = aType;
 	}
 
@@ -38,72 +44,47 @@ public class Loop implements Statement, LoopTypes, StatementItem, FunctionItem {
 		return _scope ;
 	}
 
-	public void expr(IExpression aExpr) {
+	public void expr(final IExpression aExpr) {
 		expr=aExpr;
 	}
 
-	public void topart(IExpression aExpr) {
+	public void topart(final IExpression aExpr) {
 		topart=aExpr;
 	}
 
-	public void frompart(IExpression aExpr) {
+	public void frompart(final IExpression aExpr) {
 		frompart=aExpr;
 	}
 
-	public void iterName(Token s) {
+	public void iterName(final IdentExpression s) {
 //		assert type == ITER_TYPE;
-		iterName=s.getText();
+		iterName=s;
 	}
 
-	String iterName;
+	IdentExpression iterName;
 	/**
 	 * @category type
 	 */
-	private int type;
+	private LoopTypes type;
+
 private IExpression topart,frompart;
 private IExpression expr;
+private final Attached _a = new Attached();
 
-	/**
-	 * @category type
-	 */
-	public static final int FROM_TO_TYPE = 82;
-
-	/**
-	 * @category type
-	 */
-	public static final int TO_TYPE = 81;
-	
 	public List<StatementItem> getItems() {
 		return items;
 	}
-	
-	/**
-	 * @category type
-	 */
-	public static final int ITER_TYPE = 86;
 
-	/**
-	 * @category type
-	 */
-	public static final int EXPR_TYPE = 83;
-
-	@Override
-	public void print_osi(TabbedOutputStream aTos) throws IOException {
-		// TODO this is not implementeed
-		NotImplementedException.raise();
+	@Override // OS_Element
+	public void visitGen(final ICodeGen visit) {
+		throw new NotImplementedException();
 	}
 
-	@Override
-	public void visitGen(ICodeGen visit) {
-		// TODO Auto-generated method stub
-		NotImplementedException.raise();
-	}
-	
 	public String getIterName() {
-		return iterName;
+		return iterName.getText();
 	}
 	
-	public int getType() {
+	public LoopTypes getType() {
 		return type;
 	}
 	
@@ -118,13 +99,25 @@ private IExpression expr;
 	public IExpression getFromPart() {
 		return frompart;
 	}
-	
-	private final class LoopScope implements Scope {
+
+	public void setContext(final LoopContext ctx) {
+		_a.setContext(ctx);
+	}
+
+	public IdentExpression getIterNameToken() {
+		return iterName;
+	}
+
+    private final class LoopScope extends AbstractScope2 {
 
 		private final AbstractStatementClosure asc = new AbstractStatementClosure(this);
 
+		protected LoopScope(OS_Element aParent) {
+			super(aParent);
+		}
+
 		@Override
-		public void add(StatementItem aItem) {
+		public void add(final StatementItem aItem) {
 //			if (aItem instanceof FunctionItem)
 //				items.add((FunctionItem) aItem);
 //			else
@@ -134,36 +127,21 @@ private IExpression expr;
 		}
 		
 		@Override
-		public TypeAliasExpression typeAlias() {
-			return null;
-		}
-		
-		@Override
-		public InvariantStatement invariantStatement() {
-			return null;
-		}
-		
-		@Override
-		public void addDocString(Token aS) {
-			docstrings.add(aS.getText());
-		}
-
-		@Override
-		public BlockStatement blockStatement() {
-			return new BlockStatement(this);
-		}
-
-		@Override
 		public StatementClosure statementClosure() {
 			return asc;
 		}
-
-		@Override
-		public void statementWrapper(IExpression aExpr) {
-			add(new StatementWrapper(aExpr));
-//			throw new NotImplementedException(); // TODO
-		}
 	}
+
+	@Override
+	public OS_Element getParent() {
+		return parent;
+	}
+
+	@Override
+	public Context getContext() {
+		return _a.getContext();
+	}
+
 }
 
 //

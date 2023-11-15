@@ -8,28 +8,34 @@
  */
 package tripleo.elijah.lang;
 
-// Referenced classes of package pak2:
-//			VariableSequence, ProcedureCallExpression, Loop, YieldExpression, 
-//			IfExpression
-
 public interface StatementClosure {
 
-	VariableSequence varSeq();
+	VariableSequence varSeq(Context ctx);
 
 	ProcedureCallExpression procedureCallExpression();
 
 	Loop loop();
 
-	StatementClosure procCallExpr();
+//	StatementClosure procCallExpr();
 
 	void constructExpression(IExpression aExpr, FormalArgList aO);
 
 	void yield(IExpression aExpr);
 
-	IfExpression ifExpression();
+	IfConditional ifConditional(OS_Element aParent, Context aCtx);
 
 	BlockStatement blockClosure();
-	
-	// TODO new
+
+	CaseConditional caseConditional(Context parentContext);
+
+	MatchConditional matchConditional(Context parentContext);
+
+    void statementWrapper(IExpression expr);
+
+    // TODO new
 	//IdentList identList();
 }
+
+//
+//
+//

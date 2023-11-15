@@ -13,7 +13,7 @@ import tripleo.elijah.gen.Node;
 /*
  * Created on 5/19/2019 at 02:09
  *
- * $$Id$
+ * $Id$
  *
  */
 public class Attached {
@@ -21,11 +21,20 @@ public class Attached {
 	Context _context;
 	Node _node;
 	
+	public Attached(final Context aContext) {
+		_context = aContext;
+	}
+
+	public Attached() {
+		
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getCode() {
 		return _code;
 	}
 	
-	public void setCode(int aCode) {
+	public void setCode(final int aCode) {
 		_code = aCode;
 	}
 	
@@ -33,7 +42,7 @@ public class Attached {
 		return _context;
 	}
 	
-	public void setContext(Context aContext) {
+	public void setContext(final Context aContext) {
 		_context = aContext;
 	}
 	
@@ -41,7 +50,7 @@ public class Attached {
 		return _node;
 	}
 	
-	public void setNode(Node aNode) {
+	public void setNode(final Node aNode) {
 		_node = aNode;
 	}
 	
@@ -50,4 +59,3 @@ public class Attached {
 //
 //
 //
-

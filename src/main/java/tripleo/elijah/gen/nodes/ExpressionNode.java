@@ -15,7 +15,7 @@ import tripleo.elijah.lang.*;
 import tripleo.elijah.util.NotImplementedException;
 
 /**
- * @author olu
+ * @author Tripleo(acer)
  *
  */
 public class ExpressionNode implements IExpressionNode {
@@ -40,7 +40,7 @@ public class ExpressionNode implements IExpressionNode {
 		ref_ = null;
 		iex = null;
 	}
-	
+	/*
 	public ExpressionNode(@NonNull  OS_Integer expr1) {
 		// TODO should  be interface
 		genName=((Integer)expr1.getValue()).toString(); // TODO likely wrong
@@ -48,9 +48,9 @@ public class ExpressionNode implements IExpressionNode {
 		_is_const_expr = true;
 		iex = expr1;
 	}
+	*/
 	
-	
-	public ExpressionNode(@NonNull IExpression expr1) {
+	public ExpressionNode(@NonNull final IExpression expr1) {
 		// TODO Auto-generated constructor stub
 		if (expr1 != null) {
 			genName=expr1.toString(); // TODO likely wrong
@@ -61,7 +61,7 @@ public class ExpressionNode implements IExpressionNode {
 		}
 	}
 
-	static String getStringPCE(ProcedureCallExpression expr) {
+	static String getStringPCE(final ProcedureCallExpression expr) {
 		final int code = 1000; // TODO hardcoded
 		return Helpers.getFunctionName(code, expr.getLeft().toString(), expr.exprList());
 	}
@@ -93,41 +93,52 @@ public class ExpressionNode implements IExpressionNode {
 	@Override
 	public boolean is_simple() {
 		if (iex !=null && iex instanceof VariableReference) {
-			return ((VariableReference) iex).is_simple();
+			return iex.is_simple();
 		}
 		return is_const_expr() || is_underscore();
 	}
 	
 	@Override
-	public String genText(CompilerContext cctx) {
-		if (iex instanceof OS_Integer) {
-			final int value = ((OS_Integer) iex).getValue();
+	public String genText(final CompilerContext cctx) {
+//		if (iex instanceof OS_Integer) {
+//			final int value = ((OS_Integer) iex).getValue();
+//			return ((Integer) value).toString();
+//		}
+		if (iex instanceof NumericExpression) {
+			final int value = ((NumericExpression) iex).getValue();
 			return ((Integer) value).toString();
 		}
-		if (iex instanceof AbstractBinaryExpression) {
+		if (iex instanceof BasicBinaryExpression) {
 			if (iex.getLeft() instanceof VariableReference) {
 
 				final String left_side = ((VariableReference) this.iex.getLeft()).getName();
 				String right_side = null;
 				
-				final AbstractBinaryExpression abe = (AbstractBinaryExpression) this.iex;
-				if (abe.getRight() instanceof OS_Integer) {
-					right_side = ""+((OS_Integer) abe.getRight()).getValue();
+				final BasicBinaryExpression abe = (BasicBinaryExpression) this.iex;
+//				if (abe.getRight() instanceof OS_Integer) {
+//					right_side = ""+((OS_Integer) abe.getRight()).getValue();
+//				}
+				if (abe.getRight() instanceof NumericExpression) {
+					right_side = ""+((NumericExpression) abe.getRight()).getValue();
 				}
-				if (abe.type == ExpressionType.SUBTRACTION) {
-					String s = String.format("%s - %s", left_side,	right_side);
+				if (abe._kind == ExpressionKind.SUBTRACTION) {
+					final String s = String.format("%s - %s", left_side,	right_side);
 					return s;
 				}
-				if (abe.type == ExpressionType.MULTIPLY) {
-					String s = String.format("%s * %s", left_side, right_side);
+				if (abe._kind == ExpressionKind.MULTIPLY) {
+					final String s = String.format("%s * %s", left_side, right_side);
 					return s;
 				}
 				
 				return "---------------2";
 			}
 		}
-		if (iex instanceof OS_Integer) {
-			final int value = ((OS_Integer) iex).getValue();
+//		if (iex instanceof OS_Integer) {
+//			final int value = ((OS_Integer) iex).getValue();
+//			return ((Integer) value).toString();
+//		}
+		if (iex instanceof NumericExpression) {
+			final int value = ((NumericExpression) iex).getValue();
 			return ((Integer) value).toString();
 		}
 		if (iex instanceof ProcedureCallExpression) {

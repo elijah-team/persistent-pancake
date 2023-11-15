@@ -1,0 +1,94 @@
+package Prelude;
+
+import C
+
+class interface String {
+    to_int() -> Integer {
+    }
+    isInt() -> Boolean {
+    }
+}
+
+class ConstString < String {}
+
+class interface Integer {
+	prop Value : ?A < Integer { get; set; }
+
+	__preinc__() -> typeof self {
+		var tmp = Value
+		Value = Value + 1
+		Result = tmp
+	}
+	__imult__(other: Integer) {
+		Value = Value * other
+	}
+}
+
+#[Primitive C.repr("int64_t")]
+class Integer64 < Integer {
+}
+
+#[Primitive C.repr("int32_t")]
+class Integer32 < Integer {
+}
+
+#[Primitive C.repr("uint64_t")]
+class Unsigned64 < Integer {
+}
+
+#[Primitive C.repr("uint32_t")]
+class Unsigned32 < Integer {
+}
+
+//enum
+class
+ Boolean {
+//    True, False
+}
+alias SystemInteger = Integer64
+alias Integer = SystemInteger
+
+namespace {
+    val ExitSuccess = 0
+    val ExitFailure = 1
+}
+
+class interface IPrintable {
+    // TODO forgot what to put here
+    printable() -> ConstString {}
+}
+
+namespace {
+    print (a: IPrintable) {
+		C.puts(String8(a.printable()))
+    }
+    println (a: IPrintable) {
+		print(a)
+		print('\n')
+    }
+}
+
+class Arguments {
+    arguments() -> SystemInteger {
+		Result = argument_count_
+    }
+    alias argument_count = arguments
+    argument(n: SystemInteger) -> ConstString {
+//		pre {
+//			valid_index: n <= argument_count
+//		}
+		Result = String8(argument_array[n])
+    }
+access {NONE}
+	var argument_array: C.Array[C.str]
+	var argument_count_: SystemInteger
+}
+
+/*type*/ alias u64 = Unsigned64
+/*type*/ alias u32 = Unsigned64
+/*type*/ alias i64 = Integer64
+/*type*/ alias i32 = Integer32
+
+//
+//
+//

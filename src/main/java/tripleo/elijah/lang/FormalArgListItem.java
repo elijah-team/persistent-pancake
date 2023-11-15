@@ -8,19 +8,53 @@
  */
 package tripleo.elijah.lang;
 
-// Referenced classes of package pak2:
-//			TypeName
+import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.util.NotImplementedException;
 
-public class FormalArgListItem {
-	
-	String name;
-	TypeName tn=new RegularTypeName(); // TODO why make the choice for the program?
+public class FormalArgListItem implements OS_Element, OS_Element2 {
+
+	private IdentExpression name;
+	private TypeName tn=null;
+
+    @Override // OS_Element
+    public void visitGen(final ICodeGen visit) {
+        throw new NotImplementedException();
+    }
+
+    @Override // OS_Element
+    public OS_Element getParent() {
+        throw new NotImplementedException();
+//        return null;
+    }
+
+    @Override // OS_Element
+    public Context getContext() {
+        throw new NotImplementedException();
+//        return null;
+    }
+
+	@Override // OS_Element2
+	public String name() {
+		return name.getText();
+	}
+
+	public IdentExpression getNameToken() {
+		return name;
+	}
+
+	public void setName(final IdentExpression s) {
+		name=s;
+	}
+
+	public void setTypeName(final TypeName tn1) {
+		tn = tn1;
+	}
 
 	public TypeName typeName() {
 		return tn;
 	}
-
-	public void setName(String s) {
-		name=s;
-	}
 }
+
+//
+//
+//

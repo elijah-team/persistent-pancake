@@ -21,12 +21,13 @@ public class VariableReferenceNode3 implements IExpressionNode {
 	private final Node _container;
 	private final TypeRef _typeRef;
 	
-	public VariableReferenceNode3(String name, Node container, TypeRef typeRef) {
+	public VariableReferenceNode3(final String name, final Node container, final TypeRef typeRef) {
 		this._name = name;
 		_typeRef = typeRef;
 		this._container = container;
 	}
 	
+	@Override
 	public TypeRef getType() {
 //		NotImplementedException.raise();
 		return _typeRef;
@@ -39,6 +40,7 @@ public class VariableReferenceNode3 implements IExpressionNode {
 	}
 	
 	
+	@Override
 	public String genText() {
 //		NotImplementedException.raise();
 		return String.format("v%c%s", a(), _name);
@@ -88,7 +90,7 @@ public class VariableReferenceNode3 implements IExpressionNode {
 	}
 	
 	@Override
-	public String genText(CompilerContext cctx) {
+	public String genText(final CompilerContext cctx) {
 		return genText();
 	}
 	

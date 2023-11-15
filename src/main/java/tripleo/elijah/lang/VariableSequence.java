@@ -8,47 +8,39 @@
  */
 package tripleo.elijah.lang;
 
-import java.io.IOException;
+import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.util.NotImplementedException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import tripleo.elijah.gen.ICodeGen;
-import tripleo.elijah.util.TabbedOutputStream;
+//import java.util.stream.Collectors;
 
+public class VariableSequence implements StatementItem, FunctionItem, ClassItem {
 
-// Referenced classes of package pak2:
-//			BlockMember
+	private Context _ctx;
+	private OS_Element parent;
+	List<VariableStatement> stmts;
 
-public class VariableSequence implements BlockMember, StatementItem, FunctionItem {
-
-	public VariableSequence() {
+	@Deprecated public VariableSequence() {
 		stmts = new ArrayList<VariableStatement>();
+	}
+
+	public VariableSequence(Context aContext) {
+		stmts = new ArrayList<VariableStatement>();
+		_ctx = aContext;
 	}
 
 	private TypeModifiers def;
 
-	public void defaultModifiers(TypeModifiers aModifiers) {def=aModifiers;}
+	public void defaultModifiers(final TypeModifiers aModifiers) {def=aModifiers;}
 
 	public VariableStatement next() {
-		VariableStatement st = new VariableStatement(this);
+		final VariableStatement st = new VariableStatement(this);
 		st.set(def);
 		stmts.add(st);
 		return st;
-	}
-
-	List<VariableStatement> stmts;
-
-	@Override
-	public void print_osi(TabbedOutputStream aTos) throws IOException {
-//		NotImplementedException.raise();
-		//
-		aTos.incr_tabs();
-		aTos.put_string_ln("var");
-		for (VariableStatement stmt: stmts) {
-			stmt.print_osi(aTos);
-		}
-		aTos.dec_tabs();
 	}
 
 	public Collection<VariableStatement> items() {
@@ -56,9 +48,47 @@ public class VariableSequence implements BlockMember, StatementItem, FunctionIte
 	}
 
 	@Override
-	public void visitGen(ICodeGen visit) {
+	public void visitGen(final ICodeGen visit) {
 		// TODO Auto-generated method stub
-		
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public OS_Element getParent() {
+		return this.parent;
+	}
+
+	public void setParent(final OS_Element parent) {
+		this.parent = parent;
+	}
+
+	@Override
+	public Context getContext() {
+		return _ctx;
+	}
+
+	public void setContext(final Context ctx) {
+		_ctx = ctx;
+	}
+
+	@Override public String toString() {
+		final List<String> r = new ArrayList<String>();
+		for (final VariableStatement stmt : stmts) {
+			r.add(stmt.getName());
+		}
+		return r.toString();
+//		return (stmts.stream().map(n -> n.getName()).collect(Collectors.toList())).toString();
+	}
+
+	List<AnnotationClause> annotations = null;
+
+	public void addAnnotation(final AnnotationClause a) {
+		if (annotations == null)
+			annotations = new ArrayList<AnnotationClause>();
+		annotations.add(a);
 	}
 }
 
+//
+//
+//

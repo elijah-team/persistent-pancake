@@ -13,160 +13,299 @@
  */
 package tripleo.elijah.lang;
 
-import java.io.IOException;
+import antlr.Token;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import tripleo.elijah.contexts.FunctionContext;
+import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.util.NotImplementedException;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import antlr.Token;
-import tripleo.elijah.gen.ICodeGen;
-import tripleo.elijah.gen.java.JavaCodeGen;
-import tripleo.elijah.util.TabbedOutputStream;
+// TODO FunctionDef is not a Container is it?
+public class FunctionDef implements Documentable, ClassItem, OS_Container, OS_Element2 {
 
-public class FunctionDef implements ClassItem {
-	static class StatementWrapper implements StatementItem, FunctionItem {
+	protected Type _type;
 
-		private IExpression expr;
-
-		public StatementWrapper(IExpression aexpr) {
-			expr = aexpr;
-		}
-
-		@Override
-		public void print_osi(TabbedOutputStream aTos) throws IOException {
-			// TODO Auto-generated method stub
-			int y=2;
-			if (expr instanceof AbstractBinaryExpression) {
-				AbstractBinaryExpression abe = (AbstractBinaryExpression)expr;
-				if (abe.getType() == ExpressionType.ASSIGNMENT) {
-					aTos.put_string_ln("Assignment {");
-					aTos.incr_tabs();
-					aTos.put_string_ln(abe.getLeft().toString());
-					aTos.put_string_ln(abe.getRight().toString());
-					aTos.dec_tabs();
-					aTos.put_string_ln("}");
-				} else if (abe.getType() == ExpressionType.AUG_MULT) {
-					aTos.put_string_ln("AssignmentMultiplication {");
-					aTos.incr_tabs();
-					aTos.put_string_ln(abe.getLeft().toString());
-					aTos.put_string_ln(abe.getRight().toString());
-					aTos.dec_tabs();
-					aTos.put_string_ln("}");
-				}
-			}
-		}
-
-		@Override
-		public void visitGen(ICodeGen visit) {
-			// TODO Auto-generated method stub
-			
-		}
+	public Iterable<FormalArgListItem> getArgs() {
+		return mFal.items();
 	}
-	
-	private final class FunctionDefScope implements Scope {
 
-		private final AbstractStatementClosure asc = new AbstractStatementClosure(this);
+	public void setReturnType(final TypeName tn) {
+		this._returnType = tn;
+	}
+
+	public enum Type {
+		DEF_FUN,
+		PROP_SET, PROP_GET, REG_FUN
+	}
+
+	public static class FunctionDefScope extends AbstractScope2 implements Documentable {
+
+		private final List<FunctionItem> items = new ArrayList<FunctionItem>();
+		private final List<String> mDocs = new ArrayList<String>();
+
+		private final AbstractStatementClosure asc = new AbstractStatementClosure(this, getParent());
+
+		public FunctionDefScope(OS_Element aParent) {
+			super(aParent);
+		}
 
 		@Override
-		public void add(StatementItem aItem) {
-			if (aItem instanceof FunctionItem)
-				items.add((FunctionItem) aItem);
-			else
-				System.err.println(String.format("adding false StatementItem %s",
-					aItem.getClass().getName()));
+		public void add(final StatementItem aItem) {
+			if (!(aItem instanceof FunctionItem)) {
+				System.err.println(String.format("Will not add false StatementItem, is not FunctionItem %s", aItem.getClass().getName()));
+				return;
+			}
+			items.add((FunctionItem) aItem);
 		}
 		
 		@Override
-		public TypeAliasExpression typeAlias() {
-			return null;
+		public void addDocString(final Token aS) {
+			mDocs.add(aS.getText());
 		}
 		
-		@Override
-		public InvariantStatement invariantStatement() {
-			return null;
-		}
-		
-		@Override
-		public void addDocString(Token aS) {
-			docstrings.add(aS.getText());
-		}
-
-		@Override
-		public BlockStatement blockStatement() {
-			return new BlockStatement(this);
-		}
-
 		@Override
 		public StatementClosure statementClosure() {
 			return asc;
 		}
 
-		@Override
-		public void statementWrapper(IExpression aExpr) {
-			add(new StatementWrapper(aExpr));
-//			throw new NotImplementedException(); // TODO
-		}
 	}
 
-	private List<String> docstrings = new ArrayList<String>();
-	public String funName;
-	private List<FunctionItem> items = new ArrayList<FunctionItem>();
-	private final FormalArgList mFal = new FormalArgList();
-//	private FunctionDefScope mScope;
-	private OS_Element/*ClassStatement*/ parent;
-	private final FunctionDefScope mScope2 = new FunctionDefScope();
-	private TypeName _returnType = new RegularTypeName();
+	public Attached _a = new Attached();
+	private TypeName _returnType = null;
+	private final FunctionDefScope mScope2 = new FunctionDefScope(this);
 
-	public FunctionDef(OS_Element aStatement) {
-		parent = aStatement;
-		if (aStatement instanceof ClassStatement) {
-			((ClassStatement)parent).add(this);
+	// region constructor
+
+	private final OS_Element parent;
+
+	@Deprecated public FunctionDef(final OS_Element aElement) {
+		assert aElement != null;
+		parent = aElement;
+		if (parent instanceof OS_Container) {
+			((OS_Container) parent).add(this);
 		} else {
-			System.err.println("adding FunctionDef to "+aStatement.getClass().getName());
+			throw new IllegalStateException("adding FunctionDef to "+aElement.getClass().getName());
 		}
 	}
+
+	public FunctionDef(OS_Element element, Context context) {
+		parent = element;
+		if (element instanceof OS_Container) {
+			((OS_Container) parent).add(this);
+		} else if (element instanceof PropertyStatement) {
+			// do nothing
+		} else {
+			throw new IllegalStateException("adding FunctionDef to " + element.getClass().getName());
+		}
+		_a.setContext(new FunctionContext(context, this));
+	}
+
+	// endregion
+
+	// region arglist
 
 	public FormalArgList fal() {
 		return mFal;
 	}
 
-	@Override
-	public void print_osi(TabbedOutputStream tos) throws IOException {
-		System.out.println("Function print_osi");
-		tos.put_string("Function (");
-		tos.put_string(funName);
-		tos.put_string_ln(") {");
-		tos.put_string_ln("//");
-		tos.incr_tabs();
-		for (FunctionItem item : items) {
-			item.print_osi(tos);
+	private FormalArgList mFal = new FormalArgList(); // remove final for FunctionDefBuilder
+
+	public void setFal(FormalArgList fal) {
+		mFal = fal;
+	}
+
+	// endregion
+
+	@Override // OS_Element
+	public OS_Element getParent() {
+		return parent;
+	}
+
+	// region items
+
+	private final List<FunctionItem> items = new ArrayList<FunctionItem>();
+
+	public void setType(final Type aType) {
+		_type = aType;
+	}
+
+	public List<FunctionItem> getItems() {
+		return mScope2.items;
+	}
+
+	@Override // OS_Container
+	public List<OS_Element2> items() {
+		final Collection<FunctionItem> c = Collections2.filter(getItems(), new Predicate<FunctionItem>() {
+			@Override
+			public boolean apply(@Nullable final FunctionItem input) {
+				final boolean b = input instanceof OS_Element2;
+//				System.out.println(String.format("%s %b", input, b));
+				return b;
+			}
+		});
+		final ArrayList<OS_Element2> a = new ArrayList<OS_Element2>();
+		for (final FunctionItem functionItem : c) {
+			a.add((OS_Element2) functionItem);
 		}
-		tos.dec_tabs();
-		tos.put_string_ln((String.format("} // function %s",  funName)));
+		return a;
+	}
+
+	@Override // OS_Container
+	public void add(final OS_Element anElement) {
+		if (anElement instanceof FunctionItem)
+			mScope2.add((StatementItem) anElement);
+		else
+			throw new IllegalStateException(String.format("Cant add %s to FunctionDef", anElement));
+	}
+
+	// endregion
+
+	/**
+	 * Can be {@code null} under the following circumstances:<br/><br/>
+	 *
+	 * 1. The compiler(parser) didn't get a chance to set it yet<br/>
+	 * 2. The programmer did not specify a return value and the compiler must deduce it<br/>
+	 * 3. The function is a void-type and specification isn't required <br/>
+	 *
+	 * @return the associated TypeName or NULL
+	 */
+	public TypeName returnType() {
+//		if (_returnType.isNull()) System.err.println("101 NULL (Unresolved) returnType");
+		return _returnType;
 	}
 
 	public Scope scope() {
-		//assert mScope == null;
 		return mScope2;
 	}
 
-	public void setName(Token aText) {
-		funName = aText.getText();
+//	public void visit(JavaCodeGen gen) {
+//		// TODO Auto-generated method stub
+//		for (FunctionItem element : items)
+//			gen.addFunctionItem(element);
+//	}
+
+	@Override
+	public void visitGen(final ICodeGen visit) {
+		// TODO Auto-generated method stub
+		throw new NotImplementedException();
 	}
 
-	public void visit(JavaCodeGen gen) {
-		// TODO Auto-generated method stub
-		for (FunctionItem element : items)
-			gen.addFunctionItem(element);
+	// region name
+
+	private IdentExpression funName;
+
+	public void setName(final IdentExpression aText) {
+		funName = aText;
+	}
+
+	@Override // OS_Element2
+	public String name() {
+		if (funName == null)
+			return "";
+		return funName.getText();
+	}
+
+	// endregion
+
+	// region context
+
+	@Override // OS_Element
+	public Context getContext() {
+		return _a._context;
+	}
+
+	public void setContext(final FunctionContext ctx) {
+		_a.setContext(ctx);
+	}
+
+	// endregion
+
+	public void postConstruct() { // TODO
+	}
+
+	// region annotations
+
+	List<AnnotationClause> annotations = null;
+
+	public void addAnnotation(final AnnotationClause a) {
+		if (annotations == null)
+			annotations = new ArrayList<AnnotationClause>();
+		annotations.add(a);
+	}
+
+	// endregion
+
+	// region Documentable
+	
+	@Override  // Documentable
+	public void addDocString(final Token aText) {
+		mScope2.mDocs.add(aText.getText());
+	}
+
+	// endregion
+
+	// region abstract
+
+	private boolean _isAbstract;
+
+	public void setAbstract(final boolean b) {
+		_isAbstract = b;
+		if (b) {this.set(FunctionModifiers.ABSTRACT);}
+	}
+
+	// endregion
+
+	// region modifiers
+
+	private FunctionModifiers _mod;
+
+	public void set(final FunctionModifiers mod) {
+		assert _mod == null;
+		_mod = mod;
+	}
+
+	// endregion
+
+	public void walkAnnotations(AnnotationWalker annotationWalker) {
+		if (annotations == null) return;
+		for (AnnotationClause annotationClause : annotations) {
+			for (AnnotationPart annotationPart : annotationClause.aps) {
+				annotationWalker.annotation(annotationPart);
+			}
+		}
+	}
+
+	public Type getType() {
+		return _type;
+	}
+
+	public Iterable<AnnotationPart> annotationIterable() {
+		List<AnnotationPart> aps = new ArrayList<AnnotationPart>();
+		if (annotations == null) return aps;
+		for (AnnotationClause annotationClause : annotations) {
+			for (AnnotationPart annotationPart : annotationClause.aps) {
+				aps.add(annotationPart);
+			}
+		}
+		return aps;
 	}
 
 	@Override
-	public void visitGen(ICodeGen visit) {
-		// TODO Auto-generated method stub
-		
+	public String toString() {
+		return String.format("<Function %s %s %s>", parent, name(), getArgs());
 	}
 
-	public TypeName returnType() {
-		// TODO Auto-generated method stub
-		return _returnType ;
+	public boolean hasItem(OS_Element element) {
+		return items.contains(element);
 	}
 }
+
+//
+//
+//
+//

@@ -8,65 +8,65 @@
  */
 package tripleo.elijah.lang;
 
-import java.io.IOException;
-
 import antlr.Token;
-import tripleo.elijah.gen.ICodeGen;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.TabbedOutputStream;
 
 // TODO is ExpressionList an IExpression?
-public class ProcedureCallExpression implements StatementItem, FunctionItem, IExpression {
+// TODO Is ProcedureCallExpression a StatementItem?
+public class ProcedureCallExpression implements StatementItem, /*FunctionItem,*/ IExpression {
 	
 	private IExpression _left;
 	private ExpressionList args=new ExpressionList();
 	
-	public ProcedureCallExpression(Token aToken, ExpressionList aExpressionList, Token aToken1) {
+	public ProcedureCallExpression(final Token aToken, final ExpressionList aExpressionList, final Token aToken1) {
 		throw new NotImplementedException();
 		
 	}
 	
 	public ProcedureCallExpression() {
-		NotImplementedException.raise();
-		
+//		NotImplementedException.raise();
 	}
 	
-	public void identifier(Qualident xyz) {
+	/**
+	 * Set  the left hand side of the procedure call expression, ie the method name
+	 * 
+	 * @param xyz a method name in Qualident form (might come as DotExpression in future)
+	 */
+	public void identifier(final Qualident xyz) {
 		setLeft(xyz);
 	}
 	
+	/**
+	 * Set  the left hand side of the procedure call expression, ie the method name
+	 * 
+	 * @param xyz a method name might come as DotExpression or IdentExpression
+	 */
+	public void identifier(final IExpression xyz) {
+		setLeft(xyz);
+	}
+	
+	/**
+	 * Get the argument list
+	 * 
+	 * @return the argument list
+	 */
 	public ExpressionList exprList() {
 		return args;
 	}
-	
+
+//	@Override
+//	public void visitGen(ICodeGen visit) {
+//		// TODO Auto-generated method stub
+//		NotImplementedException.raise();
+//	}
+
 	@Override
-	public void print_osi(TabbedOutputStream tos) throws IOException {
-		// TODO Auto-generated method stub
-		tos.incr_tabs();
-		tos.put_string_ln("ProcedureCall {");
-		tos.put_string("name = ");
-//		target.print_osi(tos);
-		getLeft().print_osi(tos);
-//		tos.put_string(target.toString());
-		tos.put_string("args = ");
-		args.print_osi(tos);
-		tos.dec_tabs();
-		tos.put_string_ln("}");
+	public ExpressionKind getKind() {
+		return ExpressionKind.PROCEDURE_CALL;
 	}
 
 	@Override
-	public void visitGen(ICodeGen visit) {
-		// TODO Auto-generated method stub
-		NotImplementedException.raise();
-	}
-
-	@Override
-	public ExpressionType getType() {
-		return ExpressionType.PROCEDURE_CALL;
-	}
-
-	@Override
-	public void set(ExpressionType aIncrement) {
+	public void setKind(final ExpressionKind aIncrement) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}
@@ -76,71 +76,27 @@ public class ProcedureCallExpression implements StatementItem, FunctionItem, IEx
 		return _left;
 	}
 
+	/**
+	 * @see #identifier(Qualident)
+	 */
 	@Override
-	public void setLeft(IExpression iexpression) {
+	public void setLeft(final IExpression iexpression) {
 		_left = iexpression;
 	}
 
 	@Override
 	public String repr_() {
-		// TODO garbage method
-		return String.format("ProcedureCallExpression{%s %s}", getLeft(), args.toString()/*getRight()*/);
+		return toString();
 	}
-	
-//	/**
-//	 * do not call
-//	 *
-//	 * @return NotImplementedException
-//	 */
-//	@Override
-//	public IExpression getRight() {
-//		// TODO fix this
-//		throw new NotImplementedException();
-////		return /* args */null;
-//	}
-//
-//	/**
-//	 * do not call
-//	 *
-//	 * @param iexpression
-//	 * @throws NotImplementedException always
-//	 */
-//	@Override
-//	public void setRight(IExpression iexpression) {
-//		// TODO fix this
-////		args = iexpression;
-//		throw new NotImplementedException();
-//	}
-	
-//	/**
-//	 * same as setArgs(ExpressionList)
-//	 *
-//	 * @param ael the new value
-//	 */
-//	public void setRight(ExpressionList ael) {
-//		args = ael;
-//	}
 	
 	/**
 	 * change then argument list all at once
 	 *
 	 * @param ael the new value
 	 */
-	public void setArgs(ExpressionList ael) {
+	public void setArgs(final ExpressionList ael) {
 		args = ael;
 	}
-	
-//	@Override
-//	public void shift(ExpressionType aType) {
-//		// TODO Auto-generated method stub
-//		throw new NotImplementedException();
-//	}
-//
-//	@Override
-//	public void set(IBinaryExpression aEx) {
-//		// TODO Auto-generated method stub
-//		throw new NotImplementedException();
-//	}
 	
 	public String getReturnTypeString() {
 		return "int"; // TODO hardcoded
@@ -150,6 +106,15 @@ public class ProcedureCallExpression implements StatementItem, FunctionItem, IEx
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return String.format("ProcedureCallExpression{%s %s}", getLeft(), args != null ? args.toString() : "()");
+	}
+
+	@Override
 	public boolean is_simple() {
 		return false; // TODO is this correct?
 	}
@@ -157,6 +122,19 @@ public class ProcedureCallExpression implements StatementItem, FunctionItem, IEx
 	public ExpressionList getArgs() {
 		return args;
 	}
+
+	OS_Type _type;
+
+	@Override
+	public void setType(final OS_Type deducedExpression) {
+		_type = deducedExpression;
+    }
+
+	@Override
+	public OS_Type getType() {
+    	return _type;
+	}
+
 }
 
 //

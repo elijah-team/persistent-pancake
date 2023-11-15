@@ -8,8 +8,16 @@
  */
 package tripleo.elijah.lang;
 
-public class YieldExpression extends AbstractBinaryExpression implements StatementItem {
+import tripleo.elijah.util.NotImplementedException;
 
-	public YieldExpression(Scope aScope) {
+public class YieldExpression extends BasicBinaryExpression implements StatementItem {
+
+	public YieldExpression(final Scope aScope) {
+		throw new NotImplementedException();
+	}
+
+	public YieldExpression(final IExpression aExpr) {
+		// TODO Auto-generated constructor stub
+		throw new NotImplementedException();
 	}
 }

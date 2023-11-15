@@ -11,10 +11,10 @@
  */
 package tripleo.elijah;
 
-import java.io.IOException;
-
 import tripleo.elijah.comp.GenBuffer;
 import tripleo.elijah.gen.CompilerContext;
+
+import java.io.IOException;
 
 /**
  * @author tripleoacer
@@ -22,20 +22,20 @@ import tripleo.elijah.gen.CompilerContext;
  */
 public class FindBothSourceFilesMain {
 
-	public static void main(String[] args) {
-		FindBothSourceFiles f=new FindBothSourceFiles(/*"xx"*/);
+	public static void main(final String[] args) {
+		final FindBothSourceFiles f=new FindBothSourceFiles(/*"xx"*/);
 		try {
-			f.testParseFile();
-		} catch (Exception e) {
+			f.compilerShouldFindBothParseFiles();
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		GenBuffer gbn = new GenBuffer();
-		CompilerContext cctx = new CompilerContext("fact.elijah");
-		f.factorial_r(cctx , gbn);
+		final GenBuffer gbn = new GenBuffer();
+		final CompilerContext cctx = new CompilerContext("fact.elijah");
+		new FactorialR().factorial_r(cctx , gbn);
 		try {
 			gbn.writeBuffers();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

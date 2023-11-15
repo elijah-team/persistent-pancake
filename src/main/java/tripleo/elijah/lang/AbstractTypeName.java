@@ -8,13 +8,11 @@
  */
 package tripleo.elijah.lang;
 
-// Referenced classes of package pak2:
-//			TypeName
+import java.util.Objects;
 
-public abstract class AbstractTypeName implements TypeName {
+public abstract class AbstractTypeName implements NormalTypeName {
 
-	public AbstractTypeName() {
-	}
+	private boolean isNullable = false;
 
 	@Override
 	public boolean isNull() {
@@ -28,7 +26,7 @@ public abstract class AbstractTypeName implements TypeName {
 	}
 
 	@Override
-	public void setConstant(boolean s) {
+	public void setConstant(final boolean s) {
 		pr_constant = s;
 	}
 
@@ -38,7 +36,7 @@ public abstract class AbstractTypeName implements TypeName {
 	}
 
 	@Override
-	public void setReference(boolean s) {
+	public void setReference(final boolean s) {
 		pr_reference = s;
 	}
 
@@ -48,7 +46,7 @@ public abstract class AbstractTypeName implements TypeName {
 	}
 
 	@Override
-	public void setOut(boolean s) {
+	public void setOut(final boolean s) {
 		pr_out = s;
 	}
 
@@ -58,7 +56,7 @@ public abstract class AbstractTypeName implements TypeName {
 	}
 
 	@Override
-	public void setIn(boolean s) {
+	public void setIn(final boolean s) {
 		pr_in = s;
 	}
 
@@ -68,20 +66,16 @@ public abstract class AbstractTypeName implements TypeName {
 	}
 
 	@Override
-	public void setName(Qualident s) {
+	public void setName(final Qualident s) {
 		pr_name = s;
 	}
 	
 	@Override
-	public void type(TypeModifiers atm) {
-tm=atm;		
+	public void setNullable() {
+		this.isNullable = true;
 	}
-	
-	public void set(int aType) {
-		type = aType;
-	}
-	
-	private TypeModifiers tm;
+
+	protected TypeModifiers tm;
 	
 	protected boolean pr_constant;
 	protected boolean pr_reference;
@@ -89,5 +83,26 @@ tm=atm;
 	protected boolean pr_in;
 	protected Qualident pr_name;
 
-	int type;
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (!(o instanceof NormalTypeName)) return false;
+		final NormalTypeName that = (NormalTypeName) o;
+		return getConstant() == that.getConstant() &&
+				getReference() == that.getReference() &&
+				getOut() == that.getOut() &&
+				getIn() == that.getIn() &&
+//				type == that.type &&
+				getModifiers().containsAll(that.getModifiers()) &&
+				getName().equals(that.getName());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(tm, pr_constant, pr_reference, pr_out, pr_in, pr_name, isNullable);
+	}
 }
+
+//
+//
+//

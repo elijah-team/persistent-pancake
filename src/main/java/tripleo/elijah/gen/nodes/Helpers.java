@@ -1,7 +1,10 @@
 package tripleo.elijah.gen.nodes;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.ExpressionKind;
+import tripleo.elijah.lang.ExpressionList;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.VariableReference;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
@@ -15,10 +18,10 @@ import java.util.List;
  */
 public class Helpers {
 	@NotNull
-	static ExpressionList LocalAgnTmpNodeToListVarRef(List<LocalAgnTmpNode> of) {
-		ExpressionList expl = new ExpressionList();
-		for (LocalAgnTmpNode node : of) {
-			VariableReference vr = new VariableReference();
+	static ExpressionList LocalAgnTmpNodeToListVarRef(final List<LocalAgnTmpNode> of) {
+		final ExpressionList expl = new ExpressionList();
+		for (final LocalAgnTmpNode node : of) {
+			final VariableReference vr = new VariableReference();
 			vr.setMain(node.genName());
 			expl.add(vr);
 //			NotImplementedException.raise();
@@ -27,14 +30,14 @@ public class Helpers {
 	}
 	
 	@NotNull
-	static ExpressionType ExpressionOperatorToExpressionType(ExpressionOperators middle) {
-		ExpressionType middle1;
+	static ExpressionKind ExpressionOperatorToExpressionType(final ExpressionOperators middle) {
+		final ExpressionKind middle1;
 		switch (middle) {
 			case OP_MINUS:
-				middle1 = ExpressionType.SUBTRACTION;
+				middle1 = ExpressionKind.SUBTRACTION;
 				break;
 			case OP_MULT:
-				middle1 = ExpressionType.MULTIPLY;
+				middle1 = ExpressionKind.MULTIPLY;
 				break;
 			default:
 				throw new NotImplementedException();
@@ -43,7 +46,7 @@ public class Helpers {
 	}
 	
 	@NotNull
-	public static String getFunctionName(int code, String aStr, ExpressionList expressionList) {
+	public static String getFunctionName(final int code, final String aStr, final ExpressionList expressionList) {
 		final StringBuilder sb=new StringBuilder();
 		sb.append("z");
 		sb.append(code);
@@ -61,12 +64,25 @@ public class Helpers {
 			sb.deleteCharAt(sb.length());
 		}
 */
-		List<String> ls = new ArrayList<String>();
-		for (IExpression e : expressionList) {
+		final List<String> ls = new ArrayList<String>();
+		for (final IExpression e : expressionList) {
 			ls.add(e.toString());
 		}
-		sb.append(String.join(", ", ls));
+		sb.append(tripleo.elijah.util.Helpers.String_join(", ", ls));
 		sb.append(")");
 		return sb.toString();
 	}
+
+	//	public static List<String> List_of(String string, String string2, String string3) {
+//		List<String> r = new ArrayList<String>();
+//		r.add(string);
+//		r.add(string2);
+//		r.add(string3);
+//		return r;
+//	}
+	
 }
+
+//
+//
+//

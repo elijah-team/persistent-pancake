@@ -10,12 +10,12 @@ package tripleo.elijah.lang;
 
 public interface IBinaryExpression extends IExpression {
 
-	public abstract IExpression getRight();
+	IExpression getRight();
 
-	public abstract void setRight(IExpression iexpression);
+	void setRight(IExpression iexpression);
 
-	public abstract void shift(ExpressionType aType);
+	@Deprecated void shift(ExpressionKind aType);
 
-	void set(IBinaryExpression aEx);
+	@Deprecated void set(IBinaryExpression aEx); // TODO what is this for?
 
 }

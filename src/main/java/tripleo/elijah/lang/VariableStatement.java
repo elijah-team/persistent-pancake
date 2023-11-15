@@ -8,57 +8,42 @@
  */
 package tripleo.elijah.lang;
 
-import java.io.IOException;
+import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.util.NotImplementedException;
 
-import antlr.Token;
-import tripleo.elijah.util.TabbedOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 // Referenced classes of package pak:
 //			TypeRef, IExpression
 
-public class VariableStatement {
+public class VariableStatement implements OS_Element {
 
-	private final VariableSequence parent;
-	public String name;
-	
-	private IExpression initialValue = IExpression.UNASSIGNED;
-	private TypeModifiers type;
+	private final VariableSequence _parent;
+
 	private TypeName typeName = new VariableTypeName();
+	private IExpression initialValue = IExpression.UNASSIGNED;
+	private IdentExpression name;
+	private TypeModifiers typeModifiers;
 
-	public VariableStatement(VariableSequence aSequence) {
-		parent = aSequence;
+	public VariableStatement(final VariableSequence aSequence) {
+		_parent = aSequence;
 	}
 
 	public String getName() {
+		return name.getText();
+	}
+
+	public IdentExpression getNameToken() {
 		return name;
 	}
-	
-	public void setName(Token s) {
-		name = s.getText();
+
+	public void setName(final IdentExpression s) {
+		name = s;
 	}
 
-	public void initial(IExpression aExpr) {
+	public void initial(final IExpression aExpr) {
 		initialValue=aExpr;
-	}
-
-	public void print_osi(TabbedOutputStream tos) throws IOException {
-		tos.incr_tabs();
-		tos.put_string_ln("VariableDeclaration {");
-		tos.put_string("name = \"");
-		tos.put_string(getName());
-		tos.put_string_ln("\"");
-/*
-		if (typeRef != null) {
-			tos.incr_tabs();
-			tos.put_string_ln("type = {");
-			tos.dec_tabs();
-			typeRef.print_osi(tos);
-			tos.dec_tabs();
-			tos.put_string_ln("} // type = ...");
-		}
-*/
-		tos.dec_tabs();
-		tos.put_string_ln("} // VariableDeclaration");
 	}
 
 /*
@@ -71,8 +56,8 @@ public class VariableStatement {
 	}
 */
 
-	public void set(TypeModifiers y) {
-		type = y;
+	public void set(final TypeModifiers y) {
+		typeModifiers = y;
 	}
 
 	public TypeName typeName() {
@@ -83,7 +68,7 @@ public class VariableStatement {
 		return initialValue;
 	}
 	
-	public String initialValueType() {
+/*	public String initialValueType() {
 		if (initialValue instanceof NumericExpression)
 			return "int";
 		else if (initialValue instanceof ProcedureCallExpression)
@@ -93,6 +78,7 @@ public class VariableStatement {
 		else if (initialValue instanceof StringExpression)
 			return "char*";
 		else if (initialValue instanceof IdentExpression)
+//			return "Z"+((IdentExpression)initialValue).getText();
 			return "---------------10";
 		else if (initialValue instanceof Qualident)
 			return "---------------8";
@@ -100,17 +86,63 @@ public class VariableStatement {
 //			return "---------------9";
 		else if (initialValue instanceof VariableReference)
 			return "---------------11";
-		else if (initialValue instanceof OS_Integer)
-			return "int";
-		else if (initialValue instanceof ExpressionWrapper)
-			return "---------------12";
+//		else if (initialValue instanceof OS_Integer)
+//			return "int";
 		else if (initialValue instanceof ListExpression)
 			return "void*"; // TODO
 		
 		else
 			return "Z0*";
+	}*/
+
+	@Override
+	public void visitGen(final ICodeGen visit) {
+		// TODO Auto-generated method stub
+		throw new NotImplementedException();
 	}
 
+	@Override
+	public OS_Element getParent() {
+		return _parent;
+	}
+
+	@Override
+	public Context getContext() {
+		// TODO is this correct?
+		return getParent().getContext();
+	}
+
+	public void setTypeName(final TypeName tn) {
+		typeName = tn;
+	}
+
+	public TypeModifiers getTypeModifiers() {
+		return typeModifiers;
+	}
+
+	List<AnnotationClause> annotations = null;
+
+	public void addAnnotation(final AnnotationClause a) {
+		if (annotations == null)
+			annotations = new ArrayList<AnnotationClause>();
+		annotations.add(a);
+	}
+
+	public void walkAnnotations(AnnotationWalker annotationWalker) {
+		if (_parent.annotations != null) {
+			for (AnnotationClause annotationClause : _parent.annotations) {
+				for (AnnotationPart annotationPart : annotationClause.aps) {
+					annotationWalker.annotation(annotationPart);
+				}
+			}
+		}
+		if (annotations == null) return;
+		for (AnnotationClause annotationClause : annotations) {
+			for (AnnotationPart annotationPart : annotationClause.aps) {
+				annotationWalker.annotation(annotationPart);
+			}
+		}
+	}
 }
 
 //

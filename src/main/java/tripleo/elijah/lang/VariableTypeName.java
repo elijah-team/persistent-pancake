@@ -14,71 +14,104 @@
  */
 package tripleo.elijah.lang;
 
-import tripleo.elijah.util.NotImplementedException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
 
-public class VariableTypeName extends AbstractTypeName implements TypeName {
+import static tripleo.elijah.util.Helpers.List_of;
 
-	@Override
-	public TypeName typeName(String aS) {
-		// TODO Auto-generated method stub
-		NotImplementedException.raise();
-		return null;
-	}
+public class VariableTypeName extends AbstractTypeName implements NormalTypeName {
 
-	@Override
-	public TypeName typeof(String aS) {
-		// TODO Auto-generated method stub
-		NotImplementedException.raise();
-		return null;
-	}
+	private TypeNameList genericPart;
+	private Context _ctx;
+	//private OS_Type _resolved;
+	private OS_Element _resolvedElement;
 
 	@Override
-	public TypeName returnValue() {
-		// TODO Auto-generated method stub
-		NotImplementedException.raise();
-		return null;
-	}
-
-	public void type(int aI) {
-		// TODO Auto-generated method stub
-		NotImplementedException.raise();
+	public Type kindOfType() {
+		return Type.NORMAL;
 	}
 
 	@Override
-	public TypeNameList argList() {
-		// TODO Auto-generated method stub
-		NotImplementedException.raise();
-		return null;
+	public void addGenericPart(final TypeNameList tn2) {
+		genericPart = tn2;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	/* #@ requires pr_name != null; */
+	// pr_name is null when first created
+	@Override
+	public String toString() {
+		final String result;
+		if (pr_name != null) {
+			if (genericPart != null) {
+				result = String.format("%s[%s]", pr_name.toString(), genericPart.toString());
+			} else {
+				result = pr_name.toString();
+			}
+		} else {
+			result = "<VariableTypeName null>";
+		}
+		return result;
 	}
 
 	@Override
-	public void set(TypeModifiers aModifiers) {
-		// TODO Auto-generated method stub
-		NotImplementedException.raise();
+	public void setContext(final Context ctx) {
+		_ctx = ctx;
 	}
 
 	@Override
-	public void addGenericPart(TypeName tn2) {
-		// TODO Auto-generated method stub
-		NotImplementedException.raise();
+	public Collection<TypeModifiers> getModifiers() {
+		return (tm != null ? List_of(tm)  : new ArrayList<TypeModifiers>());
 	}
 
 	@Override
-	public void typeName(Qualident xy) {
-		// TODO Auto-generated method stub
-		NotImplementedException.raise();
+	public TypeNameList getGenericPart() {
+		return genericPart;
 	}
 
 	@Override
-	public void typeof(Qualident xyz) {
-		// TODO Auto-generated method stub
-		NotImplementedException.raise();
+	public Qualident getRealName() {
+		return pr_name;
 	}
-	
+
 	@Override
-	public void setGeneric(boolean value) {
-		NotImplementedException.raise();
+	public Context getContext() {
+		return _ctx;
 	}
-	
+
+	@Override
+	public boolean hasResolvedElement() {
+		return _resolvedElement != null;
+	}
+
+	@Override
+	public OS_Element getResolvedElement() {
+		return _resolvedElement;
+	}
+
+	@Override
+	public void setResolvedElement(final OS_Element element) {
+		_resolvedElement = element;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (!super.equals(o)) return false;
+		if (!(o instanceof NormalTypeName)) return false;
+		final NormalTypeName that = (NormalTypeName) o;
+		return Objects.equals(genericPart, that.getGenericPart());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), genericPart);
+	}
 }
 
+//
+//
+//

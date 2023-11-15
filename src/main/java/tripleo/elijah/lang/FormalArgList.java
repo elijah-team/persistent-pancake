@@ -16,10 +16,10 @@ import java.util.List;
 
 public class FormalArgList {
 
-	private List<FormalArgListItem> falis=new ArrayList<FormalArgListItem>();
+	public List<FormalArgListItem> falis=new ArrayList<FormalArgListItem>();
 
 	public FormalArgListItem next() {
-		FormalArgListItem fali = new FormalArgListItem();
+		final FormalArgListItem fali = new FormalArgListItem();
 		falis.add(fali);
 		return fali;
 	}
@@ -28,4 +28,12 @@ public class FormalArgList {
 	public String toString( ) {
 		return falis.toString();
 	}
+
+	public Iterable<FormalArgListItem> items() {
+		return falis;
+	}
 }
+
+//
+//
+//

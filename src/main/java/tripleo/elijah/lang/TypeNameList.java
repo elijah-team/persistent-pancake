@@ -8,15 +8,35 @@
  */
 package tripleo.elijah.lang;
 
-// Referenced classes of package pak2:
-//			TypeName
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import tripleo.elijah.util.Helpers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TypeNameList {
 
-	public TypeNameList() {
+	List<TypeName> p = new ArrayList<TypeName>();
+
+	public void add(final TypeName tn) {
+		p.add(tn);
 	}
 
-	public TypeName next() {
-		return null;
+	@Override
+	public String toString() {
+		return Helpers.String_join(", ", Collections2.transform(p, new Function<TypeName, String>() {
+			@Nullable
+			@Override
+			public String apply(@Nullable TypeName input) {
+				assert input != null;
+				return input.toString();
+			}
+		}));
 	}
 }
+
+//
+//
+//

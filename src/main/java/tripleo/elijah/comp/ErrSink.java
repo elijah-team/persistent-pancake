@@ -11,7 +11,19 @@ package tripleo.elijah.comp;
 public interface ErrSink {
 	
 	void exception(Exception exception);
-	
+
+    /*@ ensures errorCount() == \old errorCount + 1*/
+    void reportError(String s);
+
+    void reportWarning(String s);
+
+    int errorCount();
+
+    void info(String format);
+
+    enum Errors {
+        ERROR, WARNING, INFO
+    }
 }
 
 //

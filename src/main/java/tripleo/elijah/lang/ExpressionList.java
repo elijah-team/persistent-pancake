@@ -8,10 +8,8 @@
  */
 package tripleo.elijah.lang;
 
-import tripleo.elijah.util.TabbedOutputStream;
-
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,7 +19,7 @@ import java.util.List;
  */
 public class ExpressionList implements Iterable<IExpression> {
 
-	public IExpression next(IExpression aExpr) {
+	public IExpression next(final IExpression aExpr) {
 //		assert aExpr != null;
 		if (aExpr == null) throw new IllegalArgumentException("expression cannot be null");
 		//
@@ -31,23 +29,26 @@ public class ExpressionList implements Iterable<IExpression> {
 
 	private final List<IExpression> exprs = new ArrayList<IExpression>();
 
+	@Override
 	public String toString() {
 		return exprs.toString();
 	}
-	
-	public void print_osi(TabbedOutputStream tos) throws IOException {
-		for (IExpression expr : exprs) {
-			tos.put_string_ln(expr.repr_());
-		}
-	}
 
+	public Collection<IExpression> expressions() {
+		return exprs;
+	}
+	
 	@Override
 	public Iterator<IExpression> iterator() {
 		return exprs.iterator();
 	}
 	
-	public void add(IExpression aExpr) {
+	public void add(final IExpression aExpr) {
 		exprs.add(aExpr);
+	}
+
+	public int size() {
+		return exprs.size();
 	}
 }
 

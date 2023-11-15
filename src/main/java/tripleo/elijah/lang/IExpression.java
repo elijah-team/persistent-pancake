@@ -15,17 +15,21 @@
  */
 package tripleo.elijah.lang;
 
-import java.io.IOException;
-
-import tripleo.elijah.util.TabbedOutputStream;
+import org.jetbrains.annotations.Contract;
 
 public interface IExpression {
 
-	void print_osi(TabbedOutputStream tabbedoutputstream) throws IOException;
+	static boolean isConstant(final IExpression expression) {
+		return expression instanceof StringExpression ||
+				expression instanceof CharLitExpression ||
+				expression instanceof FloatExpression ||
+				expression instanceof NumericExpression;
+	}
 
-	ExpressionType getType();
+	@Contract(pure = true)
+	ExpressionKind getKind();
 
-	void set(ExpressionType aIncrement);
+	void setKind(ExpressionKind aKind);
 
 	IExpression getLeft();
 
@@ -33,7 +37,11 @@ public interface IExpression {
 
 	@Deprecated String repr_();
 
-	IExpression UNASSIGNED = new AbstractBinaryExpression() {
+	IExpression UNASSIGNED = new BasicBinaryExpression() {
+		@Override
+		public String toString() {
+			return "<UNASSIGNED expression>";
+		}
 	};
 
 //	default boolean is_simple() {
@@ -46,4 +54,11 @@ public interface IExpression {
 //	}
 
 	boolean is_simple();
+
+	void setType(OS_Type deducedExpression);
+    OS_Type getType();
 }
+
+//
+//
+//

@@ -11,14 +11,14 @@ package tripleo.elijah.lang;
 // Referenced classes of package pak2:
 //			Statement, StatementClosure, FormalArgList
 
-public class BlockStatement implements Statement, StatementItem {
+public class BlockStatement implements /*Statement,*/ StatementItem {
 
 	final private Scope parent;
-	private TypeName tn=new RegularTypeName();
-	private FormalArgList fal=new FormalArgList();
-	private StatementClosure scope;
+	private final NormalTypeName tn=new RegularTypeName(); // FIXME
+	private final FormalArgList fal=new FormalArgList();
+	private final StatementClosure scope;
 	
-	public BlockStatement(Scope aParent) {
+	public BlockStatement(final Scope aParent) {
 		parent = aParent;
 		scope=new AbstractStatementClosure(parent);
 	}
@@ -31,7 +31,7 @@ public class BlockStatement implements Statement, StatementItem {
 		return fal;
 	}
 
-	public TypeName returnType() {
+	public NormalTypeName returnType() {
 		return tn;
 	}
 }

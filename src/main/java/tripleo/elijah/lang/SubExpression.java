@@ -15,6 +15,34 @@
 package tripleo.elijah.lang;
 
 
-public class SubExpression extends AbstractBinaryExpression {
+public class SubExpression extends AbstractExpression {
 
+	private final IExpression carrier;
+
+	public SubExpression(final IExpression ee) {
+		carrier=ee;
+	}
+
+	@Override
+	public boolean is_simple() {
+		return true;
+	}
+
+	@Override
+	public void setType(final OS_Type deducedExpression) {
+		throw new IllegalStateException("Cant set this type");
+	}
+
+	@Override
+	public OS_Type getType() {
+		return carrier.getType();
+	}
+
+	public IExpression getExpression() {
+		return carrier;
+	}
 }
+
+//
+//
+//

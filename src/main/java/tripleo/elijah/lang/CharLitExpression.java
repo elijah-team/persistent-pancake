@@ -12,10 +12,8 @@
  */
 package tripleo.elijah.lang;
 
-import java.io.IOException;
-
 import antlr.Token;
-import tripleo.elijah.util.TabbedOutputStream;
+import tripleo.elijah.util.Helpers;
 
 /**
  * @author Tripleo(sb)
@@ -23,36 +21,25 @@ import tripleo.elijah.util.TabbedOutputStream;
  */
 public class CharLitExpression implements IExpression {
 
-	private Token char_lit_raw;
+	private final Token char_lit_raw;
 
-	public CharLitExpression(Token c) {
-		// TODO Auto-generated constructor stub
+	public CharLitExpression(final Token c) {
 		char_lit_raw = c;
-	}
-
-	/* (non-Javadoc)
-	 * @see tripleo.elijah.lang.IExpression#print_osi(tripleo.elijah.util.TabbedOutputStream)
-	 */
-	@Override
-	public void print_osi(TabbedOutputStream tabbedoutputstream) throws IOException {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
 	 * @see tripleo.elijah.lang.IExpression#getType()
 	 */
 	@Override
-	public ExpressionType getType() {
-		// TODO Auto-generated method stub
-		return null;
+	public ExpressionKind getKind() {
+		return ExpressionKind.CHAR_LITERAL;
 	}
 
 	/* (non-Javadoc)
 	 * @see tripleo.elijah.lang.IExpression#set(tripleo.elijah.lang.ExpressionType)
 	 */
 	@Override
-	public void set(ExpressionType aIncrement) {
+	public void setKind(final ExpressionKind aIncrement) {
 		// TODO Auto-generated method stub
 
 	}
@@ -70,7 +57,7 @@ public class CharLitExpression implements IExpression {
 	 * @see tripleo.elijah.lang.IExpression#setLeft(tripleo.elijah.lang.IExpression)
 	 */
 	@Override
-	public void setLeft(IExpression iexpression) {
+	public void setLeft(final IExpression iexpression) {
 		// TODO Auto-generated method stub
 
 	}
@@ -80,14 +67,30 @@ public class CharLitExpression implements IExpression {
 	 */
 	@Override
 	public String repr_() {
-		// TODO Auto-generated method stub
-		return null;
+		return String.format("<CharLitExpression %s>", char_lit_raw);
 	}
 
+	@Override
 	public boolean is_simple() {
 		return true;
 	}
 
+	OS_Type _type;
+
+	@Override
+	public void setType(final OS_Type deducedExpression) {
+		_type = deducedExpression;
+    }
+
+	@Override
+	public OS_Type getType() {
+    	return _type;
+	}
+
+	@Override
+	public String toString() {
+		return Helpers.remove_single_quotes_from_string(char_lit_raw.getText());
+	}
 }
 
 //

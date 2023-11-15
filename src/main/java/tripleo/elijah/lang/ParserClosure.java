@@ -14,42 +14,31 @@
  */
 package tripleo.elijah.lang;
 
-
-// Referenced classes of package pak2:
-//			BinaryExpression, StatementClosure, ClassStatement, ImportStatement, 
-//			ExpressionType
-
-import tripleo.elijah.ProgramClosure;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.Compilation;
 
 public class ParserClosure extends ProgramClosure {
 
-	public ParserClosure(String fn) {
+	public ParserClosure(final String fn, @NotNull final Compilation compilation) {
 		module = new OS_Module();
 		module.setFileName(fn);
-	}
-
-	public ClassStatement classStatement() {
-		return new ClassStatement(module());
-	}
-
-	public ImportStatement importStatement() {
-		return new ImportStatement(module());
+		module.setParent(compilation); // TODO take a look at all this here
+		compilation.addModule(module, fn);
 	}
 
 	private OS_Module module() {
 		return module;
 	}
 
-	public void packageName(Qualident aXy) {
+	public void packageName(final Qualident aPackageName) {
 		//assert module.packageName ==null;
-		module.pushPackageName(aXy);
+		module.pushPackageName(aPackageName);
 	}
 
 	public final OS_Module module;
 
-	public NamespaceStatement namespaceStatement() {
-		// TODO Auto-generated method stub
-		return new NamespaceStatement(module());
+	public IndexingStatement indexingStatement() {
+		return new IndexingStatement(module());
 	}
 
 }

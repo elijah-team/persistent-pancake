@@ -15,18 +15,14 @@
 package tripleo.elijah.lang;
 
 import antlr.Token;
-import com.thoughtworks.xstream.XStream;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.TabbedOutputStream;
-
-import java.io.IOException;
 
 public class FloatExpression implements IExpression {
 
 	float carrier;
-	private Token n;
+	private final Token n;
 
-	public FloatExpression(Token n) {
+	public FloatExpression(final Token n) {
 		this.n = n;
 		carrier = Float.parseFloat(n.getText());
 	}
@@ -37,14 +33,8 @@ public class FloatExpression implements IExpression {
 	}
 
 	@Override
-	public void setLeft(IExpression aLeft) {
+	public void setLeft(final IExpression aLeft) {
 		throw new NotImplementedException(); // TODO
-	}
-
-	@Override
-	public void print_osi(TabbedOutputStream aTabbedoutputstream) throws IOException {
-		XStream x = new XStream(); // TODO context.comp.xstream??
-		x.toXML(this, aTabbedoutputstream.getStream());
 	}
 
 	@Override
@@ -53,12 +43,12 @@ public class FloatExpression implements IExpression {
 	}
 
 	@Override
-	public ExpressionType getType() {
-		return ExpressionType.FLOAT; // TODO
+	public ExpressionKind getKind() {
+		return ExpressionKind.FLOAT; // TODO
 	}
 
 	@Override
-	public void set(ExpressionType aType) {
+	public void setKind(final ExpressionKind aType) {
 		// log and ignore
 		System.err.println("Trying to set ExpressionType of FloatExpression to "+aType.toString());
 	}
@@ -68,9 +58,22 @@ public class FloatExpression implements IExpression {
 		return String.format("FloatExpression (%f)", carrier);
 	}
 
+	@Override
 	public boolean is_simple() {
 		return true;
 	}
+	OS_Type _type;
+
+	@Override
+	public void setType(final OS_Type deducedExpression) {
+		_type = deducedExpression;
+    }
+
+	@Override
+	public OS_Type getType() {
+    	return _type;
+	}
+
 }
 
 //

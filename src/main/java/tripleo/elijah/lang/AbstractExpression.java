@@ -7,27 +7,18 @@
  * 
  */
 
-//
-//
-// TODO What the fuck is this?
-//
-//
-
 package tripleo.elijah.lang;
 
-import tripleo.elijah.util.TabbedOutputStream;
-import java.io.IOException;
-
-public abstract class AbstractExpression implements IExpression, ScopeElement {
+public abstract class AbstractExpression implements IExpression {
 
 	public AbstractExpression() {
 		left  = null;
-		_type  = null;
+		_kind  = null;
 	}
 
-	public AbstractExpression(IExpression aLeft, ExpressionType aType) {
+	public AbstractExpression(final IExpression aLeft, final ExpressionKind aType) {
 		left = aLeft;
-		_type = aType;
+		_kind = aType;
 	}
 
 	@Override
@@ -36,44 +27,26 @@ public abstract class AbstractExpression implements IExpression, ScopeElement {
 	}
 	
 	@Override
-	public ExpressionType getType() {
-		return _type;
-	}
-
-	@Override
-	public void print_osi(TabbedOutputStream $1) throws IOException {
-		throw new IllegalStateException("please implement this method");
+	public ExpressionKind getKind() {
+		return _kind;
 	}
 
 	@Override
 	public String repr_() {
-		return String.format("<Expression %s %s>", left,_type);
+		return String.format("<Expression %s %s>", left,_kind);
 	}
 
-//	@Override
-//	public void set(IBinaryExpression aEx) {
-//		left=aEx.getLeft();
-//		type=aEx.getType();
-//	}
-
 	@Override
-	public void setLeft(IExpression aLeft) {
+	public void setLeft(final IExpression aLeft) {
 		left = aLeft;
 	}
 
-//	@Override
-//	public void shift(ExpressionType aType) {
-//		left=new AbstractExpression(left,type,right); //TODO
-//		type=aType;
-//		right=null;
-//	}
-
 	public IExpression left;
-	public ExpressionType _type;
+	public ExpressionKind _kind;
 
 	@Override
-	public void set(ExpressionType type1) {
-		_type=type1;
+	public void setKind(final ExpressionKind type1) {
+		_kind=type1;
 	}
 }
 

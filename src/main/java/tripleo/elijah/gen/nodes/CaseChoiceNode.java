@@ -6,18 +6,11 @@
  * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
  *
  */
-/*
- * Created on Sep 2, 2005 2:28:42 PM
- *
- * $Id$
- *
- */
 package tripleo.elijah.gen.nodes;
 
 import org.eclipse.jdt.annotation.NonNull;
 import tripleo.elijah.gen.CompilerContext;
-import tripleo.elijah.lang.OS_Integer;
-import tripleo.elijah.lang.VariableReference;
+import tripleo.elijah.lang.NumericExpression;
 
 public class CaseChoiceNode {
 	
@@ -28,7 +21,7 @@ public class CaseChoiceNode {
 	public final CaseHdrNode header;
 	private String _defaultName;
 	
-	public CaseChoiceNode(OS_Integer expr1, CaseHdrNode header) {
+	public CaseChoiceNode(final NumericExpression expr1, final CaseHdrNode header) {
 		// TODO Auto-generated constructor stub
 		left=new ExpressionNode(expr1);
 		this.header = header;
@@ -54,7 +47,7 @@ public class CaseChoiceNode {
 //		_varref = new VariableReferenceNode(cctx, varref);
 //	}
 	
-	public CaseChoiceNode(CompilerContext cctx, VariableReferenceNode3 varref, CaseHdrNode header) {
+	public CaseChoiceNode(final CompilerContext cctx, final VariableReferenceNode3 varref, final CaseHdrNode header) {
 		this.header = header;
 		left  = null;
 		right = null;
@@ -67,11 +60,11 @@ public class CaseChoiceNode {
 		return _defaultName;
 	}
 	
-	public void setDefaultName(@NonNull String _defaultName) {
+	public void setDefaultName(@NonNull final String _defaultName) {
 		this._defaultName = _defaultName;
 	}
 	
-	public CaseChoiceNode(ExpressionNode left, ScopeNode right, CaseHdrNode header) {
+	public CaseChoiceNode(final ExpressionNode left, final ScopeNode right, final CaseHdrNode header) {
 		super();
 		this.right = right;
 		this.left = left;

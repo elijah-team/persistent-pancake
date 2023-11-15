@@ -8,70 +8,23 @@
  */
 package tripleo.elijah.lang;
 
-import java.io.IOException;
-
-import antlr.Token;
+import tripleo.elijah.contexts.ImportContext;
 import tripleo.elijah.gen.ICodeGen;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.TabbedOutputStream;
 
-/**
- * 
- */
-public class ImportStatement implements ModuleItem {
-	final OS_Element parent;
-	/** Used in from syntax
-	 * @category from
-	 */
-	private Qualident root;
-	private QualidentList importList;
+import java.util.List;
 
-	public ImportStatement(OS_Element aParent) {
-		parent = aParent;
-		if (parent instanceof OS_Module)
-			((OS_Module) parent).add(this);
-		else
-			throw new NotImplementedException();
-		//
-		importList=new QualidentList();
-	}
-
-	/** Used in from syntax
-	 * @category from
-	 */
-	public void importRoot(Qualident xyz) {
-		root = xyz;
-	}
-
-	public QualidentList importList() {
-		return importList;
-	}
+public interface ImportStatement extends ModuleItem, ClassItem, StatementItem {
 
 	@Override
-	public void print_osi(TabbedOutputStream aTos) throws IOException {
+	default void visitGen(final ICodeGen visit) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}
 
-	@Override
-	public void visitGen(ICodeGen visit) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
-	}
-	
-	public void addAssigningPart(Token aToken, Qualident aQualident) {
-		throw new NotImplementedException();
-	}
-	
-	public IdentList addSelectivePart(Qualident aQualident) {
-		throw new NotImplementedException();
-//		return null;
-	}
-	
-	public void addNormalPart(Qualident aQualident) {
-		throw new NotImplementedException();
-		
-	}
+	List<Qualident> parts();
+
+	void setContext(ImportContext ctx);
 }
 
 //

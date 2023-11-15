@@ -13,6 +13,6 @@ package tripleo.elijah.lang;
  *
  * @see {@link FunctionDef.FunctionDefScope#add(StatementItem)}
  */
-public interface FunctionItem extends OS_Element {
+public interface FunctionItem /*extends OS_Element*/ {
 
 }

@@ -14,49 +14,37 @@
  */
 package tripleo.elijah.gen.nodes;
 
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.gen.Node;
-import tripleo.elijah.lang.VariableReference;
-import tripleo.elijah.util.NotImplementedException;
 
 public class CaseHdrNode implements Node {
 
 	private IExpressionNode expr;
 	
-//	public CaseHdrNode(VariableReferenceNode2 varref) {
-//		this.expr = varref;
-//	}
-//
-//	public CaseHdrNode(VariableReference vr) {
-////		NotImplementedException.raise();
-//		this.expr = new VariableReferenceNode2(vr.getName(),  null, false);
-//	}
-	
-	public CaseHdrNode(VariableReferenceNode3 varref) {
-		// TODO Auto-generated constructor stub
-		this.expr = /*new ExpressionNode*/(varref);
+	public CaseHdrNode(final VariableReferenceNode3 varref) {
+		this.expr = varref;
 	}
 
 	public IExpressionNode getExpr() {
 		return expr;
 	}
 
-	public void setExpr(ExpressionNode expr) {
+	public void setExpr(final ExpressionNode expr) {
 		this.expr = expr;
 	}
 	
-	public String simpleGenText() {
+	public @NotNull String simpleGenText() {
 		if (expr instanceof VariableReferenceNode3) {
 			return expr.genText();
 		}
-		if (expr.getExpr() instanceof VariableReference) {
-			return ((VariableReference) expr.getExpr()).getName();
-		}
-		if (expr/*.getExpr()*/ instanceof VariableReferenceNode2) {
-			return ((VariableReferenceNode2) expr).genText();
-		}
+		// TODO mark for deletion
+//		if (expr.getExpr() instanceof VariableReference) {
+//			return ((VariableReference) expr.getExpr()).getName();
+//		}
+//		if (expr/*.getExpr()*/ instanceof VariableReferenceNode2) {
+//			return expr.genText();
+//		}
 		throw new IllegalStateException("no implementation");
-//		NotImplementedException.raise();
-//		return null;
 	}
 	
 	/**

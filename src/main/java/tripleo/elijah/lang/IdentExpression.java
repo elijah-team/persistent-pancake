@@ -12,40 +12,50 @@
  */
 package tripleo.elijah.lang;
 
-import java.io.IOException;
-
 import antlr.Token;
-import com.thoughtworks.xstream.XStream;
+import tripleo.elijah.diagnostic.Locatable;
+import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.TabbedOutputStream;
+
+import java.io.File;
 
 /**
  * @author Tripleo(sb)
  *
  */
-public class IdentExpression implements IExpression {
+public class IdentExpression implements IExpression, OS_Element, Resolvable, Locatable {
 
 	private Token text;
 	public  Attached _a;
+	private OS_Element _resolvedElement;
 
-	public IdentExpression(Token r1) {
+	public IdentExpression(final Token r1) {
 		this.text = r1;
+		this._a = new Attached();
+	}
+
+	public IdentExpression(final Token r1, final Context cur) {
+		this.text = r1;
+		this._a = new Attached();
+		setContext(cur);
 	}
 
 	@Override
-	public void print_osi(TabbedOutputStream tabbedoutputstream) throws IOException {
-		// TODO Auto-generated method stub
-		XStream x = new XStream(); // TODO context.comp.xstream??
-		x.toXML(this, tabbedoutputstream.getStream());
+	public ExpressionKind getKind() {
+		return ExpressionKind.IDENT;
+	}
+
+	/**
+	 * same as getText()
+	 */
+	@Override
+	public String toString() {
+		return getText();
 	}
 
 	@Override
-	public ExpressionType getType() {
-		return ExpressionType.IDENT;
-	}
-
-	@Override
-	public void set(ExpressionType aIncrement) {
+	public void setKind(final ExpressionKind aIncrement) {
 		// log and ignore
 		System.err.println("Trying to set ExpressionType of IdentExpression to "+aIncrement.toString());
 	}
@@ -56,13 +66,13 @@ public class IdentExpression implements IExpression {
 	}
 
 	@Override
-	public void setLeft(IExpression iexpression) {
-		if (iexpression instanceof IdentExpression) {
-			text = ((IdentExpression) iexpression).text;
-		} else {
-			// NOTE was System.err.println
+	public void setLeft(final IExpression iexpression) {
+//		if (iexpression instanceof IdentExpression) {
+//			text = ((IdentExpression) iexpression).text;
+//		} else {
+//			// NOTE was System.err.println
 			throw new IllegalArgumentException("Trying to set left-side of IdentExpression to " + iexpression.toString());
-		}
+//		}
 	}
 
 	@Override
@@ -74,9 +84,99 @@ public class IdentExpression implements IExpression {
 		return text.getText();
 	}
 
+	@Override
 	public boolean is_simple() {
 		return true;
 	}
+
+	@Override
+	public void visitGen(final ICodeGen visit) {
+		// TODO Auto-generated method stub
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public OS_Element getParent() {
+		// TODO Auto-generated method stub
+		throw new NotImplementedException();
+//		return null;
+	}
+
+	@Override
+	public Context getContext() {
+		return _a.getContext();
+	}
+
+	OS_Type _type;
+
+	@Override
+	public void setType(final OS_Type deducedExpression) {
+		_type = deducedExpression;
+    }
+
+	@Override
+	public OS_Type getType() {
+    	return _type;
+	}
+
+	public void setContext(final Context cur) {
+		_a.setContext(cur);
+	}
+
+	@Override
+	public boolean hasResolvedElement() {
+		return _resolvedElement != null;
+	}
+
+	@Override
+	public OS_Element getResolvedElement() {
+		return _resolvedElement;
+	}
+
+	@Override
+	public void setResolvedElement(final OS_Element element) {
+		_resolvedElement = element;
+	}
+
+	public static IdentExpression forString(final String string) {
+		return new IdentExpression(Helpers.makeToken(string));
+	}
+
+	public Token token() {
+		return text;
+	}
+
+	// region Locatable
+
+	@Override
+	public int getLine() {
+		return token().getLine();
+	}
+
+	@Override
+	public int getColumn() {
+		return token().getColumn();
+	}
+
+	@Override
+	public int getLineEnd() {
+		return token().getLine();
+	}
+
+	@Override
+	public int getColumnEnd() {
+		return token().getColumn();
+	}
+
+	@Override
+	public File getFile() {
+		String filename = token().getFilename();
+		if (filename == null)
+			return null;
+		return new File(filename);
+	}
+
+	// endregion
 }
 
 //

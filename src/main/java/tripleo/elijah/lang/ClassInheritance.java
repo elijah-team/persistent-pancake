@@ -15,22 +15,30 @@
 package tripleo.elijah.lang;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ClassInheritance {
 
-	private ClassStatement parent;
-
-	public ClassInheritance(ClassStatement aStatement) {
-		parent=aStatement;
+	/**
+	 * Do nothing and wait for addAll or add.
+	 * Used by ClassBuilder
+	 */
+	public ClassInheritance() {
 	}
 
-	List<TypeName> tns=new ArrayList<TypeName>();
-	
-	public TypeName next() {
-		TypeName tn = new RegularTypeName();
+	public List<TypeName> tns = new ArrayList<TypeName>();
+
+	public void add(final TypeName tn) {
 		tns.add(tn);
-		return tn;
 	}
+
+	public void addAll(final Collection<TypeName> tns) {
+		this.tns.addAll(tns);
+	}
+
 }
 
+//
+//
+//

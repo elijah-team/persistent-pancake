@@ -8,21 +8,17 @@
  */
 package tripleo.elijah.lang;
 
-import java.io.IOException;
+import antlr.Token;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import tripleo.elijah.contexts.ClassContext;
+import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.util.NotImplementedException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import antlr.Token;
-import com.thoughtworks.xstream.XStream;
-import tripleo.elijah.ProgramClosure;
-import tripleo.elijah.gen.ICodeGen;
-import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.TabbedOutputStream;
-
-// Referenced classes of package pak2:
-//			Scope, ExpressionWrapper, AbstractStatementClosure, StatementClosure, 
-//			BlockStatement
 
 /**
  * Represents a "class"
@@ -32,94 +28,63 @@ import tripleo.elijah.util.TabbedOutputStream;
  * variables
  * 
  */
-public class ClassStatement extends ProgramClosure implements ClassItem, ModuleItem, OS_Element {
+public class ClassStatement extends ProgramClosure implements ClassItem, ModuleItem, StatementItem, FunctionItem, OS_Element, OS_Element2, Documentable, OS_Container {
 	
 	private OS_Package _packageName;
-	
-//	/**
-//	 * For XMLBeans. Must use setParent.
-//	 */
-//	public ClassStatement() {
-//	}
-	
-	public ClassStatement(OS_Element aElement) {
+	private ClassTypes _type;
+	private List<AccessNotation> accesses = new ArrayList<AccessNotation>();
+
+	public ClassStatement(final OS_Element aElement, final Context parentContext) {
 		parent = aElement; // setParent
 		if (aElement instanceof  OS_Module) {
-			final OS_Module module;
-			module = (OS_Module) aElement;
+			final OS_Module module = (OS_Module) aElement;
 			//
 			this.setPackageName(module.pullPackageName());
+			_packageName.addElement(this);
 			module.add(this);
+		} else if (aElement instanceof OS_Container) {
+			((OS_Container) aElement).add(this);
+		} else {
+			throw new IllegalStateException(String.format("Cant add ClassStatement to %s", aElement));
 		}
-	}
-
-	public void add(ClassItem aDef) {
-		items.add (aDef);
-	}
-
-//	@Override
-//	public void add(StatementItem aItem) {
-//		if (aItem instanceof ClassItem) {
-//			ClassItem new_name = (ClassItem) aItem;
-//			items.add (new_name);
-//		} else
-//			throw new IllegalArgumentException(""+aItem.getClass().getName()+" cannot be added to class");
-//	}
-
-//	@Override
-	public void addDocString(Token aText) {
-		mDocs.add(aText.getText());
-	}
-
-//	@Override
-//	public BlockStatement blockStatement() {
-//		return null;
-//	}
-
-	public ClassInheritance classInheritance() {
-		// TODO once
-		return new ClassInheritance(this);
-	}
-
-	public FunctionDef funcDef() {
-		return new FunctionDef(this);
+		setContext(new ClassContext(parentContext, this));
 	}
 
 	@Override
-	public void print_osi(TabbedOutputStream tos) throws IOException {
-		XStream x= new XStream();
-		x.toXML(this, tos.getStream());
-		//
-		System.out.println("Klass print_osi");
-		tos.incr_tabs();
-		tos.put_string_ln(String.format("Class (%s) {", clsName));
-		tos.put_string_ln("//");
-		for (ClassItem item : items) {
-			item.print_osi(tos);
-		}
-		tos.dec_tabs();
-		tos.put_string_ln(String.format("} // class %s ", clsName));
-		tos.flush();
+	public void addDocString(final Token aText) {
+		mDocs.add(aText.getText());
+	}
+
+	ClassInheritance _inh = new ClassInheritance(); // remove final for ClassBuilder
+
+	public ClassInheritance classInheritance() {
+		return _inh;
+	}
+
+	public FunctionDef funcDef() {
+		return new FunctionDef(this, getContext());
 	}
 	
 	public String getName() {
-		return clsName;
+//		if (clsName == null)
+//			return "";
+		return clsName.getText();
 	}
 	
 	public List<ClassItem> getItems() {
 		return items;
 	}
 	
-	public ArrayList<String> getDocstrings() {
+	public List<String> getDocstrings() {
 		return mDocs;
 	}
 	
-	public OS_Element getParent() {
+	@Override public OS_Element getParent() {
 		return parent;
 	}
 	
-	public void setName(Token aText) {
-		clsName=aText.getText();
+	public void setName(final IdentExpression aText) {
+		clsName = aText;
 	}
 
 //	@Override
@@ -127,56 +92,73 @@ public class ClassStatement extends ProgramClosure implements ClassItem, ModuleI
 		return new AbstractStatementClosure(this);
 	}
 
-//	public IExpression statementWrapper() {
-//		IExpression R = new ExpressionWrapper();
-//		mExprs.add(R);
-//		return R;
-//	}
-
-//	@Override
-	public void statementWrapper(IExpression aExpr) {
-		// TODO Auto-generated method stub
-		System.err.println("** adding "+aExpr.repr_()+"to class");
-		mExprs.add(aExpr);
-//		throw new NotImplementedException();
-	}
-
-	public String clsName;
+	public IdentExpression clsName;
 
 	private final List<ClassItem> items=new ArrayList<ClassItem>();
-	private final ArrayList<String> mDocs = new ArrayList<String>();
-	private final ArrayList<IExpression> mExprs = new ArrayList<IExpression>();
+	private final List<String> mDocs = new ArrayList<String>();
+//	private final List<IExpression> mExprs = new ArrayList<IExpression>();
 
 	public /*final*/ OS_Element parent;
 
-	public synchronized Collection<ClassItem> items() {
-		return items;
+	public Attached _a = new Attached();
+
+	@Override // OS_Container
+	public List<OS_Element2> items() {
+		final Collection<ClassItem> c = Collections2.filter(getItems(), new Predicate<ClassItem>() {
+			@Override
+			public boolean apply(@Nullable final ClassItem input) {
+				final boolean b = input instanceof OS_Element2;
+//				System.out.println(String.format("%s %b", input, b));
+				return b;
+			}
+		});
+		final ArrayList<OS_Element2> a = new ArrayList<OS_Element2>();
+		for (final ClassItem functionItem : c) {
+			a.add((OS_Element2) functionItem);
+		}
+		return a;
+	}
+
+	@Override // OS_Container
+	public void add(final OS_Element anElement) {
+		if (!(anElement instanceof ClassItem))
+			throw new IllegalStateException(String.format("Cant add %s to ClassStatement", anElement));
+		items.add((ClassItem) anElement);
 	}
 
 	@Override
-	public void visitGen(ICodeGen visit) {
+	public void visitGen(final ICodeGen visit) {
 		visit.addClass(this);
 	}
 	
-	public void setPackageName(OS_Package aPackageName) {
+	public void setPackageName(final OS_Package aPackageName) {
 		_packageName = aPackageName;
 	}
 	
 	public OS_Package getPackageName() {
 		return _packageName;
 	}
-	
-	public Scope addCtor(Token aX1) {
-		NotImplementedException.raise();
-		return null;
+
+	@Override
+	public String toString() {
+		final String package_name;
+		if (getPackageName() != null && getPackageName()._name != null) {
+			final Qualident package_name_q = getPackageName()._name;
+			package_name = package_name_q.toString();
+		} else
+			package_name = "`'";
+		return String.format("<Class %d %s %s>", _a.getCode(), package_name, getName());
+	}
+
+	public ConstructorDef addCtor(final IdentExpression aConstructorName) {
+		return new ConstructorDef(aConstructorName, this);
 	}
 	
-	public Scope addDtor() {
-		NotImplementedException.raise();
-		return null;
+	public DestructorDef addDtor() {
+		return new DestructorDef(this);
 	}
 	
-	public TypeAliasExpression typeAlias() {
+	public TypeAliasStatement typeAlias() {
 		NotImplementedException.raise();
 		return null;
 	}
@@ -187,13 +169,100 @@ public class ClassStatement extends ProgramClosure implements ClassItem, ModuleI
 	}
 	
 	public ProgramClosure XXX() {
-		return null;
+		return new ProgramClosure() {};
 	}
 
-	@Override
+	@Override // OS_Element
+	public Context getContext() {
+		return _a._context;
+	}
+
+
+	@Override // OS_Element2
 	public String name() {
-		// TODO Auto-generated method stub
-		return null;
+		return getName();
+	}
+
+	public Collection<ClassItem> findFunction(final String name) {
+		return Collections2.filter(items, new Predicate<ClassItem>() {
+			@Override
+			public boolean apply(@Nullable final ClassItem item) {
+				if (item instanceof FunctionDef)
+					if (((FunctionDef) item).name().equals(name))
+						return true;
+				return false;
+			}
+		});
+	}
+
+	public void setType(final ClassTypes aType) {
+		_type = aType;
+	}
+
+	public void setContext(final ClassContext ctx) {
+		_a.setContext(ctx);
+	}
+
+	public void postConstruct() {
+		assert clsName != null;
+	}
+
+	List<AnnotationClause> annotations = null;
+
+	public void addAnnotation(final AnnotationClause a) {
+		if (annotations == null)
+			annotations = new ArrayList<AnnotationClause>();
+		annotations.add(a);
+	}
+
+	public void addAccess(final AccessNotation acs) {
+		accesses.add(acs);
+	}
+
+
+	public IdentExpression getNameNode() {
+		return clsName;
+	}
+
+	public void setInheritance(ClassInheritance inh) {
+		_inh = inh;
+	}
+
+	public void walkAnnotations(AnnotationWalker annotationWalker) {
+		if (annotations == null) return;
+		for (AnnotationClause annotationClause : annotations) {
+			for (AnnotationPart annotationPart : annotationClause.aps) {
+				annotationWalker.annotation(annotationPart);
+			}
+		}
+	}
+
+	public Iterable<AnnotationPart> annotationIterable() {
+		List<AnnotationPart> aps = new ArrayList<AnnotationPart>();
+		if (annotations == null) return aps;
+		for (AnnotationClause annotationClause : annotations) {
+			for (AnnotationPart annotationPart : annotationClause.aps) {
+				aps.add(annotationPart);
+			}
+		}
+		return aps;
+	}
+
+	public PropertyStatement prop() {
+		PropertyStatement propertyStatement = new PropertyStatement(this, getContext());
+		add(propertyStatement);
+		return propertyStatement;
+	}
+
+	public boolean hasItem(OS_Element element) {
+		if (!(element instanceof ClassItem)) return false;
+		return items.contains((ClassItem) element);
+	}
+
+	public void addAnnotations(List<AnnotationClause> as) {
+		for (AnnotationClause annotationClause : as) {
+			addAnnotation(annotationClause);
+		}
 	}
 }
 

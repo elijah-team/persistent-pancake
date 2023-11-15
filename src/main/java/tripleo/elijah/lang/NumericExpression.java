@@ -14,23 +14,23 @@
  */
 package tripleo.elijah.lang;
 
-import java.io.IOException;
-
 import antlr.Token;
-import com.thoughtworks.xstream.XStream;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.TabbedOutputStream;
 
-public class NumericExpression implements IExpression {
+import java.io.File;
+
+public class NumericExpression implements IExpression, Locatable {
 
 	int carrier;
 	private Token n;
 
-//	public NumericExpression(int aCarrier) {
-//		carrier = aCarrier;
-//	}
+	public NumericExpression(final int aCarrier) {
+		carrier = aCarrier;
+	}
 
-	public NumericExpression(Token n) {
+	public NumericExpression(final @NotNull Token n) {
 		this.n = n;
 		carrier = Integer.parseInt(n.getText());
 	}
@@ -41,15 +41,26 @@ public class NumericExpression implements IExpression {
 	}
 
 	@Override
-	public void setLeft(IExpression aLeft) {
+	public void setLeft(final IExpression aLeft) {
 		throw new NotImplementedException(); // TODO
 	}
 
-	@Override
-	public void print_osi(TabbedOutputStream aTabbedoutputstream) throws IOException {
-		XStream x = new XStream(); // TODO context.comp.xstream??
-		x.toXML(this, aTabbedoutputstream.getStream());
+	// region kind
+
+	@Override  // IExpression
+	public ExpressionKind getKind() {
+		return ExpressionKind.NUMERIC; // TODO
 	}
+
+	@Override  // IExpression
+	public void setKind(final ExpressionKind aType) {
+		// log and ignore
+		System.err.println("Trying to set ExpressionType of NumericExpression to "+aType.toString());
+	}
+
+	// endregion
+
+	// region representation
 
 	@Override
 	public String repr_() {
@@ -57,24 +68,82 @@ public class NumericExpression implements IExpression {
 	}
 
 	@Override
-	public ExpressionType getType() {
-		return ExpressionType.NUMERIC; // TODO
-	}
-
-	@Override
-	public void set(ExpressionType aType) {
-		// log and ignore
-		System.err.println("Trying to set ExpressionType of NumericExpression to "+aType.toString());
-	}
-	
-	@Override
 	public String toString() {
-		return String.format("NumericExpression (%dd)", carrier);
+		return String.format("NumericExpression (%d)", carrier);
 	}
 
+	//endregion
+
+	@Override
 	public boolean is_simple() {
 		return true;
 	}
+
+	// region type
+
+	OS_Type _type;
+
+	@Override  // IExpression
+	public void setType(final OS_Type deducedExpression) {
+		_type = deducedExpression;
+    }
+
+	@Override  // IExpression
+	public OS_Type getType() {
+    	return _type;
+	}
+
+	// endregion
+
+	public int getValue() {
+		return carrier;
+	}
+
+	// region Locatable
+
+	private Token token() {
+		return n;
+	}
+
+	@Override
+	public int getLine() {
+		if (token() != null)
+			return token().getLine();
+		return 0;
+	}
+
+	@Override
+	public int getColumn() {
+		if (token() != null)
+			return token().getColumn();
+		return 0;
+	}
+
+	@Override
+	public int getLineEnd() {
+		if (token() != null)
+			return token().getLine();
+		return 0;
+	}
+
+	@Override
+	public int getColumnEnd() {
+		if (token() != null)
+			return token().getColumn();
+		return 0;
+	}
+
+	@Override
+	public File getFile() {
+		if (token() != null) {
+			String filename = token().getFilename();
+			if (filename != null)
+				return new File(filename);
+		}
+		return null;
+	}
+
+	// endregion
 }
 
 //

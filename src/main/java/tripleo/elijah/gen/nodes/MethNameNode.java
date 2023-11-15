@@ -12,16 +12,16 @@
 package tripleo.elijah.gen.nodes;
 
 /**
- * @author olu
+ * @author Tripleo(acer)
  *
  */
 public class MethNameNode {
 
-	private MethHdrNode _header;
-	private String ident;
+	private final MethHdrNode _header;
+	private final String ident;
 	public String genName;
 
-	public MethNameNode(String method_name, MethHdrNode header) {
+	public MethNameNode(final String method_name, final MethHdrNode header) {
 		// TODO Auto-generated constructor stub
 		this.ident = method_name;
 		_header = header;
