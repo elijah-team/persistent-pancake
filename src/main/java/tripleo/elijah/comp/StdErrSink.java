@@ -12,6 +12,8 @@
  */
 package tripleo.elijah.comp;
 
+import tripleo.elijah.diagnostic.Diagnostic;
+
 /**
  * @author tripleo(sb)
  *
@@ -47,6 +49,13 @@ public class StdErrSink implements ErrSink {
 	@Override
 	public void info(final String message) {
 		System.err.println(String.format("INFO: %s", message));
+	}
+
+	@Override
+	public void reportDiagnostic(Diagnostic diagnostic) {
+		if (diagnostic.severity() == Diagnostic.Severity.ERROR)
+			_errorCount++;
+		diagnostic.report(System.err);
 	}
 }
 

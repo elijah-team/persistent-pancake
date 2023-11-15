@@ -8,18 +8,18 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.stages.gen_generic.CodeGenerator;
+import tripleo.elijah.stages.gen_generic.GenerateResult;
+import tripleo.elijah.stages.post_deduce.IPostDeduce;
+import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created 12/22/20 5:39 PM
  */
-public class GeneratedNamespace implements GeneratedNode {
+public class GeneratedNamespace extends GeneratedContainerNC implements GNCoded {
 	public GeneratedNamespace(NamespaceStatement namespace1, OS_Module module) {
 		this.namespaceStatement = namespace1;
 		this.module = module;
@@ -27,13 +27,6 @@ public class GeneratedNamespace implements GeneratedNode {
 
 	private final OS_Module module;
 	private final NamespaceStatement namespaceStatement;
-	public List<VarTableEntry> varTable = new ArrayList<VarTableEntry>();
-	public Map<FunctionDef, GeneratedFunction> functionMap = new HashMap<FunctionDef, GeneratedFunction>();
-
-	public void addVarTableEntry(AccessNotation an, VariableStatement vs) {
-		// TODO dont ignore AccessNotation
-		varTable.add(new VarTableEntry(vs.getNameToken(), vs.initialValue()));
-	}
 
 	public void addAccessNotation(AccessNotation an) {
 		throw new NotImplementedException();
@@ -42,16 +35,19 @@ public class GeneratedNamespace implements GeneratedNode {
 	public void createCtor0() {
 		// TODO implement me
 		FunctionDef fd = new FunctionDef(namespaceStatement, namespaceStatement.getContext());
+		fd.setName(Helpers.string_to_ident("<ctor$0>"));
+		Scope3 scope3 = new Scope3(fd);
+		fd.scope(scope3);
 		for (VarTableEntry varTableEntry : varTable) {
 			if (varTableEntry.initialValue != IExpression.UNASSIGNED) {
 				IExpression left = varTableEntry.nameToken;
 				IExpression right = varTableEntry.initialValue;
 
 				IExpression e = ExpressionBuilder.build(left, ExpressionKind.ASSIGNMENT, right);
-				fd.add(new StatementWrapper(e, fd.getContext(), fd));
+				scope3.add(new StatementWrapper(e, fd.getContext(), fd));
 			} else {
 				if (getPragma("auto_construct")) {
-					fd.add(new ConstructExpression(fd, fd.getContext(), varTableEntry.nameToken, null));
+					scope3.add(new ConstructStatement(fd, fd.getContext(), varTableEntry.nameToken, null, null));
 				}
 			}
 		}
@@ -65,38 +61,49 @@ public class GeneratedNamespace implements GeneratedNode {
 		return namespaceStatement.getName();
 	}
 
-	public void addFunction(FunctionDef functionDef, GeneratedFunction generatedFunction) {
-		if (functionMap.containsKey(functionDef))
-			throw new IllegalStateException("Function already generated"); // TODO do better than this
-		functionMap.put(functionDef, generatedFunction);
-	}
-
-	/**
-	 * Get a {@link GeneratedFunction}
-	 *
-	 * @param fd the function searching for
-	 *
-	 * @return null if no such key exists
-	 */
-	public GeneratedFunction getFunction(FunctionDef fd) {
-		return functionMap.get(fd);
-	}
-
 	public NamespaceStatement getNamespaceStatement() {
 		return this.namespaceStatement;
 	}
 
-	public class VarTableEntry {
-		public final IdentExpression nameToken;
-		public final IExpression initialValue;
-		public OS_Type varType;
+    @Override
+    public String identityString() {
+        return ""+namespaceStatement;
+    }
 
-		public VarTableEntry(IdentExpression nameToken, IExpression initialValue) {
-			this.nameToken = nameToken;
-			this.initialValue = initialValue;
-		}
+    @Override
+    public OS_Module module() {
+        return module;
+    }
+
+	@Override
+	public OS_Element getElement() {
+		return getNamespaceStatement();
 	}
 
+	@Override
+	@Nullable
+	public VarTableEntry getVariable(String aVarName) {
+		for (VarTableEntry varTableEntry : varTable) {
+			if (varTableEntry.nameToken.getText().equals(aVarName))
+				return varTableEntry;
+		}
+		return null;
+	}
+
+	@Override
+	public void generateCode(CodeGenerator aCodeGenerator, GenerateResult aGr) {
+		aCodeGenerator.generate_namespace(this, aGr);
+	}
+
+	@Override
+	public void analyzeNode(IPostDeduce aPostDeduce) {
+		aPostDeduce.analyze_namespace(this);
+	}
+
+	@Override
+	public Role getRole() {
+		return Role.NAMESPACE;
+	}
 }
 
 //

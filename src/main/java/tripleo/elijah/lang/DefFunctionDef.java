@@ -13,17 +13,47 @@
  */
 package tripleo.elijah.lang;
 
+import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.contexts.FunctionContext;
+import tripleo.elijah.gen.ICodeGen;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefFunctionDef extends FunctionDef implements ClassItem {
+public class DefFunctionDef extends BaseFunctionDef {
 
-	@Deprecated public DefFunctionDef(OS_Element aElement) {
-		super(aElement);
+	private final OS_Element parent;
+
+	public DefFunctionDef(OS_Element aElement, Context aContext) {
+		parent = aElement;
+		if (aElement instanceof OS_Container) {
+			((OS_Container) parent).add(this);
+		} else if (aElement instanceof PropertyStatement) {
+			// do nothing
+		} else {
+			throw new IllegalStateException("adding DefFunctionDef to " + aElement.getClass().getName());
+		}
+		_a.setContext(new FunctionContext(aContext, this));
+		setSpecies(Species.DEF_FUN);
 	}
 
-	public DefFunctionDef(OS_Element element, Context context) {
-		super(element, context);
+	private TypeName _returnType = null;
+
+	public void setReturnType(final TypeName tn) {
+		this._returnType = tn;
+	}
+
+	/**
+	 * Can be {@code null} under the following circumstances:<br/><br/>
+	 *
+	 * 1. The compiler(parser) didn't get a chance to set it yet<br/>
+	 * 2. The programmer did not specify a return value and the compiler must deduce it<br/>
+	 * 3. The function is a void-type and specification isn't required <br/>
+	 *
+	 * @return the associated TypeName or NULL
+	 */
+	public @Nullable TypeName returnType() {
+		return _returnType;
 	}
 
 	private IExpression _expr;
@@ -32,138 +62,25 @@ public class DefFunctionDef extends FunctionDef implements ClassItem {
 	// wont use parent scope.items.add so this is ok
 	public void setExpr(final IExpression aExpr) {
 		_expr = aExpr;
-		_items.add((FunctionItem) _expr);
+		_items.add(new StatementWrapper(_expr, getContext(), this));
 	}
-
-//	static class StatementWrapper implements StatementItem, FunctionItem {
-//
-//		private final IExpression expr;
-//
-//		public StatementWrapper(final IExpression aexpr) {
-//			expr = aexpr;
-//		}
-//
-//	}
-//
-//	private final class DefFunctionDefScope implements Scope {
-//
-//		private final AbstractStatementClosure asc = new AbstractStatementClosure(this);
-//
-//		@Override
-//		public void add(final StatementItem aItem) {
-//			if (aItem instanceof FunctionItem)
-//				/*getElement().*/items.add((FunctionItem) aItem);
-//			else
-//				System.err.println(String.format("105 adding false StatementItem %s to DefFunctionDef",
-//					aItem.getClass().getName()));
-//		}
-//
-//		@Override
-//		public TypeAliasStatement typeAlias() {
-//			return null;
-//		}
-//
-//		@Override
-//		public InvariantStatement invariantStatement() {
-//			return null;
-//		}
-//
-//		@Override
-//		public OS_Element getParent() {
-//			return DefFunctionDef.this;
-//		}
-//
-//		@Override
-//		public OS_Element getElement() {
-//			return DefFunctionDef.this;
-//		}
-//
-//		@Override
-//		public void addDocString(final Token aS) {
-//			docstrings.add(aS.getText());
-//		}
-//
-//		@Override
-//		public BlockStatement blockStatement() {
-//			return new BlockStatement(this);
-//		}
-//
-//		@Override
-//		public StatementClosure statementClosure() {
-//			return asc;
-//		}
-//
-//		@Override
-//		public void statementWrapper(final IExpression aExpr) {
-//			add(new StatementWrapper(aExpr));
-//		}
-//	}
-//
-//	private final List<String> docstrings = new ArrayList<String>(); // TODO do we allow this?
-//	private final List<FunctionItem> items = new ArrayList<FunctionItem>();
-//
-//	private final FormalArgList mFal = new FormalArgList();
-//	private final DefFunctionDefScope mScope2 = new DefFunctionDefScope();
-//	public final Attached _a = new Attached(new DefFunctionContext(this));
-//
-//	private final OS_Element parent;
-//
-//	public String funName;
-//	private TypeName _returnType = null;
-//
-//	public DefFunctionDef(final OS_Element aStatement) {
-//		assert aStatement != null;
-//		parent = aStatement;
-//		if (aStatement instanceof ClassStatement) {
-//			((ClassStatement)parent).add(this);
-//		} else {
-//			System.err.println("adding DefFunctionDef to "+aStatement.getClass().getName());
-//		}
-//	}
-//
-//	public FormalArgList fal() {
-//		return mFal;
-//	}
-//
-//	public Scope scope() {
-//		//assert mScope == null;
-//		return mScope2;
-//	}
-//
-//	public void setName(final Token aText) {
-//		funName = aText.getText();
-//	}
-//
-//	@Override
-//	public void visitGen(final ICodeGen visit) {
-//		// TODO implement me
-//		throw new NotImplementedException();
-//	}
-//
-//	public TypeName returnType() {
-//		return _returnType;
-//	}
-//
-//	public void setReturnType(final TypeName returnType_) {
-//		_returnType = returnType_;
-//	}
-//
-//	@Override
-//	public OS_Element getParent() {
-//		return parent;
-//	}
-//
-//	@Override
-//	public Context getContext() {
-//		return _a.getContext();
-//	}
-
 
 	List<FunctionItem> _items = new ArrayList<FunctionItem>();
 
+
+	@Override
+	public void visitGen(ICodeGen visit) {
+		visit.visitDefFunction(this);
+	}
+
+	@Override
+	public OS_Element getParent() {
+		return parent;
+	}
+
 	@Override
 	public List<FunctionItem> getItems() {
-		return _items;
+		return _items; // TODO what about scope?
 	}
 
 	/**
@@ -171,7 +88,7 @@ public class DefFunctionDef extends FunctionDef implements ClassItem {
 	*/
 	@Override
 	public void postConstruct() {
-		super.postConstruct();
+//		super.postConstruct();
 		if (getItems().size() != 1)
 			throw new IllegalStateException("Too many items"); // TODO convert to diagnostic?
 	}

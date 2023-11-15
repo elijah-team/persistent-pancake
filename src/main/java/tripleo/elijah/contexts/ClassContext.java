@@ -8,9 +8,15 @@
  */
 package tripleo.elijah.contexts;
 
+import tripleo.elijah.gen.ICodeGen;
 import tripleo.elijah.lang.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static tripleo.elijah.contexts.ClassInfo.ClassInfoType.GENERIC;
+import static tripleo.elijah.contexts.ClassInfo.ClassInfoType.INHERITED;
 
 
 /**
@@ -23,10 +29,8 @@ public class ClassContext extends Context {
 	private final ClassStatement carrier;
 	private final Context _parent;
 
-//	public ClassContext(ClassStatement classStatement) {
-//		carrier = classStatement;
-////		super(classStatement);
-//	}
+	private boolean _didInheritance;
+	public Map<TypeName, ClassStatement> _inheritance = new HashMap<>();
 
 	public ClassContext(final Context aParent, final ClassStatement cls) {
 		_parent = aParent;
@@ -38,7 +42,7 @@ public class ClassContext extends Context {
 		for (final ClassItem item: carrier.getItems()) {
 			if (!(item instanceof ClassStatement) &&
 				!(item instanceof NamespaceStatement) &&
-				!(item instanceof FunctionDef) &&
+				!(item instanceof BaseFunctionDef) &&
 				!(item instanceof VariableSequence) &&
 				!(item instanceof AliasStatement) &&
 				!(item instanceof PropertyStatement)
@@ -49,31 +53,38 @@ public class ClassContext extends Context {
 				}
 			}
 			if (item instanceof VariableSequence) {
-				System.out.println("102 "+item);
+//				System.out.println("102 "+item);
 				for (final VariableStatement vs : ((VariableSequence) item).items()) {
 					if (vs.getName().equals(name))
 						Result.add(name, level, vs, this);
 				}
 			}
 		}
-		for (final TypeName tn1 : carrier.classInheritance().tns) {
-//			System.out.println("1001 "+tn);
-			final NormalTypeName tn = (NormalTypeName)tn1;
-			final OS_Element best;
-			if (!tn.hasResolvedElement()) {
-				final LookupResultList tnl = tn.getContext().lookup(tn.getName());
-//	    		System.out.println("1002 "+tnl.results());
-				best = tnl.chooseBest(null);
-			} else
-				best = tn.getResolvedElement();
-			if (best != null) {
-				tn.setResolvedElement(best);
-				final LookupResultList lrl2 = best.getContext().lookup(name);
-				final OS_Element best2 = lrl2.chooseBest(null);
-				if (best2 != null)
-					Result.add(name, level, best2, this);
+
+		for (Map.Entry<TypeName, ClassStatement> entry : inheritance().entrySet()) {
+			final ClassStatement best = entry.getValue();
+			final LookupResultList lrl2 = best.getContext().lookup(name);
+			final OS_Element best2 = lrl2.chooseBest(null);
+
+			if (best2 != null)
+				Result.add(name, level, best2, this, new ClassInfo(best, INHERITED));
+		}
+
+		for (TypeName tn1 : carrier.getGenericPart()) {
+			if (tn1 instanceof NormalTypeName) {
+				final NormalTypeName tn = (NormalTypeName) tn1;
+				final String name1 = tn.getName(); // TODO this may return a string with DOTs in it.
+				if (name1.equals(name)) {
+//					LookupResultList lrl = tn.getContext().lookup(name);
+//					OS_Element best = lrl.chooseBest(null);
+//					if (best == null) {
+//						throw new AssertionError();
+//					} else
+						Result.add(name, level, new OS_TypeNameElement(tn1), this, new ClassInfo(tn, GENERIC));
+				}
+			} else {
+				// TODO probable error
 			}
-//			System.out.println("1003 "+name+" "+Result.results());
 		}
 		if (getParent() != null) {
 			final Context context = getParent();
@@ -86,4 +97,60 @@ public class ClassContext extends Context {
 	@Override public Context getParent() {
 		return _parent;
 	}
+
+	public ClassStatement getCarrier() {
+		return carrier;
+	}
+
+	public Map<TypeName, ClassStatement> inheritance() {
+		if (!_didInheritance) {
+			for (final TypeName tn1 : carrier.classInheritance().tns) {
+//				System.out.println("1001 "+tn);
+				final NormalTypeName tn = (NormalTypeName)tn1;
+				final OS_Element best;
+				final LookupResultList tnl = tn.getContext().lookup(tn.getName());
+//	    		System.out.println("1002 "+tnl.results());
+				best = tnl.chooseBest(null);
+
+				if (best != null) {
+					_inheritance.put(tn1, (ClassStatement) best);
+				}
+
+//				System.out.println("1003 "+name+" "+Result.results());
+				_didInheritance = true;
+			}
+		}
+		return _inheritance;
+	}
+
+	public class OS_TypeNameElement implements OS_Element {
+		private TypeName typeName;
+
+		public TypeName getTypeName() {
+			return typeName;
+		}
+
+		public OS_TypeNameElement(TypeName aTypeName) {
+			typeName = aTypeName;
+		}
+
+		@Override
+		public void visitGen(ICodeGen visit) {
+			visit.visitTypeNameElement(this);
+		}
+
+		@Override
+		public OS_Element getParent() {
+			return carrier;
+		}
+
+		@Override
+		public Context getContext() {
+			return ClassContext.this;
+		}
+	}
 }
+
+//
+//
+//

@@ -43,8 +43,12 @@ public class TypeAliasBuilder extends ElBuilder {
 	}
 
 	@Override
-	protected void setContext(Context context) {
+	public void setContext(Context context) {
 		_context = context;
+		// TODO this is a very important potential bug
+		//  where ident's may not be getting the right context
+		//  because of non-use of Parser.cur in the Builders
+		newAlias.setContext(context);
 	}
 }
 

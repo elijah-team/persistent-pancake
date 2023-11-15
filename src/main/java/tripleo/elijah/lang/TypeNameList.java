@@ -1,3 +1,4 @@
+/* -*- Mode: Java; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
  * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
  * 
@@ -24,6 +25,12 @@ public class TypeNameList {
 		p.add(tn);
 	}
 
+	public TypeName get(int index) {
+		return p.get(index);
+	}
+
+	public int size() { return p.size(); }
+
 	@Override
 	public String toString() {
 		return Helpers.String_join(", ", Collections2.transform(p, new Function<TypeName, String>() {
@@ -38,5 +45,5 @@ public class TypeNameList {
 }
 
 //
-//
+// vim:set shiftwidth=4 softtabstop=0 noexpandtab:
 //

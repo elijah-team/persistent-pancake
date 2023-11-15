@@ -9,13 +9,10 @@
 package tripleo.elijah.lang;
 
 import tripleo.elijah.gen.ICodeGen;
-import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-//import java.util.stream.Collectors;
 
 public class VariableSequence implements StatementItem, FunctionItem, ClassItem {
 
@@ -49,8 +46,7 @@ public class VariableSequence implements StatementItem, FunctionItem, ClassItem 
 
 	@Override
 	public void visitGen(final ICodeGen visit) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		visit.visitVariableSequence(this);
 	}
 
 	@Override
@@ -87,6 +83,40 @@ public class VariableSequence implements StatementItem, FunctionItem, ClassItem 
 			annotations = new ArrayList<AnnotationClause>();
 		annotations.add(a);
 	}
+
+	// region ClassItem
+
+	private AccessNotation access_note;
+	private El_Category category;
+
+	@Override
+	public void setCategory(El_Category aCategory) {
+		category = aCategory;
+	}
+
+	@Override
+	public void setAccess(AccessNotation aNotation) {
+		access_note = aNotation;
+	}
+
+	@Override
+	public El_Category getCategory() {
+		return category;
+	}
+
+	@Override
+	public AccessNotation getAccess() {
+		return access_note;
+	}
+
+	// endregion
+
+	public void setTypeName(TypeName aTypeName) {
+		for (VariableStatement vs : stmts) {
+			vs.setTypeName(aTypeName);
+		}
+	}
+
 }
 
 //

@@ -18,7 +18,7 @@ public class FormalArgListItem implements OS_Element, OS_Element2 {
 
     @Override // OS_Element
     public void visitGen(final ICodeGen visit) {
-        throw new NotImplementedException();
+        visit.visitFormalArgListItem(this);
     }
 
     @Override // OS_Element
@@ -29,8 +29,9 @@ public class FormalArgListItem implements OS_Element, OS_Element2 {
 
     @Override // OS_Element
     public Context getContext() {
-        throw new NotImplementedException();
+//        throw new NotImplementedException();
 //        return null;
+		return name.getContext();
     }
 
 	@Override // OS_Element2

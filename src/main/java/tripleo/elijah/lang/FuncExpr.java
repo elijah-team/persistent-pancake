@@ -20,90 +20,58 @@ import java.util.List;
  *
  * Created 	Mar 30, 2020 at 7:41:52 AM
  */
-public class FuncExpr implements IExpression, OS_Element {
+public class FuncExpr extends BaseFunctionDef implements IExpression, OS_Element {
 
-	private final List<FunctionItem> items = new ArrayList<FunctionItem>();
-	//	private final TypeNameList argList = new TypeNameList();
-	private final FormalArgList argList = new FormalArgList();
-	private final FuncExprScope funcExprScope = new FuncExprScope(this);
-	private TypeName _returnType = null/*new RegularTypeName()*/;
+//	private FormalArgList argList = new FormalArgList();
+	private TypeName _returnType;
 	private OS_Type _type;
 	private FuncExprContext _ctx;
-
+//	private Scope3 scope3;
 
 	public void type(final TypeModifiers modifier) {
 		assert modifier == TypeModifiers.FUNCTION ||
 				modifier == TypeModifiers.PROCEDURE;
 	}
 
-	public FormalArgList argList() {
-		return argList;
-	}
-
 	public TypeName returnType() {
 		return _returnType;
-	}
-
-	public Scope scope() {
-		return funcExprScope;
 	}
 
 	public void setReturnType(final TypeName tn) {
 		_returnType = tn;
 	}
 
-	public List<FunctionItem> getItems() {
-		return items;
-	}
+//	public List<FunctionItem> getItems() {
+//		List<FunctionItem> collection = new ArrayList<FunctionItem>();
+//		for (OS_Element element : scope3.items()) {
+//			if (element instanceof FunctionItem)
+//				collection.add((FunctionItem) element);
+//		}
+//		return collection;
+////		return items;
+//	}
 
 	public void setContext(final FuncExprContext ctx) {
 		_ctx = ctx;
 	}
 
+	@Override
 	public void postConstruct() {
 		// nop
 	}
 
+	// region arglist
+
+	@Override
 	public List<FormalArgListItem> getArgs() {
-		return argList.falis;
+		return mFal.falis;
 	}
 
-	final static class FuncExprScope extends AbstractScope2 {
-
-		private final AbstractStatementClosure asc = new AbstractStatementClosure(this);
-		private final FuncExpr funcExpr;
-
-		public FuncExprScope(final FuncExpr funcExpr) {
-			super(funcExpr);
-			this.funcExpr = funcExpr;
-		}
-
-		@Override
-		public void add(final StatementItem aItem) {
-			if (aItem instanceof FunctionItem)
-				funcExpr.items.add((FunctionItem) aItem);
-			else
-				System.err.println(String.format("adding false FunctionItem %s",
-					aItem.getClass().getName()));
-		}
-
-		@Override
-		public OS_Element getElement() {
-			assert super.getElement() == funcExpr;
-			return funcExpr;
-		}
-
-		@Override
-		public StatementClosure statementClosure() {
-			return asc;
-		}
+	public void setArgList(FormalArgList argList) {
+		mFal = argList;
 	}
 
-	private final FormalArgList formalArgList = new FormalArgList();
-
-	public FormalArgList fal() {
-		return formalArgList;
-	}
+	// endregion
 
 	/****** FOR IEXPRESSION ******/
 	@Override
@@ -149,19 +117,27 @@ public class FuncExpr implements IExpression, OS_Element {
 
 	@Override
 	public void visitGen(final ICodeGen visit) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		visit.visitFuncExpr(this);
 	}
 
 	@Override
 	public OS_Element getParent() {
-		throw new NotImplementedException();
-//		return null; // getContext().getParent().carrier() except if it is an Expression; but Expression is not an Element
+//		throw new NotImplementedException();
+		return null; // getContext().getParent().carrier() except if it is an Expression; but Expression is not an Element
 	}
 
 	@Override
 	public Context getContext() {
 		return _ctx;
+	}
+
+//	@Override
+//	public void scope(Scope3 sco) {
+//		scope3 = sco;
+//	}
+
+	public Scope3 getScope() {
+		return scope3;
 	}
 }
 

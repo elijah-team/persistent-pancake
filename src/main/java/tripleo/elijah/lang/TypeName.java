@@ -8,10 +8,12 @@
  */
 package tripleo.elijah.lang;
 
+import tripleo.elijah.diagnostic.Locatable;
+
 /**
  * Created 8/16/20 2:16 AM
  */
-public interface TypeName {
+public interface TypeName extends Locatable {
 	boolean isNull();
 
 	void setContext(Context context);
@@ -26,6 +28,10 @@ public interface TypeName {
 
 	@Override
 	boolean equals(Object o);
+
+	enum Nullability {
+		NOT_SPECIFIED, NEVER_NULL, NULLABLE
+	}
 }
 
 //

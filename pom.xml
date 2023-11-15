@@ -17,9 +17,44 @@
         <range.version>0.0.3b</range.version>
         <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
         <maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
+        <jdeferred.version>2.0.0</jdeferred.version>
     </properties>
 
     <dependencies>
+
+        <!-- https://search.maven.org/artifact/io.reactivex.rxjava3/rxjava/3.1.0/jar -->
+        <dependency>
+            <groupId>io.reactivex.rxjava3</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.reactivestreams/reactive-streams -->
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version> <!-- Use 1.6 for java 1.5 -->
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jdeferred.v2</groupId>
+            <artifactId>jdeferred-core</artifactId>
+            <version>${jdeferred.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.easymock</groupId>
@@ -171,6 +206,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <groups>
+                        <group>
+                            <title>User packages</title>
+                            <packages>tripleo.elijah:tripleo.elijah.diagnostic:tripleo.elijah.lang2:tripleo.elijah.util</packages>
+                        </group>
+                        <group>
+                            <title>Implementation packages</title>
+                            <packages>tripleo.elijah.ci:tripleo.elijah.comp:tripleo.elijah.contexts:tripleo.elijah.gen:tripleo.elijah.lang:
+                                tripleo.elijah.stages.deduce:tripleo.elijah.stages.expand:tripleo.elijah.stages.gen_c:tripleo.elijah.stages.gen_fn:
+                                tripleo.elijah.stages.generate:tripleo.elijah.stages.instructions:tripleo.elijah.stages.translate
+                            </packages>
+                        </group>
+                    </groups>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

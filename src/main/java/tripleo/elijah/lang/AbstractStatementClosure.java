@@ -61,14 +61,14 @@ public final class AbstractStatementClosure implements StatementClosure, Stateme
 		return bs;
 	}
 //	public IExpression constructExpression() {
-//		ctex=new ConstructExpression(this.parent_scope);
+//		ctex=new ConstructStatement(this.parent_scope);
 //		add(ctex);
 //		return ctex;
 //	}
 
 	@Override
-	public void constructExpression(final IExpression aExpr, final FormalArgList aO) {
-		add(new ConstructExpression(_parent, _parent.getContext(), aExpr, aO));
+	public void constructExpression(final IExpression aExpr, final ExpressionList aO) {
+		add(new ConstructStatement(_parent, _parent.getContext(), aExpr, null, aO)); // TODO provide for name
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public final class AbstractStatementClosure implements StatementClosure, Stateme
 	public VariableSequence varSeq(final Context ctx) {
 		vsq=new VariableSequence(ctx);
 		vsq.setParent(parent_scope.getParent()/*this.getParent()*/); // TODO look at this
-		vsq.setContext(ctx);
+//		vsq.setContext(ctx); //redundant
 		return (VariableSequence) add(vsq);
 	}
 
@@ -117,7 +117,7 @@ public final class AbstractStatementClosure implements StatementClosure, Stateme
 	}
 	
 	private BlockStatement bs;
-	private ConstructExpression ctex;
+	private ConstructStatement ctex;
 	private IfConditional ifex;
 	
 	private Loop loop;

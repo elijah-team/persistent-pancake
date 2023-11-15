@@ -23,6 +23,15 @@ public class TabbedOutputStream {
 		myStream = new BufferedWriter(new OutputStreamWriter(os));
 	}
 
+	public TabbedOutputStream(final Writer w, boolean buffer_it) {
+		tabwidth = 0;
+		//if (os == System.out) dont_close = true;
+		if (buffer_it)
+			myStream = new BufferedWriter(w);//new BufferedWriter(new OutputStreamWriter(os));
+		else
+			myStream = w;
+	}
+
 	public static void main(final String[] args) {
 		final TabbedOutputStream tos = new TabbedOutputStream(System.out);
 //		int i = 0;
@@ -62,6 +71,15 @@ public class TabbedOutputStream {
 		myStream.write('\n');
 //		doIndent();
 		do_tabs = true;
+	}
+
+	public void put_string_ln_no_tabs(final String s) throws IOException {
+		if (!is_connected())
+			throw new IllegalStateException("is_connected assertion failed");
+
+		myStream.write(s);
+		myStream.write('\n');
+//		do_tabs = true;
 	}
 
 	public void put_string(final String s) throws IOException {

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created 8/7/20 2:09 AM
  */
-public class RootedImportStatement implements ImportStatement {
+public class RootedImportStatement extends _BaseImportStatement {
 	final OS_Element parent;
 	private QualidentList importList = new QualidentList(); // remove final for ImportStatementBuilder
 	/** Used in from syntax
@@ -61,6 +61,7 @@ public class RootedImportStatement implements ImportStatement {
 		final List<Qualident> r = new ArrayList<Qualident>();
 		for (final Qualident qualident : importList.parts) {
 			final Qualident q = new Qualident();
+			// TODO what the hell does this do? Should it be `root'
 			for (final IdentExpression part : q.parts()) {
 				q.append(part);
 			}

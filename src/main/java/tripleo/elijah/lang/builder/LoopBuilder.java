@@ -16,7 +16,6 @@ import tripleo.elijah.lang.*;
 public class LoopBuilder extends ElBuilder {
 	private LoopTypes _type;
 	private IExpression _frompart;
-	private OS_Element _parent;
 	private IExpression _topart;
 	private IdentExpression _iterName;
 	private LoopScope _scope = new LoopScope();
@@ -47,13 +46,14 @@ public class LoopBuilder extends ElBuilder {
 		loop.topart(_topart);
 		loop.iterName(_iterName);
 		loop.expr(expr);
-		Scope scope = loop.scope();
+		Scope3 scope = new Scope3(loop);
 		for (ElBuilder builder : _scope.items()) {
 			builder.setParent(loop);
 			builder.setContext(loop.getContext());
 			OS_Element built = builder.build();
-			scope.add((StatementItem) built);
+			scope.add(built);
 		}
+		loop.scope(scope);
 		return loop;
 	}
 

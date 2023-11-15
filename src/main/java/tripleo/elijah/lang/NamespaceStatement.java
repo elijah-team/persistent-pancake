@@ -8,47 +8,19 @@
  */
 package tripleo.elijah.lang;
 
-import antlr.Token;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import tripleo.elijah.contexts.NamespaceContext;
 import tripleo.elijah.gen.ICodeGen;
 import tripleo.elijah.util.NotImplementedException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Tripleo(sb)
  *
  * Created Apr 2, 2019 at 11:08:12 AM
  */
-public class NamespaceStatement implements Documentable, ModuleItem, ClassItem, StatementItem, FunctionItem, OS_Container, OS_Element2 {
+public class NamespaceStatement extends _CommonNC implements Documentable, ModuleItem, ClassItem, StatementItem, FunctionItem, OS_Container, OS_Element2 {
 
-	private IdentExpression nsName;
 	private final OS_Element parent;
-	public Attached _a = new Attached();
-	private final List<ClassItem> items = new ArrayList<ClassItem>();
 	private NamespaceTypes _kind;
-	private OS_Package _packageName;
-	private List<AccessNotation> accesses = new ArrayList<AccessNotation>();
-
-//	@Deprecated public NamespaceStatement(final OS_Element aElement) {
-//		parent = aElement; // setParent
-//		if (aElement instanceof  OS_Module) {
-//			final OS_Module module = (OS_Module) aElement;
-//			//
-//			this.setPackageName(module.pullPackageName());
-//			_packageName.addElement(this);
-//			module.add(this);
-//		} else if (aElement instanceof OS_Container) {
-//			((OS_Container) aElement).add(this);
-//		} else {
-//			throw new IllegalStateException(String.format("Cant add NamespaceStatement to %s", aElement));
-//		}
-//	}
 
 	public NamespaceStatement(final OS_Element aElement, final Context context) {
 		parent = aElement; // setParent
@@ -66,23 +38,8 @@ public class NamespaceStatement implements Documentable, ModuleItem, ClassItem, 
 		setContext(new NamespaceContext(context, this));
 	}
 
-	public void setPackageName(final OS_Package aPackageName) {
-		_packageName = aPackageName;
-	}
-
-	public OS_Package getPackageName() {
-		return _packageName;
-	}
-
-	public void setName(final IdentExpression i1) {
-		nsName = i1;
-	}
-
-	private final List<String> mDocs = new ArrayList<String>();
-
-	@Override
-	public void addDocString(final Token aText) {
-		mDocs.add(aText.getText());
+	public void setContext(final NamespaceContext ctx) {
+		_a.setContext(ctx);
 	}
 
 	public StatementClosure statementClosure() {
@@ -124,8 +81,7 @@ public class NamespaceStatement implements Documentable, ModuleItem, ClassItem, 
 
 	@Override // OS_Element
 	public void visitGen(final ICodeGen visit) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		visit.visitNamespaceStatement(this);
 	}
 
 	@Override // OS_Element
@@ -136,15 +92,6 @@ public class NamespaceStatement implements Documentable, ModuleItem, ClassItem, 
 	@Override // OS_Element
 	public Context getContext() {
 		return _a.getContext();
-	}
-
-	public List<ClassItem> getItems() {
-		return items ;
-	}
-	
-	public String getName() {
-		if (nsName == null) return "";
-		return nsName.getText();
 	}
 
 	public void setType(final NamespaceTypes aType) {
@@ -159,23 +106,6 @@ public class NamespaceStatement implements Documentable, ModuleItem, ClassItem, 
 	}
 
 	@Override // OS_Container
-	public List<OS_Element2> items() {
-		final Collection<ClassItem> c = Collections2.filter(getItems(), new Predicate<ClassItem>() {
-			@Override
-			public boolean apply(@Nullable final ClassItem input) {
-				final boolean b = input instanceof OS_Element2;
-//				System.out.println(String.format("%s %b", input, b));
-				return b;
-			}
-		});
-		final ArrayList<OS_Element2> a = new ArrayList<OS_Element2>();
-		for (final ClassItem functionItem : c) {
-			a.add((OS_Element2) functionItem);
-		}
-		return a;
-	}
-
-	@Override // OS_Container
 	public void add(final OS_Element anElement) {
 		if (anElement instanceof ClassItem)
 			items.add((ClassItem) anElement);
@@ -183,57 +113,22 @@ public class NamespaceStatement implements Documentable, ModuleItem, ClassItem, 
 			System.err.println(String.format("[NamespaceStatement#add] not a ClassItem: %s", anElement));
 	}
 
-	@Override // OS_Element2
-	public String name() {
-		return getName();
-	}
-
-	public void setContext(final NamespaceContext ctx) {
-		_a.setContext(ctx);
-	}
-
-	List<AnnotationClause> annotations = null;
-
-	public void addAnnotation(final AnnotationClause a) {
-		if (annotations == null)
-			annotations = new ArrayList<AnnotationClause>();
-		annotations.add(a);
-	}
-
 	public void postConstruct() {
-		if (nsName == null || nsName.getText().equals("")) {
+		if (nameToken == null || nameToken.getText().equals("")) {
 			setType(NamespaceTypes.MODULE);
-		} else if (nsName.getText().equals("_")) {
+		} else if (nameToken.getText().equals("_")) {
 			setType(NamespaceTypes.PRIVATE);
-		} else if (nsName.getText().equals("__package__")) {
+		} else if (nameToken.getText().equals("__package__")) {
 			setType(NamespaceTypes.PACKAGE);
 		} else {
 			setType(NamespaceTypes.NAMED);
 		}
 	}
 
-	public void addAccess(final AccessNotation acs) {
-		accesses.add(acs);
-	}
+	// region ClassItem
 
-	public void walkAnnotations(AnnotationWalker annotationWalker) {
-		if (annotations == null) return;
-		for (AnnotationClause annotationClause : annotations) {
-			for (AnnotationPart annotationPart : annotationClause.aps) {
-				annotationWalker.annotation(annotationPart);
-			}
-		}
-	}
+	// endregion
 
-	public boolean hasItem(OS_Element element) {
-		return items.contains(element);
-	}
-
-	public void addAnnotations(List<AnnotationClause> as) {
-		for (AnnotationClause annotationClause : as) {
-			addAnnotation(annotationClause);
-		}
-	}
 }
 
 //

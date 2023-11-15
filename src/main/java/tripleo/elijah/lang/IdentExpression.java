@@ -13,6 +13,8 @@
 package tripleo.elijah.lang;
 
 import antlr.Token;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.gen.ICodeGen;
 import tripleo.elijah.util.Helpers;
@@ -91,8 +93,7 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 
 	@Override
 	public void visitGen(final ICodeGen visit) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		visit.visitIdentExpression(this);
 	}
 
 	@Override
@@ -138,7 +139,8 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 		_resolvedElement = element;
 	}
 
-	public static IdentExpression forString(final String string) {
+	@Contract("_ -> new")
+	public static @NotNull IdentExpression forString(final String string) {
 		return new IdentExpression(Helpers.makeToken(string));
 	}
 

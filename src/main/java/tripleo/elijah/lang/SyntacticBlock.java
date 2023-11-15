@@ -9,10 +9,15 @@
 package tripleo.elijah.lang;
 
 import antlr.Token;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import tripleo.elijah.contexts.SyntacticBlockContext;
 import tripleo.elijah.gen.ICodeGen;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -23,12 +28,7 @@ public class SyntacticBlock implements OS_Element, OS_Container, FunctionItem, S
 	private final List<FunctionItem> _items = new ArrayList<FunctionItem>();
 	private final OS_Element _parent;
 	private SyntacticBlockContext ctx;
-	private Scope _scope = new /*SyntacticBlockScope*/AbstractBlockScope(this) {
-		@Override
-		public Context getContext() {
-			return SyntacticBlock.this.getContext();
-		}
-	};
+	private Scope3 scope3;
 
 	public SyntacticBlock(final OS_Element aParent) {
 		_parent = aParent;
@@ -36,7 +36,7 @@ public class SyntacticBlock implements OS_Element, OS_Container, FunctionItem, S
 
 	@Override
 	public void visitGen(final ICodeGen visit) {
-
+		visit.visitSyntacticBlock(this);
 	}
 
 	@Override
@@ -50,15 +50,17 @@ public class SyntacticBlock implements OS_Element, OS_Container, FunctionItem, S
 	}
 
 	public List<FunctionItem> getItems() {
-		return _items;
+		List<FunctionItem> collection = new ArrayList<FunctionItem>();
+		for (OS_Element element : scope3.items()) {
+			if (element instanceof FunctionItem)
+				collection.add((FunctionItem) element);
+		}
+		return collection;
+		//return _items;
 	}
 
 	public void setContext(final SyntacticBlockContext ctx) {
 		this.ctx = ctx;
-	}
-
-	public Scope scope() {
-		return _scope;
 	}
 
 	public void postConstruct() {
@@ -66,80 +68,38 @@ public class SyntacticBlock implements OS_Element, OS_Container, FunctionItem, S
 
 	@Override
 	public List<OS_Element2> items() {
-		return null;
+		final Collection<OS_Element> items = Collections2.filter(scope3.items(), new Predicate<OS_Element>() {
+				@Override
+				public boolean apply(@Nullable OS_Element input) {
+					return input instanceof OS_Element2;
+				}
+		});
+		Collection<OS_Element2> c = Collections2.transform(items, new Function<OS_Element, OS_Element2>() {
+			@Nullable
+			@Override
+			public OS_Element2 apply(@Nullable OS_Element input) {
+				return (OS_Element2) input;
+			}
+		});
+		return new ArrayList<OS_Element2>(c);
 	}
 
 	@Override
 	public void add(final OS_Element anElement) {
 		if (!(anElement instanceof FunctionItem))
-			return;
-		_items.add((FunctionItem) anElement);
+			return; // TODO throw?
+		scope3.add(anElement);
 	}
-
-	private final List<Token> _docstrings = new ArrayList<Token>();
 
 	@Override
 	public void addDocString(Token s1) {
-		_docstrings.add(s1);
+		scope3.addDocString(s1);
 	}
 
-//	public final class SyntacticBlockScope implements Scope {
-//
-//		private final AbstractStatementClosure asc = new AbstractStatementClosure(this, getParent());
-//
-//		@Override
-//		public void add(StatementItem aItem) {
-//			if (aItem instanceof FunctionItem)
-//				_items.add((FunctionItem) aItem);
-//			else
-//				System.err.println(String.format("adding false FunctionItem %s", aItem.getClass().getName()));
-//		}
-//
-//		@Override
-//		public void addDocString(Token aS) {
-//			mDocs.add(aS.getText());
-//		}
-//
-//		@Override
-//		public BlockStatement blockStatement() {
-//			return new BlockStatement(this);
-//		}
-//
-//		@Override
-//		public InvariantStatement invariantStatement() {
-//			return null;
-//		}
-//
-//		@Override
-//		public StatementClosure statementClosure() {
-//			return asc;
-//		}
-//
-//		@Override
-//		public void statementWrapper(IExpression aExpr) {
-//			add(new StatementWrapper(aExpr, getContext(), getParent()));
-//		}
-//
-//		@Override
-//		public TypeAliasStatement typeAlias() {
-//			return null;
-//		}
-//
-//		/* (non-Javadoc)
-//		 * @see tripleo.elijah.lang.Scope#getParent()
-//		 */
-//		@Override
-//		public OS_Element getParent() {
-//			return SyntacticBlock.this;
-//		}
-//
-//		@Override
-//		public OS_Element getElement() {
-//			return SyntacticBlock.this;
-//		}
-//
-//
-//	}
+	public void scope(Scope3 sco) {
+		scope3 = sco;
+	}
+
 }
 
 //

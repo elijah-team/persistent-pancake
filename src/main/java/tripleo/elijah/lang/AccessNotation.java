@@ -9,13 +9,15 @@
 package tripleo.elijah.lang;
 
 import antlr.Token;
+import tripleo.elijah.gen.ICodeGen;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijjah.ElijjahTokenTypes;
 
 /**
  * Created 9/22/20 1:39 AM
  */
 // TODO Does this need to be Element?
-public class AccessNotation {
+public class AccessNotation implements OS_Element {
 	private Token category;
 	private Token shorthand;
 	private TypeNameList tnl;
@@ -34,6 +36,25 @@ public class AccessNotation {
 
 	public void setTypeNames(final TypeNameList tnl) {
 		this.tnl = tnl;
+	}
+
+	@Override
+	public void visitGen(ICodeGen visit) {
+		visit.visitAccessNotation(this);
+	}
+
+	@Override
+	public OS_Element getParent() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public Context getContext() {
+		throw new NotImplementedException();
+	}
+
+	public Token getCategory() {
+		return category;
 	}
 }
 

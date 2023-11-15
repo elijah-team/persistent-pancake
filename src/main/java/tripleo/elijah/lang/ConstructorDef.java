@@ -8,6 +8,8 @@
  */
 package tripleo.elijah.lang;
 
+import tripleo.elijah.contexts.FunctionContext;
+import tripleo.elijah.gen.ICodeGen;
 import tripleo.elijah.util.Helpers;
 
 /**
@@ -15,21 +17,52 @@ import tripleo.elijah.util.Helpers;
  *
  * Created 	Apr 16, 2020 at 7:34:07 AM
  */
-public class ConstructorDef extends FunctionDef {
+public class ConstructorDef extends BaseFunctionDef {
+	public static final IdentExpression emptyConstructorName = Helpers.string_to_ident("<>");
 
-	@Deprecated public ConstructorDef(final IdentExpression aConstructorName, final ClassStatement aParent) {
-		super(aParent);
+	// TODO override name() ??
+	public static ConstructorDef defaultVirtualCtor = new ConstructorDef(null, null, null);
+
+	private final OS_Element parent;
+
+	public ConstructorDef(final IdentExpression aConstructorName, final _CommonNC aParent, final Context context) {
+		parent = (OS_Element) aParent;
+		if (parent != null) {
+			if (aParent instanceof OS_Container) {
+				((OS_Container) parent).add(this);
+			} else {
+				throw new IllegalStateException("adding FunctionDef to " + aParent.getClass().getName());
+			}
+			_a.setContext(new FunctionContext(context, this));
+		}
+
 		if (aConstructorName != null)
 			setName(aConstructorName);
-		else setName(Helpers.string_to_ident("<>")); // hack for Context#lookup
+		else
+			setName(emptyConstructorName); // hack for Context#lookup
+		setSpecies(Species.CTOR);
 	}
 
-	public ConstructorDef(final IdentExpression aConstructorName, final ClassStatement aParent, final Context cur) {
-		super(aParent, cur);
-		if (aConstructorName != null)
-			setName(aConstructorName);
-		else setName(Helpers.string_to_ident("<>")); // hack for Context#lookup
+	@Override
+	public void visitGen(ICodeGen visit) {
+		visit.visitConstructorDef(this);
 	}
+
+	@Override // OS_Element
+	public OS_Element getParent() {
+		return parent;
+	}
+
+	@Override
+	public void postConstruct() {
+
+	}
+
+	@Override
+	public String toString() {
+		return String.format("<Constructor %s %s %s>", parent, name(), getArgs());
+	}
+
 
 }
 

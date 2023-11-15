@@ -6,19 +6,10 @@
  * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
  * 
  */
-/*
- * Created on Sep 1, 2005 8:16:32 PM
- * 
- * $Id$
- *
- */
-/**
- * 
- */
 package tripleo.elijah.lang;
 
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang2.BuiltInTypes;
-import tripleo.elijah.util.NotImplementedException;
 
 import java.util.Objects;
 
@@ -26,13 +17,15 @@ import java.util.Objects;
  *
  * This class represents all the different type of types in the system possible
  *
+ * Created on Sep 1, 2005 8:16:32 PM
  *
  * @author Tripleo(sb)
  *
  */
 public class OS_Type {
 
-	public OS_Type() {
+	public OS_Type(Type t) {
+		type_of_type = t;
 	}
 
 	public static boolean isConcreteType(final OS_Element element) {
@@ -43,28 +36,45 @@ public class OS_Type {
 	}
 
 	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		final OS_Type os_type = (OS_Type) o;
-/*		switch (kind) {
-			case USER: return (((OS_Type) o).getTypeName()).equals(getTypeName());
-			case BUILT_IN: return (((OS_Type) o).type).equals(type);
-			case USER_CLASS: return (((OS_Type) o).etype).equals(etype);
-			default: throw new IllegalStateException("Cant be here");
-		}
-*/
-		final boolean b = type == os_type.type &&
-				type_of_type == os_type.type_of_type &&
-				Objects.equals(etype, os_type.etype) &&
-				Objects.equals(ttype, os_type.ttype);
-		return b;
+	public boolean equals(final Object aO) {
+		if (this == aO) return true;
+		if (aO == null || getClass() != aO.getClass()) return false;
+
+		final OS_Type os_type = (OS_Type) aO;
+
+		if (type != os_type.type) return false;
+		if (type_of_type != os_type.type_of_type) return false;
+		if (etype != null ? !etype.equals(os_type.etype) : os_type.etype != null) return false;
+		return ttype != null ? ttype.equals(os_type.ttype) : os_type.ttype == null;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(type, type_of_type, etype.hashCode(), ttype.hashCode());
+		int result = type != null ? type.hashCode() : 0;
+		result = 31 * result + type_of_type.hashCode();
+		result = 31 * result + (etype != null ? etype.hashCode() : 0);
+		result = 31 * result + (ttype != null ? ttype.hashCode() : 0);
+		return result;
 	}
+
+//	@Override
+//	public boolean equals(final Object o) {
+//		if (this == o) return true;
+//		if (o == null || getClass() != o.getClass()) return false;
+//		final OS_Type os_type = (OS_Type) o;
+///*		switch (kind) {
+//			case USER: return (((OS_Type) o).getTypeName()).equals(getTypeName());
+//			case BUILT_IN: return (((OS_Type) o).type).equals(type);
+//			case USER_CLASS: return (((OS_Type) o).etype).equals(etype);
+//			default: throw new IllegalStateException("Cant be here");
+//		}
+//*/
+//		final boolean b = type == os_type.type &&
+//				type_of_type == os_type.type_of_type &&
+//				Objects.equals(etype, os_type.etype) &&
+//				Objects.equals(ttype, os_type.ttype);
+//		return b;
+//	}
 
 	public ClassStatement getClassOf() {
 		if (etype != null && etype instanceof ClassStatement)
@@ -77,7 +87,7 @@ public class OS_Type {
 	public OS_Element getElement() {
 		switch (type_of_type) {
 		case USER_CLASS:
-		case FUNCTION:
+//		case FUNCTION: // defined in subclass
 			return etype;
 		default:
 			throw new IllegalArgumentException();
@@ -96,11 +106,16 @@ public class OS_Type {
 				case SystemInteger:
 					{
 						final LookupResultList r;
-						final OS_Element best;
+						OS_Element best;
 
 						r = ctx.lookup("SystemInteger");
 						best = r.chooseBest(null);
-						return new OS_Type((ClassStatement) best);
+						while (best instanceof AliasStatement) {
+							final AliasStatement aliasStatement = (AliasStatement) best;
+							final LookupResultList lrl = aliasStatement.getContext().lookup(((Qualident) aliasStatement.getExpression()).toString());
+							best = lrl.chooseBest(null);
+						}
+						return ((ClassStatement) best).getOS_Type();
 					}
 				case Boolean:
 					{
@@ -109,17 +124,30 @@ public class OS_Type {
 
 						r = ctx.lookup("Boolean");
 						best = r.chooseBest(null);
-						return new OS_Type((ClassStatement) best);
+						return ((ClassStatement) best).getOS_Type();
+					}
+				case Unit:
+					{
+						return new OS_UnitType();
+					}
+				case String_:
+					{
+						final LookupResultList r;
+						final OS_Element best;
+
+						r = ctx.lookup("String8"); // TODO not sure about this
+						best = r.chooseBest(null);
+						return ((ClassStatement) best).getOS_Type();
 					}
 				default:
-					throw new NotImplementedException();
+					throw new IllegalStateException("Unexpected value: " + getBType());
 				}
 			}
 		case USER:
 			{
 				final LookupResultList r = ctx.lookup(getTypeName().toString()); // TODO
 				final OS_Element best = r.chooseBest(null);
-				return new OS_Type((ClassStatement) best);
+				return ((ClassStatement) best).getOS_Type();
 			}
 		case USER_CLASS:
 		case FUNCTION:
@@ -129,8 +157,12 @@ public class OS_Type {
 		}
 	}
 
+	public boolean isUnitType() {
+		return false;
+	}
+
 	public enum Type {
-		BUILT_IN, USER, USER_CLASS, FUNCTION
+		BUILT_IN, USER, USER_CLASS, FUNC_EXPR, UNIT_TYPE, UNKNOWN, ANY, FUNCTION, GENERIC_TYPENAME
 	}
 
 	public Type getType() {
@@ -138,7 +170,7 @@ public class OS_Type {
 	}
 
 	private BuiltInTypes type;
-	protected Type type_of_type;
+	protected @NotNull final Type type_of_type;
 	private OS_Element etype;
 	private TypeName ttype;
 
@@ -156,7 +188,9 @@ public class OS_Type {
 	}
 
 	/*@ ensures type_of_type = Type.USER; */
-	public OS_Type(/*Normal*/final TypeName typeName) {
+	public OS_Type(final @NotNull TypeName typeName) {
+		if (typeName.isNull())
+			System.err.println("170 null typeName in OS_Type");//throw new AssertionError();
 		this.ttype = typeName;
 		this.type_of_type = Type.USER;
 	}
@@ -179,6 +213,22 @@ public class OS_Type {
 		return ttype;
 	}
 
+	public static class OS_UnitType extends OS_Type {
+
+		public OS_UnitType() {
+			super(Type.UNIT_TYPE);
+		}
+
+		@Override
+		public boolean isUnitType() {
+			return true;
+		}
+
+		@Override
+		public String toString() {
+			return "<UnitType>";
+		}
+	}
 }
 
 //

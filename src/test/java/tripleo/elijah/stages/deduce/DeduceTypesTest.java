@@ -13,10 +13,14 @@ import org.junit.Before;
 import org.junit.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.IO;
+import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.*;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GeneratePhase;
+import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 
 /**
@@ -24,10 +28,10 @@ import tripleo.elijah.util.Helpers;
  */
 public class DeduceTypesTest {
 
-	private OS_Type x;
+	private GenType x;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws ResolveError {
 		final OS_Module mod = new OS_Module();
 		mod.parent = new Compilation(new StdErrSink(), new IO());
 		final ModuleContext mctx = new ModuleContext(mod);
@@ -36,7 +40,8 @@ public class DeduceTypesTest {
 		cs.setName(Helpers.string_to_ident("Test"));
 		final FunctionDef fd = cs.funcDef();
 		fd.setName(Helpers.string_to_ident("test"));
-		final VariableSequence vss = fd.scope().statementClosure().varSeq(fd.getContext());
+		Scope3 scope3 = new Scope3(fd);
+		final VariableSequence vss = scope3.statementClosure().varSeq(fd.getContext());
 		final VariableStatement vs = vss.next();
 		final IdentExpression x = Helpers.string_to_ident("x");
 		x.setContext(fd.getContext());
@@ -44,18 +49,30 @@ public class DeduceTypesTest {
 		final Qualident qu = new Qualident();
 		qu.append(Helpers.string_to_ident("Integer"));
 		((NormalTypeName)vs.typeName()).setName(qu);
+		((NormalTypeName)vs.typeName()).setContext(fd.getContext());
+		fd.scope(scope3);
 		fd.postConstruct();
 		cs.postConstruct();
 		mod.postConstruct();
 		final FunctionContext fc = (FunctionContext) fd.getContext(); // TODO needs to be mocked
 		final IdentExpression x1 = Helpers.string_to_ident("x");
 		x1.setContext(fc);
-		final DeduceTypes d = new DeduceTypes(mod);
-		this.x = d.deduceExpression(x1, fc);
+		//
+		mod.prelude = mod.parent.findPrelude("c");
+		//
+		//
+		//
+		final ElLog.Verbosity verbosity = mod.parent.gitlabCIVerbosity();
+		final PipelineLogic pl = new PipelineLogic(verbosity);
+		final GeneratePhase generatePhase = new GeneratePhase(verbosity, pl);
+		DeducePhase dp = new DeducePhase(generatePhase, pl, verbosity);
+		DeduceTypes2 d = dp.deduceModule(mod, verbosity);
+//		final DeduceTypes d = new DeduceTypes(mod);
+		this.x = DeduceLookupUtils.deduceExpression(d, x1, fc);
 		System.out.println(this.x);
 	}
 	/** TODO This test fails beacause we are comparing a BUILT_IN vs a USER OS_Type.
-	 *  Eventually it should pass when we resolve the primitive types.
+	 *   It fails because Integer is an interface and not a BUILT_IN
 	 */
 //	@Test
 //	public void testDeduceIdentExpression1() {
@@ -70,7 +87,7 @@ public class DeduceTypesTest {
 		final Qualident tnq = new Qualident();
 		tnq.append(Helpers.string_to_ident("Integer"));
 		tn.setName(tnq);
-		Assert.assertEquals(new OS_Type(tn), x/*.getTypeName()*/);
+		Assert.assertTrue(genTypeTypenameEquals(new OS_Type(tn), x/*.getTypeName()*/));
 	}
 	@Test
 	public void testDeduceIdentExpression3() {
@@ -78,8 +95,8 @@ public class DeduceTypesTest {
 		final Qualident tnq = new Qualident();
 		tnq.append(Helpers.string_to_ident("Integer"));
 		tn.setName(tnq);
-		Assert.assertEquals(new OS_Type(tn).getTypeName(), x.getTypeName());
-		Assert.assertEquals(new OS_Type(tn), x);
+		Assert.assertEquals(new OS_Type(tn).getTypeName(), x.typeName.getTypeName());
+		Assert.assertTrue(genTypeTypenameEquals(new OS_Type(tn), x));
 	}
 	@Test
 	public void testDeduceIdentExpression4() {
@@ -87,9 +104,13 @@ public class DeduceTypesTest {
 		final Qualident tnq = new Qualident();
 		tnq.append(Helpers.string_to_ident("Integer"));
 		tn.setName(tnq);
-//		Assert.assertEquals(new OS_Type(tn).getTypeName(), x.getTypeName());
-//		Assert.assertEquals(new OS_Type(tn), x);
-		Assert.assertEquals(new OS_Type(tn).toString(), x.toString());
+		Assert.assertEquals(new OS_Type(tn).getTypeName(), x.typeName.getTypeName());
+		Assert.assertTrue(genTypeTypenameEquals(new OS_Type(tn), x));
+		Assert.assertEquals(new OS_Type(tn).toString(), x.typeName.toString());
+	}
+
+	private boolean genTypeTypenameEquals(OS_Type aType, GenType genType) {
+		return genType.typeName.equals(aType);
 	}
 
 }

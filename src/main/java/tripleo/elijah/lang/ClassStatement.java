@@ -1,17 +1,19 @@
 /*
  * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
- * 
- * The contents of this library are released under the LGPL licence v3, 
+ *
+ * The contents of this library are released under the LGPL licence v3,
  * the GNU Lesser General Public License text was downloaded from
  * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- * 
+ *
  */
 package tripleo.elijah.lang;
 
-import antlr.Token;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.gen.ICodeGen;
 import tripleo.elijah.util.NotImplementedException;
@@ -22,101 +24,42 @@ import java.util.List;
 
 /**
  * Represents a "class"
- * 
+ * <p>
  * items -> ClassItems
- * docstrings 
+ * docstrings
  * variables
- * 
  */
-public class ClassStatement extends ProgramClosure implements ClassItem, ModuleItem, StatementItem, FunctionItem, OS_Element, OS_Element2, Documentable, OS_Container {
-	
-	private OS_Package _packageName;
-	private ClassTypes _type;
-	private List<AccessNotation> accesses = new ArrayList<AccessNotation>();
+public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements ClassItem, ModuleItem, StatementItem, FunctionItem, OS_Element, OS_Element2, Documentable, OS_Container {
 
-	public ClassStatement(final OS_Element aElement, final Context parentContext) {
-		parent = aElement; // setParent
-		if (aElement instanceof  OS_Module) {
-			final OS_Module module = (OS_Module) aElement;
+	private final OS_Element parent;
+	ClassInheritance _inh = new ClassInheritance(); // remove final for ClassBuilder
+	private ClassTypes _type;
+	private TypeNameList genericPart;
+
+	static final List<TypeName> emptyTypeNameList = ImmutableList.<TypeName>of();
+	private OS_Type osType;
+
+	public ClassStatement(final OS_Element parentElement, final Context parentContext) {
+		parent = parentElement; // setParent
+		if (parentElement instanceof OS_Module) {
+			final OS_Module module = (OS_Module) parentElement;
 			//
 			this.setPackageName(module.pullPackageName());
 			_packageName.addElement(this);
 			module.add(this);
-		} else if (aElement instanceof OS_Container) {
-			((OS_Container) aElement).add(this);
+		} else if (parentElement instanceof FunctionDef) {
+			// do nothing
+		} else if (parentElement instanceof OS_Container) {
+			((OS_Container) parentElement).add(this);
 		} else {
-			throw new IllegalStateException(String.format("Cant add ClassStatement to %s", aElement));
+			throw new IllegalStateException(String.format("Cant add ClassStatement to %s", parentElement));
 		}
 		setContext(new ClassContext(parentContext, this));
 	}
 
 	@Override
-	public void addDocString(final Token aText) {
-		mDocs.add(aText.getText());
-	}
-
-	ClassInheritance _inh = new ClassInheritance(); // remove final for ClassBuilder
-
-	public ClassInheritance classInheritance() {
-		return _inh;
-	}
-
-	public FunctionDef funcDef() {
-		return new FunctionDef(this, getContext());
-	}
-	
-	public String getName() {
-//		if (clsName == null)
-//			return "";
-		return clsName.getText();
-	}
-	
-	public List<ClassItem> getItems() {
-		return items;
-	}
-	
-	public List<String> getDocstrings() {
-		return mDocs;
-	}
-	
-	@Override public OS_Element getParent() {
+	public OS_Element getParent() {
 		return parent;
-	}
-	
-	public void setName(final IdentExpression aText) {
-		clsName = aText;
-	}
-
-//	@Override
-	public StatementClosure statementClosure() {
-		return new AbstractStatementClosure(this);
-	}
-
-	public IdentExpression clsName;
-
-	private final List<ClassItem> items=new ArrayList<ClassItem>();
-	private final List<String> mDocs = new ArrayList<String>();
-//	private final List<IExpression> mExprs = new ArrayList<IExpression>();
-
-	public /*final*/ OS_Element parent;
-
-	public Attached _a = new Attached();
-
-	@Override // OS_Container
-	public List<OS_Element2> items() {
-		final Collection<ClassItem> c = Collections2.filter(getItems(), new Predicate<ClassItem>() {
-			@Override
-			public boolean apply(@Nullable final ClassItem input) {
-				final boolean b = input instanceof OS_Element2;
-//				System.out.println(String.format("%s %b", input, b));
-				return b;
-			}
-		});
-		final ArrayList<OS_Element2> a = new ArrayList<OS_Element2>();
-		for (final ClassItem functionItem : c) {
-			a.add((OS_Element2) functionItem);
-		}
-		return a;
 	}
 
 	@Override // OS_Container
@@ -128,15 +71,7 @@ public class ClassStatement extends ProgramClosure implements ClassItem, ModuleI
 
 	@Override
 	public void visitGen(final ICodeGen visit) {
-		visit.addClass(this);
-	}
-	
-	public void setPackageName(final OS_Package aPackageName) {
-		_packageName = aPackageName;
-	}
-	
-	public OS_Package getPackageName() {
-		return _packageName;
+		visit.addClass(this); // TODO visitClass
 	}
 
 	@Override
@@ -151,43 +86,27 @@ public class ClassStatement extends ProgramClosure implements ClassItem, ModuleI
 	}
 
 	public ConstructorDef addCtor(final IdentExpression aConstructorName) {
-		return new ConstructorDef(aConstructorName, this);
+		return new ConstructorDef(aConstructorName, this, getContext());
 	}
-	
+
 	public DestructorDef addDtor() {
-		return new DestructorDef(this);
-	}
-	
-	public TypeAliasStatement typeAlias() {
-		NotImplementedException.raise();
-		return null;
-	}
-	
-	public InvariantStatement invariantStatement() {
-		NotImplementedException.raise();
-		return null;
-	}
-	
-	public ProgramClosure XXX() {
-		return new ProgramClosure() {};
+		return new DestructorDef(this, getContext());
 	}
 
 	@Override // OS_Element
-	public Context getContext() {
-		return _a._context;
+	public ClassContext getContext() {
+		return (ClassContext) _a._context;
 	}
 
-
-	@Override // OS_Element2
-	public String name() {
-		return getName();
+	public void setContext(final ClassContext ctx) {
+		_a.setContext(ctx);
 	}
 
 	public Collection<ClassItem> findFunction(final String name) {
 		return Collections2.filter(items, new Predicate<ClassItem>() {
 			@Override
 			public boolean apply(@Nullable final ClassItem item) {
-				if (item instanceof FunctionDef)
+				if (item instanceof FunctionDef && !(item instanceof ConstructorDef))
 					if (((FunctionDef) item).name().equals(name))
 						return true;
 				return false;
@@ -199,53 +118,57 @@ public class ClassStatement extends ProgramClosure implements ClassItem, ModuleI
 		_type = aType;
 	}
 
-	public void setContext(final ClassContext ctx) {
-		_a.setContext(ctx);
+	public ClassTypes getType() {
+		return _type;
 	}
 
 	public void postConstruct() {
-		assert clsName != null;
+		assert nameToken != null;
+		int destructor_count = 0;
+		for (ClassItem item : items) {
+			if (item instanceof DestructorDef)
+				destructor_count++;
+		}
+		assert destructor_count == 0 || destructor_count ==1;
 	}
 
-	List<AnnotationClause> annotations = null;
-
-	public void addAnnotation(final AnnotationClause a) {
-		if (annotations == null)
-			annotations = new ArrayList<AnnotationClause>();
-		annotations.add(a);
-	}
-
-	public void addAccess(final AccessNotation acs) {
-		accesses.add(acs);
-	}
-
+	// region inheritance
 
 	public IdentExpression getNameNode() {
-		return clsName;
+		return nameToken;
 	}
 
 	public void setInheritance(ClassInheritance inh) {
 		_inh = inh;
 	}
 
-	public void walkAnnotations(AnnotationWalker annotationWalker) {
-		if (annotations == null) return;
-		for (AnnotationClause annotationClause : annotations) {
-			for (AnnotationPart annotationPart : annotationClause.aps) {
-				annotationWalker.annotation(annotationPart);
-			}
-		}
+	public ClassInheritance classInheritance() {
+		return _inh;
 	}
+
+	// endregion
+
+	// region annotations
 
 	public Iterable<AnnotationPart> annotationIterable() {
 		List<AnnotationPart> aps = new ArrayList<AnnotationPart>();
 		if (annotations == null) return aps;
 		for (AnnotationClause annotationClause : annotations) {
-			for (AnnotationPart annotationPart : annotationClause.aps) {
-				aps.add(annotationPart);
-			}
+			aps.addAll(annotationClause.aps);
 		}
 		return aps;
+	}
+
+	// endregion
+
+	// region called from parser
+
+	public FunctionDef funcDef() {
+		return new FunctionDef(this, getContext());
+	}
+
+	public DefFunctionDef defFuncDef() {
+		return new DefFunctionDef(this, getContext());
 	}
 
 	public PropertyStatement prop() {
@@ -254,15 +177,58 @@ public class ClassStatement extends ProgramClosure implements ClassItem, ModuleI
 		return propertyStatement;
 	}
 
-	public boolean hasItem(OS_Element element) {
-		if (!(element instanceof ClassItem)) return false;
-		return items.contains((ClassItem) element);
+	public TypeAliasStatement typeAlias() {
+		NotImplementedException.raise();
+		return null;
 	}
 
-	public void addAnnotations(List<AnnotationClause> as) {
-		for (AnnotationClause annotationClause : as) {
-			addAnnotation(annotationClause);
-		}
+	public InvariantStatement invariantStatement() {
+		NotImplementedException.raise();
+		return null;
+	}
+
+	public ProgramClosure XXX() {
+		return new ProgramClosure() {
+		};
+	}
+
+	public StatementClosure statementClosure() {
+		return new AbstractStatementClosure(this);
+	}
+
+	// endregion
+
+	public void setGenericPart(TypeNameList genericPart) {
+		this.genericPart = genericPart;
+	}
+
+	public @NotNull List<TypeName> getGenericPart() {
+		if (genericPart == null)
+			return emptyTypeNameList;
+		else
+			return genericPart.p;
+	}
+
+	public Collection<ConstructorDef> getConstructors() {
+		Collection<ClassItem> x = Collections2.filter(items, new Predicate<ClassItem>() {
+			@Override
+			public boolean apply(@Nullable ClassItem input) {
+				return input instanceof ConstructorDef;
+			}
+		});
+		return Collections2.transform(x, new Function<ClassItem, ConstructorDef>() {
+			@Nullable
+			@Override
+			public ConstructorDef apply(@Nullable ClassItem input) {
+				return (ConstructorDef) input;
+			}
+		});
+	}
+
+	public OS_Type getOS_Type() {
+		if (osType == null)
+			osType = new OS_Type(this);
+		return osType;
 	}
 }
 

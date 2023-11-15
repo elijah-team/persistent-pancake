@@ -49,7 +49,7 @@ public class AliasStatement implements ModuleItem, ClassItem, FunctionItem, OS_E
 
 	@Override // OS_Element
 	public void visitGen(final ICodeGen visit) {
-		throw new NotImplementedException();
+		visit.visitAliasStatement(this);
 	}
 
 	@Override // OS_Element
@@ -81,6 +81,34 @@ public class AliasStatement implements ModuleItem, ClassItem, FunctionItem, OS_E
 	public void setResolvedElement(final OS_Element element) {
 		_resolvedElement = element;
 	}
+
+	// region ClassItem
+
+	private AccessNotation access_note;
+	private El_Category category;
+
+	@Override
+	public void setCategory(El_Category aCategory) {
+		category = aCategory;
+	}
+
+	@Override
+	public void setAccess(AccessNotation aNotation) {
+		access_note = aNotation;
+	}
+
+	@Override
+	public El_Category getCategory() {
+		return category;
+	}
+
+	@Override
+	public AccessNotation getAccess() {
+		return access_note;
+	}
+
+	// endregion
+
 }
 
 //

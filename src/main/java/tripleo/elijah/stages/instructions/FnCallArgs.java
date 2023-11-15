@@ -12,7 +12,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.deduce.DeduceTypes2;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.util.Helpers;
@@ -25,12 +26,12 @@ import java.util.List;
  */
 public class FnCallArgs implements InstructionArgument {
 	public final Instruction expression_to_call;
-	private final GeneratedFunction gf;
+	private final @NotNull BaseGeneratedFunction gf;
 	private TypeTableEntry _type; // the return type of the function call
 
 	@Override
 	public String toString() {
-		final int index = ((IntegerIA) expression_to_call.args.get(0)).getIndex();
+		final int index = DeduceTypes2.to_int(expression_to_call.args.get(0));
 		final List<InstructionArgument> instructionArguments = getInstructionArguments();
 /*
         final List<String> collect = instructionArguments
@@ -52,7 +53,7 @@ public class FnCallArgs implements InstructionArgument {
 
 	}
 
-	public FnCallArgs(final Instruction expression_to_call, final GeneratedFunction generatedFunction) {
+	public FnCallArgs(final Instruction expression_to_call, final @NotNull BaseGeneratedFunction generatedFunction) {
 		this.expression_to_call = expression_to_call;
 		this.gf = generatedFunction;
 	}

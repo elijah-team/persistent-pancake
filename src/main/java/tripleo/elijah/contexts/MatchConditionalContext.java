@@ -26,6 +26,12 @@ public class MatchConditionalContext extends Context {
 	@Override public LookupResultList lookup(final String name, final int level, final LookupResultList Result, final List<Context> alreadySearched, final boolean one) {
 		alreadySearched.add(carrier.getContext());
 
+		if (carrier instanceof MatchConditional.MatchArm_TypeMatch) {
+			MatchConditional.MatchArm_TypeMatch carrier2 = (MatchConditional.MatchArm_TypeMatch) carrier;
+			if (name.equals(carrier2.getIdent().getText()))
+				Result.add(name, level, carrier2, this);
+		}
+
 		for (final FunctionItem item: carrier.getItems()) {
 			if (!(item instanceof ClassStatement) &&
 					!(item instanceof NamespaceStatement) &&

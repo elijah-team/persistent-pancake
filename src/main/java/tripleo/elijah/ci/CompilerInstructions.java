@@ -8,9 +8,17 @@
  */
 package tripleo.elijah.ci;
 
-import tripleo.elijah.lang.IndexingStatement;
+import antlr.Token;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.StringExpression;
+import tripleo.elijah.util.Helpers;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -18,22 +26,25 @@ import java.util.List;
  */
 public class CompilerInstructions {
 	private IndexingStatement _idx;
-	private List<GenerateStatement> gens = new ArrayList<GenerateStatement>();
+	private GenerateStatement gen;
 	public List<LibraryStatementPart> lsps = new ArrayList<LibraryStatementPart>();
 	private String filename;
+	private String name;
 
 	public IndexingStatement indexingStatement() {
 		if (_idx == null)
-			_idx = new IndexingStatement(null); // TODO ride this till the wheels fall off
+			_idx = new IndexingStatement(this);
 
 		return _idx;
 	}
 
 	public void add(final GenerateStatement generateStatement) {
-		gens.add(generateStatement);
+		assert gen == null;
+		gen = generateStatement;
 	}
 
 	public void add(final LibraryStatementPart libraryStatementPart) {
+		libraryStatementPart.setInstructions(this);
 		lsps.add(libraryStatementPart);
 	}
 
@@ -43,6 +54,37 @@ public class CompilerInstructions {
 
 	public String getFilename() {
 		return filename;
+	}
+
+	@Nullable
+	public String genLang() {
+		Collection<GenerateStatement.Directive> gens = Collections2.filter(gen.dirs, new Predicate<GenerateStatement.Directive>() {
+			@Override
+			public boolean apply(GenerateStatement.@Nullable Directive input) {
+				assert input != null;
+				if (input.getName().equals("gen")) {
+					return true;
+				}
+				return false;
+			}
+		});
+		Iterator<GenerateStatement.Directive> gi = gens.iterator();
+		if (!gi.hasNext()) return null;
+		IExpression lang_raw = gi.next().getExpression();
+		assert lang_raw instanceof StringExpression;
+		return Helpers.remove_single_quotes_from_string(((StringExpression)lang_raw).getText());
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setName(Token name) {
+		this.name = name.getText();
 	}
 }
 

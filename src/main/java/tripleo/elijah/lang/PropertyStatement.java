@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.contexts.PropertyStatementContext;
 import tripleo.elijah.gen.ICodeGen;
 import tripleo.elijah.util.Helpers;
-import tripleo.elijah.util.NotImplementedException;
 
 /**
  * Created 8/6/20 4:00 PM
@@ -38,7 +37,7 @@ public class PropertyStatement implements OS_Element, OS_Element2, ClassItem {
 	private FunctionDef createSetFunction() {
 		FunctionDef functionDef = new FunctionDef(this, getContext());
 		functionDef.setName(Helpers.string_to_ident(String.format("<prop_set %s>", prop_name)));
-		functionDef.setType(FunctionDef.Type.PROP_SET);
+		functionDef.setSpecies(FunctionDef.Species.PROP_SET);
 		FormalArgList fal = new FormalArgList();
 		FormalArgListItem fali = fal.next();
 		fali.setName(Helpers.string_to_ident("Value"));
@@ -54,14 +53,14 @@ public class PropertyStatement implements OS_Element, OS_Element2, ClassItem {
 	private FunctionDef createGetFunction() {
 		FunctionDef functionDef = new FunctionDef(this, getContext());
 		functionDef.setName(Helpers.string_to_ident(String.format("<prop_get %s>", prop_name)));
-		functionDef.setType(FunctionDef.Type.PROP_GET);
+		functionDef.setSpecies(FunctionDef.Species.PROP_GET);
 		functionDef.setReturnType(typeName);
 		return functionDef;
 	}
 
 	@Override // OS_Element
 	public void visitGen(ICodeGen visit) {
-		throw new NotImplementedException();
+		visit.visitPropertyStatement(this);
 	}
 
 	@Override // OS_Element
@@ -82,13 +81,17 @@ public class PropertyStatement implements OS_Element, OS_Element2, ClassItem {
 //		return tn;
 //	}
 
+/*
 	public Scope get_scope() {
-		return get_fn.scope();
+		throw new NotImplementedException();
+//		return get_fn.scope();
 	}
 
 	public Scope set_scope() {
-		return set_fn.scope();
+		throw new NotImplementedException();
+//		return set_fn.scope();
 	}
+*/
 
 	public FunctionDef get_fn() {
 		return get_fn;
@@ -122,6 +125,41 @@ public class PropertyStatement implements OS_Element, OS_Element2, ClassItem {
 	public void addSet() {
 		_set_is_abstract = true;
 	}
+
+	public void get_scope(Scope3 sco) {
+		get_fn.scope(sco);
+	}
+
+	public void set_scope(Scope3 sco) {
+		set_fn.scope(sco);
+	}
+
+	// region ClassItem
+
+	private AccessNotation access_note;
+	private El_Category category;
+
+	@Override
+	public void setCategory(El_Category aCategory) {
+		category = aCategory;
+	}
+
+	@Override
+	public void setAccess(AccessNotation aNotation) {
+		access_note = aNotation;
+	}
+
+	@Override
+	public El_Category getCategory() {
+		return category;
+	}
+
+	@Override
+	public AccessNotation getAccess() {
+		return access_note;
+	}
+
+	// endregion
 
 }
 

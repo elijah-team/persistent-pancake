@@ -14,6 +14,9 @@
  */
 package tripleo.elijah.lang;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -62,7 +65,7 @@ public class VariableTypeName extends AbstractTypeName implements NormalTypeName
 		_ctx = ctx;
 	}
 
-	@Override
+	@Override @NotNull
 	public Collection<TypeModifiers> getModifiers() {
 		return (tm != null ? List_of(tm)  : new ArrayList<TypeModifiers>());
 	}
@@ -110,6 +113,35 @@ public class VariableTypeName extends AbstractTypeName implements NormalTypeName
 	public int hashCode() {
 		return Objects.hash(super.hashCode(), genericPart);
 	}
+
+	// region Locatable
+
+	@Override
+	public int getLine() {
+		return pr_name.parts().get(0).getLine();
+	}
+
+	@Override
+	public int getColumn() {
+		return pr_name.parts().get(0).getColumn();
+	}
+
+	@Override
+	public int getLineEnd() {
+		return pr_name.parts().get(pr_name.parts().size()).getLineEnd();
+	}
+
+	@Override
+	public int getColumnEnd() {
+		return pr_name.parts().get(pr_name.parts().size()).getColumnEnd();
+	}
+
+	@Override
+	public File getFile() {
+		return pr_name.parts().get(0).getFile();
+	}
+
+	// endregion
 }
 
 //

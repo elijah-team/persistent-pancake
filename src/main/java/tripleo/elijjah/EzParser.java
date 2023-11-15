@@ -2,19 +2,30 @@
 
   package tripleo.elijjah;
 
-import antlr.*;
+import antlr.TokenBuffer;
+import antlr.TokenStreamException;
+import antlr.TokenStreamIOException;
+import antlr.ANTLRException;
+import antlr.LLkParser;
+import antlr.Token;
+import antlr.TokenStream;
+import antlr.RecognitionException;
+import antlr.NoViableAltException;
+import antlr.MismatchedTokenException;
+import antlr.SemanticException;
+import antlr.ParserSharedInputState;
 import antlr.collections.impl.BitSet;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.ci.GenerateStatement;
-import tripleo.elijah.ci.LibraryStatementPart;
+
 import tripleo.elijah.lang.*;
-import tripleo.elijah.lang2.BuiltInTypes;
+import tripleo.elijah.contexts.*;
+import tripleo.elijah.ci.*;
+import tripleo.elijah.ci.IndexingStatement;
+import tripleo.elijah.lang2.*;
+import tripleo.elijah.*;
 
 public class EzParser extends antlr.LLkParser       implements EzTokenTypes
  {
 
-//Qualident xy;
-//public Out out;
 IExpression expr;
 Context cur=null;
 public CompilerInstructions ci = new CompilerInstructions();
@@ -44,6 +55,7 @@ public EzParser(ParserSharedInputState state) {
 
 	public final void program() throws RecognitionException, TokenStreamException {
 		
+		Token  i1 = null;
 		GenerateStatement gen=null;
 		
 		try {      // for error handling
@@ -89,7 +101,11 @@ public EzParser(ParserSharedInputState state) {
 			}
 			}
 			}
+			i1 = LT(1);
 			match(IDENT);
+			if ( inputState.guessing==0 ) {
+				ci.setName(i1);
+			}
 			library_statement();
 			gen=generate_statement();
 			if ( inputState.guessing==0 ) {
@@ -173,7 +189,6 @@ public EzParser(ParserSharedInputState state) {
 			}
 			}
 			{
-			int _cnt7=0;
 			_loop7:
 			do {
 				if ((LA(1)==IDENT||LA(1)==STRING_LITERAL)) {
@@ -183,10 +198,9 @@ public EzParser(ParserSharedInputState state) {
 					}
 				}
 				else {
-					if ( _cnt7>=1 ) { break _loop7; } else {throw new NoViableAltException(LT(1), getFilename());}
+					break _loop7;
 				}
 				
-				_cnt7++;
 			} while (true);
 			}
 		}

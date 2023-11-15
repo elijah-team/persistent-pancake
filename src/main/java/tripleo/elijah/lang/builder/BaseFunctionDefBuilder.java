@@ -10,6 +10,7 @@ package tripleo.elijah.lang.builder;
 
 import tripleo.elijah.lang.AnnotationClause;
 import tripleo.elijah.lang.FormalArgList;
+import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.lang.IdentExpression;
 
 import java.util.ArrayList;
@@ -19,9 +20,10 @@ import java.util.List;
  * Created 12/22/20 10:41 PM
  */
 public abstract class BaseFunctionDefBuilder extends ElBuilder {
-	private List<AnnotationClause> annotations = new ArrayList<AnnotationClause>();
+	protected List<AnnotationClause> annotations = new ArrayList<AnnotationClause>();
 	protected IdentExpression _name;
-	private FormalArgList mFal;
+	protected FormalArgList mFal;
+	protected FunctionDef.Species _species = null;
 
 	public void addAnnotation(AnnotationClause a) {
 		annotations.add(a);
@@ -33,6 +35,10 @@ public abstract class BaseFunctionDefBuilder extends ElBuilder {
 
 	public void fal(FormalArgList fal) {
 		mFal = fal;
+	}
+
+	public void setSpecies(FunctionDef.Species aSpecies) {
+		_species = aSpecies;
 	}
 
 }

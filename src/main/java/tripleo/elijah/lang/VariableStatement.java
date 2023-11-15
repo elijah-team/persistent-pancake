@@ -8,16 +8,18 @@
  */
 package tripleo.elijah.lang;
 
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.gen.ICodeGen;
-import tripleo.elijah.util.NotImplementedException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 // Referenced classes of package pak:
 //			TypeRef, IExpression
 
-public class VariableStatement implements OS_Element {
+public class VariableStatement implements OS_Element, @NotNull Locatable {
 
 	private final VariableSequence _parent;
 
@@ -42,63 +44,33 @@ public class VariableStatement implements OS_Element {
 		name = s;
 	}
 
-	public void initial(final IExpression aExpr) {
+	public void initial(@NotNull final IExpression aExpr) {
 		initialValue=aExpr;
 	}
-
-/*
-	public void printDeclare() {
-		System.out.print("** Declare Variable: ");
-		System.out.print(name);
-		System.out.print(" as ");
-//		System.out.print(getTypeString());
-		System.out.println(" (agn not shown at all) **");
-	}
-*/
 
 	public void set(final TypeModifiers y) {
 		typeModifiers = y;
 	}
 
-	public TypeName typeName() {
+	public TypeModifiers getTypeModifiers() {
+		return typeModifiers;
+	}
+
+	@NotNull public TypeName typeName() {
 		return typeName;
 	}
-	
-	public IExpression initialValue() {
+
+	public void setTypeName(@NotNull final TypeName tn) {
+		typeName = tn;
+	}
+
+	@NotNull public IExpression initialValue() {
 		return initialValue;
 	}
-	
-/*	public String initialValueType() {
-		if (initialValue instanceof NumericExpression)
-			return "int";
-		else if (initialValue instanceof ProcedureCallExpression)
-			return ((ProcedureCallExpression) initialValue).getReturnTypeString();
-		else if (initialValue instanceof CharLitExpression)
-			return "char";
-		else if (initialValue instanceof StringExpression)
-			return "char*";
-		else if (initialValue instanceof IdentExpression)
-//			return "Z"+((IdentExpression)initialValue).getText();
-			return "---------------10";
-		else if (initialValue instanceof Qualident)
-			return "---------------8";
-//		else if (initialValue instanceof AbstractExpression)
-//			return "---------------9";
-		else if (initialValue instanceof VariableReference)
-			return "---------------11";
-//		else if (initialValue instanceof OS_Integer)
-//			return "int";
-		else if (initialValue instanceof ListExpression)
-			return "void*"; // TODO
-		
-		else
-			return "Z0*";
-	}*/
 
 	@Override
 	public void visitGen(final ICodeGen visit) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		visit.visitVariableStatement(this);
 	}
 
 	@Override
@@ -108,17 +80,10 @@ public class VariableStatement implements OS_Element {
 
 	@Override
 	public Context getContext() {
-		// TODO is this correct?
 		return getParent().getContext();
 	}
 
-	public void setTypeName(final TypeName tn) {
-		typeName = tn;
-	}
-
-	public TypeModifiers getTypeModifiers() {
-		return typeModifiers;
-	}
+	// region annotations
 
 	List<AnnotationClause> annotations = null;
 
@@ -143,6 +108,41 @@ public class VariableStatement implements OS_Element {
 			}
 		}
 	}
+
+	// endregion
+
+	// region Locatable
+
+	@Override
+	public int getLine() {
+		// TODO what about annotations
+		return name.getLine();
+	}
+
+	@Override
+	public int getColumn() {
+		// TODO what about annotations
+		return name.getColumn();
+	}
+
+	@Override
+	public int getLineEnd() {
+		// TODO what about initialValue
+		return name.getLineEnd();
+	}
+
+	@Override
+	public int getColumnEnd() {
+		// TODO what about initialValue
+		return name.getColumnEnd();
+	}
+
+	@Override
+	public File getFile() {
+		return name.getFile();
+	}
+
+	// endregion
 }
 
 //

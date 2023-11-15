@@ -20,9 +20,10 @@ public class OS_FuncExprType extends OS_Type {
 	}
 
 	public OS_FuncExprType(final FuncExpr funcExpr) {
-		super();
+		super(Type.FUNC_EXPR);
 		this.func_expr = funcExpr;
 	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

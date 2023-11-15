@@ -14,10 +14,7 @@ import tripleo.elijah.lang.*;
  * Created 12/22/20 10:55 PM
  */
 public class ConstructorDefBuilder extends BaseFunctionDefBuilder {
-//	private IdentExpression _name;
-	private FormalArgList _fal;
 	private ConstructorDefScope _scope = new ConstructorDefScope();
-	private ClassStatement _parent;
 	private Context _context;
 
 	public ConstructorDefScope scope() {
@@ -26,14 +23,23 @@ public class ConstructorDefBuilder extends BaseFunctionDefBuilder {
 
 	@Override
 	public ConstructorDef build() {
-		ConstructorDef cd = new ConstructorDef(_name, _parent, _context);
+		assert _parent instanceof ClassStatement;
+		//
+		ConstructorDef cd = new ConstructorDef(_name, (ClassStatement) _parent, _context);
 		cd.setName(_name);
-		cd.setFal(_fal);
+		cd.setFal(mFal);
+		for (AnnotationClause a : annotations) {
+			cd.addAnnotation(a);
+		}
+		Scope3 scope3 = new Scope3(cd);
+		cd.scope(scope3);
 		for (ElBuilder item : _scope.items()) {
 			item.setParent(cd);
 			item.setContext(_context);
 			cd.add(item.build());
 		}
+//		assert _species == FunctionDef.Species.CTOR;
+		cd.setSpecies(FunctionDef.Species.CTOR);
 		cd.postConstruct();
 		return cd;
 	}

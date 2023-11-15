@@ -9,10 +9,27 @@
 
 package tripleo.elijah.diagnostic;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.PrintStream;
+import java.util.List;
+
 /**
  * Created 12/26/20 5:31 AM
  */
 public interface Diagnostic {
+	String code();
+	Severity severity();
+	@NotNull
+	Locatable primary();
+	@NotNull
+	List<Locatable> secondary();
+
+	void report(PrintStream stream);
+
+	public enum Severity {
+		INFO, LINT, WARN, ERROR
+	}
 }
 
 //

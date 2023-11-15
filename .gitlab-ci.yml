@@ -2,34 +2,24 @@
 image: maven:latest
 
 stages:
-  - build
-  - sast
-  - pages
+#  - build
   - test
   - deploy
 
-
-#production:
-#  stage: deploy
+#build:
+#  stage: build
+#  image: alpine
 #  script:
-#  - curl --location "https://cli.run.pivotal.io/stable?release=linux64-binary&source=github" | tar zx
-#  - ./cf login -u $CF_USERNAME -p $CF_PASSWORD -a 'api.run.pivotal.io'
-#  - ./cf push
-#  only:
-#  - master
-
-build:
-  stage: build
-  image: alpine
-  script:
-    - echo Skipping because this doesn\'t do anything anyway
-    #- mvn $MAVEN_CLI_OPTS -e compile
+#    - echo Skipping because this doesn\'t do anything anyway
+#    #- mvn $MAVEN_CLI_OPTS -e compile
 
 test:
   stage: test
   script:
     - mvn $MAVEN_CLI_OPTS test
     - curl -s https://codecov.io/bash | bash -s - -t d63d15e4-247f-4588-b8bf-b31e34529ef5
+  artifacts:
+    paths: [ COMP ]
 
 deploy:
   stage: deploy
@@ -62,7 +52,7 @@ include:
 
 pages:
   image: python:latest
-#  stage: deploy
+  stage: deploy
   only:
     - master
     - docs
