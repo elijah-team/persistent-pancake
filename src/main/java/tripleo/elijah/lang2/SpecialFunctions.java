@@ -24,6 +24,7 @@ public class SpecialFunctions {
 		case GET_ITEM:			return "__getitem__";
 		case ADDITION:			return "__add__";
 		case MULTIPLY:			return "__mult__";
+		case NOT_EQUAL:			return "__neq__";
 		default:
 			throw new IllegalStateException("Unexpected value: " + kind);
 		}

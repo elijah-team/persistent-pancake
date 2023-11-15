@@ -140,7 +140,7 @@ public class GenerateFunctions {
 		if (item instanceof AliasStatement) {
 			throw new NotImplementedException();
 		} else if (item instanceof CaseConditional) {
-			throw new NotImplementedException();
+			//throw new NotImplementedException();
 		} else if (item instanceof ClassStatement) {
 			GeneratedClass gc = generateClass((ClassStatement) item);
 			int ite_index = gf.addIdentTableEntry(((ClassStatement) item).getNameNode());
@@ -324,7 +324,7 @@ public class GenerateFunctions {
 
 		for (ClassItem item : namespace1.getItems()) {
 			if (item instanceof AliasStatement) {
-				throw new NotImplementedException();
+//				throw new NotImplementedException();
 			} else if (item instanceof ClassStatement) {
 				throw new NotImplementedException();
 			} else if (item instanceof ConstructorDef) {
@@ -586,6 +586,9 @@ public class GenerateFunctions {
 			final IExpression expr = ifc.getExpr();
 			final InstructionArgument i = simplify_expression(expr, gf, cctx);
 //			System.out.println("711 " + i);
+
+			assert i != null;
+
 			final int const_true = addConstantTableEntry("true", Boolean_true, new OS_Type(BuiltInTypes.Boolean), gf);
 			add_i(gf, InstructionName.JNE, List_of(i, new ConstTableIA(const_true, gf), label_next), cctx);
 			final int begin_1st = add_i(gf, InstructionName.ES, null, cctx);
@@ -720,6 +723,9 @@ public class GenerateFunctions {
 			final VariableTableEntry vte3_ident = gf.getVarTableEntry(vte);
 			final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, value);
 			vte3_ident.addPotentialType(ii3, tte);
+			break;
+		case FUNC_EXPR:
+			System.err.println("FAIL 725");
 			break;
 		default:
 			throw new IllegalStateException("Unexpected value: " + value.getKind());
@@ -891,7 +897,7 @@ public class GenerateFunctions {
 					return new IntegerIA(tmp);
 				}
 			}
-		case LT_: case GT: case ADDITION: case MULTIPLY: // TODO all BinaryExpressions go here
+		case LT_: case GT: case ADDITION: case MULTIPLY:case NOT_EQUAL: // TODO all BinaryExpressions go here
 			{
 				final BasicBinaryExpression bbe = (BasicBinaryExpression) expression;
 				final IExpression left = bbe.getLeft();
@@ -944,6 +950,9 @@ public class GenerateFunctions {
 				}
 //				throw new NotImplementedException();
 			}
+//		case NOT_EQUAL:
+//			System.err.println("FAIL 951");
+//			return null;
 		default:
 			throw new IllegalStateException("Unexpected value: " + expressionKind);
 		}
@@ -956,7 +965,13 @@ public class GenerateFunctions {
 		final IExpression    left = pce.getLeft();
 		final ExpressionList args = pce.getArgs();
 		final InstructionArgument left_ia;
-		final List<InstructionArgument> right_ia = new ArrayList<InstructionArgument>(args.size());
+
+		if (args == null) {
+			int y=2;
+		}
+
+		final List<InstructionArgument> right_ia;
+		right_ia = new ArrayList<InstructionArgument>(args.size());
 		if (left.is_simple()) {
 			if (left instanceof IdentExpression) {
 				// for ident(xyz...)
@@ -1097,7 +1112,7 @@ public class GenerateFunctions {
 	}
 
 	private void simplify_dot_expression(final DotExpression left, final GeneratedFunction gf) {
-		throw new NotImplementedException();
+//		throw new NotImplementedException();
 	}
 
 	//

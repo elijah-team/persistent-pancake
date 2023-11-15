@@ -10,6 +10,7 @@ package tripleo.elijah.stages.instructions;
 
 import tripleo.elijah.lang.Context;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
 public class Instruction {
 	private InstructionName name;
 	private int index = -1;
-	List<InstructionArgument> args;
+	private List<InstructionArgument> args;
 	private Context context;
 
 	public void setName(final InstructionName aName) {
@@ -30,7 +31,14 @@ public class Instruction {
 	}
 
 	public void setArgs(final List<InstructionArgument> args_) {
-		args = args_;
+		if (args_ == null || args_.isEmpty()) {
+			args = Collections.emptyList();
+		} else {
+//			if (args_.get(0) == null) {
+//				NotImplementedException.raise();
+//			}
+			args = args_;
+		}
 	}
 
 	public InstructionName getName() {
@@ -66,9 +74,9 @@ public class Instruction {
 		return args.size();
 	}
 
-//	public List<InstructionArgument> getArgs() {
-//		return args;
-//	}
+	public List<InstructionArgument> getArgs() {
+		return args;
+	}
 }
 
 //

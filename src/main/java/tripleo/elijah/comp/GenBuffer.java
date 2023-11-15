@@ -11,7 +11,7 @@ package tripleo.elijah.comp;
 import tripleo.elijah.gen.CompilerContext;
 import tripleo.elijah.gen.nodes.ImportNode;
 import tripleo.elijah.gen.nodes.LocalDeclAgnNode;
-import tripleo.util.NotImplementedException;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.util.buffer.FileBackedBuffer;
 import tripleo.util.buffer.TextBuffer;
 

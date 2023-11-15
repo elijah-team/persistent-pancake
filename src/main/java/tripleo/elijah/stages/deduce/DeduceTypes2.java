@@ -36,6 +36,24 @@ public class DeduceTypes2 {
 		this.errSink = module.parent.eee;
 	}
 
+	public static int to_int(@NotNull final InstructionArgument arg) {
+		return ((IntegerIA) arg).getIndex();
+	}
+
+	@NotNull
+	static Stack<IExpression> dot_expression_to_stack(final DotExpression de) {
+		final Stack<IExpression> right_stack = new Stack<IExpression>();
+		IExpression right = de.getRight();
+		right_stack.push(de.getLeft());
+		while (right instanceof DotExpression) {
+			right_stack.push(right.getLeft());
+			right = ((DotExpression) right).getRight();
+		}
+		right_stack.push(right);
+		Collections.reverse(right_stack);
+		return right_stack;
+	}
+
 	public void deduceFunctions(final Iterable<GeneratedNode> lgf) {
 		for (final GeneratedNode generatedNode : lgf) {
 			if (generatedNode instanceof GeneratedFunction) {
@@ -50,212 +68,210 @@ public class DeduceTypes2 {
 		final FunctionDef fd = generatedFunction.getFD();
 		final Context fd_ctx = fd.getContext();
 		//
-		System.err.println("** deduce_generated_function "+ fd.name()+" "+fd);//+" "+((OS_Container)((FunctionDef)fd).getParent()).name());
+		System.err.println("** deduce_generated_function " + fd.name() + " " + fd);//+" "+((OS_Container)((FunctionDef)fd).getParent()).name());
 		//
 		for (final Instruction instruction : generatedFunction.instructions()) {
 			final Context context = generatedFunction.getContextFromPC(instruction.getIndex());
 //			System.out.println("8006 " + instruction);
 			switch (instruction.getName()) {
-			case E:
-				{
-					//
-					// resolve all cte expressions
-					//
-					for (final ConstantTableEntry cte : generatedFunction.cte_list) {
-						final IExpression iv = cte.initialValue;
-						switch (iv.getKind()) {
-						case NUMERIC:
-							{
-								final OS_Type a = cte.getTypeTableEntry().attached;
-								if (a == null || a.getType() != OS_Type.Type.USER_CLASS) {
-									try {
-										cte.getTypeTableEntry().attached = resolve_type(new OS_Type(BuiltInTypes.SystemInteger), context);
-									} catch (ResolveError resolveError) {
-										System.out.println("71 Can't be here");
+			case E: {
+				//
+				// resolve all cte expressions
+				//
+				for (final ConstantTableEntry cte : generatedFunction.cte_list) {
+					final IExpression iv = cte.initialValue;
+					switch (iv.getKind()) {
+					case NUMERIC: {
+						final OS_Type a = cte.getTypeTableEntry().attached;
+						if (a == null || a.getType() != OS_Type.Type.USER_CLASS) {
+							try {
+								cte.getTypeTableEntry().attached = resolve_type(new OS_Type(BuiltInTypes.SystemInteger), context);
+							} catch (ResolveError resolveError) {
+								System.out.println("71 Can't be here");
 //										resolveError.printStackTrace(); // TODO print diagnostic
-									}
-								}
-								break;
-							}
-						case IDENT:
-							{
-								final OS_Type a = cte.getTypeTableEntry().attached;
-								assert a != null;
-								assert a.getType() != null;
-								if (a.getType() == OS_Type.Type.BUILT_IN && a.getBType() == BuiltInTypes.Boolean) {
-									assert BuiltInTypes.isBooleanText(cte.getName());
-								} else
-									throw new NotImplementedException();
-								break;
-							}
-						default:
-							{
-								System.err.println("8192 "+iv.getKind());
-								throw new NotImplementedException();
 							}
 						}
+						break;
 					}
-					//
-					// resolve ident table
-					//
-					for (IdentTableEntry ite : generatedFunction.idte_list) {
-						if (ite.resolved_element != null)
-							continue;
-						final IdentIA identIA = new IdentIA(ite.getIndex(), generatedFunction);
-						final String x = generatedFunction.getIdentIAPathNormal(identIA);
-						@Nullable OS_Element y = resolveIdentIA(context, identIA, module, generatedFunction);
-						if (y == null) {
-							errSink.reportError("1004 Can't find element for "+ generatedFunction.getIdentIAPathNormal(identIA));
+					case IDENT: {
+						final OS_Type a = cte.getTypeTableEntry().attached;
+						assert a != null;
+						assert a.getType() != null;
+						if (a.getType() == OS_Type.Type.BUILT_IN && a.getBType() == BuiltInTypes.Boolean) {
+							assert BuiltInTypes.isBooleanText(cte.getName());
 						} else {
-							found_element_for_ite(generatedFunction, ite, y, context);
+							throw new NotImplementedException();
+						}
+						break;
+					}
+					default: {
+						System.err.println("8192 " + iv.getKind());
+						throw new NotImplementedException();
+					}
+					}
+				}
+				//
+				// resolve ident table
+				//
+				for (IdentTableEntry ite : generatedFunction.idte_list) {
+					if (ite.resolved_element != null) {
+						continue;
+					}
+					final IdentIA identIA = new IdentIA(ite.getIndex(), generatedFunction);
+					final String x = generatedFunction.getIdentIAPathNormal(identIA);
+					@Nullable OS_Element y = resolveIdentIA(context, identIA, module, generatedFunction);
+					if (y == null) {
+						errSink.reportError("1004 Can't find element for " + generatedFunction.getIdentIAPathNormal(identIA));
+					} else {
+						found_element_for_ite(generatedFunction, ite, y, context);
+					}
+				}
+			}
+			break;
+			case X: {
+				//
+				// ATTACH A TYPE TO VTE'S
+				// CONVERT USER TYPES TO USER_CLASS TYPES
+				//
+				for (final VariableTableEntry vte : generatedFunction.vte_list) {
+//						System.out.println("704 "+vte.type.attached+" "+vte.potentialTypes());
+					if (vte.type.attached != null && vte.type.attached.getType() == OS_Type.Type.USER) {
+						final TypeName x = vte.type.attached.getTypeName();
+						if (x instanceof NormalTypeName) {
+							final String tn = ((NormalTypeName) x).getName();
+							final LookupResultList lrl = x.getContext().lookup(tn);
+							OS_Element best = lrl.chooseBest(null);
+							while (best instanceof AliasStatement) {
+								best = _resolveAlias((AliasStatement) best);
+							}
+							if (!(OS_Type.isConcreteType(best))) {
+								errSink.reportError(String.format("Not a concrete type %s for (%s)", best, tn));
+							} else {
+//									System.out.println("705 " + best);
+								vte.type.attached = new OS_Type((ClassStatement) best);
+							}
 						}
 					}
 				}
-				break;
-			case X:
-				{
-					//
-					// ATTACH A TYPE TO VTE'S
-					// CONVERT USER TYPES TO USER_CLASS TYPES
-					//
-					for (final VariableTableEntry vte : generatedFunction.vte_list) {
-//						System.out.println("704 "+vte.type.attached+" "+vte.potentialTypes());
-						if (vte.type.attached != null && vte.type.attached.getType() == OS_Type.Type.USER) {
-							final TypeName x = vte.type.attached.getTypeName();
-							if (x instanceof NormalTypeName) {
-								final String tn = ((NormalTypeName) x).getName();
-								final LookupResultList lrl = x.getContext().lookup(tn);
-								OS_Element best = lrl.chooseBest(null);
-								while (best instanceof AliasStatement) {
-									best = _resolveAlias((AliasStatement) best);
-								}
-								if (!(OS_Type.isConcreteType(best))) {
-									errSink.reportError(String.format("Not a concrete type %s for (%s)", best, tn));
-								} else {
-//									System.out.println("705 " + best);
-									vte.type.attached = new OS_Type((ClassStatement) best);
-								}
-							}
-						}
-					}
-					//
-					// ATTACH A TYPE TO IDTE'S
-					//
-					for (IdentTableEntry ite : generatedFunction.idte_list) {
-						int y=2;
-						if (!ite.hasResolvedElement()) {
-							IdentIA ident_a = new IdentIA(ite.getIndex(), generatedFunction);
-							String path = generatedFunction.getIdentIAPathNormal(ident_a);
-							@Nullable OS_Element x = resolveIdentIA(context, ident_a, module, generatedFunction);
-							if (x != null) {
-								ite.setResolvedElement(x);
-								if (ite.type != null && ite.type.attached != null) {
-									if (ite.type.attached.getType() == OS_Type.Type.USER) {
-										try {
-											OS_Type xx = resolve_type(ite.type.attached, fd_ctx);
-											ite.type.attached = xx;
-										} catch (ResolveError resolveError) {
-											System.out.println("192 Can't attach type to "+path);
+				//
+				// ATTACH A TYPE TO IDTE'S
+				//
+				for (IdentTableEntry ite : generatedFunction.idte_list) {
+					int y = 2;
+					if (!ite.hasResolvedElement()) {
+						IdentIA ident_a = new IdentIA(ite.getIndex(), generatedFunction);
+						String path = generatedFunction.getIdentIAPathNormal(ident_a);
+						@Nullable OS_Element x = resolveIdentIA(context, ident_a, module, generatedFunction);
+						if (x != null) {
+							ite.setResolvedElement(x);
+							if (ite.type != null && ite.type.attached != null) {
+								if (ite.type.attached.getType() == OS_Type.Type.USER) {
+									try {
+										OS_Type xx = resolve_type(ite.type.attached, fd_ctx);
+										ite.type.attached = xx;
+									} catch (ResolveError resolveError) {
+										System.out.println("192 Can't attach type to " + path);
 //											resolveError.printStackTrace(); // TODO print diagnostic
-											continue;
-										}
-									}
-								} else {
-									int yy=2;
-									if (!ite.hasResolvedElement()) {
-										LookupResultList lrl = lookupExpression(ite.getIdent(), fd_ctx);
-										OS_Element best = lrl.chooseBest(null);
-										if (best != null) {
-											ite.setResolvedElement(x);
-											if (ite.type != null && ite.type.attached != null) {
-												if (ite.type.attached.getType() == OS_Type.Type.USER) {
-													try {
-														OS_Type xx = resolve_type(ite.type.attached, fd_ctx);
-														ite.type.attached = xx;
-													} catch (ResolveError resolveError) {
-														System.out.println("210 Can't attach type to "+ite.getIdent());
-//														resolveError.printStackTrace(); // TODO print diagnostic
-														continue;
-													}
-												}
-											}
-										} else {
-											System.err.println("184 Couldn't resolve "+ite.getIdent());
-										}
+										continue;
 									}
 								}
 							} else {
-								errSink.reportError("165 Can't resolve "+path);
+								int yy = 2;
+								if (!ite.hasResolvedElement()) {
+									LookupResultList lrl = lookupExpression(ite.getIdent(), fd_ctx);
+									OS_Element best = lrl.chooseBest(null);
+									if (best != null) {
+										ite.setResolvedElement(x);
+										if (ite.type != null && ite.type.attached != null) {
+											if (ite.type.attached.getType() == OS_Type.Type.USER) {
+												try {
+													OS_Type xx = resolve_type(ite.type.attached, fd_ctx);
+													ite.type.attached = xx;
+												} catch (ResolveError resolveError) {
+													System.out.println("210 Can't attach type to " + ite.getIdent());
+//														resolveError.printStackTrace(); // TODO print diagnostic
+													continue;
+												}
+											}
+										}
+									} else {
+										System.err.println("184 Couldn't resolve " + ite.getIdent());
+									}
+								}
 							}
+						} else {
+							errSink.reportError("165 Can't resolve " + path);
 						}
 					}
-					int y=2;
 				}
-				break;
+				int y = 2;
+			}
+			break;
 			case ES:
 				break;
 			case XS:
 				break;
-			case AGN:
-				{ // TODO doesn't account for __assign__
-					final InstructionArgument agn_lhs = instruction.getArg(0);
-					if (agn_lhs instanceof IntegerIA) {
-						final IntegerIA arg = (IntegerIA) agn_lhs;
-						final VariableTableEntry vte = generatedFunction.getVarTableEntry(arg.getIndex());
-						final InstructionArgument i2 = instruction.getArg(1);
-						if (i2 instanceof IntegerIA) {
-							final VariableTableEntry vte2 = generatedFunction.getVarTableEntry(((IntegerIA) i2).getIndex());
-							vte.addPotentialType(instruction.getIndex(), vte2.type);
-						} else if (i2 instanceof FnCallArgs) {
-							final FnCallArgs fca = (FnCallArgs) i2;
-							do_assign_call(generatedFunction, fd_ctx, vte, fca, instruction);
-						} else if (i2 instanceof ConstTableIA) {
-							do_assign_constant(generatedFunction, instruction, vte, (ConstTableIA) i2);
-						} else if (i2 instanceof IdentIA) {
-//							throw new NotImplementedException();
-							IdentTableEntry idte = generatedFunction.getIdentTableEntry(((IdentIA) i2).getIndex());
-							assert idte.type != null;
-							assert idte.resolved_element != null;
-							vte.addPotentialType(instruction.getIndex(), idte.type);
-						} else
-							throw new NotImplementedException();
-					} else if (agn_lhs instanceof IdentIA) {
-						final IdentIA arg = (IdentIA) agn_lhs;
-						final IdentTableEntry idte = generatedFunction.getIdentTableEntry(arg.getIndex());
-						final InstructionArgument i2 = instruction.getArg(1);
-						if (i2 instanceof IntegerIA) {
-							final VariableTableEntry vte2 = generatedFunction.getVarTableEntry(((IntegerIA) i2).getIndex());
-							idte.addPotentialType(instruction.getIndex(), vte2.type);
-						} else if (i2 instanceof FnCallArgs) {
-							final FnCallArgs fca = (FnCallArgs) i2;
-							do_assign_call(generatedFunction, fd_ctx, idte, fca, instruction.getIndex());
-						} else if (i2 instanceof IdentIA) {
-							throw new NotImplementedException();
-						} else if (i2 instanceof ConstTableIA) {
-							do_assign_constant(generatedFunction, instruction, idte, (ConstTableIA) i2);
-						} else
-							throw new NotImplementedException();
-					}
-				}
-				break;
-			case AGNK:
-				{
-					final IntegerIA arg = (IntegerIA)instruction.getArg(0);
+			case AGN: { // TODO doesn't account for __assign__
+				final InstructionArgument agn_lhs = instruction.getArg(0);
+				if (agn_lhs instanceof IntegerIA) {
+					final IntegerIA arg = (IntegerIA) agn_lhs;
 					final VariableTableEntry vte = generatedFunction.getVarTableEntry(arg.getIndex());
 					final InstructionArgument i2 = instruction.getArg(1);
-					final ConstTableIA ctia = (ConstTableIA) i2;
-					do_assign_constant(generatedFunction, instruction, vte, ctia);
+					if (i2 instanceof IntegerIA) {
+						final VariableTableEntry vte2 = generatedFunction.getVarTableEntry(((IntegerIA) i2).getIndex());
+						vte.addPotentialType(instruction.getIndex(), vte2.type);
+					} else if (i2 instanceof FnCallArgs) {
+						final FnCallArgs fca = (FnCallArgs) i2;
+						do_assign_call(generatedFunction, fd_ctx, vte, fca, instruction);
+					} else if (i2 instanceof ConstTableIA) {
+						do_assign_constant(generatedFunction, instruction, vte, (ConstTableIA) i2);
+					} else if (i2 instanceof IdentIA) {
+//							throw new NotImplementedException();
+						IdentTableEntry idte = generatedFunction.getIdentTableEntry(((IdentIA) i2).getIndex());
+						assert idte.type != null;
+						assert idte.resolved_element != null;
+						vte.addPotentialType(instruction.getIndex(), idte.type);
+					} else {
+						throw new NotImplementedException();
+					}
+				} else if (agn_lhs instanceof IdentIA) {
+					final IdentIA arg = (IdentIA) agn_lhs;
+					final IdentTableEntry idte = generatedFunction.getIdentTableEntry(arg.getIndex());
+					final InstructionArgument i2 = instruction.getArg(1);
+					if (i2 instanceof IntegerIA) {
+						final VariableTableEntry vte2 = generatedFunction.getVarTableEntry(((IntegerIA) i2).getIndex());
+						idte.addPotentialType(instruction.getIndex(), vte2.type);
+					} else if (i2 instanceof FnCallArgs) {
+						final FnCallArgs fca = (FnCallArgs) i2;
+						do_assign_call(generatedFunction, fd_ctx, idte, fca, instruction.getIndex());
+					} else if (i2 instanceof IdentIA) {
+//						throw new NotImplementedException();
+						System.err.println("FAIL 249");
+						return;
+					} else if (i2 instanceof ConstTableIA) {
+						do_assign_constant(generatedFunction, instruction, idte, (ConstTableIA) i2);
+					} else {
+						throw new NotImplementedException();
+					}
 				}
-				break;
+			}
+			break;
+			case AGNK: {
+				final IntegerIA arg = (IntegerIA) instruction.getArg(0);
+				final VariableTableEntry vte = generatedFunction.getVarTableEntry(arg.getIndex());
+				final InstructionArgument i2 = instruction.getArg(1);
+				final ConstTableIA ctia = (ConstTableIA) i2;
+				do_assign_constant(generatedFunction, instruction, vte, ctia);
+			}
+			break;
 			case AGNT:
 				break;
 			case AGNF:
 				break;
-			case JE:
-				{
+			case JE: {
 
-				}
-				break;
+			}
+			break;
 			case JNE:
 				break;
 			case JL:
@@ -269,8 +285,12 @@ public class DeduceTypes2 {
 				{
 					String x = generatedFunction.getIdentIAPathNormal((IdentIA) fn1.expression_num);
 					@Nullable OS_Element el = resolveIdentIA(context, (IdentIA) fn1.expression_num, module, generatedFunction);
-					assert el != null;
-					fn1.resolved = el;
+					if (el == null) {
+						//throw new AssertionError();
+						System.err.println("FAIL 290");
+					}else {
+						fn1.resolved = el;
+					}
 				}
 			}
 			break;
@@ -316,11 +336,11 @@ public class DeduceTypes2 {
 		for (final VariableTableEntry vte : generatedFunction.vte_list) {
 			if (vte.type.attached == null) {
 				int potential_size = vte.potentialTypes().size();
-				if (potential_size == 1)
+				if (potential_size == 1) {
 					vte.type.attached = new ArrayList<TypeTableEntry>(vte.potentialTypes()).get(0).attached;
-				else if (potential_size > 1) {
+				} else if (potential_size > 1) {
 					// TODO Check type compatibility
-					System.err.println("703 "+vte.getName()+" "+vte.potentialTypes());
+					System.err.println("703 " + vte.getName() + " " + vte.potentialTypes());
 				}
 			}
 		}
@@ -348,8 +368,9 @@ public class DeduceTypes2 {
 		if (y instanceof VariableStatement) {
 			TypeName typeName = ((VariableStatement) y).typeName();
 			if (!(typeName.isNull())) {
-				if (ite.type == null)
+				if (ite.type == null) {
 					ite.type = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, ((VariableStatement) y).initialValue());
+				}
 				ite.type.attached = new OS_Type(typeName);
 			}
 		} else if (y instanceof ClassStatement) {
@@ -357,15 +378,17 @@ public class DeduceTypes2 {
 			OS_Type attached = new OS_Type(classStatement);
 			if (ite.type == null) {
 				ite.type = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, attached, null);
-			} else
+			} else {
 				ite.type.attached = attached;
+			}
 		} else if (y instanceof FunctionDef) {
 			FunctionDef functionDef = ((FunctionDef) y);
 			OS_Type attached = new OS_FuncType(functionDef);
 			if (ite.type == null) {
 				ite.type = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, attached, null);
-			} else
+			} else {
 				ite.type.attached = attached;
+			}
 //							} else if (y instanceof ClassStatement) {
 
 		} else if (y instanceof PropertyStatement) {
@@ -389,79 +412,90 @@ public class DeduceTypes2 {
 			}
 			if (ite.type == null) {
 				ite.type = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, attached, null);
-			} else
+			} else {
 				ite.type.attached = attached;
-			int yy=2;
+			}
+			int yy = 2;
 		} else {
 			//LookupResultList exp = lookupExpression();
-			System.out.println("2009 "+y);
+			System.out.println("2009 " + y);
 		}
 	}
 
-	@NotNull
+//	@NotNull
 	private OS_Type resolve_type(final OS_Type type, final Context ctx) throws ResolveError {
 		switch (type.getType()) {
+		case BUILT_IN: {
+			switch (type.getBType()) {
+			case SystemInteger: {
+				String typeName = type.getBType().name();
+				assert typeName.equals("SystemInteger");
 
-		case BUILT_IN:
-			{
-				switch (type.getBType()) {
-				case SystemInteger:
-					{
-						String typeName = type.getBType().name();
-						assert typeName.equals("SystemInteger");
-						final LookupResultList lrl = module.prelude.getContext().lookup(typeName);
-						OS_Element best = lrl.chooseBest(null);
-						while (!(best instanceof ClassStatement)) {
-							if (best instanceof AliasStatement) {
-								best = _resolveAlias((AliasStatement) best);
-							} else if (OS_Type.isConcreteType(best)) {
-								throw new NotImplementedException();
-							} else
-								throw new NotImplementedException();
-						}
-						return new OS_Type((ClassStatement) best);
-					}
-				case Boolean:
-					{
-						final LookupResultList lrl = module.prelude.getContext().lookup("Boolean");
-						final OS_Element best = lrl.chooseBest(null);
-						return new OS_Type((ClassStatement) best); // TODO might change to Type
-					}
-				}
-			}
-			break;
-		case USER:
-			{
-				final TypeName tn1 = type.getTypeName();
-				switch (tn1.kindOfType()) {
-				case NORMAL:
-					{
-						final Qualident tn = ((NormalTypeName) tn1).getRealName();
-						System.out.println("799 [resolving USER type named] " + tn);
-						final LookupResultList lrl = lookupExpression(tn, tn1.getContext());
-						OS_Element best = lrl.chooseBest(null);
-						while (best instanceof AliasStatement) {
+				@Nullable OS_Module prelude = module.prelude;
+				if (prelude != null) {
+					final LookupResultList lrl = prelude.getContext().lookup(typeName);
+					OS_Element best = lrl.chooseBest(null);
+					while (!(best instanceof ClassStatement)) {
+						if (best instanceof AliasStatement) {
 							best = _resolveAlias((AliasStatement) best);
+						} else if (OS_Type.isConcreteType(best)) {
+							throw new NotImplementedException();
+						} else {
+							throw new NotImplementedException();
 						}
-						if (best == null)
-							throw new ResolveError(tn1, lrl);
-
-						return new OS_Type((ClassStatement) best);
 					}
-				case FUNCTION:
-				case GENERIC:
-				case TYPE_OF:
-					throw new NotImplementedException();
-				default:
-					throw new IllegalStateException("414 Unexpected value: " + tn1.kindOfType());
+					return new OS_Type((ClassStatement) best);
+				} else {
+					System.err.println("FAIL 430");
 				}
 			}
+			case Boolean: {
+				@Nullable OS_Module prelude = module.prelude;
+				if (prelude != null) {
+					final LookupResultList lrl = prelude.getContext().lookup("Boolean");
+					final OS_Element best = lrl.chooseBest(null);
+					return new OS_Type((ClassStatement) best); // TODO might change to Type
+				} else {
+					System.err.println("FAIL 439");
+				}
+			}
+			}
+		}
+		break;
+		case USER: {
+			final TypeName tn1 = type.getTypeName();
+			switch (tn1.kindOfType()) {
+			case NORMAL: {
+				final Qualident tn = ((NormalTypeName) tn1).getRealName();
+				System.out.println("799 [resolving USER type named] " + tn);
+				final LookupResultList lrl = lookupExpression(tn, tn1.getContext());
+				OS_Element best = lrl.chooseBest(null);
+				while (best instanceof AliasStatement) {
+					best = _resolveAlias((AliasStatement) best);
+				}
+				if (best == null) {
+					throw new ResolveError(tn1, lrl);
+				}
+
+				return new OS_Type((ClassStatement) best);
+			}
+			case FUNCTION:
+			case GENERIC:
+			case TYPE_OF:
+				throw new NotImplementedException();
+			default:
+				throw new IllegalStateException("414 Unexpected value: " + tn1.kindOfType());
+			}
+		}
 		case USER_CLASS:
 			return type;
 		case FUNCTION:
 			return type;
+		default:
+			throw new IllegalStateException("Unexpected value: " + type.getType());
 		}
-		throw new IllegalStateException("Cant be here.");
+//		assert false;
+		return null;
 	}
 
 	private void do_assign_constant(final GeneratedFunction generatedFunction, final Instruction instruction, final VariableTableEntry vte, final ConstTableIA i2) {
@@ -470,7 +504,7 @@ public class DeduceTypes2 {
 		}
 		final ConstantTableEntry cte = generatedFunction.getConstTableEntry(i2.getIndex());
 		if (cte.type.attached == null) {
-			System.out.println("Null type in CTE "+cte);
+			System.out.println("Null type in CTE " + cte);
 		}
 //							vte.type = cte.type;
 		vte.addPotentialType(instruction.getIndex(), cte.type);
@@ -480,7 +514,7 @@ public class DeduceTypes2 {
 		final int instructionIndex = instruction.getIndex();
 		final ProcTableEntry pte = generatedFunction.getProcTableEntry(to_int(fca.getArg(0)));
 		IdentIA identIA = (IdentIA) pte.expression_num;
-		if (identIA != null){
+		if (identIA != null) {
 			@Nullable OS_Element y = resolveIdentIA(ctx, identIA, module, generatedFunction);
 			if (y == null) {
 				System.out.println("1005 Can't find element for " + generatedFunction.getIdentIAPathNormal(identIA));
@@ -491,134 +525,135 @@ public class DeduceTypes2 {
 		for (final TypeTableEntry tte : pte.getArgs()) { // TODO this looks wrong
 //			System.out.println("770 "+tte);
 			final IExpression e = tte.expression;
-			if (e == null) continue;
+			if (e == null) {
+				continue;
+			}
 			switch (e.getKind()) {
-			case NUMERIC:
-				{
-					tte.attached = new OS_Type(BuiltInTypes.SystemInteger);
-					//vte.type = tte;
-				}
-				break;
-			case IDENT:
-				{
+			case NUMERIC: {
+				tte.attached = new OS_Type(BuiltInTypes.SystemInteger);
+				//vte.type = tte;
+			}
+			break;
+			case IDENT: {
 /*
 					LookupResultList lrl = ctx.lookup(((IdentExpression)e).getText());
 					OS_Element best = lrl.chooseBest(null);
 					int y=2;
 */
-					final InstructionArgument vte_index = generatedFunction.vte_lookup(((IdentExpression) e).getText());
+				final InstructionArgument vte_index = generatedFunction.vte_lookup(((IdentExpression) e).getText());
 //					System.out.println("10000 "+vte_index);
-					if (vte_index != null) {
-						final Collection<TypeTableEntry> c = generatedFunction.getVarTableEntry(to_int(vte_index)).potentialTypes();
-						final List<TypeTableEntry> ll = new ArrayList<TypeTableEntry>(c);
-						if (ll.size() == 1) {
-							tte.attached = ll.get(0).attached;
-							vte.addPotentialType(instructionIndex, ll.get(0));
-						} else {
-							LookupResultList lrl = ctx.lookup(((IdentExpression)e).getText());
-							OS_Element best = lrl.chooseBest(null);
-							if (best instanceof FormalArgListItem) {
-								@NotNull final FormalArgListItem fali = (FormalArgListItem) best;
-								@NotNull TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(
-										TypeTableEntry.Type.SPECIFIED, new OS_Type(fali.typeName()), fali.getNameToken());
-								vte.type = tte1;
-								tte.attached = tte1.attached;
-							} else {
-								int y = 2;
-								throw new NotImplementedException();
-							}
-						}
+				if (vte_index != null) {
+					final Collection<TypeTableEntry> c = generatedFunction.getVarTableEntry(to_int(vte_index)).potentialTypes();
+					final List<TypeTableEntry> ll = new ArrayList<TypeTableEntry>(c);
+					if (ll.size() == 1) {
+						tte.attached = ll.get(0).attached;
+						vte.addPotentialType(instructionIndex, ll.get(0));
 					} else {
-						int ia = generatedFunction.addIdentTableEntry((IdentExpression) e);
-						IdentIA ident_a = new IdentIA(ia, generatedFunction);
+						LookupResultList lrl = ctx.lookup(((IdentExpression) e).getText());
+						OS_Element best = lrl.chooseBest(null);
+						if (best instanceof FormalArgListItem) {
+							@NotNull final FormalArgListItem fali = (FormalArgListItem) best;
+							@NotNull TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(
+									TypeTableEntry.Type.SPECIFIED, new OS_Type(fali.typeName()), fali.getNameToken());
+							vte.type = tte1;
+							tte.attached = tte1.attached;
+						} else if (best instanceof VariableStatement) {
+							System.err.println("FAIL 555");
+						} else {
+							int y = 2;
+							throw new NotImplementedException();
+						}
+					}
+				} else {
+					int ia = generatedFunction.addIdentTableEntry((IdentExpression) e);
+					IdentIA ident_a = new IdentIA(ia, generatedFunction);
 //						@Nullable OS_Element x = resolveIdentIA(ctx, ident_a, module, generatedFunction); // README generating 2 ite's for Value
-						IdentTableEntry idte = generatedFunction.getIdentTableEntry(ia);
-						@NotNull TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, null, e);
-						idte.type = tte;
+					IdentTableEntry idte = generatedFunction.getIdentTableEntry(ia);
+					@NotNull TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, null, e);
+					idte.type = tte;
 //						tte.attached = tte1.attached; // TODO is this right? please investigate
-						int y=2;
-					}
+					int y = 2;
 				}
-				break;
-			case PROCEDURE_CALL:
-				{
-					final ProcedureCallExpression pce = (ProcedureCallExpression) e;
-					final LookupResultList lrl = lookupExpression(pce.getLeft(), ctx);
-					final OS_Element best = lrl.chooseBest(null);
-					if (best != null) {
-						if (best instanceof FunctionDef) { // TODO what about alias?
-							tte.attached = new OS_FuncType((FunctionDef) best);
-							//vte.addPotentialType(instructionIndex, tte);
-						} else {
-							final int y=2;
-							throw new NotImplementedException();
-						}
+			}
+			break;
+			case PROCEDURE_CALL: {
+				final ProcedureCallExpression pce = (ProcedureCallExpression) e;
+				final LookupResultList lrl = lookupExpression(pce.getLeft(), ctx);
+				final OS_Element best = lrl.chooseBest(null);
+				if (best != null) {
+					if (best instanceof FunctionDef) { // TODO what about alias?
+						tte.attached = new OS_FuncType((FunctionDef) best);
+						//vte.addPotentialType(instructionIndex, tte);
 					} else {
-						final int y=2;
+						final int y = 2;
 						throw new NotImplementedException();
 					}
+				} else {
+					final int y = 2;
+					throw new NotImplementedException();
 				}
-				break;
-			case GET_ITEM:
-				{
-					final GetItemExpression gie = (GetItemExpression) e;
-					final LookupResultList lrl = lookupExpression(gie.getLeft(), ctx);
-					final OS_Element best = lrl.chooseBest(null);
-					if (best != null) {
-						if (best instanceof VariableStatement) { // TODO what about alias?
-							VariableStatement vs = (VariableStatement) best;
-							String s = vs.getName();
-							@Nullable InstructionArgument vte_ia = generatedFunction.vte_lookup(s);
-							if (vte_ia != null) {
-								VariableTableEntry vte1 = generatedFunction.getVarTableEntry(DeduceTypes2.to_int(vte_ia));
-								throw new NotImplementedException();
-							} else {
-								final IdentTableEntry idte = generatedFunction.getIdentTableEntryFor(vs.getNameToken());
-								assert idte != null;
-								@Nullable OS_Type ty = idte.type.attached;
-								if (ty == null) {
-									@NotNull TypeTableEntry tte3 = generatedFunction.newTypeTableEntry(
-											TypeTableEntry.Type.SPECIFIED, new OS_Type(vs.typeName()), vs.getNameToken());
-									idte.type = tte3;
-									ty = idte.type.attached;
-								}
-								assert ty != null;
-								OS_Type rtype = null;
-								try {
-									rtype = resolve_type(ty, ctx);
-								} catch (ResolveError resolveError) {
-//									resolveError.printStackTrace();
-									errSink.reportError("Cant resolve " + ty); // TODO print better diagnostic
-									continue;
-								}
-								LookupResultList lrl2 = rtype.getClassOf().getContext().lookup("__getitem__");
-								OS_Element best2 = lrl2.chooseBest(null);
-								if (best2 != null && best2 instanceof FunctionDef) {
-									FunctionDef fd = (FunctionDef) best2;
-									forFunction(fd, new ForFunction() {
-										@Override
-										public void typeDecided(final OS_Type aType) {
-											@NotNull TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, aType); // TODO expression?
-											idte.type = tte1;
-										}
-									});
-//									fd.returnType();
-								} else
-									throw new NotImplementedException();
+			}
+			break;
+			case GET_ITEM: {
+				final GetItemExpression gie = (GetItemExpression) e;
+				final LookupResultList lrl = lookupExpression(gie.getLeft(), ctx);
+				final OS_Element best = lrl.chooseBest(null);
+				if (best != null) {
+					if (best instanceof VariableStatement) { // TODO what about alias?
+						VariableStatement vs = (VariableStatement) best;
+						String s = vs.getName();
+						@Nullable InstructionArgument vte_ia = generatedFunction.vte_lookup(s);
+						if (vte_ia != null) {
+							VariableTableEntry vte1 = generatedFunction.getVarTableEntry(DeduceTypes2.to_int(vte_ia));
+							throw new NotImplementedException();
+						} else {
+							final IdentTableEntry idte = generatedFunction.getIdentTableEntryFor(vs.getNameToken());
+							assert idte != null;
+							@Nullable OS_Type ty = idte.type.attached;
+							if (ty == null) {
+								@NotNull TypeTableEntry tte3 = generatedFunction.newTypeTableEntry(
+										TypeTableEntry.Type.SPECIFIED, new OS_Type(vs.typeName()), vs.getNameToken());
+								idte.type = tte3;
+								ty = idte.type.attached;
 							}
-
-							tte.attached = new OS_FuncType((FunctionDef) best);
-							//vte.addPotentialType(instructionIndex, tte);
-						} else {
-							final int y=2;
-							throw new NotImplementedException();
+							assert ty != null;
+							OS_Type rtype = null;
+							try {
+								rtype = resolve_type(ty, ctx);
+							} catch (ResolveError resolveError) {
+//									resolveError.printStackTrace();
+								errSink.reportError("Cant resolve " + ty); // TODO print better diagnostic
+								continue;
+							}
+							LookupResultList lrl2 = rtype.getClassOf().getContext().lookup("__getitem__");
+							OS_Element best2 = lrl2.chooseBest(null);
+							if (best2 != null && best2 instanceof FunctionDef) {
+								FunctionDef fd = (FunctionDef) best2;
+								forFunction(fd, new ForFunction() {
+									@Override
+									public void typeDecided(final OS_Type aType) {
+										@NotNull TypeTableEntry tte1 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, aType); // TODO expression?
+										idte.type = tte1;
+									}
+								});
+//									fd.returnType();
+							} else {
+								throw new NotImplementedException();
+							}
 						}
+
+						tte.attached = new OS_FuncType((FunctionDef) best);
+						//vte.addPotentialType(instructionIndex, tte);
 					} else {
-						final int y=2;
+						final int y = 2;
 						throw new NotImplementedException();
 					}
+				} else {
+					final int y = 2;
+					throw new NotImplementedException();
 				}
-				break;
+			}
+			break;
 
 			default:
 				throw new IllegalStateException("Unexpected value: " + e.getKind());
@@ -631,16 +666,16 @@ public class DeduceTypes2 {
 					final LookupResultList lrl = ctx.lookup(text);
 
 					final OS_Element best = lrl.chooseBest(null);
-					if (best != null)
+					if (best != null) {
 						pte.resolved = best; // TODO do we need to add a dependency for class?
-					else {
-						errSink.reportError("Cant resolve "+text);
+					} else {
+						errSink.reportError("Cant resolve " + text);
 					}
 				} else {
 					implement_calls(generatedFunction, ctx.getParent(), instruction.getArg(1), pte, instructionIndex);
 				}
 			} else {
-				final int y=2;
+				final int y = 2;
 				final IdentIA ident_a = identIA;
 				final OS_Element el = resolveIdentIA(ctx, ident_a, module, generatedFunction);
 				if (el != null) {
@@ -656,11 +691,11 @@ public class DeduceTypes2 {
 						@NotNull TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, type, pte.expression);
 						vte.addPotentialType(instructionIndex, tte);
 					} else {
-						System.err.println("7890 "+el.getClass().getName());
+						System.err.println("7890 " + el.getClass().getName());
 //						assert false;
 					}
 				} else {
-					System.err.println("IdentIA path cannot be resolved "+generatedFunction.getIdentIAPathNormal(ident_a));
+					System.err.println("IdentIA path cannot be resolved " + generatedFunction.getIdentIAPathNormal(ident_a));
 				}
 			}
 		}
@@ -691,7 +726,7 @@ public class DeduceTypes2 {
 		}
 		final ConstantTableEntry cte = generatedFunction.getConstTableEntry(i2.getIndex());
 		if (cte.type.attached == null) {
-			System.out.println("*** ERROR: Null type in CTE "+cte);
+			System.out.println("*** ERROR: Null type in CTE " + cte);
 		}
 //		vte.type = cte.type;
 		idte.addPotentialType(instruction.getIndex(), cte.type);
@@ -700,18 +735,18 @@ public class DeduceTypes2 {
 	private void do_assign_call(final GeneratedFunction generatedFunction, final Context ctx, final IdentTableEntry idte, final FnCallArgs fca, final int instructionIndex) {
 		final ProcTableEntry pte = generatedFunction.getProcTableEntry(to_int(fca.getArg(0)));
 		for (final TypeTableEntry tte : pte.getArgs()) {
-			System.out.println("771 "+tte);
+			System.out.println("771 " + tte);
 			final IExpression e = tte.expression;
-			if (e == null) continue;
+			if (e == null) {
+				continue;
+			}
 			switch (e.getKind()) {
-			case NUMERIC:
-			{
+			case NUMERIC: {
 				tte.attached = new OS_Type(BuiltInTypes.SystemInteger);
 				idte.type = tte; // TODO this looks wrong
 			}
 			break;
-			case IDENT:
-			{
+			case IDENT: {
 /*
 					LookupResultList lrl = ctx.lookup(((IdentExpression)e).getText());
 					OS_Element best = lrl.chooseBest(null);
@@ -724,29 +759,30 @@ public class DeduceTypes2 {
 				if (ll.size() == 1) {
 					tte.attached = ll.get(0).attached;
 					idte.addPotentialType(instructionIndex, ll.get(0));
-				} else
+				} else {
 					throw new NotImplementedException();
+				}
 			}
 			break;
-			default:
-			{
+			default: {
 				throw new NotImplementedException();
 			}
 			}
 		}
 		{
-			final LookupResultList lrl = ctx.lookup(((IdentExpression)pte.expression).getText());
+			final LookupResultList lrl = ctx.lookup(((IdentExpression) pte.expression).getText());
 			final OS_Element best = lrl.chooseBest(null);
-			if (best != null)
+			if (best != null) {
 				pte.resolved = best; // TODO do we need to add a dependency for class?
-			else
+			} else {
 				throw new NotImplementedException();
+			}
 		}
 	}
 
 	private void implement_calls(final GeneratedFunction gf, final Context context, final InstructionArgument i2, final ProcTableEntry fn1, final int pc) {
 		if (gf.deferred_calls.contains(pc)) {
-			System.err.println("Call is deferred "/*+gf.getInstruction(pc)*/+" "+fn1);
+			System.err.println("Call is deferred "/*+gf.getInstruction(pc)*/ + " " + fn1);
 			return;
 		}
 		implement_calls_(gf, context, i2, fn1, pc);
@@ -759,13 +795,17 @@ public class DeduceTypes2 {
 			boolean found = lookup_name_calls(context, pn, fn1);
 			LookupResultList lrl;
 			OS_Element best;
-			if (found) return;
+			if (found) {
+				return;
+			}
 
 			final String pn2 = SpecialFunctions.reverse_name(pn);
 			if (pn2 != null) {
 //				System.out.println("7002 "+pn2);
 				found = lookup_name_calls(context, pn2, fn1);
-				if (found) return;
+				if (found) {
+					return;
+				}
 			}
 
 			if (i2 instanceof IntegerIA) {
@@ -781,7 +821,9 @@ public class DeduceTypes2 {
 						final OS_Element best2 = lrl2.chooseBest(null);
 						if (best2 != null) {
 							found = lookup_name_calls(best2.getContext(), pn, fn1);
-							if (found) return;
+							if (found) {
+								return;
+							}
 
 							if (pn2 != null) {
 								found = lookup_name_calls(best2.getContext(), pn2, fn1);
@@ -806,7 +848,9 @@ public class DeduceTypes2 {
 							final Context ctx1 = x.getClassOf().getContext();
 
 							found = lookup_name_calls(ctx1, pn, fn1);
-							if (found) return;
+							if (found) {
+								return;
+							}
 
 							if (pn2 != null) {
 								found = lookup_name_calls(ctx1, pn2, fn1);
@@ -816,17 +860,20 @@ public class DeduceTypes2 {
 								//throw new NotImplementedException(); // TODO
 								errSink.reportError("Special Function not found " + pn);
 							}
-						} else
+						} else {
 							assert false;
-					} else
+						}
+					} else {
 						assert false;
+					}
 				}
 			} else {
-				final int y=2;
-				System.err.println("i2 is not IntegerIA ("+i2.getClass().getName()+")");
+				final int y = 2;
+				System.err.println("i2 is not IntegerIA (" + i2.getClass().getName() + ")");
 			}
-		} else
+		} else {
 			throw new NotImplementedException(); // pn1 is not IdentExpression
+		}
 	}
 
 	private boolean lookup_name_calls(final Context ctx, final String pn, final ProcTableEntry fn1) {
@@ -839,18 +886,15 @@ public class DeduceTypes2 {
 		return false;
 	}
 
-	public static int to_int(@NotNull final InstructionArgument arg) {
-		return ((IntegerIA) arg).getIndex();
-	}
-
 	private OS_Element _resolveAlias(final AliasStatement aliasStatement) {
 		final LookupResultList lrl2;
 		if (aliasStatement.getExpression() instanceof Qualident) {
 			final IExpression de = Helpers.qualidentToDotExpression2(((Qualident) aliasStatement.getExpression()));
-			if (de instanceof DotExpression)
+			if (de instanceof DotExpression) {
 				lrl2 = lookup_dot_expression(aliasStatement.getContext(), (DotExpression) de);
-			else
+			} else {
 				lrl2 = aliasStatement.getContext().lookup(((IdentExpression) de).getText());
+			}
 			return lrl2.chooseBest(null);
 		}
 		// TODO what about when DotExpression is not just simple x.y.z? then alias equivalent to val
@@ -869,36 +913,27 @@ public class DeduceTypes2 {
 		IExpression ss = s.peek();
 		while (!s.isEmpty()) {
 			ss = s.peek();
-			if (t != null && (t.getType() == OS_Type.Type.USER_CLASS || t.getType() == OS_Type.Type.FUNCTION))
+			if (t != null && (t.getType() == OS_Type.Type.USER_CLASS || t.getType() == OS_Type.Type.FUNCTION)) {
 				ctx = t.getClassOf().getContext();
+			}
 			t = deduceExpression(ss, ctx);
-			if (t == null) break;
+			if (t == null) {
+				break;
+			}
 			ss.setType(t);  // TODO should this be here?
 			s.pop();
 		}
 		if (t == null) {
 			NotImplementedException.raise();
 			return new LookupResultList(); // TODO throw ResolveError
-		} else
-			return t.getElement().getParent().getContext().lookup(((IdentExpression)ss).getText());
-	}
-
-	@NotNull static Stack<IExpression> dot_expression_to_stack(final DotExpression de) {
-		final Stack<IExpression> right_stack = new Stack<IExpression>();
-		IExpression right = de.getRight();
-		right_stack.push(de.getLeft());
-		while (right instanceof DotExpression) {
-			right_stack.push(right.getLeft());
-			right = ((DotExpression) right).getRight();
+		} else {
+			return t.getElement().getParent().getContext().lookup(((IdentExpression) ss).getText());
 		}
-		right_stack.push(right);
-		Collections.reverse(right_stack);
-		return right_stack;
 	}
 
 	public OS_Type deduceExpression(@NotNull final IExpression n, final Context context) {
 		if (n.getKind() == ExpressionKind.IDENT) {
-			return deduceIdentExpression((IdentExpression)n, context);
+			return deduceIdentExpression((IdentExpression) n, context);
 		} else if (n.getKind() == ExpressionKind.NUMERIC) {
 			return new OS_Type(BuiltInTypes.SystemInteger);
 		} else if (n.getKind() == ExpressionKind.DOT_EXP) {
@@ -929,17 +964,19 @@ public class DeduceTypes2 {
 		while (best instanceof AliasStatement) {
 			best = _resolveAlias((AliasStatement) best);
 		}
-		if (best instanceof ClassStatement)
+		if (best instanceof ClassStatement) {
 			return new OS_Type((ClassStatement) best);
-		else
+		} else {
 			return null;
+		}
 	}
 
 	/**
 	 * Called from {@link DeduceTypes2#do_assign_call(GeneratedFunction, Context, VariableTableEntry, FnCallArgs, Instruction)}
-	 * @param ctx to do lookups
-	 * @param ident_a pte.expression_num
-	 * @param module to report errors
+	 *
+	 * @param ctx               to do lookups
+	 * @param ident_a           pte.expression_num
+	 * @param module            to report errors
 	 * @param generatedFunction
 	 * @return
 	 */
@@ -973,28 +1010,38 @@ public class DeduceTypes2 {
 					if (pot.size() == 1) {
 						OS_Type attached = pot.get(0).attached;
 						if (attached != null) {
-							if (attached.getType() == OS_Type.Type.USER_CLASS) {
+							switch (attached.getType()) {
+							case USER_CLASS:
 								ClassStatement x = attached.getClassOf();
 								ectx = x.getContext();
-							} else {
+								break;
+							case USER:
+								System.err.println("FAIL 1011");
+								break;
+							default:
 								throw new IllegalStateException("Dont know what youre doing here.");
 							}
 						} else {
 							TypeTableEntry tte = pot.get(0);
 							OS_Element el2 = lookup(tte.expression.getLeft(), ectx);
-							if (el2 == null)
-								throw new IllegalStateException("foo bar");
-							else {
+							if (el2 == null) {
+//								throw new IllegalStateException("foo bar");
+								System.err.println("FAIL 1025");
+								return null;
+							} else {
 								ectx = el2.getContext();
-								if (el2 instanceof ClassStatement)
+								if (el2 instanceof ClassStatement) {
 									tte.attached = new OS_Type((ClassStatement) el2);
-								else
+								} else if (el2 instanceof FunctionDef) {
+									// TODO 11/14/23 implement me
+								} else {
 									throw new NotImplementedException();
+								}
 							}
 						}
 					}
 				} else {
-					errSink.reportError("1001 Can't resolve "+text);
+					errSink.reportError("1001 Can't resolve " + text);
 					return null;
 				}
 			} else if (ia instanceof IdentIA) {
@@ -1011,10 +1058,10 @@ public class DeduceTypes2 {
 					}
 					if (el != null) {
 						idte.setResolvedElement(el);
-						if (el.getContext() != null)
+						if (el.getContext() != null) {
 							ectx = el.getContext();
-						else {
-							final int yy=2;
+						} else {
+							final int yy = 2;
 							throw new NotImplementedException();
 						}
 					} else {
@@ -1026,15 +1073,16 @@ public class DeduceTypes2 {
 					String z = generatedFunction.getIdentIAPathNormal((IdentIA) ia);
 					OS_Element os_element = resolveIdentIA2(ctx, ident_a, module, s, generatedFunction);
 					System.out.println(String.format("2001 Resolved %s to %s", z, os_element));
-					if (os_element != null)
+					if (os_element != null) {
 						idte.setResolvedElement(os_element);
-					else {
+					} else {
 						System.out.println("2002 Cant resolve " + z);
 					}
 					return os_element;
 				}
-			} else
+			} else {
 				throw new IllegalStateException("Really cant be here");
+			}
 		}
 		return el;
 	}
@@ -1060,19 +1108,41 @@ public class DeduceTypes2 {
 				{
 					List<TypeTableEntry> pot = new ArrayList<TypeTableEntry>(vte.potentialTypes());
 					if (pot.size() == 1) {
-						ectx = pot.get(0).attached.getClassOf().getContext(); // TODO can combine later
+						@Nullable OS_Type attached = pot.get(0).attached;
+						if (attached != null) {
+							switch (attached.getType()) {
+							case USER_CLASS:
+								ectx = attached.getClassOf().getContext(); // TODO can combine later
+								break;
+							default:
+								System.err.println("FAIL 1104");
+								break;
+							}
+						} else {
+							System.err.println("FAIL 1100");
+						}
 					}
 				}
 
 				OS_Type attached = vte.type.attached;
-				if (attached != null)
-					ectx = attached.getClassOf().getContext();
-				else {
+				if (attached != null) {
+					switch (attached.getType()) {
+					case USER:
+						System.err.println("FAIL 1121");
+						break;
+					case USER_CLASS:
+						ectx = attached.getClassOf().getContext();
+						break;
+					default:
+						throw new IllegalStateException("Unexpected value: " + attached.getType());
+					}
+				} else {
 					if (vte.potentialTypes().size() == 1) {
 						final ArrayList<TypeTableEntry> pot = new ArrayList<TypeTableEntry>(vte.potentialTypes());
 						vte.type.attached = pot.get(0).attached;
-					} else
+					} else {
 						System.out.println("1006 Can't find type of " + text);
+					}
 				}
 			} else if (ia2 instanceof IdentIA) {
 				final IdentTableEntry idte2 = generatedFunction.getIdentTableEntry(((IdentIA) ia2).getIndex());
@@ -1081,7 +1151,7 @@ public class DeduceTypes2 {
 				final LookupResultList lrl = ectx.lookup(text);
 				el = lrl.chooseBest(null);
 				if (el == null) {
-					errSink.reportError("1007 Can't resolve "+text);
+					errSink.reportError("1007 Can't resolve " + text);
 					return null;
 				} else {
 					if (idte2.type == null) {
@@ -1105,23 +1175,24 @@ public class DeduceTypes2 {
 						assert idte2.type.attached != null;
 						try {
 							OS_Type rtype = resolve_type(idte2.type.attached, ectx);
-							if (rtype.getType() == OS_Type.Type.USER_CLASS)
+							if (rtype.getType() == OS_Type.Type.USER_CLASS) {
 								ectx = rtype.getClassOf().getContext();
-							else if (rtype.getType() == OS_Type.Type.FUNCTION)
+							} else if (rtype.getType() == OS_Type.Type.FUNCTION) {
 								ectx = ((OS_FuncType) rtype).getElement().getContext();
+							}
 							idte2.type.attached = rtype; // TODO may be losing alias information here
 						} catch (ResolveError resolveError) {
-							System.out.println("1089 Can't attach type to "+idte2.type.attached);
+							System.out.println("1089 Can't attach type to " + idte2.type.attached);
 //							resolveError.printStackTrace(); // TODO print diagnostic
 							continue;
 						}
 					} else {
 //						throw new IllegalStateException("who knows");
-						System.out.println("2010 idte2.type == null for "+ text);
+						System.out.println("2010 idte2.type == null for " + text);
 					}
 				}
 
-				int y=2;
+				int y = 2;
 			}
 		}
 		return el;
@@ -1130,15 +1201,18 @@ public class DeduceTypes2 {
 	private OS_Element lookup(IExpression expression, Context ctx) {
 		switch (expression.getKind()) {
 		case IDENT:
-			LookupResultList lrl = ctx.lookup(((IdentExpression)expression).getText());
+			LookupResultList lrl = ctx.lookup(((IdentExpression) expression).getText());
 			OS_Element best = lrl.chooseBest(null);
 			return best;
+//		default:
+//			throw new NotImplementedException();
+		case DOT_EXP:
+			System.err.println("FAIL 1204");
+			return null;
 		default:
-			throw new NotImplementedException();
+			throw new IllegalStateException("Unexpected value: " + expression.getKind());
 		}
 	}
-
-
 }
 
 //

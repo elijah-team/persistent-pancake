@@ -145,7 +145,7 @@ public class GeneratedFunction implements GeneratedNode {
 					} else {
 //						text = idte.getIdent().getText();
 						System.out.println("1008 "+resolved_element.getClass().getName());
-						throw new NotImplementedException();
+//						throw new NotImplementedException();
 					}
 				} else {
 					// TODO make tests pass but I dont like this (should throw an exception: not enough information)
@@ -369,7 +369,7 @@ public class GeneratedFunction implements GeneratedNode {
 		return null;
 	}
 
-	public @NotNull InstructionArgument get_assignment_path(@NotNull final IExpression expression, @NotNull final GenerateFunctions generateFunctions) {
+	public /*@NotNull*/ @Nullable InstructionArgument get_assignment_path(@NotNull final IExpression expression, @NotNull final GenerateFunctions generateFunctions) {
 		switch (expression.getKind()) {
 		case DOT_EXP:
 			{
@@ -379,8 +379,11 @@ public class GeneratedFunction implements GeneratedNode {
 			}
 		case QIDENT:
 			throw new NotImplementedException();
-		case PROCEDURE_CALL:
-			throw new NotImplementedException();
+		case PROCEDURE_CALL: {
+//			throw new NotImplementedException();
+			System.err.println("FAIL 384");
+			return null;
+		}
 		case GET_ITEM:
 			throw new NotImplementedException();
 		case IDENT:

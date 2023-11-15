@@ -30,25 +30,31 @@ public class FnCallArgs implements InstructionArgument {
 
 	@Override
 	public String toString() {
-		final int index = ((IntegerIA) expression_to_call.args.get(0)).getIndex();
-		final List<InstructionArgument> instructionArguments = getInstructionArguments();
-/*
+		final List<InstructionArgument> expression_to_callArgs = expression_to_call.getArgs();
+		final int index = ((IntegerIA) expression_to_callArgs.get(0)).getIndex();
+
+		/*
         final List<String> collect = instructionArguments
                 .stream()
                 .map((instructionArgument -> instructionArgument.toString()))
                 .collect(Collectors.toList());
-*/
-		final Collection<String> collect2 = Collections2.transform(instructionArguments, new Function<InstructionArgument, String>() {
+		*/
+
+		final Collection<String> collect2 = Collections2.transform(getInstructionArguments(), new Function<InstructionArgument, String>() {
 			@Nullable
 			@Override
 			public String apply(@Nullable final InstructionArgument input) {
 				return input.toString();
 			}
 		});
+
 		final ProcTableEntry procTableEntry = gf.prte_list.get(index);
-		return String.format("(call %d [%s(%s)] %s)",
-				index, procTableEntry.expression, procTableEntry.args,
+		final String s = String.format("(call %d [%s(%s)] %s)",
+				index,
+				procTableEntry.expression,
+				procTableEntry.args,
 				Helpers.String_join(" ", collect2));
+		return s;
 
 	}
 
@@ -67,12 +73,8 @@ public class FnCallArgs implements InstructionArgument {
 
 	@NotNull
 	public List<InstructionArgument> getInstructionArguments() {
-		final List<InstructionArgument> args = this.getArgs();
+		final List<InstructionArgument> args = expression_to_call.getArgs();
 		return args.subList(1, args.size());
-	}
-
-	private List<InstructionArgument> getArgs() {
-		return expression_to_call.args;
 	}
 
 	public void setType(TypeTableEntry tte2) {
