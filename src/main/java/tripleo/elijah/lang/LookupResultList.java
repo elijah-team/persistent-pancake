@@ -20,8 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author Tripleo(sb)
@@ -51,16 +55,28 @@ public class LookupResultList {
 
 	@Nullable
 	public OS_Element chooseBest(final List<Predicate<OS_Element>> l) {
+		final List<LookupResult> r1;
 		final List<LookupResult> r;
 		if (l != null) {
-			r = getMaxScoredResults(l);
+			r1 = getMaxScoredResults(l);
 		} else {
-			r = results();
+			r1 = results();
 		}
+
+		r = r1.stream()
+		      .unordered()
+		      .filter(distinctByKey(LookupResult::getElement))
+		      .distinct()
+		      .collect(Collectors.toList());
+//		r = r1.stream()
+//		      .unordered()
+//		      .distinct()
+//		      .collect(Collectors.toList());
+
 		//
-		if (r.size() == 1)
+		if (r.size() == 1) {
 			return r.get(0).getElement();
-//		else if (r.size() == 2) {
+//		} else if (r.size() == 2) {
 //			if (r.get(0).getElement() == r.get(1).getElement()) {
 ////				r.remove(1);
 //				return r.get(0).getElement();
@@ -74,7 +90,7 @@ public class LookupResultList {
 ////				r.remove(2);
 //				return r.get(0).getElement();
 //			}
-//		}
+		}
 		return null; //throw new NotImplementedException();
 	}
 
@@ -101,6 +117,12 @@ public class LookupResultList {
 	public List<LookupResult> results() { // TODO want ImmutableList
 		return _results;
 	}
+
+	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+		Set<Object> seen = ConcurrentHashMap.newKeySet();
+		return t -> seen.add(keyExtractor.apply(t));
+	}
+
 }
 
 //
