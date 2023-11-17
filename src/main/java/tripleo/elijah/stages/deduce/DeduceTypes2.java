@@ -1691,14 +1691,25 @@ public class DeduceTypes2 {
 						vte.resolveType(result);
 					}
 				});
-				if (vte.getResolvedElement() != null) {
+
+				final OS_Element resolvedElement = vte.getResolvedElement();
+				if (resolvedElement != null) {
 					try {
 						final OS_Element el;
-						if (vte.getResolvedElement() instanceof IdentExpression)
-							el = DeduceLookupUtils.lookup((IdentExpression) vte.getResolvedElement(), ctx, this);
-						else
-							el = DeduceLookupUtils.lookup(((VariableStatement) vte.getResolvedElement()).getNameToken(), ctx, this);
-						vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
+						final IdentExpression identExpression;
+						if (resolvedElement instanceof IdentExpression) {
+							identExpression = (IdentExpression) resolvedElement;
+						} else {
+							identExpression = ((VariableStatement) resolvedElement).getNameToken();
+						}
+
+						el = DeduceLookupUtils.lookup(identExpression, ctx, this);
+						if (el == null) {
+//							throw new AssertionError();
+							System.err.println("FAIL 1709");
+						} else {
+							vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
+						}
 					} catch (final ResolveError aResolveError) {
 						errSink.reportDiagnostic(aResolveError);
 						return;
