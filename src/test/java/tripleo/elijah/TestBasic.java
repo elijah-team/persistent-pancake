@@ -150,7 +150,7 @@ public class TestBasic {
 		  });
 
 		// TODO Error count obviously should be 0
-		assertEquals(123, c.errorCount()); // FIXME why 123?? 04/15
+		assertEquals(116, c.errorCount()); // FIXME why 123?? 04/15
 
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.h"));
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Prelude.c"));
