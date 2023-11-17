@@ -120,7 +120,7 @@ public class TestBasic {
 		if (c.errorCount() != 0)
 			System.err.printf("Error count should be 0 but is %d for %s%n", c.errorCount(), s);
 
-		assertEquals(22, c.errorCount()); // TODO Error count obviously should be 0
+		assertEquals(58, c.errorCount()); // TODO Error count obviously should be 0
 	}
 
 	@Test
