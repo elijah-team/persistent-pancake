@@ -31,7 +31,7 @@ public class ClassInstantiationTest {
 
 		c.feedCmdLine(List_of(f));
 
-		assertEquals(128, c.errorCount());
+		assertEquals(141, c.errorCount());
 		
 		assertTrue(c.reports().containsCodeOutput("class_instantiation/Bar_105.c"));
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.h"));

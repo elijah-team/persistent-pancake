@@ -52,7 +52,9 @@ public abstract class BaseTableEntry {
 			}
 		}
 		resolved_element = aResolved_element;
-		elementPromise.resolve(resolved_element);
+		if (elementPromise.isPending()) {
+			elementPromise.resolve(resolved_element);
+		}
 	}
 
 	// endregion resolved_element
