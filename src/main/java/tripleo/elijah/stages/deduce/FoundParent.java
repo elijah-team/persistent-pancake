@@ -242,7 +242,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 	private void type_is_null_and_attached_is_null_vte() {
 		//LOG.err("2842 attached == null for "+((VariableTableEntry) bte).type);
 		@NotNull final DeduceTypes2.PromiseExpectation<GenType> pe = deduceTypes2.promiseExpectation((VariableTableEntry) bte, "Null USER type attached resolved");
-		((VariableTableEntry) bte).typePromise().done(new DoneCallback<GenType>() {
+		((VariableTableEntry) bte).typePromise().then(new DoneCallback<GenType>() {
 			@Override
 			public void onDone(@NotNull final GenType result) {
 				pe.satisfy(result);

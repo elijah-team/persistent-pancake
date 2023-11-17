@@ -22,6 +22,8 @@ import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
+import java.io.File;
+
 /**
  * @author Tripleo(sb)
  *
