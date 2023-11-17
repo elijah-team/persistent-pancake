@@ -1,8 +1,7 @@
 package tripleo.elijah.util;
 
-import org.jetbrains.annotations.*;
-import tripleo.elijah.comp.diagnostic.*;
-import tripleo.elijah.diagnostic.*;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.diagnostic.Diagnostic;
 
 /**
  * An emulation of Rust's Result type
@@ -10,24 +9,10 @@ import tripleo.elijah.diagnostic.*;
  * @param <T> the success type
  */
 public class Operation2<T> {
-	public static <T> Operation2<T> convert(final @NotNull Operation<T> op) {
-		final Operation2<T> op2;
+	private final Mode mode;
+	private final T    succ;
 
-		switch (op.mode()) {
-		case FAILURE -> {
-			op2 = Operation2.failure(new ExceptionDiagnostic(op.failure()));
-		}
-		case NOTHING -> {
-			throw new NotImplementedException(); // UnintendedUseException ??
-		}
-		case SUCCESS -> {
-			op2 = Operation2.success(op.success());
-		}
-		default -> throw new IllegalStateException("Unexpected value: " + op.mode());
-		}
-
-		return op2;
-	}
+	private final Diagnostic exc;
 
 	public static <T> @NotNull Operation2<T> failure(final Diagnostic aException) {
 		final Operation2<T> op = new Operation2<>(null, aException, Mode.FAILURE);
@@ -39,15 +24,9 @@ public class Operation2<T> {
 		return op;
 	}
 
-	private final Mode mode;
-
-	private final T succ;
-
-	private final Diagnostic exc;
-
 	public Operation2(final T aSuccess, final Diagnostic aException, final Mode aMode) {
 		succ = aSuccess;
-		exc = aException;
+		exc  = aException;
 		mode = aMode;
 
 		if (succ == exc)

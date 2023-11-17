@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 public class HolderPromise<T> {
 	private final List<Consumer<T>> callbacks = new ArrayList<>();
 	// TODO do we really even need this field?
-	private T el;
+	private       T                 el;
 
 	public void onDone(final Consumer<T> callback) {
 		callbacks.add(callback);

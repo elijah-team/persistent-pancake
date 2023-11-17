@@ -9,27 +9,27 @@
 
 package tripleo.elijah.diagnostic;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.PrintStream;
-import java.util.List;
+import java.io.File;
 
 /**
- * Created 12/26/20 5:31 AM
+ * Locate a Token or Token range<br><br>
+ * <p>
+ * All methods return 0 or null for atrificial Tokens<br><br>
+ * <p>
+ * Created 12/26/20 5:32 AM
  */
-public interface Diagnostic {
-	String code();
-	Severity severity();
-	@NotNull
-	Locatable primary();
-	@NotNull
-	List<Locatable> secondary();
+public interface Locatable {
+	int getColumn();
 
-	void report(PrintStream stream);
+	int getColumnEnd();
 
-	enum Severity {
-		INFO, LINT, WARN, ERROR
-	}
+	@Nullable File getFile();
+
+	int getLine();
+
+	int getLineEnd();
 }
 
 //

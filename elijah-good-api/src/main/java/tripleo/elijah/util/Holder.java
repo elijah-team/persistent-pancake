@@ -1,3 +1,4 @@
+/* -*- Mode: Java; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
  * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
  *
@@ -8,14 +9,21 @@
  */
 package tripleo.elijah.util;
 
-@SuppressWarnings("unused")
-public class NotImplementedException extends RuntimeException {
-public NotImplementedException() {
-	final int y=2;
+/**
+ * Created 3/17/22 4:27 PM
+ */
+public class Holder<T> {
+	private T el;
+
+	public T get() {
+		return el;
+	}
+
+	public void set(T el) {
+		this.el = el;
+	}
 }
 
-public static void raise() {
-	final int y=2;
-}
-}
-
+//
+// vim:set shiftwidth=4 softtabstop=0 noexpandtab:
+//

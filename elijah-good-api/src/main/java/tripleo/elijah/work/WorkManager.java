@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.work;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -18,22 +19,30 @@ import java.util.List;
  * Created 4/26/21 4:22 AM
  */
 public class WorkManager {
-	final List<WorkList> jobs     = new ArrayList<WorkList>();
-	final List<WorkList> doneWork = new ArrayList<WorkList>();
+	@NotNull List<WorkList> doneWork = new ArrayList<WorkList>();
+	@NotNull List<WorkList> jobs     = new ArrayList<WorkList>();
 
 	public void addJobs(final WorkList aList) {
 		jobs.add(aList);
 	}
 
+	public void drain() {
+		while (true) {
+			@Nullable WorkJob w = next();
+			if (w == null) break;
+			w.run(this);
+		}
+	}
+
 	@Nullable
 	public WorkJob next() {
-		final Iterator<WorkList> workListIterator = jobs.iterator();
+		Iterator<WorkList> workListIterator = jobs.iterator();
 		while (true) {
 			if (workListIterator.hasNext()) {
-				final WorkList workList = workListIterator.next();
+				WorkList workList = workListIterator.next();
 //			for (WorkList workList :jobs) {
 				if (!workList.isDone()) {
-					for (final WorkJob w : workList.getJobs()) {
+					for (WorkJob w : workList.getJobs()) {
 						if (!w.isDone())
 							return w;
 					}
@@ -47,14 +56,6 @@ public class WorkManager {
 				return null;
 		}
 //		return null;
-	}
-
-	public void drain() {
-		while (true) {
-			@Nullable final WorkJob w = next();
-			if (w == null) break;
-			w.run(this);
-		}
 	}
 
 	public int totalSize() {
@@ -92,7 +93,7 @@ public class WorkManager {
 //					return a + b.getJobs().size();
 //				});
 		int totalSize = 0;
-		for (final WorkList job : jobs) {
+		for (WorkList job : jobs) {
 			totalSize += job.getJobs().size();
 		}
 		return totalSize;

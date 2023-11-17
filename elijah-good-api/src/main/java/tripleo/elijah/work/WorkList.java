@@ -10,6 +10,7 @@
 package tripleo.elijah.work;
 
 import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,27 +19,27 @@ import java.util.List;
  * Created 4/26/21 4:24 AM
  */
 public class WorkList {
-	private final List<WorkJob> jobs = new ArrayList<>();
 	private       boolean       _done;
+	private final List<WorkJob> jobs = new ArrayList<>();
 
 	public void addJob(final WorkJob aJob) {
 		jobs.add(aJob);
+	}
+
+	public @NotNull ImmutableList<WorkJob> getJobs() {
+		return ImmutableList.copyOf(jobs);
 	}
 
 	public boolean isDone() {
 		return _done;
 	}
 
-	public void setDone() {
-		_done = true;
-	}
-
 	public boolean isEmpty() {
 		return jobs.size() == 0;
 	}
 
-	public ImmutableList<WorkJob> getJobs() {
-		return ImmutableList.copyOf(jobs);
+	public void setDone() {
+		_done = true;
 	}
 }
 
