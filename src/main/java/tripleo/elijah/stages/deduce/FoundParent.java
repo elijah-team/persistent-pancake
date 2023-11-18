@@ -146,7 +146,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 					public void onDone(final GenType result) {
 
 						try {
-							final ClassStatement   resolvedClassOf = result.resolved.getClassOf();
+							final ClassStatement   resolvedClassOf = result.getResolved().getClassOf();
 							final LookupResultList lrl             = DeduceLookupUtils.lookupExpression(ite.getIdent(), resolvedClassOf.getContext(), deduceTypes2);
 
 /*
@@ -160,7 +160,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 
 							if (ele2 != null) {
 								ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolderWithType(ele2, result, deduceTypes2));
-								ite.resolveTypeToClass(result.node);
+								ite.resolveTypeToClass(result.getNode());
 							}
 						} catch (final ResolveError aResolveError) {
 //							aResolveError.printStackTrace();
@@ -246,7 +246,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 			@Override
 			public void onDone(@NotNull final GenType result) {
 				pe.satisfy(result);
-				final OS_Type attached1 = result.resolved != null ? result.resolved : result.typeName;
+				final OS_Type attached1 = result.getResolved() != null ? result.getResolved() : result.getTypeName();
 				if (attached1 != null) {
 					switch (attached1.getType()) {
 						case USER_CLASS:

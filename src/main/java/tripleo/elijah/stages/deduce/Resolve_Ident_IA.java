@@ -286,7 +286,7 @@ class Resolve_Ident_IA {
 					final TypeName tn = ((MatchConditional.MatchArm_TypeMatch) el).getTypeName();
 					try {
 						final @NotNull GenType ty = dc.resolve_type(new OS_UserType(tn), tn.getContext());
-						ectx = ty.resolved.getElement().getContext();
+						ectx = ty.getResolved().getElement().getContext();
 					} catch (final ResolveError resolveError) {
 						resolveError.printStackTrace();
 						LOG.err("1182 Can't resolve " + tn);
@@ -342,9 +342,9 @@ class Resolve_Ident_IA {
 			final ClassInvocation    ci = fi.getClassInvocation();
 			if (fi.getFunction() instanceof ConstructorDef) {
 				@NotNull final GenType genType = new GenType(ci.getKlass());
-				genType.ci = ci;
+				genType.setCi(ci);
 				assert ci.resolvePromise().isResolved();
-				ci.resolvePromise().then(result -> genType.node = result);
+				ci.resolvePromise().then(result -> genType.setNode(result));
 				final @NotNull OS_Module         module            = ci.getKlass().getContext().module();
 				final @NotNull GenerateFunctions generateFunctions = dc.getGenerateFunctions(module);
 				final WorkJob                    j;
@@ -448,11 +448,11 @@ class Resolve_Ident_IA {
 		pte.setFunctionInvocation(fi);
 		if (fi.getFunction() instanceof ConstructorDef) {
 			@NotNull final GenType genType = new GenType(ci.getKlass());
-			genType.ci = ci;
+			genType.setCi(ci);
 			ci.resolvePromise().then(new DoneCallback<GeneratedClass>() {
 				@Override
 				public void onDone(final GeneratedClass result) {
-					genType.node = result;
+					genType.setNode(result);
 				}
 			});
 			generatedFunction.addDependentType(genType);

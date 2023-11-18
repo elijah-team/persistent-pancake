@@ -110,15 +110,15 @@ class Resolve_Ident_IA2 {
 							@Override
 							public void onDone(@NotNull final GenType result) {
 								pe.satisfy(result);
-								switch (result.resolved.getType()) {
+								switch (result.getResolved().getType()) {
 									case FUNCTION:
-										ectx = result.resolved.getElement().getContext();
+										ectx = result.getResolved().getElement().getContext();
 										break;
 									case USER_CLASS:
-										ectx = result.resolved.getClassOf().getContext();
+										ectx = result.getResolved().getClassOf().getContext();
 										break;
 									default:
-										throw new IllegalStateException("Unexpected value: " + result.resolved.getType());
+										throw new IllegalStateException("Unexpected value: " + result.getResolved().getType());
 								}
 								ia2_IdentIA((IdentIA) ia2, ectx);
 								foundElement.doFoundElement(el);
@@ -267,7 +267,7 @@ class Resolve_Ident_IA2 {
 				case USER:
 					try {
 						@NotNull final GenType ty = deduceTypes2.resolve_type(attached, ctx);
-						ectx = ty.resolved.getClassOf().getContext();
+						ectx = ty.getResolved().getClassOf().getContext();
 					} catch (final ResolveError resolveError) {
 						LOG.err("1300 Can't resolve " + attached);
 						resolveError.printStackTrace();
@@ -378,10 +378,10 @@ class Resolve_Ident_IA2 {
 						vte.typePromise().then(new DoneCallback<GenType>() {
 							@Override
 							public void onDone(final GenType result) {
-								if (result.ci == null) {
+								if (result.getCi() == null) {
 									result.genCIForGenType2(deduceTypes2);
 								}
-								ainvocation[0] = result.ci;
+								ainvocation[0] = result.getCi();
 							}
 						});
 						invocation = ainvocation[0];
@@ -389,14 +389,14 @@ class Resolve_Ident_IA2 {
 				} else if (bl instanceof IdentIA) {
 					final @NotNull IdentIA identIA = (IdentIA) bl;
 					@NotNull final IdentTableEntry ite = identIA.getEntry();
-					if (ite.type.genType.ci != null)
-						invocation = ite.type.genType.ci;
+					if (ite.type.genType.getCi() != null)
+						invocation = ite.type.genType.getCi();
 					else if (ite.type.getAttached() != null) {
 						@NotNull final OS_Type attached1 = ite.type.getAttached();
 						assert attached1.getType() == OS_Type.Type.USER_CLASS;
 						invocation = phase.registerClassInvocation(attached1.getClassOf(), null); // TODO will fail one day
 						// TODO dont know if next line is right
-						final ClassInvocation invocation2 = DeduceTypes2.ClassInvocationMake.withGenericPart(attached1.getClassOf(), null, (NormalTypeName) tte.genType.nonGenericTypeName, deduceTypes2, errSink);
+						final ClassInvocation invocation2 = DeduceTypes2.ClassInvocationMake.withGenericPart(attached1.getClassOf(), null, (NormalTypeName) tte.genType.getNonGenericTypeName(), deduceTypes2, errSink);
 						final int             y           = 2;
 					}
 				} else if (bl instanceof ProcIA) {
@@ -434,15 +434,15 @@ class Resolve_Ident_IA2 {
 
 			final OS_Type attached = idte2.type.getAttached();
 			if (attached.getType() == OS_Type.Type.USER_CLASS) {
-				if (idte2.type.genType.resolved == null) {
+				if (idte2.type.genType.getResolved() == null) {
 					@NotNull final GenType rtype = deduceTypes2.resolve_type(attached, ctx);
-					if (rtype.resolved != null) {
-						switch (rtype.resolved.getType()) {
+					if (rtype.getResolved() != null) {
+						switch (rtype.getResolved().getType()) {
 						case USER_CLASS:
-							ctx = rtype.resolved.getClassOf().getContext();
+							ctx = rtype.getResolved().getClassOf().getContext();
 							break;
 						case FUNCTION:
-							ctx = rtype.resolved.getElement().getContext();
+							ctx = rtype.getResolved().getElement().getContext();
 							break;
 						}
 						idte2.type.setAttached(rtype); // TODO may be losing alias information here
@@ -478,7 +478,7 @@ class Resolve_Ident_IA2 {
 			}
 
 			attP.then(attached1 -> {
-				final OS_Type                 resolvedOrTypename = attached1.resolved != null ? attached1.resolved : attached1.typeName;
+				final OS_Type                 resolvedOrTypename = attached1.getResolved() != null ? attached1.getResolved() : attached1.getTypeName();
 				@NotNull final TypeTableEntry tte                = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, resolvedOrTypename, ivv.initialValue());
 				idte.type = tte;
 			});
@@ -491,7 +491,7 @@ class Resolve_Ident_IA2 {
 			x.then(attP::resolve);
 
 			attP.then(attached1 -> {
-				final OS_Type                 resolvedOrTypename = attached1.resolved != null ? attached1.resolved : attached1.typeName;
+				final OS_Type                 resolvedOrTypename = attached1.getResolved() != null ? attached1.getResolved() : attached1.getTypeName();
 				@NotNull final TypeTableEntry tte                = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, resolvedOrTypename, ivv.initialValue());
 				idte.type = tte;
 			});

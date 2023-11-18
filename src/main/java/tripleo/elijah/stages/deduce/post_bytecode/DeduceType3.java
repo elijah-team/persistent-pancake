@@ -62,7 +62,7 @@ class DeduceType3 implements DED {
 	public GenType getGenType() {
 		if (_genType == null) {
 			_genType          = new GenType();
-			_genType.resolved = osType;
+			_genType.setResolved(osType);
 		}
 
 		return _genType;

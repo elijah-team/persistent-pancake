@@ -179,10 +179,10 @@ public class Implement_construct {
 							assert el3 == el2;
 							if (el2 instanceof ConstructorDef) {
 								@Nullable final GenType type = deducePath.getType(i);
-								if (type.nonGenericTypeName == null) {
-									type.nonGenericTypeName = deducePath.getType(i - 1).nonGenericTypeName; // HACK. not guararnteed to work!
+								if (type.getNonGenericTypeName() == null) {
+									type.setNonGenericTypeName(deducePath.getType(i - 1).getNonGenericTypeName()); // HACK. not guararnteed to work!
 								}
-								@NotNull final OS_Type ty = new OS_UserType(type.nonGenericTypeName);
+								@NotNull final OS_Type ty = new OS_UserType(type.getNonGenericTypeName());
 								implement_construct_type(idte2, ty, s);
 
 								ppwc.on(pwc -> pwc.provide((ConstructorDef) el2));
@@ -255,7 +255,7 @@ public class Implement_construct {
 				try {
 					// TODO transition to GenType
 					typeName2 = deduceTypes2.resolve_type(new OS_UserType(typeName), typeName.getContext());
-					clsinv.set(i, gp.get(i), typeName2.resolved);
+					clsinv.set(i, gp.get(i), typeName2.getResolved());
 				} catch (final ResolveError aResolveError) {
 					aResolveError.printStackTrace();
 				}

@@ -14,7 +14,6 @@ import org.jdeferred2.FailCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.LookupResultList;
@@ -173,15 +172,15 @@ public class DeducePath {
 		@Override
 		public LookupResultList lookup(final String name, final int level, final LookupResultList Result, final List<Context> alreadySearched, final boolean one) {
 //			if (index == 0)
-			@Nullable OS_Type resolved = type.resolved;
+			@Nullable OS_Type resolved = type.getResolved();
 			if (resolved != null) {
 				return resolved.getElement().getContext().lookup(name, level, Result, alreadySearched, one);
 			} else {
-				assert type.nonGenericTypeName != null;
-				resolved = new OS_UserType(type.nonGenericTypeName);
+				assert type.getNonGenericTypeName() != null;
+				resolved = new OS_UserType(type.getNonGenericTypeName());
 
 				final TypeName tn1  = resolved.getTypeName();
-				final Context  ctx1 = type.nonGenericTypeName.getContext();
+				final Context  ctx1 = type.getNonGenericTypeName().getContext();
 
 				final DeduceTypes2 dt2 = base.__getDeduceTypes2();
 				PercyMakeType mt11 = new PercyMakeType();

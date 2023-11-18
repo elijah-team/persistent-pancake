@@ -128,7 +128,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                             final VariableTableEntry vte = ((IntegerIA) vrl).getEntry();
 
                             vte.typePromise().then(left_type -> {
-                                final ClassStatement cs = left_type.resolved.getClassOf(); // TODO we want a DeduceClass here. GeneratedClass may suffice
+                                final ClassStatement cs = left_type.getResolved().getClassOf(); // TODO we want a DeduceClass here. GeneratedClass may suffice
 
                                 final ClassInvocation ci = deduceTypes2._phase().registerClassInvocation(cs);
                                 ci.resolvePromise().then(gc2 -> {

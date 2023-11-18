@@ -1909,12 +1909,12 @@ public class GenerateFunctions {
 				final GenType  genType  = new GenType();
 				final TypeName typeName = fali.typeName();
 				if (typeName != null)
-					genType.typeName = new OS_UserType(typeName);
-				genType.resolved = attached;
+					genType.setTypeName(new OS_UserType(typeName));
+				genType.setResolved(attached);
 
 				final OS_Type attached1;
 				if (attached == null && typeName != null)
-					attached1 = genType.typeName;
+					attached1 = genType.getTypeName();
 				else
 					attached1 = attached;
 
@@ -2104,12 +2104,12 @@ public class GenerateFunctions {
 					final GenType  genType  = new GenType();
 					final TypeName typeName = fali.typeName();
 					if (typeName != null)
-						genType.typeName = new OS_UserType(typeName);
-					genType.resolved = attached;
+						genType.setTypeName(new OS_UserType(typeName));
+					genType.setResolved(attached);
 
 					final OS_Type attached1;
 					if (attached == null && typeName != null)
-						attached1 = genType.typeName;
+						attached1 = genType.getTypeName();
 					else
 						attached1 = attached;
 
@@ -2660,7 +2660,7 @@ public class GenerateFunctions {
 				pte.typePromise().then(new DoneCallback<GenType>() { // TODO should this be done here?
 					@Override
 					public void onDone(final GenType result) {
-						@NotNull final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.resolved);
+						@NotNull final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved());
 						tte.genType.copy(result);
 						idte.addPotentialType(instructionIndex, tte);
 					}

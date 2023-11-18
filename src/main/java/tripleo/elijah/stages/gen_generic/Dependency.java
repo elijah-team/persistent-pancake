@@ -54,13 +54,13 @@ public class Dependency {
 				SimplePrintLoggerToRemoveSoon.println_err2("52 false FunctionInvocation " + dependentFunction);
 		}
 		for (final GenType dependentType : aDependentTypes) {
-			final GeneratedContainerNC node = (GeneratedContainerNC) dependentType.node;
+			final GeneratedContainerNC node = (GeneratedContainerNC) dependentType.getNode();
 			if (node != null)
 				deps.add(node.getDependency());
 			else {
-				SimplePrintLoggerToRemoveSoon.println_err2("46 node is null " + (dependentType.resolved != null ? dependentType.resolved : dependentType.resolvedn));
+				SimplePrintLoggerToRemoveSoon.println_err2("46 node is null " + (dependentType.getResolved() != null ? dependentType.getResolved() : dependentType.getResolvedn()));
 				final Dependency d = new Dependency(null);
-				d.resolved = dependentType.resolved != null ? dependentType.resolved.getClassOf() : dependentType.resolvedn;
+				d.resolved = dependentType.getResolved() != null ? dependentType.getResolved().getClassOf() : dependentType.getResolvedn();
 				deps.add(d);
 			}
 		}

@@ -51,10 +51,10 @@ public class VTE_TypePromises {
 		aVariableTableEntry.typePromise().then(new DoneCallback<GenType>() {
 			@Override
 			public void onDone(@NotNull final GenType result) {
-				assert result.resolved.getClassOf() == fd.getParent();
+				assert result.getResolved().getClassOf() == fd.getParent();
 
 				@NotNull final ProcTableListener.E_Is_FunctionDef e_Is_FunctionDef = aProcTableListener.new E_Is_FunctionDef(
-				  pte, fd, fd.getParent()).invoke(aVariableTableEntry.type.genType.nonGenericTypeName);
+				  pte, fd, fd.getParent()).invoke(aVariableTableEntry.type.genType.getNonGenericTypeName());
 				@Nullable final FunctionInvocation fi      = e_Is_FunctionDef.getFi();
 				final GenType                      genType = e_Is_FunctionDef.getGenType();
 				aProcTableListener.finish(co, depTracker, fi, genType);
@@ -97,11 +97,11 @@ public class VTE_TypePromises {
 		aVariableTableEntry.typePromise().then(new DoneCallback<GenType>() {
 			@Override
 			public void onDone(@NotNull final GenType result) {
-				if (result.resolved.getClassOf() != fd.getParent()) {
+				if (result.getResolved().getClassOf() != fd.getParent()) {
 					SimplePrintLoggerToRemoveSoon.println_err2("** Failed assertion");
 				}
 
-				@NotNull final ProcTableListener.E_Is_FunctionDef e_Is_FunctionDef = aProcTableListener.new E_Is_FunctionDef(pte, fd, fd.getParent()).invoke(aVariableTableEntry.type.genType.nonGenericTypeName);
+				@NotNull final ProcTableListener.E_Is_FunctionDef e_Is_FunctionDef = aProcTableListener.new E_Is_FunctionDef(pte, fd, fd.getParent()).invoke(aVariableTableEntry.type.genType.getNonGenericTypeName());
 				@Nullable final FunctionInvocation                fi               = e_Is_FunctionDef.getFi();
 				final GenType                                     genType          = e_Is_FunctionDef.getGenType();
 				aProcTableListener.finish(co, depTracker, fi, genType);
@@ -120,7 +120,7 @@ public class VTE_TypePromises {
 		aVte2.typePromise().then(new DoneCallback<GenType>() {
 			@Override
 			public void onDone(@NotNull final GenType result) {
-				final @Nullable OS_Type ty2 = result.typeName/*.getAttached()*/;
+				final @Nullable OS_Type ty2 = result.getTypeName()/*.getAttached()*/;
 				assert ty2 != null;
 				@NotNull GenType rtype = null;
 				try {
@@ -129,8 +129,8 @@ public class VTE_TypePromises {
 					aDeduceTypes2.errSink.reportError("Cant resolve " + ty2); // TODO print better diagnostic
 					return;
 				}
-				if (rtype.resolved != null && rtype.resolved.getType() == OS_Type.Type.USER_CLASS) {
-					final LookupResultList     lrl2  = rtype.resolved.getClassOf().getContext().lookup("__getitem__");
+				if (rtype.getResolved() != null && rtype.getResolved().getType() == OS_Type.Type.USER_CLASS) {
+					final LookupResultList     lrl2  = rtype.getResolved().getClassOf().getContext().lookup("__getitem__");
 					@Nullable final OS_Element best2 = lrl2.chooseBest(null);
 					if (best2 != null) {
 						if (best2 instanceof FunctionDef) {
@@ -177,11 +177,11 @@ public class VTE_TypePromises {
 		aIntegerIA.getEntry().typePromise().then(new DoneCallback<GenType>() {
 			@Override
 			public void onDone(@NotNull final GenType result) {
-				final boolean found1 = aDeduceTypes2.lookup_name_calls(result.resolved.getClassOf().getContext(), pn, pte);
+				final boolean found1 = aDeduceTypes2.lookup_name_calls(result.getResolved().getClassOf().getContext(), pn, pte);
 				if (found1) {
 					final int y = 2;
 //					tripleo.elijah.util.Stupidity.println2("3071 "+pte.getStatus());
-					final IInvocation invocation = result.ci;
+					final IInvocation invocation = result.getCi();
 //							final BaseFunctionDef fd = gf.getFD();
 					final BaseFunctionDef fd = pte.getFunctionInvocation().getFunction();
 					if (pte.getFunctionInvocation() == null) {
@@ -205,7 +205,7 @@ public class VTE_TypePromises {
 	                         final DeduceTypes2 aDeduceTypes2) {
 		aBte.typePromise().then((final GenType result) -> {
 			aPromiseExpectation.satisfy(result);
-			final OS_Type attached1 = result.resolved != null ? result.resolved : result.typeName;
+			final OS_Type attached1 = result.getResolved() != null ? result.getResolved() : result.getTypeName();
 			if (attached1 != null) {
 				switch (attached1.getType()) {
 					case USER_CLASS:

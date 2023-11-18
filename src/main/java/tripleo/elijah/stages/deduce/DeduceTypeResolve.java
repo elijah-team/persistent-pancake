@@ -84,7 +84,7 @@ public class DeduceTypeResolve {
 					eh.getElement().visitGen(new AbstractCodeGen() {
 						@Override
 						public void addClass(final ClassStatement klass) {
-							genType.resolved = klass.getOS_Type();
+							genType.setResolved(klass.getOS_Type());
 						}
 
 						@Override
@@ -118,7 +118,7 @@ public class DeduceTypeResolve {
 
 						@Override
 						public void visitFunctionDef(final FunctionDef aFunctionDef) {
-							genType.resolved = aFunctionDef.getOS_Type();
+							genType.setResolved(aFunctionDef.getOS_Type());
 						}
 
 						@Override
@@ -136,7 +136,7 @@ public class DeduceTypeResolve {
 
 						@Override
 						public void visitPropertyStatement(final PropertyStatement aPropertyStatement) {
-							genType.typeName = new OS_UserType(aPropertyStatement.getTypeName());
+							genType.setTypeName(new OS_UserType(aPropertyStatement.getTypeName()));
 							// TODO resolve??
 						}
 
@@ -227,12 +227,12 @@ public class DeduceTypeResolve {
 		}
 		// maybe set something in ci to INHERITED, but thats what DeduceProcCall is for
 		if (eh.getElement() instanceof FunctionDef) {
-			if (result.node instanceof GeneratedClass) {
-				final GeneratedClass generatedClass = (GeneratedClass) result.node;
+			if (result.getNode() instanceof GeneratedClass) {
+				final GeneratedClass generatedClass = (GeneratedClass) result.getNode();
 				generatedClass.functionMapDeferred((FunctionDef) eh.getElement(), new FunctionMapDeferred() {
 					@Override
 					public void onNotify(final GeneratedFunction aGeneratedFunction) {
-						result.node = aGeneratedFunction;
+						result.setNode(aGeneratedFunction);
 					}
 				});
 			}
@@ -248,7 +248,7 @@ public class DeduceTypeResolve {
 		});
 
 		final int            y              = 2;
-		final ClassStatement classStatement = result.resolved.getClassOf();
+		final ClassStatement classStatement = result.getResolved().getClassOf();
 
 		assert bte instanceof IdentTableEntry;
 

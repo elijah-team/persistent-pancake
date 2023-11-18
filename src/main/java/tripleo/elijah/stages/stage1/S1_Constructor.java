@@ -81,13 +81,13 @@ public class S1_Constructor {
 			final GenType  genType  = new GenType();
 			final TypeName typeName = fali.typeName();
 			if (typeName != null) {
-				genType.typeName = new OS_UserType(typeName);
+				genType.setTypeName(new OS_UserType(typeName));
 			}
-			genType.resolved = attached;
+			genType.setResolved(attached);
 
 			final OS_Type attached1;
 			if (attached == null && typeName != null) {
-				attached1 = genType.typeName;
+				attached1 = genType.getTypeName();
 			} else {
 				attached1 = attached;
 			}

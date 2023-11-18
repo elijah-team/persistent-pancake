@@ -263,7 +263,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 					break;
 				case USER_CLASS:
 					final GenType gt = vte1.genType;
-					gt.resolved = attached;
+					gt.setResolved(attached);
 					vte1.resolveType(gt);
 					break;
 				default:
@@ -291,7 +291,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 		else {
 			final GenType gt       = vte1.genType;
 			final OS_Type attached = vte2.type.getAttached();
-			gt.resolved = attached;
+			gt.setResolved(attached);
 			vte1.resolveType(gt);
 		}
 //								vte.type = vte2.type;
@@ -318,7 +318,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 				break;
 			case USER_CLASS:
 				final GenType gt = vte1.genType;
-				gt.resolved = attached;
+				gt.setResolved(attached);
 				vte1.resolveType(gt);
 				break;
 			default:
@@ -351,7 +351,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 
 		if (resolvedElement instanceof IdentExpression) {
 			backlink.typePromise().then(result -> {
-				final Context context = result.resolved.getClassOf().getContext();
+				final Context context = result.getResolved().getClassOf().getContext();
 				d.resolve(context);
 			});
 		} else {

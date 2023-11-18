@@ -132,8 +132,8 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 					if (fi != null) { // TODO
 						genType = e_Is_FunctionDef.getGenType();
 						// NOTE read note below
-						genType.resolved           = fd.getOS_Type();
-						genType.functionInvocation = fi; // DeduceTypes2.Dependencies#action_type
+						genType.setResolved(fd.getOS_Type());
+						genType.setFunctionInvocation(fi); // DeduceTypes2.Dependencies#action_type
 						finish(co, depTracker, fi, genType);
 					}
 				}
@@ -148,8 +148,8 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 				//  will come out as a USER_CLASS when it should be FUNCTION
 				//
 				//  So we correct it here
-				genType.resolved           = fd.getOS_Type();
-				genType.functionInvocation = fi; // DeduceTypes2.Dependencies#action_type
+				genType.setResolved(fd.getOS_Type());
+				genType.setFunctionInvocation(fi); // DeduceTypes2.Dependencies#action_type
 				finish(co, depTracker, fi, genType);
 			}
 		} else {
@@ -210,7 +210,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 					@Nullable final InstructionArgument vte_ia = generatedFunction.vte_lookup(text);
 					if (vte_ia != null) {
 						final GenType gt = ((IntegerIA) vte_ia).getEntry().type.genType;
-						typeName = gt.nonGenericTypeName != null ? gt.nonGenericTypeName : gt.typeName.getTypeName();
+						typeName = gt.getNonGenericTypeName() != null ? gt.getNonGenericTypeName() : gt.getTypeName().getTypeName();
 					} else {
 						if (parent instanceof ClassStatement) {
 							// TODO might be wrong in the case of generics. check.
@@ -324,7 +324,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 					genType = new GenType(namespaceStatement);
 					final NamespaceInvocation nsi = dc.registerNamespaceInvocation(namespaceStatement);
 //				pte.setNamespaceInvocation(nsi);
-					genType.ci = nsi;
+					genType.setCi(nsi);
 					fi         = dc.newFunctionInvocation(fd, pte, nsi);
 				} else if (parent instanceof ClassStatement) {
 					final @NotNull ClassStatement classStatement = (ClassStatement) parent;
@@ -360,16 +360,16 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 					genType = new GenType(namespaceStatement);
 					final NamespaceInvocation nsi = dc.registerNamespaceInvocation(namespaceStatement);
 //					pte.setNamespaceInvocation(nsi);
-					genType.ci        = nsi;
-					genType.resolvedn = namespaceStatement;
+					genType.setCi(nsi);
+					genType.setResolvedn(namespaceStatement);
 					fi                = dc.newFunctionInvocation(fd, pte, nsi);
 				}
 			} else {
 				// don't create new objects when alrady populated
 				genType = new GenType();
 				final ClassInvocation classInvocation = pte.getClassInvocation();
-				genType.resolved = classInvocation.getKlass().getOS_Type();
-				genType.ci       = classInvocation;
+				genType.setResolved(classInvocation.getKlass().getOS_Type());
+				genType.setCi(classInvocation);
 				fi               = pte.getFunctionInvocation();
 			}
 			return this;

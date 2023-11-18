@@ -598,8 +598,8 @@ public class Generate_Code_For_Method {
 		final List<TypeTableEntry>                pt  = new ArrayList<TypeTableEntry>(pt_);
 		if (pt.size() == 1) {
 			final TypeTableEntry ty = pt.get(0);
-			if (ty.genType.node != null) {
-				final GeneratedNode node = ty.genType.node;
+			if (ty.genType.getNode() != null) {
+				final GeneratedNode node = ty.genType.getNode();
 				if (node instanceof GeneratedFunction) {
 					final int y = 2;
 //					((GeneratedFunction)node).typeDeferred()
@@ -694,8 +694,8 @@ public class Generate_Code_For_Method {
 		final List<TypeTableEntry>                pt  = new ArrayList<TypeTableEntry>(pt_);
 		if (pt.size() == 1) {
 			final TypeTableEntry ty = pt.get(0);
-			if (ty.genType.node != null) {
-				final GeneratedNode node = ty.genType.node;
+			if (ty.genType.getNode() != null) {
+				final GeneratedNode node = ty.genType.getNode();
 				if (node instanceof GeneratedFunction) {
 					final int y = 2;
 //					((GeneratedFunction)node).typeDeferred()
@@ -724,7 +724,7 @@ public class Generate_Code_For_Method {
 		final String         target_name  = gc.getRealTargetName(gf, vte_num_, AOG.GET);
 		final TypeTableEntry target_type_ = gf.getTypeTableEntry(vte_type_.getIndex());
 //		final String target_type = gc.getTypeName(target_type_.getAttached());
-		final String target_type   = gc.getTypeName(target_type_.genType.node);
+		final String target_type   = gc.getTypeName(target_type_.genType.getNode());
 		final String source_target = gc.getRealTargetName(gf, vte_targ_, AOG.GET);
 
 		tos.put_string_ln(String.format("%s = (%s)%s;", target_name, target_type, source_target));

@@ -60,32 +60,32 @@ public class TypeTableEntry {
 	private void _settingAttached(@NotNull final OS_Type aAttached) {
 		switch (aAttached.getType()) {
 			case USER:
-				if (genType.typeName != null) {
+				if (genType.getTypeName() != null) {
 					final TypeName typeName = aAttached.getTypeName();
 					if (!(typeName instanceof GenericTypeName))
-						genType.nonGenericTypeName = typeName;
+						genType.setNonGenericTypeName(typeName);
 				} else
-					genType.typeName = aAttached/*.getTypeName()*/;
+					genType.setTypeName(aAttached)/*.getTypeName()*/;
 				break;
 			case USER_CLASS:
 //			ClassStatement c = attached.getClassOf();
-				genType.resolved = aAttached/*attached*/; // c
+				genType.setResolved(aAttached)/*attached*/; // c
 				break;
 			case UNIT_TYPE:
-				genType.resolved = aAttached;
+				genType.setResolved(aAttached);
 			case BUILT_IN:
-				if (genType.typeName != null)
-					genType.resolved = aAttached;
+				if (genType.getTypeName() != null)
+					genType.setResolved(aAttached);
 				else
-					genType.typeName = aAttached;
+					genType.setTypeName(aAttached);
 				break;
 			case FUNCTION:
-				assert genType.resolved == null || genType.resolved == aAttached || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
-				genType.resolved = aAttached;
+				assert genType.getResolved() == null || genType.getResolved() == aAttached || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
+				genType.setResolved(aAttached);
 				break;
 			case FUNC_EXPR:
-				assert genType.resolved == null || genType.resolved == aAttached;// || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
-				genType.resolved = aAttached;
+				assert genType.getResolved() == null || genType.getResolved() == aAttached;// || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
+				genType.setResolved(aAttached);
 				break;
 			default:
 //			throw new NotImplementedException();
@@ -109,15 +109,15 @@ public class TypeTableEntry {
 	}
 
 	public void resolve(final GeneratedNode aResolved) {
-		genType.node = aResolved;
+		genType.setNode(aResolved);
 	}
 
 	public GeneratedNode resolved() {
-		return genType.node;
+		return genType.getNode();
 	}
 
 	public boolean isResolved() {
-		return genType.node != null;
+		return genType.getNode() != null;
 	}
 
 	public OS_Type getAttached() {
@@ -141,7 +141,7 @@ public class TypeTableEntry {
 //		if (aGenType.ci != null) genType.ci = aGenType.ci;
 //		if (aGenType.node != null) genType.node = aGenType.node;
 
-		setAttached(genType.resolved);
+		setAttached(genType.getResolved());
 	}
 
 	public void addSetAttached(final OnSetAttached osa) {
@@ -149,7 +149,7 @@ public class TypeTableEntry {
 	}
 
 	public void genTypeCI(final ClassInvocation aClsinv) {
-		genType.ci = aClsinv;
+		genType.setCi(aClsinv);
 	}
 
 	public enum Type {

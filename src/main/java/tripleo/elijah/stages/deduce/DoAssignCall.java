@@ -164,7 +164,7 @@ public class DoAssignCall {
 										@Override
 										public void onDone(@NotNull final GenType result) {
 											pe.satisfy(result);
-											@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.resolved); // TODO there has to be a better way
+											@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved()); // TODO there has to be a better way
 											tte.genType.copy(result);
 											vte.addPotentialType(instructionIndex, tte);
 										}
@@ -430,7 +430,7 @@ public class DoAssignCall {
 										break;
 									case USER_CLASS:
 										final GenType gt = vte1.genType;
-										gt.resolved = attached;
+										gt.setResolved(attached);
 										vte1.resolveType(gt);
 										break;
 									default:
@@ -464,7 +464,7 @@ public class DoAssignCall {
 												break;
 											case USER_CLASS:
 												final GenType gt = vte1.genType;
-												gt.resolved = attached;
+												gt.setResolved(attached);
 												vte1.resolveType(gt);
 												break;
 											default:
@@ -488,7 +488,7 @@ public class DoAssignCall {
 								else {
 									final GenType gt       = vte1.genType;
 									final OS_Type attached = vte2.type.getAttached();
-									gt.resolved = attached;
+									gt.setResolved(attached);
 									vte1.resolveType(gt);
 								}
 //								vte.type = vte2.type;
@@ -575,8 +575,8 @@ public class DoAssignCall {
 									errSink.reportError("Cant resolve " + ty); // TODO print better diagnostic
 									return;
 								}
-								if (rtype.resolved != null && rtype.resolved.getType() == OS_Type.Type.USER_CLASS) {
-									final LookupResultList     lrl2  = rtype.resolved.getClassOf().getContext().lookup("__getitem__");
+								if (rtype.getResolved() != null && rtype.getResolved().getType() == OS_Type.Type.USER_CLASS) {
+									final LookupResultList     lrl2  = rtype.getResolved().getClassOf().getContext().lookup("__getitem__");
 									@Nullable final OS_Element best2 = lrl2.chooseBest(null);
 									if (best2 != null) {
 										if (best2 instanceof FunctionDef) {

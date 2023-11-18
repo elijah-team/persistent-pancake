@@ -182,7 +182,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	public void setGenType(final GenType genType, final BaseGeneratedFunction gf) {
 		if (type == null) {
-			makeType(gf, TypeTableEntry.Type.SPECIFIED, genType.resolved);
+			makeType(gf, TypeTableEntry.Type.SPECIFIED, genType.getResolved());
 		}
 
 		type.genType.copy(genType);

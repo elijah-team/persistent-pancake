@@ -36,13 +36,13 @@ import java.util.Objects;
  * Created 5/31/21 1:32 PM
  */
 public class GenType {
-	public NamespaceStatement resolvedn;
-	public OS_Type            typeName; // TODO or just TypeName ??
-	public TypeName           nonGenericTypeName;
-	public OS_Type            resolved;
-	public IInvocation        ci;
-	public GeneratedNode      node;
-	public FunctionInvocation functionInvocation;
+	private NamespaceStatement resolvedn;
+	private OS_Type            typeName; // TODO or just TypeName ??
+	private TypeName           nonGenericTypeName;
+	private OS_Type            resolved;
+	private IInvocation        ci;
+	private GeneratedNode      node;
+	private FunctionInvocation functionInvocation;
 
 	@Contract(pure = true)
 	public GenType(final NamespaceStatement aNamespaceStatement) {
@@ -220,6 +220,62 @@ public class GenType {
 			});
 		} else
 			throw new IllegalStateException("invalid invocation");
+	}
+
+	public NamespaceStatement getResolvedn() {
+		return resolvedn;
+	}
+
+	public void setResolvedn(NamespaceStatement aResolvedn) {
+		resolvedn = aResolvedn;
+	}
+
+	public OS_Type getTypeName() {
+		return typeName;
+	}
+
+	public void setTypeName(OS_Type aTypeName) {
+		typeName = aTypeName;
+	}
+
+	public TypeName getNonGenericTypeName() {
+		return nonGenericTypeName;
+	}
+
+	public void setNonGenericTypeName(TypeName aNonGenericTypeName) {
+		nonGenericTypeName = aNonGenericTypeName;
+	}
+
+	public OS_Type getResolved() {
+		return resolved;
+	}
+
+	public void setResolved(OS_Type aResolved) {
+		resolved = aResolved;
+	}
+
+	public IInvocation getCi() {
+		return ci;
+	}
+
+	public void setCi(IInvocation aCi) {
+		ci = aCi;
+	}
+
+	public GeneratedNode getNode() {
+		return node;
+	}
+
+	public void setNode(GeneratedNode aNode) {
+		node = aNode;
+	}
+
+	public FunctionInvocation getFunctionInvocation() {
+		return functionInvocation;
+	}
+
+	public void setFunctionInvocation(FunctionInvocation aFunctionInvocation) {
+		functionInvocation = aFunctionInvocation;
 	}
 
 	static class SetGenCI {

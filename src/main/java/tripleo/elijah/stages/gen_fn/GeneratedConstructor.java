@@ -31,21 +31,21 @@ public class GeneratedConstructor extends BaseGeneratedFunction {
 		final GenType genType = new GenType();
 
 		// TODO will fail on namespace constructors; next line too
-		if (genType.ci instanceof ClassInvocation) {
+		if (genType.getCi() instanceof ClassInvocation) {
 //			throw new IllegalStateException("34 Needs class invocation");
 
-			final ClassInvocation classInvocation = (ClassInvocation) genType.ci;
+			final ClassInvocation classInvocation = (ClassInvocation) genType.getCi();
 
-			genType.ci       = classInvocation;
-			genType.resolved = classInvocation.getKlass().getOS_Type();
-		} else if (genType.ci instanceof NamespaceInvocation) {
-			final NamespaceInvocation namespaceInvocation = (NamespaceInvocation) genType.ci;
+			genType.setCi(classInvocation);
+			genType.setResolved(classInvocation.getKlass().getOS_Type());
+		} else if (genType.getCi() instanceof NamespaceInvocation) {
+			final NamespaceInvocation namespaceInvocation = (NamespaceInvocation) genType.getCi();
 
-			genType.ci       = namespaceInvocation;
-			genType.resolved = namespaceInvocation.getNamespace().getOS_Type();
+			genType.setCi(namespaceInvocation);
+			genType.setResolved(namespaceInvocation.getNamespace().getOS_Type());
 		}
 
-		genType.node = this;
+		genType.setNode(this);
 
 		resolveTypeDeferred(genType);
 	}

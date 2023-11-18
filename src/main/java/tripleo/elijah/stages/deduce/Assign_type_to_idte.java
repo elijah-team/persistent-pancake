@@ -107,7 +107,7 @@ class Assign_type_to_idte {
                     cpte.typePromise().then(new DoneCallback<GenType>() {
                         @Override
                         public void onDone(@NotNull final GenType result) {
-                            SimplePrintLoggerToRemoveSoon.println2("1483 " + result.resolved + " " + result.node);
+                            SimplePrintLoggerToRemoveSoon.println2("1483 " + result.getResolved() + " " + result.getNode());
                         }
                     });
                 }

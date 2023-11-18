@@ -153,7 +153,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 //	@Override
 	public void resolveTypeToClass(final GeneratedNode aNode) {
 		_resolvedType = aNode;
-		genType.node  = aNode;
+		genType.setNode(aNode);
 		type.resolve(aNode); // TODO maybe this obviates above
 	}
 
@@ -165,7 +165,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 
 	public void resolveType(final @NotNull GenType aGenType) {
 		if (_resolveTypeCalled != null) { // TODO what a hack
-			if (_resolveTypeCalled.resolved != null) {
+			if (_resolveTypeCalled.getResolved() != null) {
 				if (!aGenType.equals(_resolveTypeCalled)) {
 					System.err.printf("** 130 Attempting to replace %s with %s in %s%n", _resolveTypeCalled.asString(), aGenType.asString(), this);
 //					throw new AssertionError();
@@ -235,8 +235,8 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 		bGenType.copy(aGenType);
 
 		// 2. set node when available
-		((ClassInvocation) bGenType.ci).resolvePromise().done(aGeneratedClass -> {
-			bGenType.node = aGeneratedClass;
+		((ClassInvocation) bGenType.getCi()).resolvePromise().done(aGeneratedClass -> {
+			bGenType.setNode(aGeneratedClass);
 			resolveTypeToClass(aGeneratedClass);
 			genType = bGenType; // TODO who knows if this is necessary?
 		});
