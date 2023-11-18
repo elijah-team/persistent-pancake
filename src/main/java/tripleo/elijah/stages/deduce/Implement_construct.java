@@ -3,6 +3,7 @@ package tripleo.elijah.stages.deduce;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.DebugFlags;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.lang.Context;
@@ -14,6 +15,10 @@ import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.TypeNameList;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.stages.deduce.percy.DeduceElement3_LookingUpCtx;
+import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
+import tripleo.elijah.stages.deduce.percy.Provided;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.Constructable;
 import tripleo.elijah.stages.gen_fn.GenType;
@@ -34,14 +39,15 @@ import tripleo.elijah.util.NotImplementedException;
 import java.util.Collection;
 import java.util.List;
 
-class Implement_construct {
+public class Implement_construct {
 
 	private final DeduceTypes2          deduceTypes2;
 	private final BaseGeneratedFunction generatedFunction;
 	private final Instruction           instruction;
 	private final InstructionArgument   expression;
 
-	private final @NotNull ProcTableEntry pte;
+	private final @NotNull ProcTableEntry                 pte;
+	private                Provided<PercyWantConstructor> ppwc;
 
 	public Implement_construct(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction, final Instruction aInstruction) {
 		deduceTypes2      = aDeduceTypes2;
@@ -60,24 +66,37 @@ class Implement_construct {
 		assert expression instanceof IntegerIA || expression instanceof IdentIA;
 	}
 
-	public void action() {
-		if (expression instanceof IntegerIA) {
-			action_IntegerIA();
-		} else if (expression instanceof IdentIA) {
-			action_IdentIA();
-		} else {
-			throw new NotImplementedException();
-		}
+	public void action(Provided<PercyWantConstructor> ppwc0) {
+		this.ppwc = ppwc0;
+		// TODO 11/17 needs eventualregister
+		ppwc.on(pwc -> {
+			if (expression instanceof IntegerIA) {
+				action_IntegerIA(pwc);
+			} else if (expression instanceof IdentIA) {
+				action_IdentIA(pwc);
+			} else {
+				throw new NotImplementedException();
+			}
+		});
 	}
 
-	public void action_IdentIA() {
+	public void action_IdentIA(final PercyWantConstructor aPwc) {
 		@NotNull final IdentTableEntry idte       = ((IdentIA) expression).getEntry();
-		final DeducePath               deducePath = idte.buildDeducePath(generatedFunction);
+		final DeducePath               deducePath = idte.buildDeducePath(generatedFunction, deduceTypes2.resolver());
 		{
 			@Nullable OS_Element el3;
 			@Nullable Context    ectx = generatedFunction.getFD().getContext();
 			for (int i = 0; i < deducePath.size(); i++) {
 				final InstructionArgument ia2 = deducePath.getIA(i);
+
+				if (ia2 instanceof IdentIA identIA) {
+					@NotNull final IdentTableEntry identTableEntry = identIA.getEntry();
+					if (identTableEntry.getIdent().getText().equals("x")) {
+						NotImplementedException.raise_stop();
+					}
+				}
+
+				// TODO 11/17 controlplane??
 
 				el3 = deducePath.getElement(i);
 
@@ -88,46 +107,93 @@ class Implement_construct {
 					assert el3 != null;
 					assert i == 0;
 					ectx = deducePath.getContext(i);
+
+					if (ectx instanceof DeducePath.MemberContext mc) {
+						// README should be equiv
+						//ppwc.on(mc::setPwc);
+						mc.setPwc(aPwc);
+					}
 				} else if (ia2 instanceof IdentIA) {
 					@NotNull final IdentTableEntry idte2 = ((IdentIA) ia2).getEntry();
-					final String                   s     = idte2.getIdent().toString();
-					final LookupResultList         lrl   = ectx.lookup(s);
-					@Nullable final OS_Element     el2   = lrl.chooseBest(null);
-					if (el2 == null) {
-						assert el3 instanceof VariableStatement;
-						@Nullable final VariableStatement vs = (VariableStatement) el3;
-						@NotNull final TypeName           tn = vs.typeName();
-						@NotNull final OS_Type            ty = new OS_UserType(tn);
 
-						if (idte2.type == null) {
-							// README Don't remember enough about the constructors to select a different one
-							@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, ty);
-							try {
-								@NotNull final GenType resolved = deduceTypes2.resolve_type(ty, tn.getContext());
-								deduceTypes2.LOG.err("892 resolved: " + resolved);
-								tte.setAttached(resolved);
-							} catch (final ResolveError aResolveError) {
-								deduceTypes2.errSink.reportDiagnostic(aResolveError);
+					final DeduceElement3_IdentTableEntry de3_ite = idte2.getDeduceElement3(deduceTypes2, generatedFunction);
+					final DeduceElement3_LookingUpCtx    luck    = de3_ite.lookingUp(/*ia2,*/ ectx, deduceTypes2);
+
+					luck.onSuccess((a) -> {
+						final OS_Element el4 = luck.getElement();
+
+						//					ppwc.on(pwc -> { pwc.});
+
+						if (el4 instanceof VariableStatement vs) {
+							final @NotNull TypeName tn = vs.typeName();
+							final @NotNull OS_Type  ty = new OS_UserType(tn);
+							final String            s  = idte2.getIdent().toString();
+
+							if (idte2.type == null) {
+								// README Don't remember enough about the constructors to select a different one
+								@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, ty);
+								try {
+									@NotNull final GenType resolved = deduceTypes2.resolve_type(ty, tn.getContext());
+									deduceTypes2.LOG.err("892 resolved: " + resolved);
+									tte.setAttached(resolved);
+								} catch (final ResolveError aResolveError) {
+									deduceTypes2.errSink.reportDiagnostic(aResolveError);
+								}
+
+								idte2.type = tte;
+							}
+							// s is constructor name
+							implement_construct_type(idte2, ty, s);
+						}
+					});
+
+					final String               s   = idte2.getIdent().toString();
+					final LookupResultList     lrl = ectx.lookup(s);
+					@Nullable final OS_Element el2 = lrl.chooseBest(null);
+
+					if (DebugFlags.classInstantiation2) {
+//						assert el2 instanceof ConstructorDef;
+					}
+
+
+					if (el2 == null) {
+//						assert el3 != null;
+						if (!(el3 instanceof VariableStatement vs)) {
+//							throw new AssertionError();
+							System.err.println("FAIL 139");
+
+							if (aPwc.getEventualConstructorDef().isPending()) {
+								if (aPwc.getEnclosingGenType() != null) {
+									aPwc.onResolver(resolver -> {
+										NotImplementedException.raise_stop();
+									});
+								}
 							}
 
-							idte2.type = tte;
+						} else {
+							luck.force(vs);
+							return;
 						}
-						// s is constructor name
-						implement_construct_type(idte2, ty, s);
-						return;
 					} else {
 						if (i + 1 == deducePath.size()) {
 							assert el3 == el2;
 							if (el2 instanceof ConstructorDef) {
 								@Nullable final GenType type = deducePath.getType(i);
-								if (type.nonGenericTypeName == null) {
-									type.nonGenericTypeName = deducePath.getType(i - 1).nonGenericTypeName; // HACK. not guararnteed to work!
+								if (type.getNonGenericTypeName() == null) {
+									type.setNonGenericTypeName(deducePath.getType(i - 1).getNonGenericTypeName()); // HACK. not guararnteed to work!
 								}
-								@NotNull final OS_Type ty = new OS_UserType(type.nonGenericTypeName);
+								@NotNull final OS_Type ty = new OS_UserType(type.getNonGenericTypeName());
 								implement_construct_type(idte2, ty, s);
+
+								ppwc.on(pwc -> pwc.provide((ConstructorDef) el2));
 							}
 						} else {
 							ectx = deducePath.getContext(i);
+							if (ectx instanceof DeducePath.MemberContext mc) {
+								// README should be equiv
+								//ppwc.on(mc::setPwc);
+								mc.setPwc(aPwc);
+							}
 						}
 					}
 //						implement_construct_type(idte/*??*/, ty, null); // TODO how bout when there is no ctor name
@@ -136,9 +202,13 @@ class Implement_construct {
 				}
 			}
 		}
+
+		if (aPwc.getEventualConstructorDef().isPending()) {
+			assert false;
+		}
 	}
 
-	public void action_IntegerIA() {
+	public void action_IntegerIA(final PercyWantConstructor aPwc) {
 		@NotNull final VariableTableEntry vte = generatedFunction.getVarTableEntry(((IntegerIA) expression).getIndex());
 		assert vte.type.getAttached() != null; // TODO will fail when empty variable expression
 		@Nullable final OS_Type ty = vte.type.getAttached();
@@ -151,19 +221,21 @@ class Implement_construct {
 			final TypeName tyn = aTy.getTypeName();
 			if (tyn instanceof NormalTypeName) {
 				final @NotNull NormalTypeName tyn1 = (NormalTypeName) tyn;
-				_implement_construct_type(co, constructorName, (NormalTypeName) tyn);
+				_implement_construct_type(co, constructorName, tyn1);
 			}
-		} else
-			throw new NotImplementedException();
+		} else {
+//			throw new NotImplementedException();
+			return;
+		}
 		if (co != null) {
 			co.setConstructable(pte);
-			final ClassInvocation best = pte.getClassInvocation();
-			assert best != null;
-			best.resolvePromise().done(new DoneCallback<GeneratedClass>() {
-				@Override
-				public void onDone(final GeneratedClass result) {
-					co.resolveTypeToClass(result);
-				}
+			pte.onClassInvocation(classInvocation -> {
+				classInvocation.resolvePromise().done(new DoneCallback<GeneratedClass>() {
+					@Override
+					public void onDone(final GeneratedClass result) {
+						co.resolveTypeToClass(result);
+					}
+				});
 			});
 		}
 	}
@@ -183,7 +255,7 @@ class Implement_construct {
 				try {
 					// TODO transition to GenType
 					typeName2 = deduceTypes2.resolve_type(new OS_UserType(typeName), typeName.getContext());
-					clsinv.set(i, gp.get(i), typeName2.resolved);
+					clsinv.set(i, gp.get(i), typeName2.getResolved());
 				} catch (final ResolveError aResolveError) {
 					aResolveError.printStackTrace();
 				}

@@ -9,6 +9,7 @@
 package tripleo.elijah.lang;
 
 import antlr.Token;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 
 public class VariableReference extends AbstractExpression implements OS_Expression {
@@ -33,13 +34,13 @@ public class VariableReference extends AbstractExpression implements OS_Expressi
 
 	public void setMain(final String s) {
 		main = s;
-		tripleo.elijah.util.Stupidity.println2(repr_());
+		SimplePrintLoggerToRemoveSoon.println2(repr_());
 	}
 
 	public void setMain(final Token t) {
 		final String s = t.getText();
 		main = s;
-		tripleo.elijah.util.Stupidity.println2(repr_());
+		SimplePrintLoggerToRemoveSoon.println2(repr_());
 	}
 
 	/**

@@ -35,6 +35,7 @@ import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.Instruction;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
     private final ProcTableEntry        principal;
@@ -127,7 +128,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                             final VariableTableEntry vte = ((IntegerIA) vrl).getEntry();
 
                             vte.typePromise().then(left_type -> {
-                                final ClassStatement cs = left_type.resolved.getClassOf(); // TODO we want a DeduceClass here. GeneratedClass may suffice
+                                final ClassStatement cs = left_type.getResolved().getClassOf(); // TODO we want a DeduceClass here. GeneratedClass may suffice
 
                                 final ClassInvocation ci = deduceTypes2._phase().registerClassInvocation(cs);
                                 ci.resolvePromise().then(gc2 -> {
@@ -232,7 +233,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                 if (ci != null) {
                     pte.setClassInvocation(ci);
                 } else
-                    tripleo.elijah.util.Stupidity.println_err2("542 Null ClassInvocation");
+                    SimplePrintLoggerToRemoveSoon.println_err2("542 Null ClassInvocation");
             }
 
             pte.setFunctionInvocation(fi);

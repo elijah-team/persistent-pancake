@@ -18,6 +18,7 @@ import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.Objects;
 
@@ -96,17 +97,17 @@ class Assign_type_to_idte {
             // TODO All this for nothing
             //  the ite points to a function, not a function call,
             //  so there is no point in resolving it
-            if (ite.type.tableEntry instanceof ProcTableEntry) {
-                final @NotNull ProcTableEntry pte = (ProcTableEntry) ite.type.tableEntry;
+            if (ite.type.getTableEntry() instanceof ProcTableEntry) {
+                final @NotNull ProcTableEntry pte = (ProcTableEntry) ite.type.getTableEntry();
 
-            } else if (ite.type.tableEntry instanceof IdentTableEntry) {
-                final @NotNull IdentTableEntry identTableEntry = (IdentTableEntry) ite.type.tableEntry;
+            } else if (ite.type.getTableEntry() instanceof IdentTableEntry) {
+                final @NotNull IdentTableEntry identTableEntry = (IdentTableEntry) ite.type.getTableEntry();
                 if (identTableEntry.getCallablePTE() != null) {
                     @Nullable final ProcTableEntry cpte = identTableEntry.getCallablePTE();
                     cpte.typePromise().then(new DoneCallback<GenType>() {
                         @Override
                         public void onDone(@NotNull final GenType result) {
-                            tripleo.elijah.util.Stupidity.println2("1483 " + result.resolved + " " + result.node);
+                            SimplePrintLoggerToRemoveSoon.println2("1483 " + result.getResolved() + " " + result.getNode());
                         }
                     });
                 }
@@ -163,7 +164,7 @@ class Assign_type_to_idte {
             final ClassStatement cs = aType.getClassOf();
             if (aEntry.constructable_pte != null) {
                 final int yyy = 3;
-	            tripleo.elijah.util.Stupidity.println2("use_user_class: " + cs);
+	            SimplePrintLoggerToRemoveSoon.println2("use_user_class: " + cs);
             }
         }
 

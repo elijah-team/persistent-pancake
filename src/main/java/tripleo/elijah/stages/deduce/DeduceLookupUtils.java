@@ -17,9 +17,11 @@ import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.lang.types.OS_UnknownType;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.BuiltInTypes;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.Collections;
 import java.util.Stack;
@@ -110,7 +112,7 @@ public class DeduceLookupUtils {
 		while (/*!*/s.size() > 1/*isEmpty()*/) {
 			ss = s.peek();
 			if (t != null) {
-				final OS_Type resolved = t.resolved;
+				final OS_Type resolved = t.getResolved();
 				if (resolved != null && (resolved.getType() == OS_Type.Type.USER_CLASS || resolved.getType() == OS_Type.Type.FUNCTION))
 					ctx = resolved.getClassOf().getContext();
 			}
@@ -126,11 +128,11 @@ public class DeduceLookupUtils {
 			NotImplementedException.raise();
 			return new LookupResultList(); // TODO throw ResolveError
 		} else {
-			if (t.resolved instanceof OS_UnknownType)
+			if (t.getResolved() instanceof OS_UnknownType)
 				return new LookupResultList(); // TODO is this right??
-			if (t.resolved == null)
+			if (t.getResolved() == null)
 				return new LookupResultList(); // TODO is this right?? feb 20
-			final LookupResultList lrl = t.resolved.getElement()/*.getParent()*/.getContext().lookup(((IdentExpression) ss).getText());
+			final LookupResultList lrl = t.getResolved().getElement()/*.getParent()*/.getContext().lookup(((IdentExpression) ss).getText());
 			return lrl;
 		}
 	}
@@ -155,6 +157,8 @@ public class DeduceLookupUtils {
 	}
 
 	public static @Nullable GenType deduceExpression(@NotNull final DeduceTypes2 aDeduceTypes2, @NotNull final IExpression n, final @NotNull Context context) throws ResolveError {
+		DeduceTypeResolve2 resolver = aDeduceTypes2.resolver();
+
 		switch (n.getKind()) {
 		case IDENT:
 			final Promise<GenType, ResolveError, Void> x = deduceIdentExpression_p(aDeduceTypes2, (IdentExpression) n, context);
@@ -162,20 +166,20 @@ public class DeduceLookupUtils {
 			x.then(y -> gt[0] = y);
 			return gt[0];
 		case NUMERIC:
-			final @NotNull GenType genType = new GenType();
-			genType.resolved = new OS_BuiltinType(BuiltInTypes.SystemInteger);
+			final @NotNull GenType genType = new GenType(resolver);
+			genType.setResolved(new OS_BuiltinType(BuiltInTypes.SystemInteger));
 			return genType;
 		case DOT_EXP:
 			final @NotNull DotExpression de = (DotExpression) n;
 			final LookupResultList lrl = lookup_dot_expression(context, de, aDeduceTypes2);
 			final @Nullable GenType left_type = deduceExpression(aDeduceTypes2, de.getLeft(), context);
-			final @Nullable GenType right_type = deduceExpression(aDeduceTypes2, de.getRight(), left_type.resolved.getClassOf().getContext());
+			final @Nullable GenType right_type = deduceExpression(aDeduceTypes2, de.getRight(), left_type.getResolved().getClassOf().getContext());
 			NotImplementedException.raise();
 			break;
 		case PROCEDURE_CALL:
-			@Nullable final GenType result = new GenType();
+			@Nullable final GenType result = new GenType(resolver);
 			boolean finished = false;
-			tripleo.elijah.util.Stupidity.println_err2("979 During deduceProcedureCall " + n);
+			SimplePrintLoggerToRemoveSoon.println_err2("979 During deduceProcedureCall " + n);
 			@Nullable OS_Element best = null;
 			try {
 				best = lookup(n.getLeft(), context, aDeduceTypes2);
@@ -186,23 +190,23 @@ public class DeduceLookupUtils {
 				if (best != null) {
 					final int y = 2;
 					if (best instanceof ClassStatement) {
-						result.resolved = ((ClassStatement) best).getOS_Type();
+						result.setResolved(((ClassStatement) best).getOS_Type());
 					} else if (best instanceof FunctionDef) {
 						final @Nullable FunctionDef fd = (FunctionDef) best;
 						if (fd.returnType() != null && !fd.returnType().isNull()) {
-							result.resolved = new OS_UserType(fd.returnType());
+							result.setResolved(new OS_UserType(fd.returnType()));
 						} else {
-							result.resolved = new OS_UnknownType(fd);// TODO still must register somewhere
+							result.setResolved(new OS_UnknownType(fd));// TODO still must register somewhere
 						}
 					} else if (best instanceof FuncExpr) {
 						final @NotNull FuncExpr funcExpr = (FuncExpr) best;
 						if (funcExpr.returnType() != null && !funcExpr.returnType().isNull()) {
-							result.resolved = new OS_UserType(funcExpr.returnType());
+							result.setResolved(new OS_UserType(funcExpr.returnType()));
 						} else {
-							result.resolved = new OS_UnknownType(funcExpr);// TODO still must register somewhere
+							result.setResolved(new OS_UnknownType(funcExpr));// TODO still must register somewhere
 						}
 					} else {
-						tripleo.elijah.util.Stupidity.println_err2("992 " + best.getClass().getName());
+						SimplePrintLoggerToRemoveSoon.println_err2("992 " + best.getClass().getName());
 						throw new NotImplementedException();
 					}
 				}
@@ -268,6 +272,7 @@ public class DeduceLookupUtils {
 		}
 
 		public void do_deduceExpression(final DeduceTypes2 aDeduceTypes2, final IExpression n, final Context context) {
+			DeduceTypeResolve2 resolver =aDeduceTypes2.resolver();
 			try {
 				switch (n.getKind()) {
 				case IDENT:
@@ -276,15 +281,15 @@ public class DeduceLookupUtils {
 					x.fail(typePromise::reject);
 					break;
 				case NUMERIC:
-					final @NotNull GenType genType = new GenType();
-					genType.resolved = new OS_BuiltinType(BuiltInTypes.SystemInteger);
+					final @NotNull GenType genType = new GenType(aDeduceTypes2.resolver());
+					genType.setResolved(new OS_BuiltinType(BuiltInTypes.SystemInteger));
 					typePromise.resolve(genType);
 					return;
 				case DOT_EXP:
 					final @NotNull DotExpression de = (DotExpression) n;
 					final LookupResultList lrl = lookup_dot_expression(context, de, aDeduceTypes2);
 					final @Nullable GenType left_type = deduceExpression(aDeduceTypes2, de.getLeft(), context);
-					final @Nullable GenType right_type = deduceExpression(aDeduceTypes2, de.getRight(), left_type.resolved.getClassOf().getContext());
+					final @Nullable GenType right_type = deduceExpression(aDeduceTypes2, de.getRight(), left_type.getResolved().getClassOf().getContext());
 					NotImplementedException.raise();
 					typePromise.resolve(null);
 					break;
@@ -310,9 +315,9 @@ public class DeduceLookupUtils {
 		private final DeferredObject<GenType, ResolveError, Void> typePromise = new DeferredObject<>();
 
 		public void do_deduceProcedureCall(final ProcedureCallExpression pce, final Context ctx, final DeduceTypes2 deduceTypes2) {
-			@Nullable final GenType result = new GenType();
+			@Nullable final GenType result = new GenType(deduceTypes2.resolver());
 
-			tripleo.elijah.util.Stupidity.println_err2("979 During deduceProcedureCall " + pce);
+			SimplePrintLoggerToRemoveSoon.println_err2("979 During deduceProcedureCall " + pce);
 			@Nullable OS_Element best = null;
 			try {
 				best = lookup(pce.getLeft(), ctx, deduceTypes2);
@@ -324,23 +329,23 @@ public class DeduceLookupUtils {
 			if (best != null) {
 				final int y = 2;
 				if (best instanceof ClassStatement) {
-					result.resolved = ((ClassStatement) best).getOS_Type();
+					result.setResolved(((ClassStatement) best).getOS_Type());
 				} else if (best instanceof FunctionDef) {
 					final @Nullable FunctionDef fd = (FunctionDef) best;
 					if (fd.returnType() != null && !fd.returnType().isNull()) {
-						result.resolved = new OS_UserType(fd.returnType());
+						result.setResolved(new OS_UserType(fd.returnType()));
 					} else {
-						result.resolved = new OS_UnknownType(fd);// TODO still must register somewhere
+						result.setResolved(new OS_UnknownType(fd));// TODO still must register somewhere
 					}
 				} else if (best instanceof FuncExpr) {
 					final @NotNull FuncExpr funcExpr = (FuncExpr) best;
 					if (funcExpr.returnType() != null && !funcExpr.returnType().isNull()) {
-						result.resolved = new OS_UserType(funcExpr.returnType());
+						result.setResolved(new OS_UserType(funcExpr.returnType()));
 					} else {
-						result.resolved = new OS_UnknownType(funcExpr);// TODO still must register somewhere
+						result.setResolved(new OS_UnknownType(funcExpr));// TODO still must register somewhere
 					}
 				} else {
-					tripleo.elijah.util.Stupidity.println_err2("992 " + best.getClass().getName());
+					SimplePrintLoggerToRemoveSoon.println_err2("992 " + best.getClass().getName());
 					throw new NotImplementedException();
 				}
 			}
@@ -359,7 +364,7 @@ public class DeduceLookupUtils {
 		public void do_deduceIdentExpression(final DeduceTypes2 aDeduceTypes2, final IdentExpression ident, final Context ctx) {
 			try {
 				@Nullable GenType       result = null;
-				@Nullable final GenType R      = new GenType();
+				@Nullable final GenType R      = new GenType(aDeduceTypes2.resolver());
 
 				// is this right?
 				final LookupResultList lrl  = ctx.lookup(ident.getText());
@@ -368,7 +373,7 @@ public class DeduceLookupUtils {
 					best = _resolveAlias2((AliasStatement) best, aDeduceTypes2);
 				}
 				if (best instanceof ClassStatement) {
-					R.resolved = ((ClassStatement) best).getOS_Type();
+					R.setResolved(((ClassStatement) best).getOS_Type());
 					result     = R;
 				} else {
 					switch (DecideElObjectType.getElObjectType(best)) {
@@ -408,7 +413,7 @@ public class DeduceLookupUtils {
 				final @Nullable GenType                             finalR                      = R;
 				x.then(ty -> {
 					if (ty == null) {
-						finalR.typeName = new OS_UserType(vs.typeName());
+						finalR.setTypeName(new OS_UserType(vs.typeName()));
 						result[0]       = finalR;
 					} else {
 						result[0] = ty;
@@ -416,7 +421,7 @@ public class DeduceLookupUtils {
 				});
 				x.fail(aResolveError -> e[0] = aResolveError);
 			} else if (vs.initialValue() == IExpression.UNASSIGNED) {
-				R.typeName = new OS_UnknownType(vs);
+				R.setTypeName(new OS_UnknownType(vs));
 //				return deduceExpression(vs.initialValue(), ctx); // infinite recursion
 				result[0] = R;
 			} else {
@@ -431,7 +436,7 @@ public class DeduceLookupUtils {
 
 		@NotNull
 		private static GenType do_deduceIdentExpression__FUNCTION(final @NotNull GenType R, final @Nullable FunctionDef functionDef) {
-			R.resolved = functionDef.getOS_Type();
+			R.setResolved(functionDef.getOS_Type());
 			return R;
 		}
 
@@ -444,10 +449,10 @@ public class DeduceLookupUtils {
 				@NotNull final GenType    ty                          = aDeduceTypes2.resolve_type(lets_hope_we_dont_need_this, new OS_UserType(fali.typeName()), ctx);
 				result = ty;
 				if (result == null) {
-					R.typeName = new OS_UserType(fali.typeName());
+					R.setTypeName(new OS_UserType(fali.typeName()));
 				}
 			} else {
-				R.typeName = new OS_UnknownType(fali);
+				R.setTypeName(new OS_UnknownType(fali));
 			}
 			if (result == null) {
 				result = R;

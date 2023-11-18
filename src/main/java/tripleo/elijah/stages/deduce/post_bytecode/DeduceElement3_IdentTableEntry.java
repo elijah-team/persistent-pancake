@@ -4,6 +4,7 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.LookupResultList;
@@ -15,6 +16,7 @@ import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
 import tripleo.elijah.stages.deduce.ResolveError;
+import tripleo.elijah.stages.deduce.percy.DeduceElement3_LookingUpCtx;
 import tripleo.elijah.stages.deduce.post_bytecode.DED.DED_ITE;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
@@ -24,6 +26,9 @@ import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
+
+import java.util.function.Consumer;
 
 public class DeduceElement3_IdentTableEntry extends DefaultStateful implements IDeduceElement3 {
 
@@ -86,7 +91,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 	@Override
 	public @NotNull GenType genType() {
 		if (genType == null) {
-			genType = new GenType();
+			genType = new GenType(deduceTypes2().resolver());
 		}
 		return genType;
 		//return principal.type.genType;
@@ -100,6 +105,37 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 	public void _ctxts(final Context aFdCtx, final Context aContext) {
 		fdCtx   = aFdCtx;
 		context = aContext;
+	}
+
+	public <P> DeduceElement3_LookingUpCtx lookingUp(final Context aEctx, final DeduceTypes2 aDeduceTypes2) {
+		var register  = this;
+		return new DeduceElement3_LookingUpCtx() {
+			private Eventual<Void> prom = new Eventual<>();
+
+			{
+//				prom.register(register);
+			}
+
+			private OS_Element _el;
+
+			@Override
+			public void force(final OS_Element aElement) {
+				assert _el == null;
+				_el = aElement;
+				prom.resolve(null);
+			}
+
+			@Override
+			public void onSuccess(final Consumer<Void> cb) {
+//				prom.resolve(null);
+				prom.then(cb::accept);
+			}
+
+			@Override
+			public OS_Element getElement() {
+				return _el;
+			}
+		};
 	}
 
 	public static class ST {
@@ -163,17 +199,17 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 									// TODO All this for nothing
 									//  the ite points to a function, not a function call,
 									//  so there is no point in resolving it
-									if (ite.type.tableEntry instanceof ProcTableEntry) {
-										final @NotNull ProcTableEntry pte = (ProcTableEntry) ite.type.tableEntry;
+									if (ite.type.getTableEntry() instanceof ProcTableEntry) {
+										final @NotNull ProcTableEntry pte = (ProcTableEntry) ite.type.getTableEntry();
 
-									} else if (ite.type.tableEntry instanceof IdentTableEntry) {
-										final @NotNull IdentTableEntry identTableEntry = (IdentTableEntry) ite.type.tableEntry;
+									} else if (ite.type.getTableEntry() instanceof IdentTableEntry) {
+										final @NotNull IdentTableEntry identTableEntry = (IdentTableEntry) ite.type.getTableEntry();
 										if (identTableEntry.getCallablePTE() != null) {
 											@Nullable final ProcTableEntry cpte = identTableEntry.getCallablePTE();
 											cpte.typePromise().then(new DoneCallback<GenType>() {
 												@Override
 												public void onDone(@NotNull final GenType result) {
-													tripleo.elijah.util.Stupidity.println2("1483 " + result.resolved + " " + result.node);
+													SimplePrintLoggerToRemoveSoon.println2("1483 " + result.getResolved() + " " + result.getNode());
 												}
 											});
 										}
@@ -222,7 +258,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 							final ClassStatement cs = aType.getClassOf();
 							if (aEntry.constructable_pte != null) {
 								final int yyy = 3;
-								tripleo.elijah.util.Stupidity.println2("use_user_class: " + cs);
+								SimplePrintLoggerToRemoveSoon.println2("use_user_class: " + cs);
 							}
 						}
 

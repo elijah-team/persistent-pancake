@@ -48,12 +48,12 @@ public class ITE_Zero {
 
 //				ty2 = aFoundParent.deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
                 final OS_Element ele;
-                if (vte.genType.resolved == null) {
-                    if (ty2.resolved.getType() == OS_Type.Type.USER_CLASS) {
-                        vte.genType.copy(ty2);
+                if (vte.getGenType().getResolved() == null) {
+                    if (ty2.getResolved().getType() == OS_Type.Type.USER_CLASS) {
+                        vte.getGenType().copy(ty2);
                     }
                 }
-                ele = ty2.resolved.getElement();
+                ele = ty2.getResolved().getElement();
                 final LookupResultList lrl = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), deduceTypes2);
                 ele2 = lrl.chooseBest(null);
             } else {

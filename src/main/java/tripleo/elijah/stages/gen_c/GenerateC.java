@@ -49,6 +49,7 @@ import tripleo.elijah.util.BufferTabbedOutputStream;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.IFixedList;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.work.WorkJob;
 import tripleo.elijah.work.WorkList;
 import tripleo.elijah.work.WorkManager;
@@ -119,7 +120,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 				final GenerateResult                     gr4 = ggc.generateCode(gn2, wm);
 				gr2.results().addAll(gr4.results());
 			} else {
-				tripleo.elijah.util.Stupidity.println2("2009 " + generatedNode.getClass().getName());
+				SimplePrintLoggerToRemoveSoon.println2("2009 " + generatedNode.getClass().getName());
 			}
 		}
 
@@ -666,8 +667,8 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 			//
 			// special case
 			//
-			if (input.type.genType.node != null)
-				return Emit.emit("/*395*/") + getTypeNameForGenClass(input.type.genType.node) + "*";
+			if (input.type.getGenType().getNode() != null)
+				return Emit.emit("/*395*/") + getTypeNameForGenClass(input.type.getGenType().getNode()) + "*";
 			//
 			if (input.getStatus() == BaseTableEntry.Status.UNCHECKED)
 				return "Error_UNCHECKED_Type";
@@ -789,62 +790,63 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 			final StringBuilder sb   = new StringBuilder();
 			final Instruction   inst = fca.getExpression();
 //			LOG.err("9000 "+inst.getName());
-			final InstructionArgument x = inst.getArg(0);
-			assert x instanceof ProcIA;
-			final ProcTableEntry pte = gf.getProcTableEntry(to_int(x));
+			if (!fca.isEmpty()) {
+				final InstructionArgument x = inst.getArg(0);
+				assert x instanceof ProcIA;
+				final ProcTableEntry pte = gf.getProcTableEntry(to_int(x));
 //			LOG.err("9000-2 "+pte);
-			switch (inst.getName()) {
-			case CALL: {
-				if (pte.expression_num == null) {
-//					assert false; // TODO synthetic methods
-					final IdentExpression ptex = (IdentExpression) pte.expression;
-					sb.append(ptex.getText());
-					sb.append(Emit.emit("/*671*/") + "(");
+				switch (inst.getName()) {
+				case CALL: {
+					if (pte.expression_num == null) {
+						//					assert false; // TODO synthetic methods
+						final IdentExpression ptex = (IdentExpression) pte.expression;
+						sb.append(ptex.getText());
+						sb.append(Emit.emit("/*671*/") + "(");
 
-					final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
-					sb.append(Helpers.String_join(", ", sll));
+						final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
+						sb.append(Helpers.String_join(", ", sll));
 
-					sb.append(")");
-				} else {
-					final IdentIA         ia2  = (IdentIA) pte.expression_num;
-					final IdentTableEntry idte = ia2.getEntry();
-					if (idte.getStatus() == BaseTableEntry.Status.KNOWN) {
-						final CReference         reference          = new CReference();
-						final FunctionInvocation functionInvocation = pte.getFunctionInvocation();
-						if (functionInvocation == null || functionInvocation.getFunction() == ConstructorDef.defaultVirtualCtor) {
-							reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
-							final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
-							reference.args(sll);
-							final String path = reference.build();
-							sb.append(Emit.emit("/*829*/") + path);
-						} else {
-							final BaseGeneratedFunction pte_generated = functionInvocation.getGenerated();
-							if (idte.resolvedType() == null && pte_generated != null)
-								idte.resolveTypeToClass(pte_generated);
-							reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
-							final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
-							reference.args(sll);
-							final String path = reference.build();
-							sb.append(Emit.emit("/*827*/") + path);
-						}
+						sb.append(")");
 					} else {
-						final String path = gf.getIdentIAPathNormal(ia2);
-						sb.append(Emit.emit("/*828*/") + String.format("%s is UNKNOWN", path));
+						final IdentIA         ia2  = (IdentIA) pte.expression_num;
+						final IdentTableEntry idte = ia2.getEntry();
+						if (idte.getStatus() == BaseTableEntry.Status.KNOWN) {
+							final CReference         reference          = new CReference();
+							final FunctionInvocation functionInvocation = pte.getFunctionInvocation();
+							if (functionInvocation == null || functionInvocation.getFunction() == ConstructorDef.defaultVirtualCtor) {
+								reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
+								final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
+								reference.args(sll);
+								final String path = reference.build();
+								sb.append(Emit.emit("/*829*/") + path);
+							} else {
+								final BaseGeneratedFunction pte_generated = functionInvocation.getGenerated();
+								if (idte.resolvedType() == null && pte_generated != null)
+									idte.resolveTypeToClass(pte_generated);
+								reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
+								final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
+								reference.args(sll);
+								final String path = reference.build();
+								sb.append(Emit.emit("/*827*/") + path);
+							}
+						} else {
+							final String path = gf.getIdentIAPathNormal(ia2);
+							sb.append(Emit.emit("/*828*/") + String.format("%s is UNKNOWN", path));
+						}
 					}
+					return sb.toString();
 				}
-				return sb.toString();
-			}
-			case CALLS: {
-				CReference reference = null;
-				if (pte.expression_num == null) {
-					final int             y    = 2;
-					final IdentExpression ptex = (IdentExpression) pte.expression;
-					sb.append(Emit.emit("/*684*/"));
-					sb.append(ptex.getText());
-				} else {
-					// TODO Why not expression_num?
-					reference = new CReference();
-					final IdentIA ia2 = (IdentIA) pte.expression_num;
+				case CALLS: {
+					CReference reference = null;
+					if (pte.expression_num == null) {
+						final int             y    = 2;
+						final IdentExpression ptex = (IdentExpression) pte.expression;
+						sb.append(Emit.emit("/*684*/"));
+						sb.append(ptex.getText());
+					} else {
+						// TODO Why not expression_num?
+						reference = new CReference();
+						final IdentIA ia2 = (IdentIA) pte.expression_num;
 						reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
 						final List<String> sll = getAssignmentValueArgs(inst, gf, LOG);
 						reference.args(sll);
@@ -872,7 +874,10 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 				}
 				default:
 					throw new IllegalStateException("Unexpected value: " + inst.getName());
+				}
 			}
+
+			return null;
 		}
 
 		@NotNull

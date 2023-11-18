@@ -10,11 +10,18 @@ import antlr.TokenBuffer;
 import antlr.TokenStream;
 import antlr.TokenStreamException;
 import antlr.collections.impl.BitSet;
+import tripleo.elijah.ci.CiExpressionList;
+import tripleo.elijah.ci.CiIndexingStatement;
+import tripleo.elijah.ci.CiListExpression;
+import tripleo.elijah.ci.CiProcedureCallExpression;
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.ci.CompilerInstructionsImpl;
 import tripleo.elijah.ci.GenerateStatement;
 import tripleo.elijah.ci.IndexingStatement;
-import tripleo.elijah.ci.LibraryStatementPartImpl;
+import tripleo.elijah.ci_impl.CiExpressionListImpl;
+import tripleo.elijah.ci_impl.CiProcedureCallExpressionImpl;
+import tripleo.elijah.ci_impl.CompilerInstructionsImpl;
+import tripleo.elijah.ci_impl.GenerateStatementImpl;
+import tripleo.elijah.ci_impl.LibraryStatementPartImpl;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.lang2.BuiltInTypes;
@@ -121,11 +128,11 @@ public EzParser(final ParserSharedInputState state) {
 	}
 	
 	public final void indexingStatement(
-            final IndexingStatement idx
+            final CiIndexingStatement idx
 	) throws RecognitionException, TokenStreamException {
 		
-		Token  i1 = null;
-		ExpressionList el=null;
+		Token            i1 = null;
+		CiExpressionList el =null;
 		
 		try {      // for error handling
 			match(LITERAL_indexing);
@@ -294,7 +301,7 @@ public EzParser(final ParserSharedInputState state) {
 		final GenerateStatement gen;
 
 		Token  i1 = null;
-		gen=new GenerateStatement();
+		gen=new GenerateStatementImpl();
 
 		try {      // for error handling
 			match(LITERAL_generate);
@@ -345,10 +352,10 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final ExpressionList  expressionList2() throws RecognitionException, TokenStreamException {
-		final ExpressionList el;
+	public final CiExpressionList  expressionList2() throws RecognitionException, TokenStreamException {
+		final CiExpressionList el;
 		
-		el = new ExpressionList();
+		el = new CiExpressionListImpl();
 		
 		try {      // for error handling
 			expr=expression();
@@ -809,7 +816,7 @@ public EzParser(final ParserSharedInputState state) {
 		IExpression ee;
 		
 		Token  lp = null;
-		ProcedureCallExpression pcx;ExpressionList el=null;ee=null;IdentExpression r1=null, r2=null;
+		ProcedureCallExpression pcx;CiExpressionList el=null;ee=null;IdentExpression r1=null, r2=null;
 		
 		try {      // for error handling
 			r1=ident();
@@ -875,7 +882,7 @@ public EzParser(final ParserSharedInputState state) {
 				}
 				}
 				if ( inputState.guessing==0 ) {
-					final ProcedureCallExpression pce=new ProcedureCallExpression();
+					final CiProcedureCallExpression pce=new CiProcedureCallExpressionImpl();
 					pce.identifier(ee);
 					pce.setArgs(el);
 					ee=pce;
@@ -1539,7 +1546,7 @@ public EzParser(final ParserSharedInputState state) {
 		ee=null;
         final TypeCastExpression tc=null;
         final TypeName tn=null;
-				final IExpression e3=null;ExpressionList el=null;
+				final IExpression e3=null;CiExpressionList el=null;
 		
 		try {      // for error handling
 			ee=primaryExpression();
@@ -1607,7 +1614,7 @@ public EzParser(final ParserSharedInputState state) {
 							}
 						}
 						if (inputState.guessing == 0) {
-							final ProcedureCallExpression pce = new ProcedureCallExpression();
+							final CiProcedureCallExpression pce = new CiProcedureCallExpressionImpl();
 							pce.identifier(ee);
 							pce.setArgs(el);
 							ee = pce;
@@ -1657,7 +1664,7 @@ public EzParser(final ParserSharedInputState state) {
 		IExpression ee;
 		
 		ee=null;
-        final FuncExpr ppc=null;IdentExpression e=null;ExpressionList el=null;
+        final FuncExpr ppc=null;IdentExpression e=null;CiExpressionList el=null;
 		
 		try {      // for error handling
 			switch ( LA(1)) {
@@ -1715,7 +1722,7 @@ public EzParser(final ParserSharedInputState state) {
 				}
 				el=expressionList2();
 				if ( inputState.guessing==0 ) {
-					((ListExpression)ee).setContents(el);
+					((ListExpression)ee).setContents((ExpressionList) el);
 				}
 				match(RBRACK);
 				break;
@@ -1743,7 +1750,7 @@ public EzParser(final ParserSharedInputState state) {
 		IExpression ee;
 		
 		Token  lp2 = null;
-		ee=null;ExpressionList el=null;IdentExpression e=null;
+		ee=null;CiExpressionList el=null;IdentExpression e=null;
 		
 		try {      // for error handling
 			e=ident();
@@ -1788,7 +1795,7 @@ public EzParser(final ParserSharedInputState state) {
 				}
 				}
 				if ( inputState.guessing==0 ) {
-					final ProcedureCallExpression pce=new ProcedureCallExpression();
+					final CiProcedureCallExpression pce=new CiProcedureCallExpressionImpl();
 					pce.identifier(ee);
 					pce.setArgs(el);
 					ee=pce;

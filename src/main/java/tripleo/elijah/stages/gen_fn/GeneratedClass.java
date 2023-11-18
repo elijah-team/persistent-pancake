@@ -16,10 +16,12 @@ import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_generic.CodeGenerator;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.world.i.LivingClass;
 
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 	public        ClassInvocation                           ci;
 	public        LivingClass                               _living;
 	private       boolean                                   resolve_var_table_entries_already = false;
+	private DeduceTypeResolve2 resolver;
 
 	public GeneratedClass(final ClassStatement klass, final OS_Module module) {
 		this.klass  = klass;
@@ -147,7 +150,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 					// must be unknown
 				}
 			} else {
-				tripleo.elijah.util.Stupidity.println_err(String.format("108 %s %s", varTableEntry.nameToken, varTableEntry.potentialTypes));
+				SimplePrintLoggerToRemoveSoon.println_err(String.format("108 %s %s", varTableEntry.nameToken, varTableEntry.potentialTypes));
 				if (varTableEntry.potentialTypes.size() == 1) {
 					final TypeTableEntry potentialType = varTableEntry.potentialTypes.get(0);
 					if (potentialType.resolved() == null) {
@@ -162,7 +165,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 								for (final Map.Entry<TypeName, OS_Type> typeEntry : ci.genericPart.entrySet()) {
 									if (typeEntry.getKey().equals(t)) {
 										final OS_Type v = typeEntry.getValue();
-										potentialType.setAttached(v);
+										potentialType.setAttached(v, resolver);
 										assert potentialType.getAttached().getType() == OS_Type.Type.USER_CLASS;
 										break;
 									}
@@ -183,18 +186,18 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 							@NotNull final GenerateFunctions gf  = aDeducePhase.generatePhase.getGenerateFunctions(xci.getKlass().getContext().module());
 							final WlGenerateClass            wgc = new WlGenerateClass(gf, xci, aDeducePhase.generatedClasses, aDeducePhase.codeRegistrar);
 							wgc.run(null); // !
-							potentialType.genType.ci = xci; // just for completeness
+							potentialType.getGenType().setCi(xci); // just for completeness
 							potentialType.resolve(wgc.getResult());
 							Result = true;
 						} else {
 							final int y = 2;
-							tripleo.elijah.util.Stupidity.println_err("177 not a USER_CLASS " + potentialType.getAttached());
+							SimplePrintLoggerToRemoveSoon.println_err("177 not a USER_CLASS " + potentialType.getAttached());
 						}
 					}
 					if (potentialType.resolved() != null)
 						varTableEntry.resolve(potentialType.resolved());
 					else {
-						tripleo.elijah.util.Stupidity.println_err("114 Can't resolve " + varTableEntry);
+						SimplePrintLoggerToRemoveSoon.println_err("114 Can't resolve " + varTableEntry);
 					}
 				}
 			}
@@ -236,8 +239,8 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 					// HACK TIME
 					//
 					if (potentialTypes.size() == 2) {
-						final ClassStatement resolvedClass1 = potentialTypes.get(0).resolved.getClassOf();
-						final ClassStatement resolvedClass2 = potentialTypes.get(1).resolved.getClassOf();
+						final ClassStatement resolvedClass1 = potentialTypes.get(0).getResolved().getClassOf();
+						final ClassStatement resolvedClass2 = potentialTypes.get(1).getResolved().getClassOf();
 						final OS_Module      prelude        = resolvedClass1.getContext().module().prelude;
 
 						// TODO might not work when we split up prelude
@@ -259,7 +262,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 							if (t.getType() == OS_Type.Type.USER) {
 								try {
 									final @NotNull GenType genType = aDeduceTypes2.resolve_type(t, t.getTypeName().getContext());
-									if (genType.resolved instanceof OS_GenericTypeNameType) {
+									if (genType.getResolved() instanceof OS_GenericTypeNameType) {
 										final ClassInvocation xxci = ((GeneratedClass) aGeneratedContainer).ci;
 //											xxxci = ci;
 										for (final Map.@NotNull Entry<TypeName, OS_Type> entry : xxci.genericPart.entrySet()) {
@@ -284,27 +287,27 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 						final int              y = 2;
 						final @NotNull GenType genType;
 						try {
-							if (potentialType.genType.typeName == null) {
+							if (potentialType.getGenType().getTypeName() == null) {
 								final OS_Type attached = potentialType.getAttached();
 								if (attached == null) continue;
 
 								genType = aDeduceTypes2.resolve_type(attached, aContext);
-								if (genType.resolved == null && genType.typeName.getType() == OS_Type.Type.USER_CLASS) {
-									genType.resolved = genType.typeName;
-									genType.typeName = null;
+								if (genType.getResolved() == null && genType.getTypeName().getType() == OS_Type.Type.USER_CLASS) {
+									genType.setResolved(genType.getTypeName());
+									genType.setTypeName(null);
 								}
 							} else {
-								if (potentialType.genType.resolved == null && potentialType.genType.resolvedn == null) {
-									final OS_Type attached = potentialType.genType.typeName;
+								if (potentialType.getGenType().getResolved() == null && potentialType.getGenType().getResolvedn() == null) {
+									final OS_Type attached = potentialType.getGenType().getTypeName();
 
 									genType = aDeduceTypes2.resolve_type(attached, aContext);
 								} else
-									genType = potentialType.genType;
+									genType = potentialType.getGenType();
 							}
-							if (genType.typeName != null) {
-								final TypeName typeName = genType.typeName.getTypeName();
+							if (genType.getTypeName() != null) {
+								final TypeName typeName = genType.getTypeName().getTypeName();
 								if (typeName instanceof NormalTypeName && ((NormalTypeName) typeName).getGenericPart().size() > 0)
-									genType.nonGenericTypeName = typeName;
+									genType.setNonGenericTypeName(typeName);
 							}
 							genType.genCIForGenType2(aDeduceTypes2);
 							potentialTypes.add(genType);

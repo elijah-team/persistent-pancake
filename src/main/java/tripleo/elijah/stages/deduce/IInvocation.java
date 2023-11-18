@@ -16,6 +16,10 @@ package tripleo.elijah.stages.deduce;
  */
 public interface IInvocation {
 	void setForFunctionInvocation(FunctionInvocation aFunctionInvocation);
+
+	default String asString() {
+		return toString();
+	}
 }
 
 //

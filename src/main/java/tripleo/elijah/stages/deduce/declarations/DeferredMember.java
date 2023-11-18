@@ -15,6 +15,7 @@ import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.stages.deduce.IInvocation;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 
@@ -27,11 +28,13 @@ public class DeferredMember {
 	private final VariableStatement variableStatement;
 	private final DeferredObject<GenType, Diagnostic, Void> typePromise = new DeferredObject<GenType, Diagnostic, Void>();
 	private final DeferredObject<GeneratedNode, Void, Void> externalRef = new DeferredObject<GeneratedNode, Void, Void>();
+	private final DeduceTypeResolve2                        resolver;
 
-	public DeferredMember(final OS_Element aParent, final IInvocation aInvocation, final VariableStatement aVariableStatement) {
+	public DeferredMember(final OS_Element aParent, final IInvocation aInvocation, final VariableStatement aVariableStatement, final DeduceTypeResolve2 aResolver) {
 		parent = aParent;
 		invocation = aInvocation;
 		variableStatement = aVariableStatement;
+		resolver = aResolver;
 	}
 
 	public @NotNull Promise<GenType, Diagnostic, Void> typePromise() {
@@ -69,6 +72,10 @@ public class DeferredMember {
 				"parent=" + parent +
 				", variableName=" + variableStatement.getName() +
 				'}';
+	}
+
+	public DeduceTypeResolve2 getResolver() {
+		return resolver;
 	}
 }
 

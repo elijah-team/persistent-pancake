@@ -13,6 +13,7 @@
 package tripleo.elijah.comp;
 
 import tripleo.elijah.diagnostic.Diagnostic;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 /**
  * @author tripleo(sb)
@@ -25,7 +26,7 @@ public class StdErrSink implements ErrSink {
 	@Override
 	public void exception(final Exception e) {
 		_errorCount++;
-		tripleo.elijah.util.Stupidity.println_err2("exception: " + e);
+		SimplePrintLoggerToRemoveSoon.println_err2("exception: " + e);
 		e.printStackTrace(System.err);
 	}
 

@@ -6,10 +6,11 @@ import antlr.TokenStreamException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.ci.CompilerInstructionsImpl;
 import tripleo.elijah.ci.GenerateStatement;
 import tripleo.elijah.ci.LibraryStatementPart;
-import tripleo.elijah.ci.LibraryStatementPartImpl;
+import tripleo.elijah.ci_impl.CompilerInstructionsImpl;
+import tripleo.elijah.ci_impl.GenerateStatementImpl;
+import tripleo.elijah.ci_impl.LibraryStatementPartImpl;
 import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
 import tripleo.elijah.comp.diagnostic.FileNotFoundDiagnostic;
 import tripleo.elijah.comp.queries.QuerySourceFileToModule;
@@ -17,9 +18,11 @@ import tripleo.elijah.comp.queries.QuerySourceFileToModuleParams;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.StringExpression;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah.util.Operation;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -47,7 +50,9 @@ class USE {
 	public void use(final @NotNull CompilerInstructions compilerInstructions, final boolean do_out) throws Exception {
 		// TODO
 
-		if (compilerInstructions.getFilename() == null) return;
+		if (compilerInstructions.getFilename() == null) {
+			return;
+		}
 
 
 		final File instruction_dir = new File(compilerInstructions.getFilename()).getParentFile();
@@ -59,6 +64,9 @@ class USE {
 			else
 				dir = new File(instruction_dir, dir_name);
 			use_internal(dir, do_out, lsp);
+			if (lsp.getInstructions() == null) {
+				lsp.setInstructions(compilerInstructions);
+			}
 		}
 		final LibraryStatementPart lsp = new LibraryStatementPartImpl();
 		lsp.setName(Helpers.makeToken("default")); // TODO: make sure this doesn't conflict
@@ -95,7 +103,7 @@ class USE {
 
 			final CompilerInstructions instructions = new CompilerInstructionsImpl();
 			instructions.setName("prelude");
-			final GenerateStatement generateStatement = new GenerateStatement();
+			final GenerateStatement generateStatement = new GenerateStatementImpl();
 			final StringExpression  expression        = new StringExpression(Helpers.makeToken("\"c\"")); // TODO
 			generateStatement.addDirective(Helpers.makeToken("gen"), expression);
 			instructions.add(generateStatement);
@@ -194,7 +202,7 @@ class USE {
 				final Exception e = om.failure();
 				assert e != null;
 
-				tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
+				SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
 				e.printStackTrace(System.err);
 				s.close();
 				return Operation.failure(e);
@@ -204,7 +212,7 @@ class USE {
 			s.close();
 			return Operation.success(R);
 		} catch (final ANTLRException e) {
-			tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
+			SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
 			e.printStackTrace(System.err);
 			s.close();
 			return Operation.failure(e);

@@ -12,6 +12,7 @@
  */
 package tripleo.elijah.lang;
 
+import antlr.CommonToken;
 import antlr.Token;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,7 @@ import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.File;
 
@@ -43,6 +45,10 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 		setContext(cur);
 	}
 
+	public IdentExpression(final Token aT, final String aS) {
+		this(aT);
+	}
+
 	@Override
 	public ExpressionKind getKind() {
 		return ExpressionKind.IDENT;
@@ -59,7 +65,7 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 	@Override
 	public void setKind(final ExpressionKind aIncrement) {
 		// log and ignore
-		tripleo.elijah.util.Stupidity.println_err2("Trying to set ExpressionType of IdentExpression to " + aIncrement.toString());
+		SimplePrintLoggerToRemoveSoon.println_err2("Trying to set ExpressionType of IdentExpression to " + aIncrement.toString());
 	}
 
 	@Override

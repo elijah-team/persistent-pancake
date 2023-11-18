@@ -533,7 +533,7 @@ public class DeducePhase {
 								assert v != null;
 								// TODO varType, potentialTypes and _resolved: which?
 								final OS_Type          varType = v.varType;
-								final @NotNull GenType genType = new GenType();
+								final @NotNull GenType genType = new GenType(deferredMember.getResolver());
 								genType.set(varType);
 
 //								if (deferredMember.getInvocation() instanceof NamespaceInvocation) {
@@ -577,9 +577,9 @@ public class DeducePhase {
 								// call typePromises and externalRefPromisess
 
 								// TODO just getting first element here (without processing of any kind); HACK
-								final GenType ty = gc_vte.connectionPairs.get(0).vte.type.genType;
-								assert ty.resolved != null;
-								gc_vte.varType = ty.resolved; // TODO make sure this is right in all cases
+								final GenType ty = gc_vte.connectionPairs.get(0).vte.type.getGenType();
+								assert ty.getResolved() != null;
+								gc_vte.varType = ty.getResolved(); // TODO make sure this is right in all cases
 								if (deferredMember.typeResolved().isPending())
 									deferredMember.typeResolved().resolve(ty);
 								break;

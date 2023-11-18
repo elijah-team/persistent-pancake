@@ -8,12 +8,14 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
+import com.google.common.base.MoreObjects;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.IExpression;
@@ -22,6 +24,7 @@ import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceProcCall;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.deduce.zero.PTE_Zero;
@@ -29,6 +32,7 @@ import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,13 +58,15 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 	private       DeduceElement3_ProcTableEntry                   _de3;
 
 	private PTE_Zero _zero;
+	private DeduceTypeResolve2 resolver;
+	private Eventual<ClassInvocation> _p_classInvocation = new Eventual<>();
 
 	public List<TypeTableEntry> getArgs() {
 		return args;
 	}
 
 	public void setArgType(final int aIndex, final OS_Type aType) {
-		args.get(aIndex).setAttached(aType);
+		args.get(aIndex).setAttached(aType, resolver);
 	}
 
 	public void onSetAttached() {
@@ -86,10 +92,10 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 			case 0:
 				throw new IllegalStateException();
 			case 1:
-				tripleo.elijah.util.Stupidity.println_err2("136 pte not finished resolving " + this);
+				SimplePrintLoggerToRemoveSoon.println_err2("136 pte not finished resolving " + this);
 				break;
 			case 2:
-				tripleo.elijah.util.Stupidity.println_err2("138 Internal compiler error");
+				SimplePrintLoggerToRemoveSoon.println_err2("138 Internal compiler error");
 				break;
 		case 3:
 			if (completeDeferred.isPending())
@@ -118,9 +124,11 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 
 	public void setClassInvocation(final ClassInvocation aClassInvocation) {
 		classInvocation = aClassInvocation;
+		_p_classInvocation.resolve(aClassInvocation);
 	}
 
-	public ClassInvocation getClassInvocation() {
+	@Deprecated public ClassInvocation getClassInvocation() {
+		// maybe deprecated
 		return classInvocation;
 	}
 
@@ -210,8 +218,8 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 //				if (aDeduceTypes2 != null)
 //					LOG.err("267 attached == null for "+typeTableEntry);
 
-				if (typeTableEntry.expression != null)
-					l.add(String.format("<Unknown expression: %s>", typeTableEntry.expression));
+				if (typeTableEntry.getExpression() != null)
+					l.add(String.format("<Unknown expression: %s>", typeTableEntry.getExpression()));
 				else
 					l.add("<Unknkown>");
 			}
@@ -247,6 +255,31 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 			_zero = new PTE_Zero(this);
 
 		return _zero;
+	}
+
+	public String asString() {
+		// TODO 11/17 too much
+		return MoreObjects.toStringHelper(this)
+		                  .add("index", index)
+		                  .add("args", args)
+		                  .add("expression", expression)
+		                  .add("expression_num", expression_num)
+		                  .add("dpc", dpc)
+		                  .add("completeDeferred", completeDeferred)
+		                  .add("classInvocation", classInvocation)
+		                  .add("onFunctionInvocations", onFunctionInvocations)
+		                  .add("functionInvocation", functionInvocation)
+		                  .add("_de3", _de3)
+		                  .add("_zero", _zero)
+		                  .add("typeDeferred", typeDeferred)
+		                  .add("resolved_element", resolved_element)
+		                  .add("status", status)
+		                  .add("typeResolve", typeResolve)
+		                  .toString();
+	}
+
+	public void onClassInvocation(final DoneCallback<? super ClassInvocation> aO) {
+		_p_classInvocation.then(aO);
 	}
 }
 

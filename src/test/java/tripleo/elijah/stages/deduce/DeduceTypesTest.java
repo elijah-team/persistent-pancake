@@ -87,9 +87,9 @@ public class DeduceTypesTest {
 		xx.then(xxx -> {
 //			Assert.assertEquals(OS_Type.Type.USER, xxx.resolved.getType());
 			System.out.println("1 " + new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType());
-			System.out.println("2 " + xxx.resolved.getBType());
-			System.out.println("2.5 " + xxx.resolved);
-			Assert.assertNotEquals(new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType(), xxx.resolved.getBType());
+			System.out.println("2 " + xxx.getResolved().getBType());
+			System.out.println("2.5 " + xxx.getResolved());
+			Assert.assertNotEquals(new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType(), xxx.getResolved().getBType());
 
 			assert false; // never reached
 		});
@@ -115,7 +115,7 @@ public class DeduceTypesTest {
 
 	@Contract(value = "null, _ -> false", pure = true)
 	private boolean genTypeTypenameEquals(final OS_Type aType, final @NotNull GenType genType) {
-		return genType.typeName.isEqual(aType); // minikanren 04/15
+		return genType.getTypeName().isEqual(aType); // minikanren 04/15
 	}
 
 	@Test
@@ -127,7 +127,7 @@ public class DeduceTypesTest {
 
 		Assert.assertTrue("Promise not resolved", xx.isResolved());
 
-		Assert.assertEquals(new OS_UserType(tn).getTypeName(), x.typeName.getTypeName());
+		Assert.assertEquals(new OS_UserType(tn).getTypeName(), x.getTypeName().getTypeName());
 		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
 	}
 
@@ -140,9 +140,9 @@ public class DeduceTypesTest {
 
 		Assert.assertTrue("Promise not resolved", xx.isResolved());
 
-		Assert.assertEquals(new OS_UserType(tn).getTypeName(), x.typeName.getTypeName());
+		Assert.assertEquals(new OS_UserType(tn).getTypeName(), x.getTypeName().getTypeName());
 		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
-		Assert.assertEquals(new OS_UserType(tn).asString(), x.typeName.asString());
+		Assert.assertEquals(new OS_UserType(tn).asString(), x.getTypeName().asString());
 	}
 
 }

@@ -9,6 +9,7 @@
 package tripleo.elijah.lang;
 
 import antlr.Token;
+import com.google.common.base.MoreObjects;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.contexts.FunctionContext;
 
@@ -191,6 +192,19 @@ public abstract class BaseFunctionDef implements Documentable, ClassItem, OS_Con
 	@Override
 	public void setAccess(final AccessNotation aNotation) {
 		access_note = aNotation;
+	}
+
+	public String asString() {
+		return MoreObjects.toStringHelper(this)
+		                  .add("_a", _a)
+		                  .add("_species", _species)
+		                  .add("annotations", annotations)
+		                  .add("scope3", scope3)
+		                  .add("mFal", mFal)
+		                  .add("funName", funName)
+		                  .add("access_note", access_note)
+		                  .add("category", category)
+		                  .toString();
 	}
 
 	public enum Species {

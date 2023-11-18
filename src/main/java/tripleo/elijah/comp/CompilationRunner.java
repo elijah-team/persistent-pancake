@@ -15,9 +15,11 @@ import tripleo.elijah.comp.internal.ProcessRecord;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
+import tripleo.elijah.util.Operation;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +33,7 @@ import java.util.regex.Pattern;
 import static tripleo.elijah.util.Helpers.List_of;
 
 public class CompilationRunner {
-	final         Map<String, CompilerInstructions> fn2ci = new HashMap<String, CompilerInstructions>();
+	final         Map<String, CompilerInstructions> fn2ci = new HashMap<>();
 	private final Compilation                       compilation;
 	private final Compilation.CIS                   cis;
 	private final CCI                               cci;
@@ -255,7 +257,7 @@ public class CompilationRunner {
 					final Exception e = cio.failure();
 					assert e != null;
 
-					tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
+					SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
 					e.printStackTrace(System.err);
 					//s.close();
 					return cio;
@@ -266,7 +268,7 @@ public class CompilationRunner {
 				fn2ci.put(absolutePath, R);
 				return cio;
 			} catch (final ANTLRException e) {
-				tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
+				SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
 				e.printStackTrace(System.err);
 				return Operation.failure(e);
 			}
