@@ -93,38 +93,44 @@ public class TypeTableEntry {
 	private void _settingAttached(@NotNull final OS_Type aAttached) {
 		switch (aAttached.getType()) {
 			case USER:
-				if (genType.getTypeName() != null) {
+				if (__genType().getTypeName() != null) {
 					final TypeName typeName = aAttached.getTypeName();
 					if (!(typeName instanceof GenericTypeName))
-						genType.setNonGenericTypeName(typeName);
+						__genType().setNonGenericTypeName(typeName);
 				} else
-					genType.setTypeName(aAttached)/*.getTypeName()*/;
+					__genType().setTypeName(aAttached)/*.getTypeName()*/;
 				break;
 			case USER_CLASS:
 //			ClassStatement c = attached.getClassOf();
-				genType.setResolved(aAttached)/*attached*/; // c
+				__genType().setResolved(aAttached)/*attached*/; // c
 				break;
 			case UNIT_TYPE:
-				genType.setResolved(aAttached);
+				__genType().setResolved(aAttached);
 			case BUILT_IN:
-				if (genType.getTypeName() != null)
-					genType.setResolved(aAttached);
+				if (__genType().getTypeName() != null)
+					__genType().setResolved(aAttached);
 				else
-					genType.setTypeName(aAttached);
+					__genType().setTypeName(aAttached);
 				break;
 			case FUNCTION:
-				assert genType.getResolved() == null || genType.getResolved() == aAttached || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
-				genType.setResolved(aAttached);
+				assert __genType().getResolved() == null || __genType().getResolved() == aAttached || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
+				__genType().setResolved(aAttached);
 				break;
 			case FUNC_EXPR:
-				assert genType.getResolved() == null || genType.getResolved() == aAttached;// || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
-				genType.setResolved(aAttached);
+				assert __genType().getResolved() == null || __genType().getResolved() == aAttached;// || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
+				__genType().setResolved(aAttached);
 				break;
 			default:
 //			throw new NotImplementedException();
 				SimplePrintLoggerToRemoveSoon.println_err2("73 " + aAttached);
 				break;
 		}
+	}
+
+	private GenType __genType() {
+		assert deduceTypes2 != null;
+		genType = new GenType(deduceTypes2.resolver());
+		return genType;
 	}
 
 	@Override @NotNull
