@@ -33,6 +33,9 @@ import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
 import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.deduce.percy.Implement_construct2;
+import tripleo.elijah.stages.deduce.percy.PFluffyEvaFunction;
+import tripleo.elijah.stages.deduce.percy.PFluffyEvaFunctionImpl;
+import tripleo.elijah.stages.deduce.percy.PFluffyItem;
 import tripleo.elijah.stages.deduce.percy.Resolving;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
@@ -75,7 +78,8 @@ public class DeduceTypes2 {
 	final @NotNull         ElLog              LOG;
 	private final @NotNull OS_Module          module;
 	private final          Map<Object, IZero> _zeros = new HashMap<>();
-	private                DeduceTypeResolve2 _resolver;
+	private       DeduceTypeResolve2 _resolver;
+	private final Map<Object, PFluffyItem>  pfs = new HashMap<>();
 
 	public DeduceTypes2(@NotNull final OS_Module module, @NotNull final DeducePhase phase) {
 		this(module, phase, ElLog.Verbosity.VERBOSE);
@@ -2225,6 +2229,14 @@ public class DeduceTypes2 {
 		return this._resolver;
 	}
 
+	public PFluffyEvaFunction get(final BaseGeneratedFunction aGeneratedFunction) {
+		if (pfs.containsKey(aGeneratedFunction)) {
+			return (PFluffyEvaFunction) pfs.get(aGeneratedFunction);
+		}
+		PFluffyEvaFunction pf = new PFluffyEvaFunctionImpl();
+		pfs.put(aGeneratedFunction, pf);
+		return pf;
+	}
 
 	interface IElementProcessor {
 		void elementIsNull();
