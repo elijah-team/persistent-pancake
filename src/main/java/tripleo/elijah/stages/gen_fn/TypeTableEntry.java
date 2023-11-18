@@ -152,6 +152,7 @@ public class TypeTableEntry {
 			genType = new GenType(resolver);
 			_p_genTypeSet.resolve(genType);
 		} else if (deduceTypes2 != null && genType == null) {
+			assert false;
 			genType = new GenType(deduceTypes2.resolver());
 			_p_genTypeSet.resolve(genType);
 		} else {

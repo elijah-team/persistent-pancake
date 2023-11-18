@@ -60,19 +60,23 @@ class RuntimeProcesses {
 		if (ca.getStage() == Stages.E) return;
 
 		// rt.prepare();
-		System.err.println("***** RuntimeProcess [prepare] named " + process);
+		logProgress("***** RuntimeProcess [prepare] named " + process);
 		process.prepare();
 
 		// rt.run();
-		System.err.println("***** RuntimeProcess [run    ] named " + process);
+		logProgress("***** RuntimeProcess [run    ] named " + process);
 		process.run();
 
 		// rt.postProcess(pr);
-		System.err.println("***** RuntimeProcess [postProcess] named " + process);
+		logProgress("***** RuntimeProcess [postProcess] named " + process);
 		process.postProcess();
 
-		System.err.println("***** RuntimeProcess^ [postProcess/writeLogs]");
+		logProgress("***** RuntimeProcess^ [postProcess/writeLogs]");
 		pr.writeLogs(ca);
+	}
+
+	private void logProgress(final String aS) {
+//		System.err.println(aS);
 	}
 }
 
