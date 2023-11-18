@@ -167,7 +167,7 @@ public class TypeTableEntry {
 		return "TypeTableEntry{" +
 				"index=" + index +
 				", lifetime=" + lifetime +
-				", attached=" + attached +
+				", attached=" + attached.asString() +
 				", expression=" + expression +
 				'}';
 	}

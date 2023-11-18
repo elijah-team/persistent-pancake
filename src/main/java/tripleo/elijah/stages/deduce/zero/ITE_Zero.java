@@ -29,8 +29,8 @@ public class ITE_Zero {
         ite = aIdentTableEntry;
     }
 
-    public void fp_onChange__001(@NotNull final TypeTableEntry vte, final IdentTableEntry ite, @NotNull final DeduceTypes2 deduceTypes2, final ErrSink errSink) {
-        final OS_Type ty = vte.getAttached();
+    public void fp_onChange__001(@NotNull final TypeTableEntry tte_vte, final IdentTableEntry ite, @NotNull final DeduceTypes2 deduceTypes2, final ErrSink errSink) {
+        final OS_Type ty = tte_vte.getAttached();
 
         @Nullable OS_Element ele2 = null;
 
@@ -48,9 +48,9 @@ public class ITE_Zero {
 
 //				ty2 = aFoundParent.deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
                 final OS_Element ele;
-                if (vte.getGenType().getResolved() == null) {
+                if (tte_vte.getGenType().getResolved() == null) {
                     if (ty2.getResolved().getType() == OS_Type.Type.USER_CLASS) {
-                        vte.getGenType().copy(ty2);
+                        tte_vte.getGenType().copy(ty2);
                     }
                 }
                 ele = ty2.getResolved().getElement();
