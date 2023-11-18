@@ -356,6 +356,28 @@ public class Implement_construct {
 //				}
 //			}
 //		}
+
+		@NotNull final IdentTableEntry ite = ((IdentIA) this.expression).getEntry();
+
+		final DeduceElement de = instruction.deduceElement;
+		@Nullable DeduceConstructStatement dcs = null;
+		if (de instanceof DeduceConstructStatement aDeduceConstructStatement) {
+			dcs = aDeduceConstructStatement;
+		}
+
+		assert dcs != null;
+
+		final @NotNull ProcTableEntry c = dcs.call.getEntry(); // README also this.pte??
+
+		assert c == this.pte;
+
+
+		if (ite.type.getGenType() == null) {
+			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, (OS_Type) null);
+			final GenType gt = ite.type.getGenType();
+			assert gt != null;
+		}
+
 		clsinv = deduceTypes2.phase.registerClassInvocation(clsinv);
 		if (co != null) {
 			if (co instanceof IdentTableEntry) {
