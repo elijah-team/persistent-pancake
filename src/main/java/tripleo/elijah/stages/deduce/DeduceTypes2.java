@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.contexts.ClassContext;
+import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang.types.OS_AnyType;
 import tripleo.elijah.lang.types.OS_BuiltinType;
@@ -33,6 +34,7 @@ import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
 import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
 import tripleo.elijah.stages.deduce.percy.Provided;
+import tripleo.elijah.stages.deduce.percy.Resolving;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
@@ -579,27 +581,43 @@ public class DeduceTypes2 {
 				}
 			}
 		}
+		final DeferredObject<OS_Element, Diagnostic, Void> resolvedElementPromise = ite.getResolvedElementPromise();
+		if (!resolvedElementPromise.isPending())
+			return; // TODO 11/17 should be equivalent
+		else {
+//			NotImplementedException.raise_stop();
+		}
 		if (ite.getResolvedElement() != null)
 			return;
-		if (true) {
-			final @NotNull IdentIA identIA = new IdentIA(ite.getIndex(), generatedFunction);
-			resolveIdentIA_(ite.getPC(), identIA, generatedFunction, new FoundElement(phase) {
+//		else assert false;
 
-				final String x = generatedFunction.getIdentIAPathNormal(identIA);
+		final DeduceElementIdent dei = ite.getDei();
+//		r = resolver();
+		dei.addResolving(new Resolving() {
+			@Override public Resolving.t getImmediacy() {
+				return Resolving.t.IMMEDIATE;
+			}
 
-				@Override
-				public void foundElement(final OS_Element e) {
+			@Override public void action() {
+				final @NotNull IdentIA identIA = new IdentIA(ite.getIndex(), generatedFunction);
+				resolveIdentIA_(ite.getPC(), identIA, generatedFunction, new FoundElement(phase) {
+
+					final String x = generatedFunction.getIdentIAPathNormal(identIA);
+
+					@Override
+					public void foundElement(final OS_Element e) {
 //					ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(e)); // this is called in resolveIdentIA_
-					found_element_for_ite(generatedFunction, ite, e, ctx);
-				}
+						found_element_for_ite(generatedFunction, ite, e, ctx);
+					}
 
-				@Override
-				public void noFoundElement() {
-					ite.setStatus(BaseTableEntry.Status.UNKNOWN, null);
-					//errSink.reportError("1004 Can't find element for "+ x); // Already reported by 1179
-				}
-			});
-		}
+					@Override
+					public void noFoundElement() {
+						ite.setStatus(BaseTableEntry.Status.UNKNOWN, null);
+						//errSink.reportError("1004 Can't find element for "+ x); // Already reported by 1179
+					}
+				});
+			}
+		});
 	}
 
 	@Nullable
@@ -2071,7 +2089,46 @@ public class DeduceTypes2 {
 				return _p_cd;
 			}
 
-			private final Eventual<ConstructorDef> _p_cd = new Eventual<ConstructorDef>();
+			@Override
+			public void provide(final ConstructorDef aConstructorDef) {
+				final Eventual<ConstructorDef> g = getEventualConstructorDef();
+				if (g != null) {
+					g.resolve(aConstructorDef);
+				}
+			}
+
+			@Override
+			public void provide(final ClassInvocation aClassInvocation) {
+				final Eventual<ClassInvocation> g = getEventualClassInvocation();
+				if (g != null) {
+					g.resolve(aClassInvocation);
+				}
+			}
+
+			private Eventual<ClassInvocation> getEventualClassInvocation() {
+				return _p_ci;
+			}
+
+			@Override
+			public void provide(final GeneratedConstructor aGeneratedConstructor) {
+				final Eventual<GeneratedConstructor> g = getEventualGeneratedConstructor();
+				if (g != null) {
+					g.resolve(aGeneratedConstructor);
+				}
+			}
+
+			private Eventual<GeneratedConstructor> getEventualGeneratedConstructor() {
+				return _p_ec;
+			}
+
+			@Override
+			public void genType(final GenType aResolved2) {
+				NotImplementedException.raise_stop();
+			}
+
+			private final Eventual<ConstructorDef> _p_cd = new Eventual<>();
+			private final Eventual<ClassInvocation> _p_ci = new Eventual<>();
+			private final Eventual<GeneratedConstructor> _p_ec = new Eventual<>();
 		};
 
 		p.provide(pwc1);

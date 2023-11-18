@@ -22,6 +22,7 @@ import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
+import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GenericElementHolder;
@@ -152,7 +153,8 @@ public class DeducePath {
 		private final int index;
 		private final OS_Element element;
 		private final @Nullable GenType type;
-		private final DeduceTypeResolve2 resolver;
+		private final DeduceTypeResolve2   resolver;
+		private       PercyWantConstructor pwc;
 
 		public MemberContext(final DeducePath aDeducePath, final int aIndex, final OS_Element aElement, final DeduceTypeResolve2 aResolver) {
 			resolver = aResolver;
@@ -185,6 +187,8 @@ public class DeducePath {
 
 					type.copy(resolved2);
 
+					pwc.genType(resolved2);
+
 					NotImplementedException.raise_stop();
 				} catch (ResolveError aE) {
 					throw new RuntimeException(aE);
@@ -205,6 +209,10 @@ public class DeducePath {
 				result = deducePath.getContext(index - 1);
 			}
 			return result;
+		}
+
+		public void setPwc(final PercyWantConstructor aPwc) {
+			pwc = aPwc;
 		}
 	}
 

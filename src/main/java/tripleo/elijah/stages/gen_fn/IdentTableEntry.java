@@ -15,6 +15,7 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.IdentExpression;
@@ -269,6 +270,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	public DeduceElementIdent getDei() {
 		return dei;
+	}
+
+	public DeferredObject<OS_Element, Diagnostic, Void> getResolvedElementPromise() {
+		return dei.getResolvedElementPromise();
 	}
 
 //	private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();

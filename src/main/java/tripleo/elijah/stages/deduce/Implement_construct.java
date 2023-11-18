@@ -46,8 +46,8 @@ class Implement_construct {
 	private final Instruction           instruction;
 	private final InstructionArgument   expression;
 
-	private final @NotNull ProcTableEntry  pte;
-	private Provided<PercyWantConstructor> ppwc;
+	private final @NotNull ProcTableEntry                 pte;
+	private                Provided<PercyWantConstructor> ppwc;
 
 	public Implement_construct(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction, final Instruction aInstruction) {
 		deduceTypes2      = aDeduceTypes2;
@@ -70,18 +70,17 @@ class Implement_construct {
 		this.ppwc = ppwc0;
 		// TODO 11/17 needs eventualregister
 		ppwc.on(pwc -> {
-			int y=2;
+			if (expression instanceof IntegerIA) {
+				action_IntegerIA(pwc);
+			} else if (expression instanceof IdentIA) {
+				action_IdentIA(pwc);
+			} else {
+				throw new NotImplementedException();
+			}
 		});
-		if (expression instanceof IntegerIA) {
-			action_IntegerIA();
-		} else if (expression instanceof IdentIA) {
-			action_IdentIA();
-		} else {
-			throw new NotImplementedException();
-		}
 	}
 
-	public void action_IdentIA() {
+	public void action_IdentIA(final PercyWantConstructor aPwc) {
 		@NotNull final IdentTableEntry idte       = ((IdentIA) expression).getEntry();
 		final DeducePath               deducePath = idte.buildDeducePath(generatedFunction, deduceTypes2.resolver());
 		{
@@ -97,6 +96,8 @@ class Implement_construct {
 					}
 				}
 
+				// TODO 11/17 controlplane??
+
 				el3 = deducePath.getElement(i);
 
 				if (ia2 instanceof IntegerIA) {
@@ -106,6 +107,12 @@ class Implement_construct {
 					assert el3 != null;
 					assert i == 0;
 					ectx = deducePath.getContext(i);
+
+					if (ectx instanceof DeducePath.MemberContext mc) {
+						// README should be equiv
+						//ppwc.on(mc::setPwc);
+						mc.setPwc(aPwc);
+					}
 				} else if (ia2 instanceof IdentIA) {
 					@NotNull final IdentTableEntry idte2 = ((IdentIA) ia2).getEntry();
 
@@ -114,6 +121,8 @@ class Implement_construct {
 
 					luck.onSuccess((a) -> {
 						final OS_Element el4 = luck.getElement();
+
+						//					ppwc.on(pwc -> { pwc.});
 
 						if (el4 instanceof VariableStatement vs) {
 							final @NotNull TypeName tn = vs.typeName();
@@ -138,9 +147,9 @@ class Implement_construct {
 						}
 					});
 
-					final String                   s     = idte2.getIdent().toString();
-					final LookupResultList         lrl   = ectx.lookup(s);
-					@Nullable final OS_Element     el2   = lrl.chooseBest(null);
+					final String               s   = idte2.getIdent().toString();
+					final LookupResultList     lrl = ectx.lookup(s);
+					@Nullable final OS_Element el2 = lrl.chooseBest(null);
 
 					if (DebugFlags.classInstantiation2) {
 //						assert el2 instanceof ConstructorDef;
@@ -166,9 +175,16 @@ class Implement_construct {
 								}
 								@NotNull final OS_Type ty = new OS_UserType(type.nonGenericTypeName);
 								implement_construct_type(idte2, ty, s);
+
+								ppwc.on(pwc -> pwc.provide((ConstructorDef) el2));
 							}
 						} else {
 							ectx = deducePath.getContext(i);
+							if (ectx instanceof DeducePath.MemberContext mc) {
+								// README should be equiv
+								//ppwc.on(mc::setPwc);
+								mc.setPwc(aPwc);
+							}
 						}
 					}
 //						implement_construct_type(idte/*??*/, ty, null); // TODO how bout when there is no ctor name
@@ -179,7 +195,7 @@ class Implement_construct {
 		}
 	}
 
-	public void action_IntegerIA() {
+	public void action_IntegerIA(final PercyWantConstructor aPwc) {
 		@NotNull final VariableTableEntry vte = generatedFunction.getVarTableEntry(((IntegerIA) expression).getIndex());
 		assert vte.type.getAttached() != null; // TODO will fail when empty variable expression
 		@Nullable final OS_Type ty = vte.type.getAttached();

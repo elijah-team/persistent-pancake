@@ -90,41 +90,12 @@ class Resolve_Ident_IA {
 		ectx = context;
 		el   = null;
 
-/*
-		for (final InstructionArgument ia : s) {
-			if (ia instanceof IntegerIA) {
-				@NotNull RIA_STATE state = action_IntegerIA(ia);
-				switch (state) {
-					case CONTINUE:
-						continue;
-					case RETURN:
-						return;
-					case NEXT:
-						break;
-					default:
-						throw new IllegalStateException("Can't be here");
-				}
-			} else if (ia instanceof IdentIA) {
-				@NotNull RIA_STATE state = action_IdentIA((IdentIA) ia);
-				switch (state) {
-					case CONTINUE:
-						continue; // never happens here
-					case RETURN:
-						return;  // element notFound. short-circuit and exit. callback already called.
-					case NEXT:
-						break;
-					default:
-						throw new IllegalStateException("Can't be here");
-				}
-			} else if (ia instanceof ProcIA) {
-				action_ProcIA(ia);
-			} else
-				throw new IllegalStateException("Really cant be here");
-*/
 		if (!process(s.get(0), s)) return;
 
 		preUpdateStatus(s);
-		updateStatus(s);
+		if (el != null) {
+			updateStatus(s);
+		}
 	}
 
 	private boolean process(final InstructionArgument ia, final @NotNull List<InstructionArgument> aS) throws ResolveError {
@@ -186,8 +157,12 @@ class Resolve_Ident_IA {
 				}
 			}
 		} else {
-//			LOG.info("1431 Found for " + normal_path);
-			foundElement.doFoundElement(el);
+			if (el != null) {
+				foundElement.doFoundElement(el);
+			} else {
+//				LOG.info("1431 Found for " + normal_path);
+				LOG.info("1432 Transcription Error (el promise resolve not yet) for " + normal_path);
+			}
 		}
 	}
 
@@ -575,6 +550,7 @@ class Resolve_Ident_IA {
 						});
 
 						if (cp.optRet.isPresent()) {
+							// oops
 							return cp.optRet.get();
 						}
 
