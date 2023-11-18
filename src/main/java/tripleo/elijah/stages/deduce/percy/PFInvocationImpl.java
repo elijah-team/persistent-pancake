@@ -1,6 +1,8 @@
 package tripleo.elijah.stages.deduce.percy;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.jdeferred2.DoneCallback;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.stages.deduce.ClassInvocation;
@@ -21,6 +23,42 @@ public class PFInvocationImpl implements PFInvocation {
 
 	@Override
 	public void setter(final Consumer<Setter> cs) {
-		throw new UnintendedUseException();
+		cs.accept(new Setter() {
+			private Eventual<ClassInvocation> _p_CI = new Eventual<>(); // sigh
+			private ResolveError re;
+			private ClassInvocation ci;
+
+			@Override
+			public void classInvocationAndRegister(final ClassInvocation aClsinv) {
+				throw new UnintendedUseException();
+			}
+
+			@Override
+			public void resolveError(final ResolveError aResolveError) {
+				this.re = aResolveError;
+			}
+
+			@Override
+			public void classInvocation(final ClassInvocation aClsinv) {
+				ci = aClsinv;
+				_p_CI.resolve(aClsinv);
+			}
+
+			@Override
+			public ClassInvocation getClassInvocation() {
+//				throw new UnintendedUseException();
+				return ci;
+			}
+
+			@Override
+			public void hookClassInvocation(final DoneCallback<ClassInvocation> cb) {
+				_p_CI.then(cb);
+			}
+		});
+	}
+
+	@Override
+	public ClassStatement getClassStatement() {
+		return classStatement;
 	}
 }

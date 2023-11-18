@@ -7,17 +7,31 @@ import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.diagnostic.Diagnostic;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class Eventual<P> {
-	private final DeferredObject<P, Diagnostic, Void> prom = new DeferredObject<>();
+	private final DiagnosticVoidDeferredObject<P>/*<P, Diagnostic, Void>*/ prom = new DiagnosticVoidDeferredObject();
 
 	public void resolve(final P p) {
+		for (DoneCallback<? super P> doneCallback : prom.__doneCallbacks()) {
+			if (doneCallback instanceof EventualDoneCallback edc) {
+				//throw new UnintendedUseException();
+				System.err.println("2121 "+edc);
+			}
+		}
+
 		prom.resolve(p);
 	}
 
 	public void then(final DoneCallback<? super P> cb) {
+		prom.then(cb);
+	}
+
+	public interface EventualDoneCallback<D> extends DoneCallback<D> {}
+
+	public void then(final EventualDoneCallback<? super P> cb) {
 		prom.then(cb);
 	}
 
@@ -87,4 +101,11 @@ public class Eventual<P> {
 		                  .add("value", value[0])
 		                  .toString();
 	}
+
+	private static class DiagnosticVoidDeferredObject<P> extends DeferredObject<P, Diagnostic, Void> {
+		public List<DoneCallback<? super P>> __doneCallbacks() {
+			return doneCallbacks;
+		}
+	}
+
 }

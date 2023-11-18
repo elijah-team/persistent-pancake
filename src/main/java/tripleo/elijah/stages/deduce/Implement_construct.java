@@ -257,8 +257,9 @@ public class Implement_construct {
 
 		switch (DecideElObjectType.getElObjectType(best)) {
 		case CLASS -> {
-			final ClassStatement          classStatement  = (ClassStatement) best;
-			_ict_ClassStatement(co, constructorName, aTyn1, classStatement);
+			final ClassStatement    classStatement = (ClassStatement) best;
+			final ConstructableHook ch             = new ConstructableHook(co);
+			_ict_ClassStatement(ch, constructorName, aTyn1, classStatement);
 		}
 		case TYPE_NAME_ELEMENT -> {
 			final ClassContext.OS_TypeNameElement typeNameElement = (ClassContext.OS_TypeNameElement) best;
@@ -271,7 +272,7 @@ public class Implement_construct {
 		}
 	}
 
-	private void _ict_ClassStatement(final @Nullable Constructable co,
+	private void _ict_ClassStatement(final @Nullable ConstructableHook ch,
 	                                 final @Nullable String constructorName,
 	                                 final @NotNull NormalTypeName aTyn1,
 	                                 final ClassStatement classStatement) {
@@ -279,7 +280,6 @@ public class Implement_construct {
 
 		final PFInvocation pinv = deduceTypes2.get(generatedFunction).makeInvocation(classStatement);
 
-//		pinv.//addInvocation(classStatement, clsinv, __re);
 		pinv.setter((final PFInvocation.Setter s)->{
 			ss[0] = s;
 
@@ -308,37 +308,34 @@ public class Implement_construct {
 			}
 		});
 
-		final ClassInvocation clsinv = ss[0].getClassInvocation();
+		var b = classStatement.getContext(); // ??
 
-		if (co != null) {
-			if (co instanceof IdentTableEntry) {
-				((IdentTableEntry) co).doConstructable(clsinv);
-			} else if (co instanceof VariableTableEntry) {
-				final @NotNull VariableTableEntry vte = (VariableTableEntry) co;
-				vte.doConstructable(clsinv);
-			}
-		}
-		pte.setClassInvocation(clsinv);
-		pte.setResolvedElement(classStatement);
-		// set FunctionInvocation with pte args
-		{
-			@Nullable ConstructorDef cc = null;
-			if (constructorName != null) {
-				final Collection<ConstructorDef> cs = classStatement.getConstructors();
-				for (@NotNull final ConstructorDef c : cs) {
-					if (c.name().equals(constructorName)) {
-						cc = c;
-						break;
+		ss[0].hookClassInvocation(clsinv21 -> ch.invoke2(clsinv21, deduceTypes2, b, generatedFunction));
+
+		ss[0].hookClassInvocation(clsinv2 -> {
+			pte.setClassInvocation(clsinv2);
+			pte.setResolvedElement(classStatement);
+
+			// set FunctionInvocation with pte args
+			{
+				@Nullable ConstructorDef cc = null;
+				if (constructorName != null) {
+					final Collection<ConstructorDef> cs = classStatement.getConstructors();
+					for (@NotNull final ConstructorDef c : cs) {
+						if (c.name().equals(constructorName)) {
+							cc = c;
+							break;
+						}
 					}
 				}
+				// TODO also check arguments
+				{
+					assert cc != null || pte.getArgs().size() == 0;
+					@NotNull final FunctionInvocation fi = deduceTypes2.newFunctionInvocation(cc, pte, clsinv2, deduceTypes2.phase);
+					pte.setFunctionInvocation(fi);
+				}
 			}
-			// TODO also check arguments
-			{
-				assert cc != null || pte.getArgs().size() == 0;
-				@NotNull final FunctionInvocation fi = deduceTypes2.newFunctionInvocation(cc, pte, clsinv, deduceTypes2.phase);
-				pte.setFunctionInvocation(fi);
-			}
-		}
+		});
 	}
 
 	private void _ict_TypeNameElement(final @Nullable Constructable co,
@@ -365,6 +362,7 @@ public class Implement_construct {
 
 		@NotNull final IdentTableEntry ite = ((IdentIA) this.expression).getEntry();
 
+/*
 		final DeduceElement de = instruction.deduceElement;
 		@Nullable DeduceConstructStatement dcs = null;
 		if (de instanceof DeduceConstructStatement aDeduceConstructStatement) {
@@ -376,12 +374,15 @@ public class Implement_construct {
 		final @NotNull ProcTableEntry c = dcs.call.getEntry(); // README also this.pte??
 
 		assert c == this.pte;
+*/
 
+		// FIXME 11/18 invocation table, aka prte_list
+		final PFInvocation pinv = deduceTypes2.get(generatedFunction).makeInvocation((ClassStatement) generatedFunction.getFD().getParent());
 
 		if (ite.type.getGenType() == null) {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, (OS_Type) null);
 			final GenType gt = ite.type.getGenType();
-			assert gt != null;
+			//assert gt != null;
 		}
 
 		clsinv = deduceTypes2.phase.registerClassInvocation(clsinv);

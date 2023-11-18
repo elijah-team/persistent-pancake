@@ -60,6 +60,14 @@ public class OS_UserClassType extends __Abstract_OS_Type {
 		return MessageFormat.format("<OS_UserClassType {0}>", _classStatement);
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("{ User_Class ");
+		sb.append(_classStatement);
+		sb.append('}');
+		return sb.toString();
+	}
+
 	protected boolean _isEqual(final OS_Type aType) {
 		return aType.getType() == Type.USER_CLASS && _classStatement.equals(((OS_UserClassType) aType)._classStatement);
 	}

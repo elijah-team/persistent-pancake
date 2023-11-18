@@ -2,11 +2,13 @@ package tripleo.elijah.stages.deduce.percy;
 
 import org.apache.commons.lang3.tuple.Triple;
 import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.ResolveError;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PFluffyEvaFunctionImpl implements PFluffyEvaFunction {
 	private List<PFInvocation> invocations = new ArrayList<>();
@@ -20,6 +22,15 @@ public class PFluffyEvaFunctionImpl implements PFluffyEvaFunction {
 
 	@Override
 	public PFInvocation makeInvocation(final ClassStatement aClassStatement) {
+		final Optional<PFInvocation> o = invocations.stream()
+//		  .filter(LookupResultList.distinctByKey())
+                                                    .filter(i -> i.getClassStatement() == aClassStatement)
+                                                    .findAny();
+
+		if (o.isPresent()) {
+			return o.get();
+		}
+
 		final PFInvocationImpl invocation = new PFInvocationImpl(aClassStatement, null, null);
 		invocations.add(invocation);
 		return invocation;
