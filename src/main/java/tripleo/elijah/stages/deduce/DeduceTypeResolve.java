@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.AbstractCodeGen;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
@@ -40,7 +41,7 @@ public class DeduceTypeResolve {
 	private final DeferredObject<GenType, ResolveError, Void> typeResolution = new DeferredObject<GenType, ResolveError, Void>();
 	BaseTableEntry backlink;
 
-	public DeduceTypeResolve(final BaseTableEntry aBte) {
+	public DeduceTypeResolve(final BaseTableEntry aBte, final DeduceTypeResolve2 aResolver) {
 		bte = aBte;
 		if (bte instanceof IdentTableEntry) {
 			((IdentTableEntry) bte).backlinkSet()
@@ -60,7 +61,7 @@ public class DeduceTypeResolve {
 				public void onChange(final IElementHolder eh, final BaseTableEntry.Status newStatus) {
 					if (newStatus != BaseTableEntry.Status.KNOWN) return;
 
-					final GenType genType = new GenType();
+					final GenType genType = new GenType(aResolver);
 					__modifyGenType(eh, genType);
 
 					if (!typeResolution.isPending()) {
@@ -84,7 +85,7 @@ public class DeduceTypeResolve {
 					eh.getElement().visitGen(new AbstractCodeGen() {
 						@Override
 						public void addClass(final ClassStatement klass) {
-							genType.resolved = klass.getOS_Type();
+							genType.setResolved(klass.getOS_Type());
 						}
 
 						@Override
@@ -118,7 +119,7 @@ public class DeduceTypeResolve {
 
 						@Override
 						public void visitFunctionDef(final FunctionDef aFunctionDef) {
-							genType.resolved = aFunctionDef.getOS_Type();
+							genType.setResolved(aFunctionDef.getOS_Type());
 						}
 
 						@Override
@@ -136,7 +137,7 @@ public class DeduceTypeResolve {
 
 						@Override
 						public void visitPropertyStatement(final PropertyStatement aPropertyStatement) {
-							genType.typeName = new OS_UserType(aPropertyStatement.getTypeName());
+							genType.setTypeName(new OS_UserType(aPropertyStatement.getTypeName()));
 							// TODO resolve??
 						}
 
@@ -227,12 +228,12 @@ public class DeduceTypeResolve {
 		}
 		// maybe set something in ci to INHERITED, but thats what DeduceProcCall is for
 		if (eh.getElement() instanceof FunctionDef) {
-			if (result.node instanceof GeneratedClass) {
-				final GeneratedClass generatedClass = (GeneratedClass) result.node;
+			if (result.getNode() instanceof GeneratedClass) {
+				final GeneratedClass generatedClass = (GeneratedClass) result.getNode();
 				generatedClass.functionMapDeferred((FunctionDef) eh.getElement(), new FunctionMapDeferred() {
 					@Override
 					public void onNotify(final GeneratedFunction aGeneratedFunction) {
-						result.node = aGeneratedFunction;
+						result.setNode(aGeneratedFunction);
 					}
 				});
 			}
@@ -248,7 +249,7 @@ public class DeduceTypeResolve {
 		});
 
 		final int            y              = 2;
-		final ClassStatement classStatement = result.resolved.getClassOf();
+		final ClassStatement classStatement = result.getResolved().getClassOf();
 
 		assert bte instanceof IdentTableEntry;
 

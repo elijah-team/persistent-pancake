@@ -667,8 +667,8 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 			//
 			// special case
 			//
-			if (input.type.genType.node != null)
-				return Emit.emit("/*395*/") + getTypeNameForGenClass(input.type.genType.node) + "*";
+			if (input.type.getGenType().getNode() != null)
+				return Emit.emit("/*395*/") + getTypeNameForGenClass(input.type.getGenType().getNode()) + "*";
 			//
 			if (input.getStatus() == BaseTableEntry.Status.UNCHECKED)
 				return "Error_UNCHECKED_Type";

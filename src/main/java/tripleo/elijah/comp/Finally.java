@@ -1,13 +1,28 @@
 package tripleo.elijah.comp;
 
-import org.jetbrains.annotations.*;
-import tripleo.elijah.nextgen.outputtree.*;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Finally {
 	public int codeOutputSize() {
-		return outputs.size();
+		final List<String> r2 = outputs.stream().map(Output::getFilename).collect(Collectors.toList());
+		final List<Output> r = outputs.stream()
+		                              .unordered()
+		                              .filter(LookupResultList.distinctByKey(Output::getFilename))
+		                              .distinct()
+		                              .collect(Collectors.toList());
+		System.err.println("1414 "+ r2);
+
+//		assert r.size() == outputs.size();
+
+		return r.size();
 	}
 
 	public static class Input {
@@ -59,6 +74,10 @@ public class Finally {
 		}
 
 		public String name() {
+			return fileNameProvider.getFilename();
+		}
+
+		public String getFilename() {
 			return fileNameProvider.getFilename();
 		}
 	}

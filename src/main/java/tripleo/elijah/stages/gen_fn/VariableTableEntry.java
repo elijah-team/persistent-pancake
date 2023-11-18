@@ -19,6 +19,7 @@ import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceLocalVariable;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.PostBC_Processor;
 import tripleo.elijah.stages.deduce.zero.VTE_Zero;
@@ -42,10 +43,10 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 	private final         Eventual<GenType>                          typeDeferred          = new Eventual<>();
 	public                TypeTableEntry                             type;
 	public                int                                        tempNum               = -1;
-	public                ProcTableEntry                             constructable_pte;
-	public                GenType                                    genType               = new GenType();
+	public    ProcTableEntry constructable_pte;
+	private   GenType        genType;
 	// endregion constructable
-	@Nullable             GenType                                    _resolveTypeCalled    = null;
+	@Nullable GenType        _resolveTypeCalled    = null;
 
 	private GeneratedNode _resolvedType;
 	private DeduceElement3_VariableTableEntry _de3;
@@ -58,6 +59,9 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 		this.type  = aTTE;
 		this.setResolvedElement(el);
 		setupResolve();
+
+		DeduceTypeResolve2 aResolver = null; // TODO this will fail
+		genType = new GenType(aResolver);
 	}
 
 	public String getName() {
@@ -78,7 +82,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 		  "index=" + index +
 		  ", name='" + name + '\'' +
 		  ", status=" + status +
-		  ", type=" + type.index +
+		  ", type=" + type.getIndex() +
 		  ", vtt=" + vtt +
 		  ", potentialTypes=" + potentialTypes +
 		  '}';
@@ -93,6 +97,9 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 	}
 
 	public void addPotentialType(final int instructionIndex, final TypeTableEntry tte) {
+		DeduceTypeResolve2 resolver = null; // TODO this will break
+
+
 		if (!typeDeferred.isPending()) {
 			SimplePrintLoggerToRemoveSoon.println_err2("62 addPotentialType while typeDeferred is already resolved " + this);//throw new AssertionError();
 			return;
@@ -103,11 +110,11 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 		else {
 			final TypeTableEntry v = potentialTypes.get(instructionIndex);
 			if (v.getAttached() == null) {
-				v.setAttached(tte.getAttached());
-				type.genType.copy(tte.genType); // README don't lose information
-			} else if (tte.lifetime == TypeTableEntry.Type.TRANSIENT && v.lifetime == TypeTableEntry.Type.SPECIFIED) {
+				v.setAttached(tte.getAttached(), resolver);
+				type.getGenType().copy(tte.getGenType()); // README don't lose information
+			} else if (tte.getLifetime() == TypeTableEntry.Type.TRANSIENT && v.getLifetime() == TypeTableEntry.Type.SPECIFIED) {
 				//v.attached = v.attached; // leave it as is
-			} else if (tte.lifetime == v.lifetime && v.getAttached() == tte.getAttached()) {
+			} else if (tte.getLifetime() == v.getLifetime() && v.getAttached() == tte.getAttached()) {
 				// leave as is
 			} else if (v.getAttached().equals(tte.getAttached())) {
 				// leave as is
@@ -123,9 +130,9 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 				if ((tte.getAttached() != null && tte.getAttached().getType() != OS_Type.Type.USER) || v.getAttached().getType() != OS_Type.Type.USER_CLASS) {
 					// TODO prefer USER_CLASS as we are assuming it is a resolved version of the other one
 					if (tte.getAttached() == null)
-						tte.setAttached(v.getAttached());
+						tte.setAttached(v.getAttached(),resolver );
 					else if (tte.getAttached().getType() == OS_Type.Type.USER_CLASS)
-						v.setAttached(tte.getAttached());
+						v.setAttached(tte.getAttached(),resolver );
 				}
 			}
 		}
@@ -153,7 +160,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 //	@Override
 	public void resolveTypeToClass(final GeneratedNode aNode) {
 		_resolvedType = aNode;
-		genType.node  = aNode;
+		genType.setNode(aNode);
 		type.resolve(aNode); // TODO maybe this obviates above
 	}
 
@@ -165,7 +172,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 
 	public void resolveType(final @NotNull GenType aGenType) {
 		if (_resolveTypeCalled != null) { // TODO what a hack
-			if (_resolveTypeCalled.resolved != null) {
+			if (_resolveTypeCalled.getResolved() != null) {
 				if (!aGenType.equals(_resolveTypeCalled)) {
 					System.err.printf("** 130 Attempting to replace %s with %s in %s%n", _resolveTypeCalled.asString(), aGenType.asString(), this);
 //					throw new AssertionError();
@@ -229,18 +236,23 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 	}
 
 	public void setLikelyType(final GenType aGenType) {
-		final GenType bGenType = type.genType;
+		final GenType bGenType = type.getGenType();
 
 		// 1. copy arg into member
 		bGenType.copy(aGenType);
 
 		// 2. set node when available
-		((ClassInvocation) bGenType.ci).resolvePromise().done(aGeneratedClass -> {
-			bGenType.node = aGeneratedClass;
+		((ClassInvocation) bGenType.getCi()).resolvePromise().done(aGeneratedClass -> {
+			bGenType.setNode(aGeneratedClass);
 			resolveTypeToClass(aGeneratedClass);
-			genType = bGenType; // TODO who knows if this is necessary?
+//			genType = bGenType; // TODO who knows if this is necessary?
+			setGenType(bGenType); // TODO who knows if this is necessary?
 		});
 
+	}
+
+	public GenType getGenType() {
+		return genType;
 	}
 
 //	public Promise<GenType, Void, Void> typeResolvePromise() {

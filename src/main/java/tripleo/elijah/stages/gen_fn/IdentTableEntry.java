@@ -15,6 +15,7 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.IdentExpression;
@@ -25,8 +26,8 @@ import tripleo.elijah.stages.deduce.DeducePath;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.OnType;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
-import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.deduce.zero.ITE_Zero;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
@@ -47,9 +48,9 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	final                 DeferredObject<ProcTableEntry, Void, Void>      constructableDeferred = new DeferredObject<>();
 	private final         int                                             index;
 	private final         IdentExpression                                 ident;
-	private final         Context                                         pc;
-	private final         DeduceElementIdent                              dei                   = new DeduceElementIdent(this);
-	public                boolean                                         preUpdateStatusListenerAdded;
+	private final Context            pc;
+	private final DeduceElementIdent dei = new DeduceElementIdent(this);
+	public        boolean            preUpdateStatusListenerAdded;
 	public                TypeTableEntry                                  type;
 	public                GeneratedNode                                   externalRef;
 	public                boolean                                         fefi                  = false;
@@ -172,7 +173,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	@Override
 	public void setGenType(final GenType aGenType) {
 		if (type != null) {
-			type.genType.copy(aGenType);
+			type.getGenType().copy(aGenType);
 		} else {
 			throw new IllegalStateException("idte-102 Attempting to set a null type");
 //			tripleo.elijah.util.Stupidity.println_err2("idte-102 Attempting to set a null type");
@@ -181,10 +182,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	public void setGenType(final GenType genType, final BaseGeneratedFunction gf) {
 		if (type == null) {
-			makeType(gf, TypeTableEntry.Type.SPECIFIED, genType.resolved);
+			makeType(gf, TypeTableEntry.Type.SPECIFIED, genType.getResolved());
 		}
 
-		type.genType.copy(genType);
+		type.getGenType().copy(genType);
 	}
 
 	// endregion constructable
@@ -198,9 +199,9 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		return constructableDeferred.promise();
 	}
 
-	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction) {
+	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction, final DeduceTypeResolve2 aResolver) {
 		@NotNull final List<InstructionArgument> x = BaseGeneratedFunction._getIdentIAPathList(new IdentIA(index, generatedFunction));
-		return new DeducePath(this, x);
+		return new DeducePath(this, x, aResolver);
 	}
 
 	public void fefiDone(final GenType aGenType) {
@@ -247,7 +248,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		type = aGeneratedFunction.newTypeTableEntry(aType, null, aExpression, this);
 	}
 
-	public IDeduceElement3 getDeduceElement3(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction) {
+	public DeduceElement3_IdentTableEntry getDeduceElement3(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction) {
 		if (_de3 == null) {
 			_de3                   = new DeduceElement3_IdentTableEntry(this);
 			_de3.deduceTypes2      = aDeduceTypes2;
@@ -261,6 +262,18 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 			_zero = new ITE_Zero(this);
 		}
 		return _zero;
+	}
+
+	public DeduceTypes2 __getDeduceTypes2() {
+		return _de3.deduceTypes2;
+	}
+
+	public DeduceElementIdent getDei() {
+		return dei;
+	}
+
+	public DeferredObject<OS_Element, Diagnostic, Void> getResolvedElementPromise() {
+		return dei.getResolvedElementPromise();
 	}
 
 //	private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();

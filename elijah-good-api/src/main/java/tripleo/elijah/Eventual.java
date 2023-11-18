@@ -1,5 +1,6 @@
 package tripleo.elijah;
 
+import com.google.common.base.MoreObjects;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.FailCallback;
 import org.jdeferred2.impl.DeferredObject;
@@ -71,5 +72,19 @@ public class Eventual<P> {
 			xx[0] = s.get();
 		});
 		return Optional.of((P) xx[0]);
+	}
+
+	@Override
+	public String toString() {
+		final String[] value = new String[1];
+		if (prom.isPending()) {
+			value[0] = "<<EMPTY>>";
+		} else {
+			prom.then(s-> value[0] = ""+s);
+		}
+		return MoreObjects.toStringHelper(this)
+		                  .add("state", prom.state())
+		                  .add("value", value[0])
+		                  .toString();
 	}
 }

@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import com.google.common.base.Preconditions;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +21,7 @@ import tripleo.elijah.lang.NamespaceStatement;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.AbstractDependencyTracker;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
@@ -114,7 +116,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 		@Nullable final FunctionInvocation fi;
 		final GenType genType;
 		if (pte.expression_num != null) {
-			final DeducePath dp = ((IdentIA) pte.expression_num).getEntry().buildDeducePath(generatedFunction);
+			final DeducePath dp = ((IdentIA) pte.expression_num).getEntry().buildDeducePath(generatedFunction, dc.resolver());
 
 			if (dp.size() > 1) {
 				@Nullable final OS_Element el_self = dp.getElement(dp.size() - 2);
@@ -132,8 +134,8 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 					if (fi != null) { // TODO
 						genType = e_Is_FunctionDef.getGenType();
 						// NOTE read note below
-						genType.resolved           = fd.getOS_Type();
-						genType.functionInvocation = fi; // DeduceTypes2.Dependencies#action_type
+						genType.setResolved(fd.getOS_Type());
+						genType.setFunctionInvocation(fi); // DeduceTypes2.Dependencies#action_type
 						finish(co, depTracker, fi, genType);
 					}
 				}
@@ -148,8 +150,8 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 				//  will come out as a USER_CLASS when it should be FUNCTION
 				//
 				//  So we correct it here
-				genType.resolved           = fd.getOS_Type();
-				genType.functionInvocation = fi; // DeduceTypes2.Dependencies#action_type
+				genType.setResolved(fd.getOS_Type());
+				genType.setFunctionInvocation(fi); // DeduceTypes2.Dependencies#action_type
 				finish(co, depTracker, fi, genType);
 			}
 		} else {
@@ -205,12 +207,12 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 				parent = fd.getParent();
 				final TypeTableEntry x = pte.getArgs().get(0);
 				// TODO highly specialized condition...
-				if (x.getAttached() == null && x.tableEntry == null) {
-					final String text = ((IdentExpression) x.expression).getText();
+				if (x.getAttached() == null && x.getTableEntry() == null) {
+					final String text = ((IdentExpression) x.getExpression()).getText();
 					@Nullable final InstructionArgument vte_ia = generatedFunction.vte_lookup(text);
 					if (vte_ia != null) {
-						final GenType gt = ((IntegerIA) vte_ia).getEntry().type.genType;
-						typeName = gt.nonGenericTypeName != null ? gt.nonGenericTypeName : gt.typeName.getTypeName();
+						final GenType gt = ((IntegerIA) vte_ia).getEntry().type.getGenType();
+						typeName = gt.getNonGenericTypeName() != null ? gt.getNonGenericTypeName() : gt.getTypeName().getTypeName();
 					} else {
 						if (parent instanceof ClassStatement) {
 							// TODO might be wrong in the case of generics. check.
@@ -238,7 +240,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 
 			if (/*aGenType == null &&*/ aFi.getFunction() instanceof ConstructorDef) {
 				final @NotNull ClassStatement c        = aFi.getClassInvocation().getKlass();
-				final @NotNull GenType        genType2 = new GenType(c);
+				final @NotNull GenType        genType2 = new GenType(c, _resolver());
 				depTracker.addDependentType(genType2);
 				// TODO why not add fi?
 			} else {
@@ -321,14 +323,14 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 				@NotNull final ClassInvocation ci;
 				if (parent instanceof NamespaceStatement) {
 					final @NotNull NamespaceStatement namespaceStatement = (NamespaceStatement) parent;
-					genType = new GenType(namespaceStatement);
+					genType = new GenType(namespaceStatement, _resolver());
 					final NamespaceInvocation nsi = dc.registerNamespaceInvocation(namespaceStatement);
 //				pte.setNamespaceInvocation(nsi);
-					genType.ci = nsi;
+					genType.setCi(nsi);
 					fi         = dc.newFunctionInvocation(fd, pte, nsi);
 				} else if (parent instanceof ClassStatement) {
 					final @NotNull ClassStatement classStatement = (ClassStatement) parent;
-					genType = new GenType(classStatement);
+					genType = new GenType(classStatement, _resolver());
 //							ci = new ClassInvocation(classStatement, null);
 //							ci = phase.registerClassInvocation(ci);
 //							genType.ci = ci;
@@ -348,7 +350,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 				@NotNull final ClassInvocation ci;
 				if (parent instanceof ClassStatement) {
 					final @NotNull ClassStatement classStatement = (ClassStatement) parent;
-					genType = new GenType(classStatement);
+					genType = new GenType(classStatement, _resolver());
 //					ci = new ClassInvocation(classStatement, null);
 //					ci = phase.registerClassInvocation(ci);
 //					genType.ci = ci;
@@ -357,23 +359,29 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 					fi = dc.newFunctionInvocation(fd, pte, ci);
 				} else if (parent instanceof NamespaceStatement) {
 					final @NotNull NamespaceStatement namespaceStatement = (NamespaceStatement) parent;
-					genType = new GenType(namespaceStatement);
+					genType = new GenType(namespaceStatement, _resolver());
 					final NamespaceInvocation nsi = dc.registerNamespaceInvocation(namespaceStatement);
 //					pte.setNamespaceInvocation(nsi);
-					genType.ci        = nsi;
-					genType.resolvedn = namespaceStatement;
+					genType.setCi(nsi);
+					genType.setResolvedn(namespaceStatement);
 					fi                = dc.newFunctionInvocation(fd, pte, nsi);
 				}
 			} else {
 				// don't create new objects when alrady populated
-				genType = new GenType();
+				genType = new GenType(_resolver());
 				final ClassInvocation classInvocation = pte.getClassInvocation();
-				genType.resolved = classInvocation.getKlass().getOS_Type();
-				genType.ci       = classInvocation;
+				genType.setResolved(classInvocation.getKlass().getOS_Type());
+				genType.setCi(classInvocation);
 				fi               = pte.getFunctionInvocation();
 			}
 			return this;
 		}
+	}
+
+	private DeduceTypeResolve2 _resolver() {
+		final DeduceTypeResolve2 resolver = pte.dpc._deduceTypes2().resolver();
+		Preconditions.checkNotNull(resolver);
+		return resolver;
 	}
 }
 

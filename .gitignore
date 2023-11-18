@@ -13,3 +13,4 @@
 /.idea/gitlab-quickmr.xml
 /.gradle
 /ll.c
+/elijah-good-api/target/**

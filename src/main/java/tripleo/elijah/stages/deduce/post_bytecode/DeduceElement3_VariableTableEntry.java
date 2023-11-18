@@ -259,11 +259,11 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 				final OS_Type attached = tte1.getAttached();
 				switch (attached.getType()) {
 				case USER:
-					vte1.type.setAttached(attached); // !!
+					vte1.type.setAttached(attached, deduceTypes2().resolver()); // !!
 					break;
 				case USER_CLASS:
-					final GenType gt = vte1.genType;
-					gt.resolved = attached;
+					final GenType gt = vte1.getGenType();
+					gt.setResolved(attached);
 					vte1.resolveType(gt);
 					break;
 				default:
@@ -289,9 +289,9 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 		if (p.isResolved())
 			System.out.printf("915 Already resolved type: vte2.type = %s, gf = %s %n", vte1.type, generatedFunction);
 		else {
-			final GenType gt       = vte1.genType;
+			final GenType gt       = vte1.getGenType();
 			final OS_Type attached = vte2.type.getAttached();
-			gt.resolved = attached;
+			gt.setResolved(attached);
 			vte1.resolveType(gt);
 		}
 //								vte.type = vte2.type;
@@ -314,11 +314,11 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 			if (attached == null) return;
 			switch (attached.getType()) {
 			case USER:
-				vte1.type.setAttached(attached); // !!
+				vte1.type.setAttached(attached, deduceTypes2.resolver()); // !!
 				break;
 			case USER_CLASS:
-				final GenType gt = vte1.genType;
-				gt.resolved = attached;
+				final GenType gt = vte1.getGenType();
+				gt.setResolved(attached);
 				vte1.resolveType(gt);
 				break;
 			default:
@@ -351,7 +351,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 
 		if (resolvedElement instanceof IdentExpression) {
 			backlink.typePromise().then(result -> {
-				final Context context = result.resolved.getClassOf().getContext();
+				final Context context = result.getResolved().getClassOf().getContext();
 				d.resolve(context);
 			});
 		} else {

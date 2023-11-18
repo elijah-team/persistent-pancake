@@ -34,7 +34,7 @@ public class GenericElementHolderWithType implements IElementHolder {
 	@Contract(pure = true)
 	public GenericElementHolderWithType(final OS_Element aEle2, @NotNull final GenType aResult, final DeduceTypes2 aDeduceTypes2) {
 		element = aEle2;
-		type    = aResult.typeName; // TODO may be something stupid
+		type    = aResult.getTypeName(); // TODO may be something stupid
 		dt2     = aDeduceTypes2;
 	}
 
