@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
+import com.google.common.base.MoreObjects;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
@@ -248,6 +249,27 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 			_zero = new PTE_Zero(this);
 
 		return _zero;
+	}
+
+	public String asString() {
+		// TODO 11/17 too much
+		return MoreObjects.toStringHelper(this)
+		                  .add("index", index)
+		                  .add("args", args)
+		                  .add("expression", expression)
+		                  .add("expression_num", expression_num)
+		                  .add("dpc", dpc)
+		                  .add("completeDeferred", completeDeferred)
+		                  .add("classInvocation", classInvocation)
+		                  .add("onFunctionInvocations", onFunctionInvocations)
+		                  .add("functionInvocation", functionInvocation)
+		                  .add("_de3", _de3)
+		                  .add("_zero", _zero)
+		                  .add("typeDeferred", typeDeferred)
+		                  .add("resolved_element", resolved_element)
+		                  .add("status", status)
+		                  .add("typeResolve", typeResolve)
+		                  .toString();
 	}
 }
 
