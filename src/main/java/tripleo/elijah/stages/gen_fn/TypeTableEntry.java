@@ -164,10 +164,11 @@ public class TypeTableEntry {
 
 	@Override @NotNull
 	public String toString() {
+		final String attachedString = attached != null ? attached.asString() : "<<null>>";
 		return "TypeTableEntry{" +
 				"index=" + index +
 				", lifetime=" + lifetime +
-				", attached=" + attached.asString() +
+				", attached=" + attachedString +
 				", expression=" + expression +
 				'}';
 	}
