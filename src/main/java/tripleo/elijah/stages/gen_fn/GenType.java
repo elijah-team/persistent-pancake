@@ -110,12 +110,12 @@ public class GenType {
 
 	public String asString() {
 		final String sb = "GenType{" + "resolvedn=" + resolvedn +
-		  ", typeName=" + typeName +
-		  ", nonGenericTypeName=" + nonGenericTypeName +
-		  ", resolved=" + resolved +
-		  ", ci=" + ci +
-		  ", node=" + node +
-		  ", functionInvocation=" + functionInvocation +
+		  ", typeName=" + typeName.asString() +
+		  ", nonGenericTypeName=" + nonGenericTypeName.asString() +
+		  ", resolved=" + resolved.asString() +
+		  ", ci=" + ci.asString() +
+		  ", node=" + node.asString() +
+		  ", functionInvocation=" + functionInvocation.asString() +
 		  '}';
 		return sb;
 	}

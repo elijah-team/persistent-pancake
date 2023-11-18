@@ -3,6 +3,7 @@ package tripleo.elijah.stages.deduce;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.DebugFlags;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.lang.Context;
@@ -14,6 +15,9 @@ import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.TypeNameList;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.stages.deduce.percy.DeduceElement3_LookingUpCtx;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
+import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.Constructable;
 import tripleo.elijah.stages.gen_fn.GenType;
@@ -79,6 +83,13 @@ class Implement_construct {
 			for (int i = 0; i < deducePath.size(); i++) {
 				final InstructionArgument ia2 = deducePath.getIA(i);
 
+				if (ia2 instanceof IdentIA identIA) {
+					@NotNull final IdentTableEntry identTableEntry = identIA.getEntry();
+					if (identTableEntry.getIdent().getText().equals("x")) {
+						NotImplementedException.raise_stop();
+					}
+				}
+
 				el3 = deducePath.getElement(i);
 
 				if (ia2 instanceof IntegerIA) {
@@ -90,31 +101,54 @@ class Implement_construct {
 					ectx = deducePath.getContext(i);
 				} else if (ia2 instanceof IdentIA) {
 					@NotNull final IdentTableEntry idte2 = ((IdentIA) ia2).getEntry();
+
+					final DeduceElement3_IdentTableEntry de3_ite = idte2.getDeduceElement3(deduceTypes2, generatedFunction);
+					final DeduceElement3_LookingUpCtx    luck    = de3_ite.lookingUp(/*ia2,*/ ectx, deduceTypes2);
+
+					luck.onSuccess((a) -> {
+						final OS_Element el4 = luck.getElement();
+
+						if (el4 instanceof VariableStatement vs) {
+							final @NotNull TypeName tn = vs.typeName();
+							final @NotNull OS_Type  ty = new OS_UserType(tn);
+							final String            s  = idte2.getIdent().toString();
+
+							if (idte2.type == null) {
+								// README Don't remember enough about the constructors to select a different one
+								@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, ty);
+								try {
+									@NotNull final GenType resolved = deduceTypes2.resolve_type(ty, tn.getContext());
+									deduceTypes2.LOG.err("892 resolved: " + resolved);
+									tte.setAttached(resolved);
+								} catch (final ResolveError aResolveError) {
+									deduceTypes2.errSink.reportDiagnostic(aResolveError);
+								}
+
+								idte2.type = tte;
+							}
+							// s is constructor name
+							implement_construct_type(idte2, ty, s);
+						}
+					});
+
 					final String                   s     = idte2.getIdent().toString();
 					final LookupResultList         lrl   = ectx.lookup(s);
 					@Nullable final OS_Element     el2   = lrl.chooseBest(null);
+
+					if (DebugFlags.classInstantiation2) {
+						assert el2 instanceof ConstructorDef;
+					}
+
+
 					if (el2 == null) {
-						assert el3 instanceof VariableStatement;
-						@Nullable final VariableStatement vs = (VariableStatement) el3;
-						@NotNull final TypeName           tn = vs.typeName();
-						@NotNull final OS_Type            ty = new OS_UserType(tn);
-
-						if (idte2.type == null) {
-							// README Don't remember enough about the constructors to select a different one
-							@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, ty);
-							try {
-								@NotNull final GenType resolved = deduceTypes2.resolve_type(ty, tn.getContext());
-								deduceTypes2.LOG.err("892 resolved: " + resolved);
-								tte.setAttached(resolved);
-							} catch (final ResolveError aResolveError) {
-								deduceTypes2.errSink.reportDiagnostic(aResolveError);
-							}
-
-							idte2.type = tte;
+//						assert el3 != null;
+						if (!(el3 instanceof VariableStatement vs)) {
+//							throw new AssertionError();
+							System.err.println("FAIL 139");
+						} else {
+							luck.force(vs);
+							return;
 						}
-						// s is constructor name
-						implement_construct_type(idte2, ty, s);
-						return;
 					} else {
 						if (i + 1 == deducePath.size()) {
 							assert el3 == el2;

@@ -18,6 +18,9 @@ import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GenericElementHolder;
@@ -29,6 +32,7 @@ import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
+import tripleo.elijah.util.NotImplementedException;
 
 import java.util.List;
 
@@ -95,9 +99,12 @@ public class DeducePath {
 					final int y = 2; // TODO feb 20
 //					throw new AssertionError();
 				}
-			} else
+			} else {
 				el = null; // README shouldn't be calling for other subclasses
-			elements[aIndex] = el;
+			}
+			if (el != null) {
+				elements[aIndex] = el;
+			}
 			return el;
 		} else {
 			return elements[aIndex];
@@ -134,7 +141,7 @@ public class DeducePath {
 		getEntry(aIndex).elementPromise(aOS_elementDoneCallback, aDiagnosticFailCallback);
 	}
 
-	static class MemberContext extends Context {
+	/*static*/ class MemberContext extends Context {
 
 		private final DeducePath deducePath;
 		private final int index;
@@ -154,16 +161,40 @@ public class DeducePath {
 		@Override
 		public LookupResultList lookup(final String name, final int level, final LookupResultList Result, final List<Context> alreadySearched, final boolean one) {
 //			if (index == 0)
-				return type.resolved.getElement().getContext().lookup(name, level, Result, alreadySearched, one);
-//			else
-//				return null;
+			@Nullable OS_Type resolved = type.resolved;
+			if (resolved != null) {
+				return resolved.getElement().getContext().lookup(name, level, Result, alreadySearched, one);
+			} else {
+				assert type.nonGenericTypeName != null;
+				resolved = new OS_UserType(type.nonGenericTypeName);
+
+				final TypeName tn1  = resolved.getTypeName();
+				final Context  ctx1 = type.nonGenericTypeName.getContext();
+
+				final DeduceTypes2 dt2 = base.__getDeduceTypes2();
+				try {
+					@NotNull final GenType resolved2 = dt2.resolve_type(resolved, ctx1);
+					System.out.println("177 "+resolved2.asString());
+					NotImplementedException.raise_stop();
+				} catch (ResolveError aE) {
+					throw new RuntimeException(aE);
+				}
+
+//				return resolved.getElement().getContext().lookup(name, level, Result, alreadySearched, one);
+				System.err.println("FAIL 162");
+				return new LookupResultList();
+			}
 		}
 
 		@Override
 		public @Nullable Context getParent() {
-			if (index == 0)
-				return element.getContext().getParent();
-			return deducePath.getContext(index - 1);
+			@Nullable Context result;
+			if (index == 0) {
+				result = element.getContext().getParent();
+			} else {
+				result = deducePath.getContext(index - 1);
+			}
+			return result;
 		}
 	}
 

@@ -26,7 +26,6 @@ import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.OnType;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
-import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.deduce.zero.ITE_Zero;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
@@ -247,7 +246,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		type = aGeneratedFunction.newTypeTableEntry(aType, null, aExpression, this);
 	}
 
-	public IDeduceElement3 getDeduceElement3(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction) {
+	public DeduceElement3_IdentTableEntry getDeduceElement3(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction) {
 		if (_de3 == null) {
 			_de3                   = new DeduceElement3_IdentTableEntry(this);
 			_de3.deduceTypes2      = aDeduceTypes2;
@@ -261,6 +260,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 			_zero = new ITE_Zero(this);
 		}
 		return _zero;
+	}
+
+	public DeduceTypes2 __getDeduceTypes2() {
+		return _de3.deduceTypes2;
 	}
 
 //	private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();
