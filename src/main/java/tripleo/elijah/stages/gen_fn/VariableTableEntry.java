@@ -255,6 +255,11 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 		return genType;
 	}
 
+	public void doConstructable(final ClassInvocation aClsinv) {
+		this.type.genTypeCI(aClsinv);
+		aClsinv.resolvePromise().then(this::resolveTypeToClass);
+	}
+
 //	public Promise<GenType, Void, Void> typeResolvePromise() {
 //		return typeDeferred.promise();
 //	}

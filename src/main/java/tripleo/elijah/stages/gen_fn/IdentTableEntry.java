@@ -22,6 +22,7 @@ import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceElementIdent;
 import tripleo.elijah.stages.deduce.DeducePath;
 import tripleo.elijah.stages.deduce.DeducePhase;
@@ -286,6 +287,11 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	public DeferredObject<OS_Element, Diagnostic, Void> getResolvedElementPromise() {
 		return dei.getResolvedElementPromise();
+	}
+
+	public void doConstructable(final ClassInvocation aClsinv) {
+		this.type.genTypeCI(aClsinv);
+		aClsinv.resolvePromise().then(this::resolveTypeToClass);
 	}
 
 //	private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();
