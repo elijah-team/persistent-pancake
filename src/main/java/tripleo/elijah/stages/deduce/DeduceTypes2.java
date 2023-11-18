@@ -31,6 +31,8 @@ import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
 import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
+import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
+import tripleo.elijah.stages.deduce.percy.Provided;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
@@ -61,6 +63,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Created 9/15/20 12:51 PM
@@ -2037,7 +2040,43 @@ public class DeduceTypes2 {
 
 	void implement_construct(final BaseGeneratedFunction generatedFunction, final Instruction instruction) {
 		final @NotNull Implement_construct ic = newImplement_construct(generatedFunction, instruction);
-		ic.action();
+
+		final Provided<PercyWantConstructor> p = new Provided<PercyWantConstructor>() {
+			@Override
+			public void on(final DoneCallback<PercyWantConstructor> t) {
+				prom.then(t);
+			}
+
+			@Override
+			public void provide(PercyWantConstructor pwc) {
+				prom.resolve(pwc);
+			}
+
+			private final Eventual<PercyWantConstructor> prom = new Eventual<>();
+		};
+
+		PercyWantConstructor pwc1 = new PercyWantConstructor() {
+			@Override
+			public void onFinalSuccess(final Consumer<Void> cb) {
+				throw new NotImplementedException();
+			}
+
+			@Override
+			public void onFailure(final Consumer<Void> cb) {
+				throw new NotImplementedException();
+			}
+
+			@Override
+			public Eventual<ConstructorDef> getEventualConstructorDef() {
+				return _p_cd;
+			}
+
+			private final Eventual<ConstructorDef> _p_cd = new Eventual<ConstructorDef>();
+		};
+
+		p.provide(pwc1);
+
+		ic.action(p);
 	}
 
 	@NotNull

@@ -16,6 +16,8 @@ import tripleo.elijah.lang.TypeNameList;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.percy.DeduceElement3_LookingUpCtx;
+import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
+import tripleo.elijah.stages.deduce.percy.Provided;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.Constructable;
@@ -44,7 +46,8 @@ class Implement_construct {
 	private final Instruction           instruction;
 	private final InstructionArgument   expression;
 
-	private final @NotNull ProcTableEntry pte;
+	private final @NotNull ProcTableEntry  pte;
+	private Provided<PercyWantConstructor> ppwc;
 
 	public Implement_construct(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction, final Instruction aInstruction) {
 		deduceTypes2      = aDeduceTypes2;
@@ -63,7 +66,12 @@ class Implement_construct {
 		assert expression instanceof IntegerIA || expression instanceof IdentIA;
 	}
 
-	public void action() {
+	public void action(Provided<PercyWantConstructor> ppwc0) {
+		this.ppwc = ppwc0;
+		// TODO 11/17 needs eventualregister
+		ppwc.on(pwc -> {
+			int y=2;
+		});
 		if (expression instanceof IntegerIA) {
 			action_IntegerIA();
 		} else if (expression instanceof IdentIA) {
@@ -135,7 +143,7 @@ class Implement_construct {
 					@Nullable final OS_Element     el2   = lrl.chooseBest(null);
 
 					if (DebugFlags.classInstantiation2) {
-						assert el2 instanceof ConstructorDef;
+//						assert el2 instanceof ConstructorDef;
 					}
 
 
