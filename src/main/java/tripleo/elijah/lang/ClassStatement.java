@@ -11,7 +11,6 @@ package tripleo.elijah.lang;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.contexts.ClassContext;
@@ -34,8 +33,7 @@ import java.util.List;
 public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements ClassItem, ModuleItem, StatementItem, FunctionItem, OS_Element, OS_Element2, Documentable, OS_Container {
 
 	private final OS_Element parent;
-	ClassInheritance _inh = new ClassInheritance(); // remove final for ClassBuilder
-	static final List<TypeName>   emptyTypeNameList = ImmutableList.of();
+	private       ClassInheritance _inh = new ClassInheritance(); // remove final for ClassBuilder
 	private      ClassTypes       _type;
 	private      TypeNameList     genericPart;
 	private      OS_UserClassType osType;
@@ -115,14 +113,23 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 	}
 
 	public Collection<ClassItem> findFunction(final String name) {
-		return Collections2.filter(items, new Predicate<ClassItem>() {
+		final Predicate<ClassItem> predicate = new Predicate<>() {
 			@Override
-			public boolean apply(@Nullable final ClassItem item) {
-				if (item instanceof FunctionDef && !(item instanceof ConstructorDef))
+			public boolean apply(@org.checkerframework.checker.nullness.qual.Nullable final ClassItem item) {
+				switch (DecideElObjectType.getElObjectType(item)) {
+				case CONSTRUCTOR -> {
+					return false;
+				}
+				case FUNCTION -> {
 					return ((FunctionDef) item).name().equals(name);
-				return false;
+				}
+				default -> {
+					return false;
+				}
+				}
 			}
-		});
+		};
+		return Collections2.filter(items, predicate);
 	}
 
 	public void setType(final ClassTypes aType) {
@@ -216,7 +223,7 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 
 	public @NotNull List<TypeName> getGenericPart() {
 		if (genericPart == null)
-			return emptyTypeNameList;
+			return LangGlobals.emptyTypeNameList;
 		else
 			return genericPart.p;
 	}

@@ -1,8 +1,11 @@
 package tripleo.elijah.lang;
 
+import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 
 import tripleo.elijah.util.Helpers;
+
+import java.util.List;
 
 public class LangGlobals {
 
@@ -10,6 +13,7 @@ public class LangGlobals {
 
 	// TODO override name() ??
 	public final static  ConstructorDef defaultVirtualCtor = new ConstructorDef(null, null, null);
+	static final         List<TypeName> emptyTypeNameList  = ImmutableList.of();
 	private static final OS_Package     _dp                = new OS_Package(null, 0);
 
 	public static @NotNull OS_Package defaultPackage() {
