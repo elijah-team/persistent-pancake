@@ -37,6 +37,7 @@ public class TypeTableEntry {
 	@Nullable
 	private OS_Type      attached;
 	private @Nullable DeduceTypes2 deduceTypes2;
+	private DeduceTypeResolve2 resolver;
 
 	public Type getLifetime() {
 		return lifetime;
@@ -91,34 +92,35 @@ public class TypeTableEntry {
 	}
 
 	private void _settingAttached(@NotNull final OS_Type aAttached) {
+		final GenType genType1 = __genType();
 		switch (aAttached.getType()) {
 			case USER:
-				if (__genType().getTypeName() != null) {
+				if (genType1.getTypeName() != null) {
 					final TypeName typeName = aAttached.getTypeName();
 					if (!(typeName instanceof GenericTypeName))
-						__genType().setNonGenericTypeName(typeName);
+						genType1.setNonGenericTypeName(typeName);
 				} else
-					__genType().setTypeName(aAttached)/*.getTypeName()*/;
+					genType1.setTypeName(aAttached)/*.getTypeName()*/;
 				break;
 			case USER_CLASS:
 //			ClassStatement c = attached.getClassOf();
-				__genType().setResolved(aAttached)/*attached*/; // c
+				genType1.setResolved(aAttached)/*attached*/; // c
 				break;
 			case UNIT_TYPE:
-				__genType().setResolved(aAttached);
+				genType1.setResolved(aAttached);
 			case BUILT_IN:
-				if (__genType().getTypeName() != null)
-					__genType().setResolved(aAttached);
+				if (genType1.getTypeName() != null)
+					genType1.setResolved(aAttached);
 				else
-					__genType().setTypeName(aAttached);
+					genType1.setTypeName(aAttached);
 				break;
 			case FUNCTION:
-				assert __genType().getResolved() == null || __genType().getResolved() == aAttached || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
-				__genType().setResolved(aAttached);
+				assert genType1.getResolved() == null || genType1.getResolved() == aAttached || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
+				genType1.setResolved(aAttached);
 				break;
 			case FUNC_EXPR:
-				assert __genType().getResolved() == null || __genType().getResolved() == aAttached;// || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
-				__genType().setResolved(aAttached);
+				assert genType1.getResolved() == null || genType1.getResolved() == aAttached;// || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
+				genType1.setResolved(aAttached);
 				break;
 			default:
 //			throw new NotImplementedException();
@@ -127,9 +129,15 @@ public class TypeTableEntry {
 		}
 	}
 
-	private GenType __genType() {
-		assert deduceTypes2 != null;
-		genType = new GenType(deduceTypes2.resolver());
+	private @Nullable GenType __genType() {
+		if (resolver != null && genType == null) {
+			genType = new GenType(resolver);
+		} else if (deduceTypes2 != null && genType == null) {
+			genType = new GenType(deduceTypes2.resolver());
+		} else {
+			System.err.println("FAIL 135");
+//			throw new AssertionError();
+		}
 		return genType;
 	}
 
@@ -163,7 +171,8 @@ public class TypeTableEntry {
 		return attached;
 	}
 
-	public void setAttached(final OS_Type aAttached) {
+	public void setAttached(final OS_Type aAttached, DeduceTypeResolve2 resolver) {
+		this.resolver = resolver;
 		attached = aAttached;
 		if (aAttached != null) {
 			_settingAttached(aAttached);
@@ -180,7 +189,7 @@ public class TypeTableEntry {
 //		if (aGenType.ci != null) genType.ci = aGenType.ci;
 //		if (aGenType.node != null) genType.node = aGenType.node;
 
-		setAttached(genType.getResolved());
+		setAttached(genType.getResolved(), resolver);
 	}
 
 	public void addSetAttached(final OnSetAttached osa) {

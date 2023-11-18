@@ -31,7 +31,7 @@ class Resolve_var_table_entry {
 				//  typeName and nonGenericTypeName are not set
 				//  but at this point probably wont be needed
 				vte.type.getGenType().setResolved(attached);
-				vte.type.setAttached(attached);
+				vte.type.setAttached(attached, deduceTypes2.resolver());
 			}
 			vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(vte.getResolvedElement()));
 			{

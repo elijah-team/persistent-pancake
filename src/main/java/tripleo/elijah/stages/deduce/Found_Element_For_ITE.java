@@ -100,7 +100,7 @@ class Found_Element_For_ITE {
 			if (!(typeName.isNull())) {
 				if (ite.type == null)
 					ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, vs.initialValue());
-				ite.type.setAttached(new OS_UserType(typeName));
+				ite.type.setAttached(new OS_UserType(typeName), aResolver);
 			} else {
 				final OS_Element parent = vs.getParent().getParent();
 				if (parent instanceof NamespaceStatement || parent instanceof ClassStatement) {
@@ -186,7 +186,7 @@ class Found_Element_For_ITE {
 		if (ite.type == null) {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, attached);
 		} else
-			ite.type.setAttached(attached);
+			ite.type.setAttached(attached, dc.resolver());
 	}
 
 	public void action_FunctionDef(@NotNull final IdentTableEntry ite, final FunctionDef functionDef) {
@@ -194,7 +194,7 @@ class Found_Element_For_ITE {
 		if (ite.type == null) {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, attached);
 		} else
-			ite.type.setAttached(attached);
+			ite.type.setAttached(attached,dc.resolver() );
 	}
 
 	public void action_PropertyStatement(@NotNull final IdentTableEntry ite, @NotNull final PropertyStatement ps) {
@@ -218,7 +218,7 @@ class Found_Element_For_ITE {
 		if (ite.type == null) {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, attached);
 		} else
-			ite.type.setAttached(attached);
+			ite.type.setAttached(attached, dc.resolver());
 		dc.genCIForGenType2(ite.type.getGenType());
 		final int yy = 2;
 	}

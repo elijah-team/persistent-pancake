@@ -308,19 +308,20 @@ class Resolve_Ident_IA2 {
 			final InstructionArgument en = procTableEntry.expression_num;
 			if (en instanceof IdentIA) {
 				final @NotNull IdentIA     identIA2 = (IdentIA) en;
-				final DeducePath           ded      = identIA2.getEntry().buildDeducePath(generatedFunction, deduceTypes2.resolver());
+				final DeduceTypeResolve2   resolver = deduceTypes2.resolver();
+				final DeducePath           ded      = identIA2.getEntry().buildDeducePath(generatedFunction, resolver);
 				@Nullable final OS_Element el2      = ded.getElement(ded.size() - 1);
 				if (el2 != null) {
 					state = 1;
 					ectx  = el2.getContext();
-					aVte.type.setAttached(attached1);
+					aVte.type.setAttached(attached1, resolver);
 				}
 			}
 		}
 		switch (state) {
 			case 0:
 				assert attached1 != null;
-				aVte.type.setAttached(attached1);
+				aVte.type.setAttached(attached1, deduceTypes2.resolver() );
 				// TODO this will break
 				switch (attached1.getType()) {
 					case USER:
@@ -605,7 +606,7 @@ class Resolve_Ident_IA2 {
 					public void typeDecided(@NotNull final GenType aType) {
 						assert fd2 == generatedFunction.getFD();
 						//
-						pot.get(0).setAttached(deduceTypes2.gt(aType));
+						pot.get(0).setAttached(deduceTypes2.gt(aType), deduceTypes2.resolver());
 					}
 				});
 			} else {

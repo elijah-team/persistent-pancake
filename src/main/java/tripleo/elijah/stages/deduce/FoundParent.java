@@ -188,7 +188,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 				if (ty2 != null) {
 					final @NotNull TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null);
 					// trying to keep genType up to date
-					tte.setAttached(ty);
+					tte.setAttached(ty, aResolver);
 					tte.setAttached(ty2);
 					ite.type = tte;
 				}
@@ -259,7 +259,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 								// no expression or TableEntryIV below
 								@NotNull final TypeTableEntry tte4 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null);
 								// README trying to keep genType up to date
-								tte4.setAttached(attached1);
+								tte4.setAttached(attached1, deduceTypes2.resolver());
 								tte4.setAttached(ty3);
 								ite.type = tte4; // or ty2?
 							} catch (final ResolveError aResolveError) {

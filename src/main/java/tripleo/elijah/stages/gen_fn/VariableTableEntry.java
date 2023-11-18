@@ -97,6 +97,9 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 	}
 
 	public void addPotentialType(final int instructionIndex, final TypeTableEntry tte) {
+		DeduceTypeResolve2 resolver = null; // TODO this will break
+
+
 		if (!typeDeferred.isPending()) {
 			SimplePrintLoggerToRemoveSoon.println_err2("62 addPotentialType while typeDeferred is already resolved " + this);//throw new AssertionError();
 			return;
@@ -107,7 +110,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 		else {
 			final TypeTableEntry v = potentialTypes.get(instructionIndex);
 			if (v.getAttached() == null) {
-				v.setAttached(tte.getAttached());
+				v.setAttached(tte.getAttached(), resolver);
 				type.getGenType().copy(tte.getGenType()); // README don't lose information
 			} else if (tte.getLifetime() == TypeTableEntry.Type.TRANSIENT && v.getLifetime() == TypeTableEntry.Type.SPECIFIED) {
 				//v.attached = v.attached; // leave it as is
@@ -127,9 +130,9 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 				if ((tte.getAttached() != null && tte.getAttached().getType() != OS_Type.Type.USER) || v.getAttached().getType() != OS_Type.Type.USER_CLASS) {
 					// TODO prefer USER_CLASS as we are assuming it is a resolved version of the other one
 					if (tte.getAttached() == null)
-						tte.setAttached(v.getAttached());
+						tte.setAttached(v.getAttached(),resolver );
 					else if (tte.getAttached().getType() == OS_Type.Type.USER_CLASS)
-						v.setAttached(tte.getAttached());
+						v.setAttached(tte.getAttached(),resolver );
 				}
 			}
 		}

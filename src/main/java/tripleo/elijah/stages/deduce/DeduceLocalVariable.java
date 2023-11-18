@@ -94,7 +94,7 @@ public class DeduceLocalVariable {
 				//  typeName and nonGenericTypeName are not set
 				//  but at this point probably wont be needed
 				vte.type.getGenType().setResolved(attached);
-				vte.type.setAttached(attached);
+				vte.type.setAttached(attached, deduceTypes2.resolver());
 			}
 			if (vte.type.getAttached() == null && vte.potentialTypes().size() > 0) {
 				final List<TypeTableEntry> attached_list = vte.potentialTypes().stream().
@@ -103,7 +103,7 @@ public class DeduceLocalVariable {
 
 				if (attached_list.size() == 1) {
 					final TypeTableEntry pot = attached_list.get(0);
-					vte.type.setAttached(pot.getAttached());
+					vte.type.setAttached(pot.getAttached(), deduceTypes2.resolver());
 					vte.type.getGenType().genCI(null, deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
 					final ClassInvocation classInvocation = (ClassInvocation) vte.type.getGenType().getCi();
 					if (classInvocation != null) {

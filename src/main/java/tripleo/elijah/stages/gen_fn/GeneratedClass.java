@@ -16,6 +16,7 @@ import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_generic.CodeGenerator;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.util.Helpers;
@@ -40,6 +41,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 	public        ClassInvocation                           ci;
 	public        LivingClass                               _living;
 	private       boolean                                   resolve_var_table_entries_already = false;
+	private DeduceTypeResolve2 resolver;
 
 	public GeneratedClass(final ClassStatement klass, final OS_Module module) {
 		this.klass  = klass;
@@ -163,7 +165,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 								for (final Map.Entry<TypeName, OS_Type> typeEntry : ci.genericPart.entrySet()) {
 									if (typeEntry.getKey().equals(t)) {
 										final OS_Type v = typeEntry.getValue();
-										potentialType.setAttached(v);
+										potentialType.setAttached(v, resolver);
 										assert potentialType.getAttached().getType() == OS_Type.Type.USER_CLASS;
 										break;
 									}

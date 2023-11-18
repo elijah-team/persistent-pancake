@@ -221,7 +221,7 @@ public class VTE_TypePromises {
 							// no expression or TableEntryIV below
 							@NotNull final TypeTableEntry tte4 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null);
 							// README trying to keep genType up to date
-							tte4.setAttached(attached1);
+							tte4.setAttached(attached1, aDeduceTypes2.resolver());
 							tte4.setAttached(ty3);
 							ite.type = tte4; // or ty2?
 						} catch (final ResolveError aResolveError) {

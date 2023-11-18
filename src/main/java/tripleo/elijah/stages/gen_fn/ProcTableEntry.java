@@ -23,6 +23,7 @@ import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceProcCall;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.deduce.zero.PTE_Zero;
@@ -56,13 +57,14 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 	private       DeduceElement3_ProcTableEntry                   _de3;
 
 	private PTE_Zero _zero;
+	private DeduceTypeResolve2 resolver;
 
 	public List<TypeTableEntry> getArgs() {
 		return args;
 	}
 
 	public void setArgType(final int aIndex, final OS_Type aType) {
-		args.get(aIndex).setAttached(aType);
+		args.get(aIndex).setAttached(aType, resolver);
 	}
 
 	public void onSetAttached() {

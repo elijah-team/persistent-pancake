@@ -27,6 +27,7 @@ import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.deduce.OnGenClass;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_generic.Dependency;
 import tripleo.elijah.stages.gen_generic.IDependencyReferent;
 import tripleo.elijah.stages.instructions.ConstTableIA;
@@ -300,7 +301,8 @@ public abstract class BaseGeneratedFunction extends AbstractDependencyTracker im
 
 	public @NotNull TypeTableEntry newTypeTableEntry(final TypeTableEntry.Type type1, final OS_Type type, final IExpression expression, final TableEntryIV aTableEntryIV) {
 		final TypeTableEntry typeTableEntry = new TypeTableEntry(tte_list.size(), type1, type, expression, aTableEntryIV);
-		typeTableEntry.setAttached(type); // README make sure tio call callback
+		final DeduceTypeResolve2 resolver   = null; // TODO this will fail
+		typeTableEntry.setAttached(type, resolver); // README make sure tio call callback
 		tte_list.add(typeTableEntry);
 		return typeTableEntry;
 	}

@@ -343,7 +343,7 @@ class Resolve_Variable_Table_Entry {
 						tte.getGenType().setTypeName(attached);
 					try {
 						tte.getGenType().copy(deduceTypes2.resolve_type(attached, ctx));
-						tte.setAttached(tte.getGenType().getResolved()); // TODO probably not necessary, but let's leave it for now
+						tte.setAttached(tte.getGenType().getResolved(), deduceTypes2.resolver() ); // TODO probably not necessary, but let's leave it for now
 					} catch (final ResolveError aResolveError) {
 						errSink.reportDiagnostic(aResolveError);
 						LOG.err("Can't resolve argument type " + attached);
