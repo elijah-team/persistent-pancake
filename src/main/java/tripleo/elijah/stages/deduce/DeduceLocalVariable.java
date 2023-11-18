@@ -68,6 +68,8 @@ public class DeduceLocalVariable {
 		final Context            ctx = context;
 
 		if (vte.vtt == VariableTableType.TEMP) {
+			vte.type.provide(deduceTypes2);
+
 			final GenType genType = vte.type.getGenType();
 			final int     pts     = vte.potentialTypes().size();
 			if (genType.getTypeName() != null && genType.getTypeName() == genType.getResolved()) {
