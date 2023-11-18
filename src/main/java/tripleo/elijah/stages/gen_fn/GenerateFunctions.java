@@ -2783,7 +2783,7 @@ public class GenerateFunctions {
 					//
 					final int idte_index = gf.addIdentTableEntry((IdentExpression) arg, aContext);
 					tte                                    = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, arg);
-					gf.getIdentTableEntry(idte_index).type = tte;
+					gf.getIdentTableEntry(idte_index).setType(tte);
 				}
 				R.add(tte);
 			} else
@@ -3285,7 +3285,7 @@ public class GenerateFunctions {
 				final DeduceConstructStatement dcs = new DeduceConstructStatement(gf, aConstructStatement);
 
 				dcs.target = expression_num;
-				if (expression_num instanceof IntegerIA || expression_num instanceof IdentIA && ((IdentIA) expression_num).getEntry().backlink == null) {
+				if (expression_num instanceof IntegerIA || expression_num instanceof IdentIA && ((IdentIA) expression_num).getEntry().getBacklink() == null) {
 				} else {
 					dcs.toEvaluateTarget = true;
 				}

@@ -78,8 +78,8 @@ class Found_Element_For_ITE {
 		}
 
 		final String normal_path = generatedFunction.getIdentIAPathNormal(new IdentIA(ite.getIndex(), generatedFunction));
-		if (!ite.resolveExpectation.isSatisfied())
-			ite.resolveExpectation.satisfy(normal_path);
+		if (!ite.getResolveExpectation().isSatisfied())
+			ite.getResolveExpectation().satisfy(normal_path);
 	}
 
 	public void action_AliasStatement(@NotNull final IdentTableEntry ite, @NotNull final AliasStatement y) {
@@ -96,11 +96,11 @@ class Found_Element_For_ITE {
 
 	public void action_VariableStatement(@NotNull final IdentTableEntry ite, @NotNull final VariableStatement vs, final DeduceTypeResolve2 aResolver) {
 		@NotNull final TypeName typeName = vs.typeName();
-		if (ite.type == null || ite.type.getAttached() == null) {
+		if (ite.getType() == null || ite.getType().getAttached() == null) {
 			if (!(typeName.isNull())) {
-				if (ite.type == null)
+				if (ite.getType() == null)
 					ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, vs.initialValue());
-				ite.type.setAttached(new OS_UserType(typeName), aResolver);
+				ite.getType().setAttached(new OS_UserType(typeName), aResolver);
 			} else {
 				final OS_Element parent = vs.getParent().getParent();
 				if (parent instanceof NamespaceStatement || parent instanceof ClassStatement) {
@@ -118,24 +118,24 @@ class Found_Element_For_ITE {
 						  done(new DoneCallback<GenType>() {
 							  @Override
 							  public void onDone(@NotNull final GenType result) {
-								  if (ite.resolveExpectation.isSatisfied())
+								  if (ite.getResolveExpectation().isSatisfied())
 									  return; // TODO just skip for now // assert false;
 
-								  if (ite.type == null)
+								  if (ite.getType() == null)
 									  ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, vs.initialValue());
 								  assert result.getResolved() != null;
 								  if (result.getCi() == null) {
 									  genCIForGenType(result);
 								  }
 								  ite.setGenType(result);
-								  if (ite.fefi) {
+								  if (ite.isFefi()) {
 									  ite.fefiDone(result);
 								  }
 
 								  ite.zero().setType(result);
 
 								  final String normal_path = generatedFunction.getIdentIAPathNormal(new IdentIA(ite.getIndex(), generatedFunction));
-								  ite.resolveExpectation.satisfy(normal_path);
+								  ite.getResolveExpectation().satisfy(normal_path);
 							  }
 						  });
 					} else {
@@ -156,14 +156,14 @@ class Found_Element_For_ITE {
 						dm.typePromise().then(new DoneCallback<GenType>() {
 							@Override
 							public void onDone(final GenType result) {
-								if (ite.type == null)
+								if (ite.getType() == null)
 									ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, vs.initialValue());
 								assert result.getResolved() != null;
 								ite.setGenType(result);
 //								ite.resolveTypeToClass(result.node); // TODO setting this has no effect on output
 
 								final String normal_path = generatedFunction.getIdentIAPathNormal(new IdentIA(ite.getIndex(), generatedFunction));
-								ite.resolveExpectation.satisfy(normal_path);
+								ite.getResolveExpectation().satisfy(normal_path);
 							}
 						});
 					}
@@ -183,18 +183,18 @@ class Found_Element_For_ITE {
 
 	public void action_ClassStatement(@NotNull final IdentTableEntry ite, final ClassStatement classStatement) {
 		@NotNull final OS_Type attached = classStatement.getOS_Type();
-		if (ite.type == null) {
+		if (ite.getType() == null) {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, attached);
 		} else
-			ite.type.setAttached(attached, dc.resolver());
+			ite.getType().setAttached(attached, dc.resolver());
 	}
 
 	public void action_FunctionDef(@NotNull final IdentTableEntry ite, final FunctionDef functionDef) {
 		@NotNull final OS_Type attached = functionDef.getOS_Type();
-		if (ite.type == null) {
+		if (ite.getType() == null) {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, attached);
 		} else
-			ite.type.setAttached(attached,dc.resolver() );
+			ite.getType().setAttached(attached,dc.resolver() );
 	}
 
 	public void action_PropertyStatement(@NotNull final IdentTableEntry ite, @NotNull final PropertyStatement ps) {
@@ -215,11 +215,11 @@ class Found_Element_For_ITE {
 			default:
 				throw new IllegalStateException("Unexpected value: " + ps.getTypeName().kindOfType());
 		}
-		if (ite.type == null) {
+		if (ite.getType() == null) {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, attached);
 		} else
-			ite.type.setAttached(attached, dc.resolver());
-		dc.genCIForGenType2(ite.type.getGenType());
+			ite.getType().setAttached(attached, dc.resolver());
+		dc.genCIForGenType2(ite.getType().getGenType());
 		final int yy = 2;
 	}
 

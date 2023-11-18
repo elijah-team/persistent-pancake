@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
@@ -71,7 +72,7 @@ public class GetIdentIAPathTest_ForC {
 		final int             ite_index = gf.addIdentTableEntry(foo_ident, null);
 		final IdentTableEntry ite       = gf.getIdentTableEntry(ite_index);
 		ite.setResolvedElement(foo_vs);
-		ite.backlink = new IntegerIA(int_index, gf);
+		ite.setBacklink(new IntegerIA(int_index, gf));
 		final IdentIA ident_ia = new IdentIA(ite_index, gf);
 		final String  x        = getIdentIAPath(ident_ia, gf);
 		Assert.assertEquals("vvx->vmfoo", x);

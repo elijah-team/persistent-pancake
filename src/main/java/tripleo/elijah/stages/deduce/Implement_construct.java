@@ -132,7 +132,7 @@ public class Implement_construct {
 							final @NotNull OS_Type  ty = new OS_UserType(tn);
 							final String            s  = idte2.getIdent().toString();
 
-							if (idte2.type == null) {
+							if (idte2.getType() == null) {
 								// README Don't remember enough about the constructors to select a different one
 								@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, ty);
 								try {
@@ -143,7 +143,7 @@ public class Implement_construct {
 									deduceTypes2.errSink.reportDiagnostic(aResolveError);
 								}
 
-								idte2.type = tte;
+								idte2.setType(tte);
 							}
 							// s is constructor name
 							implement_construct_type(idte2, ty, s);
@@ -379,9 +379,9 @@ public class Implement_construct {
 		// FIXME 11/18 invocation table, aka prte_list
 		final PFInvocation pinv = deduceTypes2.get(generatedFunction).makeInvocation((ClassStatement) generatedFunction.getFD().getParent());
 
-		if (ite.type.getGenType() == null) {
+		if (ite.getType().getGenType() == null) {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, (OS_Type) null);
-			final GenType gt = ite.type.getGenType();
+			final GenType gt = ite.getType().getGenType();
 			//assert gt != null;
 		}
 
@@ -389,7 +389,7 @@ public class Implement_construct {
 		if (co != null) {
 			if (co instanceof IdentTableEntry) {
 				final @Nullable IdentTableEntry idte3 = (IdentTableEntry) co;
-				idte3.type.genTypeCI(clsinv);
+				idte3.getType().genTypeCI(clsinv);
 				clsinv.resolvePromise().then(new DoneCallback<GeneratedClass>() {
 					@Override
 					public void onDone(final GeneratedClass result) {

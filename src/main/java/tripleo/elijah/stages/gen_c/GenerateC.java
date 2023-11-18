@@ -572,7 +572,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 					// which will have a container which will be either be a function,
 					// statement (semantic block, loop, match, etc) or a GeneratedContainerNC
 					final int           y  = 2;
-					final GeneratedNode er = identTableEntry.externalRef;
+					final GeneratedNode er = identTableEntry.getExternalRef();
 					if (er instanceof GeneratedContainerNC) {
 						final GeneratedContainerNC nc = (GeneratedContainerNC) er;
 						assert nc instanceof GeneratedNamespace;

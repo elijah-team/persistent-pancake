@@ -45,20 +45,20 @@ import java.util.Map;
  * Created 9/12/20 10:27 PM
  */
 public class IdentTableEntry extends BaseTableEntry1 implements Constructable, TableEntryIV, DeduceTypes2.ExpectationBase {
-	private final @NotNull Map<Integer, TypeTableEntry>                    potentialTypes = new HashMap<Integer, TypeTableEntry>();
-	protected final        DeferredObject<InstructionArgument, Void, Void> backlinkSet    = new DeferredObject<InstructionArgument, Void, Void>();
-	final                 DeferredObject<ProcTableEntry, Void, Void>      constructableDeferred = new DeferredObject<>();
-	private final         int                                             index;
-	private final         IdentExpression                                 ident;
-	private final Context            pc;
-	private final DeduceElementIdent dei = new DeduceElementIdent(this);
-	public        boolean            preUpdateStatusListenerAdded;
-	public                TypeTableEntry                                  type;
-	public                GeneratedNode                                   externalRef;
-	public                boolean                                         fefi                  = false;
-	public                ProcTableEntry                                  constructable_pte;
+	private final @NotNull Map<Integer, TypeTableEntry>                    potentialTypes        = new HashMap<Integer, TypeTableEntry>();
+	private final          DeferredObject<InstructionArgument, Void, Void> backlinkSet           = new DeferredObject<InstructionArgument, Void, Void>();
+	private final          DeferredObject<ProcTableEntry, Void, Void>      constructableDeferred = new DeferredObject<>();
+	private final          int                                             index;
+	private final          IdentExpression                                 ident;
+	private final          Context                                         pc;
+	private final          DeduceElementIdent                              dei                   = new DeduceElementIdent(this);
+	private                boolean                                         preUpdateStatusListenerAdded;
+	private                TypeTableEntry                                  type;
+	private                GeneratedNode                                   externalRef;
+	private                boolean                                         fefi                  = false;
+	private                ProcTableEntry                                  constructable_pte;
 
-//	@Override
+	//	@Override
 	public String toString2() {
 		return MoreObjects.toStringHelper(this)
 		                  .add("index", index)
@@ -68,10 +68,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		                  .toString();
 	}
 
-	public DeduceTypes2.PromiseExpectation<String> resolveExpectation;
-	InstructionArgument backlink;
-	boolean             insideGetResolvedElement = false;
-	private GeneratedNode                  resolvedType;
+	private DeduceTypes2.PromiseExpectation<String> resolveExpectation;
+	private InstructionArgument                     backlink;
+	private boolean                                 insideGetResolvedElement = false;
+	private GeneratedNode                           resolvedType;
 	private DeduceElement3_IdentTableEntry _de3;
 	private ITE_Zero                       _zero;
 
@@ -296,6 +296,70 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	public Map<Integer, TypeTableEntry> getPotentialTypes() {
 		return potentialTypes;
+	}
+
+	public DeferredObject<InstructionArgument, Void, Void> getBacklinkSet() {
+		return backlinkSet;
+	}
+
+	public DeferredObject<ProcTableEntry, Void, Void> getConstructableDeferred() {
+		return constructableDeferred;
+	}
+
+	public boolean isPreUpdateStatusListenerAdded() {
+		return preUpdateStatusListenerAdded;
+	}
+
+	public void setPreUpdateStatusListenerAdded(boolean aPreUpdateStatusListenerAdded) {
+		preUpdateStatusListenerAdded = aPreUpdateStatusListenerAdded;
+	}
+
+	public TypeTableEntry getType() {
+		return type;
+	}
+
+	public void setType(TypeTableEntry aType) {
+		type = aType;
+	}
+
+	public GeneratedNode getExternalRef() {
+		return externalRef;
+	}
+
+	public void setExternalRef(GeneratedNode aExternalRef) {
+		externalRef = aExternalRef;
+	}
+
+	public boolean isFefi() {
+		return fefi;
+	}
+
+	public void setFefi(boolean aFefi) {
+		fefi = aFefi;
+	}
+
+	public ProcTableEntry getConstructable_pte() {
+		return constructable_pte;
+	}
+
+	public void setConstructable_pte(ProcTableEntry aConstructable_pte) {
+		constructable_pte = aConstructable_pte;
+	}
+
+	public DeduceTypes2.PromiseExpectation<String> getResolveExpectation() {
+		return resolveExpectation;
+	}
+
+	public void setResolveExpectation(DeduceTypes2.PromiseExpectation<String> aResolveExpectation) {
+		resolveExpectation = aResolveExpectation;
+	}
+
+	public boolean isInsideGetResolvedElement() {
+		return insideGetResolvedElement;
+	}
+
+	public void setInsideGetResolvedElement(boolean aInsideGetResolvedElement) {
+		insideGetResolvedElement = aInsideGetResolvedElement;
 	}
 
 //	private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();

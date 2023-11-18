@@ -245,8 +245,8 @@ public class DeducePath {
 				assert gt != null;
 			} else if (ia2 instanceof IdentIA) {
 				@NotNull final IdentTableEntry identTableEntry = ((IdentIA) ia2).getEntry();
-				if (identTableEntry.type != null) {
-					gt = identTableEntry.type.getGenType();
+				if (identTableEntry.getType() != null) {
+					gt = identTableEntry.getType().getGenType();
 					assert gt != null;
 				} else {
 					gt = null;

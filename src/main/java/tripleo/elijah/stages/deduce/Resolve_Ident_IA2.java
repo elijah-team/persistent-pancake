@@ -204,7 +204,7 @@ class Resolve_Ident_IA2 {
 		if (!idte2.hasResolvedElement()) {
 			idte2.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
 		}
-		if (idte2.type == null) {
+		if (idte2.getType() == null) {
 			if (el instanceof VariableStatement) {
 				@NotNull final VariableStatement vs = (VariableStatement) el;
 				ia2_IdentIA_VariableStatement(idte2, vs, ectx);
@@ -212,8 +212,8 @@ class Resolve_Ident_IA2 {
 				ia2_IdentIA_FunctionDef(idte2);
 			}
 		}
-		if (idte2.type != null) {
-			if (idte2.type.getAttached() != null) {
+		if (idte2.getType() != null) {
+			if (idte2.getType().getAttached() != null) {
 				if (findResolved(idte2, ectx)) {
 					return RIA_STATE.CONTINUE;
 				}
@@ -357,7 +357,7 @@ class Resolve_Ident_IA2 {
 	private void ia2_IdentIA_FunctionDef(@NotNull final IdentTableEntry idte2) {
 		@Nullable final OS_Type       attached = new OS_UnknownType(el); // TODO Unknown
 		@NotNull final TypeTableEntry tte      = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, attached, null, idte2);
-		idte2.type = tte;
+		idte2.setType(tte);
 
 		// Set type to something other than Unknown when found
 		@Nullable final ProcTableEntry pte = idte2.getCallablePTE();
@@ -391,10 +391,10 @@ class Resolve_Ident_IA2 {
 				} else if (bl instanceof IdentIA) {
 					final @NotNull IdentIA identIA = (IdentIA) bl;
 					@NotNull final IdentTableEntry ite = identIA.getEntry();
-					if (ite.type.getGenType().getCi() != null)
-						invocation = ite.type.getGenType().getCi();
-					else if (ite.type.getAttached() != null) {
-						@NotNull final OS_Type attached1 = ite.type.getAttached();
+					if (ite.getType().getGenType().getCi() != null)
+						invocation = ite.getType().getGenType().getCi();
+					else if (ite.getType().getAttached() != null) {
+						@NotNull final OS_Type attached1 = ite.getType().getAttached();
 						assert attached1.getType() == OS_Type.Type.USER_CLASS;
 						invocation = phase.registerClassInvocation(attached1.getClassOf(), null); // TODO will fail one day
 						// TODO dont know if next line is right
@@ -423,7 +423,7 @@ class Resolve_Ident_IA2 {
 			   .then(aBaseGeneratedFunction ->
 			     aBaseGeneratedFunction.onType(aGenType -> {
 				     // NOTE there is no Promise-type notification for when type changes
-				     idte2.type.setAttached(aGenType);
+				     idte2.getType().setAttached(aGenType);
 			     }));
 		}
 	}
@@ -431,12 +431,12 @@ class Resolve_Ident_IA2 {
 	/* @requires idte2.type.getAttached() != null; */
 	private boolean findResolved(@NotNull final IdentTableEntry idte2, Context ctx) {
 		try {
-			if (idte2.type.getAttached() instanceof OS_UnknownType) // TODO ??
+			if (idte2.getType().getAttached() instanceof OS_UnknownType) // TODO ??
 				return false;
 
-			final OS_Type attached = idte2.type.getAttached();
+			final OS_Type attached = idte2.getType().getAttached();
 			if (attached.getType() == OS_Type.Type.USER_CLASS) {
-				if (idte2.type.getGenType().getResolved() == null) {
+				if (idte2.getType().getGenType().getResolved() == null) {
 					@NotNull final GenType rtype = deduceTypes2.resolve_type(attached, ctx);
 					if (rtype.getResolved() != null) {
 						switch (rtype.getResolved().getType()) {
@@ -447,7 +447,7 @@ class Resolve_Ident_IA2 {
 							ctx = rtype.getResolved().getElement().getContext();
 							break;
 						}
-						idte2.type.setAttached(rtype); // TODO may be losing alias information here
+						idte2.getType().setAttached(rtype); // TODO may be losing alias information here
 					}
 				}
 			}
@@ -455,7 +455,7 @@ class Resolve_Ident_IA2 {
 			if (resolveError.resultsList().size() > 1)
 				errSink.reportDiagnostic(resolveError);
 			else
-				LOG.info("1089 Can't attach type to " + idte2.type.getAttached());
+				LOG.info("1089 Can't attach type to " + idte2.getType().getAttached());
 //				resolveError.printStackTrace(); // TODO print diagnostic
 			return true;
 		}
@@ -484,7 +484,7 @@ class Resolve_Ident_IA2 {
 			attP.then(attached1 -> {
 				final OS_Type                 resolvedOrTypename = attached1.getResolved() != null ? attached1.getResolved() : attached1.getTypeName();
 				@NotNull final TypeTableEntry tte                = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, resolvedOrTypename, ivv.initialValue());
-				idte.type = tte;
+				idte.setType(tte);
 			});
 		} else if (has_initial_value) {
 			final DeferredObject<GenType, Void, Void> attP = new DeferredObject<>();
@@ -497,7 +497,7 @@ class Resolve_Ident_IA2 {
 			attP.then(attached1 -> {
 				final OS_Type                 resolvedOrTypename = attached1.getResolved() != null ? attached1.getResolved() : attached1.getTypeName();
 				@NotNull final TypeTableEntry tte                = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, resolvedOrTypename, ivv.initialValue());
-				idte.type = tte;
+				idte.setType(tte);
 			});
 		} else {
 				LOG.err("Empty Variable Expression");

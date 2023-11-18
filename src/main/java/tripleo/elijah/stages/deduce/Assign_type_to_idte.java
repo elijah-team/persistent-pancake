@@ -60,19 +60,19 @@ class Assign_type_to_idte {
 		public void foundElement(final OS_Element x) {
 			if (ite.getResolvedElement() != x)
 				ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(x));
-			if (ite.type != null && ite.type.getAttached() != null) {
-				switch (ite.type.getAttached().getType()) {
+			if (ite.getType() != null && ite.getType().getAttached() != null) {
+				switch (ite.getType().getAttached().getType()) {
 					case USER:
 						__foundElement_USER_type();
 						break;
 					case USER_CLASS:
-						use_user_class(ite.type.getAttached(), ite);
+						use_user_class(ite.getType().getAttached(), ite);
 						break;
 					case FUNCTION:
 						__foundElement__FUNCTION_type();
 						break;
 					default:
-						throw new IllegalStateException("Unexpected value: " + ite.type.getAttached().getType());
+						throw new IllegalStateException("Unexpected value: " + ite.getType().getAttached().getType());
 				}
 			} else {
 				NotImplementedException.raise();
@@ -82,14 +82,14 @@ class Assign_type_to_idte {
 
         private void __foundElement_USER_type() {
             try {
-                @NotNull final GenType xx = aDeduceTypes2.resolve_type(ite.type.getAttached(), aFunctionContext);
-                ite.type.setAttached(xx);
+                @NotNull final GenType xx = aDeduceTypes2.resolve_type(ite.getType().getAttached(), aFunctionContext);
+                ite.getType().setAttached(xx);
             } catch (final ResolveError resolveError) {
                 aDeduceTypes2.LOG.info("192 Can't attach type to " + path);
                 aDeduceTypes2.errSink.reportDiagnostic(resolveError);
             }
-            if (ite.type.getAttached().getType() == OS_Type.Type.USER_CLASS) {
-                use_user_class(ite.type.getAttached(), ite);
+            if (ite.getType().getAttached().getType() == OS_Type.Type.USER_CLASS) {
+                use_user_class(ite.getType().getAttached(), ite);
             }
         }
 
@@ -97,11 +97,11 @@ class Assign_type_to_idte {
             // TODO All this for nothing
             //  the ite points to a function, not a function call,
             //  so there is no point in resolving it
-            if (ite.type.getTableEntry() instanceof ProcTableEntry) {
-                final @NotNull ProcTableEntry pte = (ProcTableEntry) ite.type.getTableEntry();
+            if (ite.getType().getTableEntry() instanceof ProcTableEntry) {
+                final @NotNull ProcTableEntry pte = (ProcTableEntry) ite.getType().getTableEntry();
 
-            } else if (ite.type.getTableEntry() instanceof IdentTableEntry) {
-                final @NotNull IdentTableEntry identTableEntry = (IdentTableEntry) ite.type.getTableEntry();
+            } else if (ite.getType().getTableEntry() instanceof IdentTableEntry) {
+                final @NotNull IdentTableEntry identTableEntry = (IdentTableEntry) ite.getType().getTableEntry();
                 if (identTableEntry.getCallablePTE() != null) {
                     @Nullable final ProcTableEntry cpte = identTableEntry.getCallablePTE();
                     cpte.typePromise().then(new DoneCallback<GenType>() {
@@ -129,14 +129,14 @@ class Assign_type_to_idte {
 					ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(x));
 
 					// TODO this is checked above, so is below redundant??
-					assert ite.type != null;
-					assert ite.type.getAttached() != null;
+					assert ite.getType() != null;
+					assert ite.getType().getAttached() != null;
 
-					if (ite.type != null && ite.type.getAttached() != null) {
-						if (Objects.requireNonNull(ite.type.getAttached().getType()) == OS_Type.Type.USER) {
+					if (ite.getType() != null && ite.getType().getAttached() != null) {
+						if (Objects.requireNonNull(ite.getType().getAttached().getType()) == OS_Type.Type.USER) {
 							try {
-								@NotNull final GenType xx = aDeduceTypes2.resolve_type(ite.type.getAttached(), aFunctionContext);
-								ite.type.setAttached(xx);
+								@NotNull final GenType xx = aDeduceTypes2.resolve_type(ite.getType().getAttached(), aFunctionContext);
+								ite.getType().setAttached(xx);
 							} catch (final ResolveError resolveError) { // TODO double catch
 								aDeduceTypes2.LOG.info("210 Can't attach type to " + iteIdent);
 								aDeduceTypes2.errSink.reportDiagnostic(resolveError);
@@ -152,17 +152,17 @@ class Assign_type_to_idte {
                 aDeduceTypes2.errSink.reportDiagnostic(aResolveError);
             }
 
-            assert ite.type != null;
-            assert ite.type.getAttached() != null;
+            assert ite.getType() != null;
+            assert ite.getType().getAttached() != null;
 
-            if (ite.type.getAttached().getType() == OS_Type.Type.USER_CLASS) {
-                use_user_class(ite.type.getAttached(), ite);
+            if (ite.getType().getAttached().getType() == OS_Type.Type.USER_CLASS) {
+                use_user_class(ite.getType().getAttached(), ite);
             }
         }
 
         private void use_user_class(@NotNull final OS_Type aType, @NotNull final IdentTableEntry aEntry) {
             final ClassStatement cs = aType.getClassOf();
-            if (aEntry.constructable_pte != null) {
+            if (aEntry.getConstructable_pte() != null) {
                 final int yyy = 3;
 	            SimplePrintLoggerToRemoveSoon.println2("use_user_class: " + cs);
             }
