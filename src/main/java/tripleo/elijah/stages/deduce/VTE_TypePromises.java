@@ -54,7 +54,7 @@ public class VTE_TypePromises {
 				assert result.getResolved().getClassOf() == fd.getParent();
 
 				@NotNull final ProcTableListener.E_Is_FunctionDef e_Is_FunctionDef = aProcTableListener.new E_Is_FunctionDef(
-				  pte, fd, fd.getParent()).invoke(aVariableTableEntry.type.genType.getNonGenericTypeName());
+				  pte, fd, fd.getParent()).invoke(aVariableTableEntry.type.getGenType().getNonGenericTypeName());
 				@Nullable final FunctionInvocation fi      = e_Is_FunctionDef.getFi();
 				final GenType                      genType = e_Is_FunctionDef.getGenType();
 				aProcTableListener.finish(co, depTracker, fi, genType);
@@ -101,7 +101,7 @@ public class VTE_TypePromises {
 					SimplePrintLoggerToRemoveSoon.println_err2("** Failed assertion");
 				}
 
-				@NotNull final ProcTableListener.E_Is_FunctionDef e_Is_FunctionDef = aProcTableListener.new E_Is_FunctionDef(pte, fd, fd.getParent()).invoke(aVariableTableEntry.type.genType.getNonGenericTypeName());
+				@NotNull final ProcTableListener.E_Is_FunctionDef e_Is_FunctionDef = aProcTableListener.new E_Is_FunctionDef(pte, fd, fd.getParent()).invoke(aVariableTableEntry.type.getGenType().getNonGenericTypeName());
 				@Nullable final FunctionInvocation                fi               = e_Is_FunctionDef.getFi();
 				final GenType                                     genType          = e_Is_FunctionDef.getGenType();
 				aProcTableListener.finish(co, depTracker, fi, genType);
@@ -164,7 +164,7 @@ public class VTE_TypePromises {
 			public void onDone(final GenType result) {
 //					assert vte != vte1;
 //					aTte.setAttached(result.resolved != null ? result.resolved : result.typeName);
-				aTte.genType.copy(result);
+				aTte.getGenType().copy(result);
 //					vte.addPotentialType(aInstructionIndex, result); // TODO!!
 			}
 		});

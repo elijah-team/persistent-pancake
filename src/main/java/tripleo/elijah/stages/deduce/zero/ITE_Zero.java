@@ -48,9 +48,9 @@ public class ITE_Zero {
 
 //				ty2 = aFoundParent.deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
                 final OS_Element ele;
-                if (vte.genType.getResolved() == null) {
+                if (vte.getGenType().getResolved() == null) {
                     if (ty2.getResolved().getType() == OS_Type.Type.USER_CLASS) {
-                        vte.genType.copy(ty2);
+                        vte.getGenType().copy(ty2);
                     }
                 }
                 ele = ty2.getResolved().getElement();

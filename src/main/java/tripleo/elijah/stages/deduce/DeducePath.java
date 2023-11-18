@@ -241,12 +241,12 @@ public class DeducePath {
 			@Nullable final GenType gt;
 			if (ia2 instanceof IntegerIA) {
 				@NotNull final VariableTableEntry vte = ((IntegerIA) ia2).getEntry();
-				gt = vte.type.genType;
+				gt = vte.type.getGenType();
 				assert gt != null;
 			} else if (ia2 instanceof IdentIA) {
 				@NotNull final IdentTableEntry identTableEntry = ((IdentIA) ia2).getEntry();
 				if (identTableEntry.type != null) {
-					gt = identTableEntry.type.genType;
+					gt = identTableEntry.type.getGenType();
 					assert gt != null;
 				} else {
 					gt = null;

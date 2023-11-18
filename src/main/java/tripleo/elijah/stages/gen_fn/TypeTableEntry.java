@@ -15,6 +15,8 @@ import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.stages.deduce.ClassInvocation;
+import tripleo.elijah.stages.deduce.DeduceTypes2;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.ArrayList;
@@ -25,15 +27,45 @@ import java.util.List;
  */
 public class TypeTableEntry {
 	@NotNull
-	public final  Type                lifetime;
+	private final Type                lifetime;
 	@Nullable
-	public final  TableEntryIV        tableEntry;
-	public final  GenType             genType = new GenType();
-	public final  IExpression         expression;
-	final         int                 index;
+	private final TableEntryIV tableEntry;
+	private       GenType      genType;
+	private final IExpression  expression;
+	private final int                 index;
 	private final List<OnSetAttached> osacbs  = new ArrayList<OnSetAttached>();
 	@Nullable
-	private       OS_Type             attached;
+	private OS_Type      attached;
+	private @Nullable DeduceTypes2 deduceTypes2;
+
+	public Type getLifetime() {
+		return lifetime;
+	}
+
+	public TableEntryIV getTableEntry() {
+		return tableEntry;
+	}
+
+	public GenType getGenType() {
+		if (genType == null) {
+			if (deduceTypes2 != null) {
+				genType = new GenType(deduceTypes2.resolver());
+			}
+		}
+		return genType;
+	}
+
+	public IExpression getExpression() {
+		return expression;
+	}
+
+	public List<OnSetAttached> getOsacbs() {
+		return osacbs;
+	}
+
+	public void setDeduceTypes2(final DeduceTypes2 aDeduceTypes2) {
+		deduceTypes2 = aDeduceTypes2;
+	}
 
 	public interface OnSetAttached {
 		void onSetAttached(TypeTableEntry aTypeTableEntry);
@@ -55,6 +87,7 @@ public class TypeTableEntry {
 		}
 		this.expression = expression;
 		this.tableEntry = aTableEntryIV;
+//		genType         = new GenType(aResolver);
 	}
 
 	private void _settingAttached(@NotNull final OS_Type aAttached) {

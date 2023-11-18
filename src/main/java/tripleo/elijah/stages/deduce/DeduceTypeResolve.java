@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.AbstractCodeGen;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
@@ -40,7 +41,7 @@ public class DeduceTypeResolve {
 	private final DeferredObject<GenType, ResolveError, Void> typeResolution = new DeferredObject<GenType, ResolveError, Void>();
 	BaseTableEntry backlink;
 
-	public DeduceTypeResolve(final BaseTableEntry aBte) {
+	public DeduceTypeResolve(final BaseTableEntry aBte, final DeduceTypeResolve2 aResolver) {
 		bte = aBte;
 		if (bte instanceof IdentTableEntry) {
 			((IdentTableEntry) bte).backlinkSet()
@@ -60,7 +61,7 @@ public class DeduceTypeResolve {
 				public void onChange(final IElementHolder eh, final BaseTableEntry.Status newStatus) {
 					if (newStatus != BaseTableEntry.Status.KNOWN) return;
 
-					final GenType genType = new GenType();
+					final GenType genType = new GenType(aResolver);
 					__modifyGenType(eh, genType);
 
 					if (!typeResolution.isPending()) {

@@ -15,6 +15,7 @@ import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang.types.OS_FuncExprType;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
@@ -77,11 +78,11 @@ class Resolve_Variable_Table_Entry {
 		if (vte.type.getAttached() == null && vte.potentialTypes.size() == 1) {
 			final TypeTableEntry pot = new ArrayList<>(vte.potentialTypes()).get(0);
 			if (pot.getAttached() instanceof OS_FuncExprType) {
-				action_VAR_potsize_1_and_FuncExprType(vte, (OS_FuncExprType) pot.getAttached(), pot.genType, pot.expression);
+				action_VAR_potsize_1_and_FuncExprType(vte, (OS_FuncExprType) pot.getAttached(), pot.getGenType(), pot.getExpression());
 			} else if (pot.getAttached() != null && pot.getAttached().getType() == OS_Type.Type.USER_CLASS) {
 				final int y = 1;
 				vte.type = pot;
-				vte.resolveType(pot.genType);
+				vte.resolveType(pot.getGenType());
 			} else {
 				action_VAR_potsize_1_other(vte, pot);
 			}
@@ -90,8 +91,8 @@ class Resolve_Variable_Table_Entry {
 
 	public void action_VAR_potsize_1_other(@NotNull final VariableTableEntry vte, @NotNull final TypeTableEntry aPot) {
 		try {
-			if (aPot.tableEntry instanceof ProcTableEntry) {
-				final @NotNull ProcTableEntry pte1 = (ProcTableEntry) aPot.tableEntry;
+			if (aPot.getTableEntry() instanceof ProcTableEntry) {
+				final @NotNull ProcTableEntry pte1 = (ProcTableEntry) aPot.getTableEntry();
 				@Nullable final OS_Element    e    = DeduceLookupUtils.lookup(pte1.expression, ctx, deduceTypes2);
 				if (e == null) {
 					System.err.println("** 97: " + pte1.expression);
@@ -123,15 +124,15 @@ class Resolve_Variable_Table_Entry {
 					pte1.setStatus(BaseTableEntry.Status.KNOWN, new ConstructableElementHolder(e, vte));
 //					vte.setCallablePTE(pte1);
 
-					final GenType gt = aPot.genType;
+					final GenType gt = aPot.getGenType();
 					setup_GenType(e, gt);
 //					if (gt.node == null)
 //						gt.node = vte.genType.node;
 
-					vte.genType.copy(gt);
+					vte.getGenType().copy(gt);
 				}
 				final int y = 2;
-			} else if (aPot.tableEntry == null) {
+			} else if (aPot.getTableEntry() == null) {
 				final OS_Element el = vte.getResolvedElement();
 				if (el instanceof VariableStatement) {
 					final VariableStatement variableStatement = (VariableStatement) el;
@@ -159,7 +160,9 @@ class Resolve_Variable_Table_Entry {
 				if (el2 != null) {
 					if (el2 instanceof ClassStatement) {
 						final ClassStatement classStatement = (ClassStatement) el2;
-						final GenType        genType        = new GenType(classStatement);
+						DeduceTypeResolve2           aResolver      = deduceTypes2.resolver();
+
+						final GenType        genType        = new GenType(classStatement, aResolver);
 						//deferredMember.typeResolved().resolve(genType);
 						genCIForGenType2(genType);
 					}
@@ -336,28 +339,28 @@ class Resolve_Variable_Table_Entry {
 		if (attached != null) {
 			switch (attached.getType()) {
 				case USER:
-					if (tte.genType.getTypeName() == null)
-						tte.genType.setTypeName(attached);
+					if (tte.getGenType().getTypeName() == null)
+						tte.getGenType().setTypeName(attached);
 					try {
-						tte.genType.copy(deduceTypes2.resolve_type(attached, ctx));
-						tte.setAttached(tte.genType.getResolved()); // TODO probably not necessary, but let's leave it for now
+						tte.getGenType().copy(deduceTypes2.resolve_type(attached, ctx));
+						tte.setAttached(tte.getGenType().getResolved()); // TODO probably not necessary, but let's leave it for now
 					} catch (final ResolveError aResolveError) {
 						errSink.reportDiagnostic(aResolveError);
 						LOG.err("Can't resolve argument type " + attached);
 						return;
 					}
 					if (generatedFunction.fi.getClassInvocation() != null)
-						genNodeForGenType(tte.genType, generatedFunction.fi.getClassInvocation());
+						genNodeForGenType(tte.getGenType(), generatedFunction.fi.getClassInvocation());
 					else
-						genCIForGenType(tte.genType);
-					vte.resolveType(tte.genType);
+						genCIForGenType(tte.getGenType());
+					vte.resolveType(tte.getGenType());
 					break;
 				case USER_CLASS:
-					if (tte.genType.getResolved() == null)
-						tte.genType.setResolved(attached);
+					if (tte.getGenType().getResolved() == null)
+						tte.getGenType().setResolved(attached);
 					// TODO genCI and all that -- Incremental?? (.increment())
-					vte.resolveType(tte.genType);
-					genCIForGenType2(tte.genType);
+					vte.resolveType(tte.getGenType());
+					genCIForGenType2(tte.getGenType());
 					break;
 			}
 		} else {

@@ -17,6 +17,7 @@ import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.deduce.zero.ITE_Zero;
 import tripleo.elijah.stages.deduce.zero.PTE_Zero;
 import tripleo.elijah.stages.deduce.zero.VTE_Zero;
@@ -67,7 +68,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 
 				onChangeITE(ite.zero(), ite, errSink);
 			}
-			postOnChange(eh);
+			postOnChange(eh, deduceTypes2.resolver());
 		}
 	}
 
@@ -175,13 +176,13 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 	}
 
 	/* @ensures ite.type != null */
-	private void postOnChange(@NotNull final IElementHolder eh) {
+	private void postOnChange(@NotNull final IElementHolder eh, final DeduceTypeResolve2 aResolver) {
 		if (ite.type == null && eh.getElement() instanceof VariableStatement) {
 			@NotNull final TypeName typ = ((VariableStatement) eh.getElement()).typeName();
 			@NotNull final OS_Type  ty  = new OS_UserType(typ);
 
 			try {
-				@Nullable final GenType ty2 = getTY2(typ, ty);
+				@Nullable final GenType ty2 = getTY2(typ, ty, aResolver);
 
 				// no expression or TableEntryIV below
 				if (ty2 != null) {
@@ -197,10 +198,10 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 		}
 	}
 
-	private @Nullable GenType getTY2(@NotNull final TypeName aTyp, final @NotNull OS_Type ty) throws ResolveError {
+	private @Nullable GenType getTY2(@NotNull final TypeName aTyp, final @NotNull OS_Type ty, final DeduceTypeResolve2 aResolver) throws ResolveError {
 		if (ty.getType() != OS_Type.Type.USER) {
 			assert false;
-			@NotNull final GenType genType = new GenType();
+			@NotNull final GenType genType = new GenType(aResolver);
 			genType.set(ty);
 			return genType;
 		}
@@ -218,7 +219,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 				type_is_null_and_attached_is_null_vte();
 				// ty2 will probably be null here
 			} else {
-				ty2 = new GenType();
+				ty2 = new GenType(aResolver);
 				ty2.set(attached);
 			}
 		} else if (bte instanceof IdentTableEntry) {
@@ -230,7 +231,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 					type_is_null_and_attached_is_null_ite((IdentTableEntry) bte);
 					// ty2 will be null here
 				} else {
-					ty2 = new GenType();
+					ty2 = new GenType(aResolver);
 					ty2.set(attached);
 				}
 			}

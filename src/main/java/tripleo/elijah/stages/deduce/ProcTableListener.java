@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import com.google.common.base.Preconditions;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +21,7 @@ import tripleo.elijah.lang.NamespaceStatement;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.AbstractDependencyTracker;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
@@ -205,11 +207,11 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 				parent = fd.getParent();
 				final TypeTableEntry x = pte.getArgs().get(0);
 				// TODO highly specialized condition...
-				if (x.getAttached() == null && x.tableEntry == null) {
-					final String text = ((IdentExpression) x.expression).getText();
+				if (x.getAttached() == null && x.getTableEntry() == null) {
+					final String text = ((IdentExpression) x.getExpression()).getText();
 					@Nullable final InstructionArgument vte_ia = generatedFunction.vte_lookup(text);
 					if (vte_ia != null) {
-						final GenType gt = ((IntegerIA) vte_ia).getEntry().type.genType;
+						final GenType gt = ((IntegerIA) vte_ia).getEntry().type.getGenType();
 						typeName = gt.getNonGenericTypeName() != null ? gt.getNonGenericTypeName() : gt.getTypeName().getTypeName();
 					} else {
 						if (parent instanceof ClassStatement) {
@@ -238,7 +240,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 
 			if (/*aGenType == null &&*/ aFi.getFunction() instanceof ConstructorDef) {
 				final @NotNull ClassStatement c        = aFi.getClassInvocation().getKlass();
-				final @NotNull GenType        genType2 = new GenType(c);
+				final @NotNull GenType        genType2 = new GenType(c, _resolver());
 				depTracker.addDependentType(genType2);
 				// TODO why not add fi?
 			} else {
@@ -321,14 +323,14 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 				@NotNull final ClassInvocation ci;
 				if (parent instanceof NamespaceStatement) {
 					final @NotNull NamespaceStatement namespaceStatement = (NamespaceStatement) parent;
-					genType = new GenType(namespaceStatement);
+					genType = new GenType(namespaceStatement, _resolver());
 					final NamespaceInvocation nsi = dc.registerNamespaceInvocation(namespaceStatement);
 //				pte.setNamespaceInvocation(nsi);
 					genType.setCi(nsi);
 					fi         = dc.newFunctionInvocation(fd, pte, nsi);
 				} else if (parent instanceof ClassStatement) {
 					final @NotNull ClassStatement classStatement = (ClassStatement) parent;
-					genType = new GenType(classStatement);
+					genType = new GenType(classStatement, _resolver());
 //							ci = new ClassInvocation(classStatement, null);
 //							ci = phase.registerClassInvocation(ci);
 //							genType.ci = ci;
@@ -348,7 +350,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 				@NotNull final ClassInvocation ci;
 				if (parent instanceof ClassStatement) {
 					final @NotNull ClassStatement classStatement = (ClassStatement) parent;
-					genType = new GenType(classStatement);
+					genType = new GenType(classStatement, _resolver());
 //					ci = new ClassInvocation(classStatement, null);
 //					ci = phase.registerClassInvocation(ci);
 //					genType.ci = ci;
@@ -357,7 +359,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 					fi = dc.newFunctionInvocation(fd, pte, ci);
 				} else if (parent instanceof NamespaceStatement) {
 					final @NotNull NamespaceStatement namespaceStatement = (NamespaceStatement) parent;
-					genType = new GenType(namespaceStatement);
+					genType = new GenType(namespaceStatement, _resolver());
 					final NamespaceInvocation nsi = dc.registerNamespaceInvocation(namespaceStatement);
 //					pte.setNamespaceInvocation(nsi);
 					genType.setCi(nsi);
@@ -366,7 +368,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 				}
 			} else {
 				// don't create new objects when alrady populated
-				genType = new GenType();
+				genType = new GenType(_resolver());
 				final ClassInvocation classInvocation = pte.getClassInvocation();
 				genType.setResolved(classInvocation.getKlass().getOS_Type());
 				genType.setCi(classInvocation);
@@ -374,6 +376,12 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 			}
 			return this;
 		}
+	}
+
+	private DeduceTypeResolve2 _resolver() {
+		final DeduceTypeResolve2 resolver = pte.dpc._deduceTypes2().resolver();
+		Preconditions.checkNotNull(resolver);
+		return resolver;
 	}
 }
 

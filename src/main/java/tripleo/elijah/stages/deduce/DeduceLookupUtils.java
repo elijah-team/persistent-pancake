@@ -17,6 +17,7 @@ import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.lang.types.OS_UnknownType;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.BuiltInTypes;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
@@ -156,6 +157,8 @@ public class DeduceLookupUtils {
 	}
 
 	public static @Nullable GenType deduceExpression(@NotNull final DeduceTypes2 aDeduceTypes2, @NotNull final IExpression n, final @NotNull Context context) throws ResolveError {
+		DeduceTypeResolve2 resolver = aDeduceTypes2.resolver();
+
 		switch (n.getKind()) {
 		case IDENT:
 			final Promise<GenType, ResolveError, Void> x = deduceIdentExpression_p(aDeduceTypes2, (IdentExpression) n, context);
@@ -163,7 +166,7 @@ public class DeduceLookupUtils {
 			x.then(y -> gt[0] = y);
 			return gt[0];
 		case NUMERIC:
-			final @NotNull GenType genType = new GenType();
+			final @NotNull GenType genType = new GenType(resolver);
 			genType.setResolved(new OS_BuiltinType(BuiltInTypes.SystemInteger));
 			return genType;
 		case DOT_EXP:
@@ -174,7 +177,7 @@ public class DeduceLookupUtils {
 			NotImplementedException.raise();
 			break;
 		case PROCEDURE_CALL:
-			@Nullable final GenType result = new GenType();
+			@Nullable final GenType result = new GenType(resolver);
 			boolean finished = false;
 			SimplePrintLoggerToRemoveSoon.println_err2("979 During deduceProcedureCall " + n);
 			@Nullable OS_Element best = null;
@@ -269,6 +272,7 @@ public class DeduceLookupUtils {
 		}
 
 		public void do_deduceExpression(final DeduceTypes2 aDeduceTypes2, final IExpression n, final Context context) {
+			DeduceTypeResolve2 resolver =aDeduceTypes2.resolver();
 			try {
 				switch (n.getKind()) {
 				case IDENT:
@@ -277,7 +281,7 @@ public class DeduceLookupUtils {
 					x.fail(typePromise::reject);
 					break;
 				case NUMERIC:
-					final @NotNull GenType genType = new GenType();
+					final @NotNull GenType genType = new GenType(aDeduceTypes2.resolver());
 					genType.setResolved(new OS_BuiltinType(BuiltInTypes.SystemInteger));
 					typePromise.resolve(genType);
 					return;
@@ -311,7 +315,7 @@ public class DeduceLookupUtils {
 		private final DeferredObject<GenType, ResolveError, Void> typePromise = new DeferredObject<>();
 
 		public void do_deduceProcedureCall(final ProcedureCallExpression pce, final Context ctx, final DeduceTypes2 deduceTypes2) {
-			@Nullable final GenType result = new GenType();
+			@Nullable final GenType result = new GenType(deduceTypes2.resolver());
 
 			SimplePrintLoggerToRemoveSoon.println_err2("979 During deduceProcedureCall " + pce);
 			@Nullable OS_Element best = null;
@@ -360,7 +364,7 @@ public class DeduceLookupUtils {
 		public void do_deduceIdentExpression(final DeduceTypes2 aDeduceTypes2, final IdentExpression ident, final Context ctx) {
 			try {
 				@Nullable GenType       result = null;
-				@Nullable final GenType R      = new GenType();
+				@Nullable final GenType R      = new GenType(aDeduceTypes2.resolver());
 
 				// is this right?
 				final LookupResultList lrl  = ctx.lookup(ident.getText());

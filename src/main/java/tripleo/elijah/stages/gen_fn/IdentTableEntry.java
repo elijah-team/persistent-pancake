@@ -173,7 +173,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	@Override
 	public void setGenType(final GenType aGenType) {
 		if (type != null) {
-			type.genType.copy(aGenType);
+			type.getGenType().copy(aGenType);
 		} else {
 			throw new IllegalStateException("idte-102 Attempting to set a null type");
 //			tripleo.elijah.util.Stupidity.println_err2("idte-102 Attempting to set a null type");
@@ -185,7 +185,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 			makeType(gf, TypeTableEntry.Type.SPECIFIED, genType.getResolved());
 		}
 
-		type.genType.copy(genType);
+		type.getGenType().copy(genType);
 	}
 
 	// endregion constructable

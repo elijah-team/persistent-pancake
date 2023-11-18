@@ -83,8 +83,8 @@ public class VTE_Zero {
             assert best != null;
             ite.setResolvedElement(best);
 
-            final @NotNull GenType          genType  = new GenType(klass);
-            final TypeName                  typeName = vte.type.genType.getNonGenericTypeName();
+            final @NotNull GenType          genType  = new GenType(klass, deduceTypes2.resolver());
+            final TypeName                  typeName = vte.type.getGenType().getNonGenericTypeName();
             final @Nullable ClassInvocation ci       = genType.genCI(typeName, deduceTypes2, errSink, phase);
 //							resolve_vte_for_class(vte, klass);
             ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
@@ -112,9 +112,9 @@ public class VTE_Zero {
                 case USER:
                     final @NotNull GenType ty2 = deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
 
-                    if (tte.genType.getResolved() == null) {
+                    if (tte.getGenType().getResolved() == null) {
                         if (ty2.getResolved().getType() == OS_Type.Type.USER_CLASS) {
-                            tte.genType.copy(ty2);
+                            tte.getGenType().copy(ty2);
                         }
                     }
 

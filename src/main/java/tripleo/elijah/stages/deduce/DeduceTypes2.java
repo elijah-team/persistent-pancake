@@ -159,7 +159,7 @@ public class DeduceTypes2 {
 			if (result_index != null) {
 				@NotNull final VariableTableEntry vte = ((IntegerIA) result_index).getEntry();
 				if (vte.resolvedType() == null) {
-					final GenType b = vte.genType;
+					final GenType b = vte.getGenType();
 					final OS_Type a = vte.type.getAttached();
 					if (a != null) {
 						// see resolve_function_return_type
@@ -168,12 +168,12 @@ public class DeduceTypes2 {
 							dof_uc(vte, a);
 							break;
 						case USER:
-							vte.genType.setTypeName(a);
+							vte.getGenType().setTypeName(a);
 							try {
 								@NotNull final GenType rt = resolve_type(a, a.getTypeName().getContext());
 								if (rt.getResolved() != null && rt.getResolved().getType() == OS_Type.Type.USER_CLASS) {
 									if (rt.getResolved().getClassOf().getGenericPart().size() > 0)
-										vte.genType.setNonGenericTypeName(a.getTypeName()); // TODO might be wrong
+										vte.getGenType().setNonGenericTypeName(a.getTypeName()); // TODO might be wrong
 									dof_uc(vte, rt.getResolved());
 								}
 							} catch (final ResolveError aResolveError) {
@@ -271,11 +271,11 @@ public class DeduceTypes2 {
 
 							switch (type) {
 							case NAMESPACE:
-								@NotNull final GenType genType = new GenType((NamespaceStatement) el);
+								@NotNull final GenType genType = new GenType((NamespaceStatement) el, resolver());
 								generatedFunction.addDependentType(genType);
 								break;
 							case CLASS:
-								@NotNull final GenType genType2 = new GenType((ClassStatement) el);
+								@NotNull final GenType genType2 = new GenType((ClassStatement) el, resolver());
 								generatedFunction.addDependentType(genType2);
 								break;
 							case FUNCTION:
@@ -376,8 +376,8 @@ public class DeduceTypes2 {
 				else {
 					LOG.err("267 attached == null for " + typeTableEntry);
 
-					if (typeTableEntry.expression != null)
-						l.add(String.format("<Unknown expression: %s>", typeTableEntry.expression));
+					if (typeTableEntry.getExpression() != null)
+						l.add(String.format("<Unknown expression: %s>", typeTableEntry.getExpression()));
 					else
 						l.add("<Unknkown>");
 				}
@@ -397,8 +397,8 @@ public class DeduceTypes2 {
 		@Nullable ClassInvocation ci = new ClassInvocation(aA.getClassOf(), null);
 		ci = phase.registerClassInvocation(ci);
 
-		aVte.genType.setResolved(aA); // README assuming OS_Type cannot represent namespaces
-		aVte.genType.setCi(ci);
+		aVte.getGenType().setResolved(aA); // README assuming OS_Type cannot represent namespaces
+		aVte.getGenType().setCi(ci);
 
 		ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
 			@Override
@@ -435,7 +435,7 @@ public class DeduceTypes2 {
 	}
 
 	private GenType makeGenTypeFromOSType(final OS_Type aType, final @Nullable Map<TypeName, OS_Type> aGenericPart) {
-		final GenType gt = new GenType();
+		final GenType gt = new GenType(resolver());
 		gt.setTypeName(aType);
 		if (aType.getType() == OS_Type.Type.USER) {
 			final TypeName tn1 = aType.getTypeName();
@@ -713,7 +713,7 @@ public class DeduceTypes2 {
 			if (result_index != null) {
 				@NotNull final VariableTableEntry vte = ((IntegerIA) result_index).getEntry();
 				if (vte.resolvedType() == null) {
-					final GenType b = vte.genType;
+					final GenType b = vte.getGenType();
 					final OS_Type a = vte.type.getAttached();
 					if (a != null) {
 						// see resolve_function_return_type
@@ -1016,7 +1016,7 @@ public class DeduceTypes2 {
 	}
 
 	private void do_assign_normal_ident_deferred_FALI(final BaseGeneratedFunction generatedFunction, final IdentTableEntry aIdentTableEntry, final FormalArgListItem fali) {
-		final GenType     genType = new GenType();
+		final GenType     genType = new GenType(resolver());
 		final IInvocation invocation;
 		if (generatedFunction.fi.getClassInvocation() != null) {
 			invocation       = generatedFunction.fi.getClassInvocation();
@@ -1052,7 +1052,7 @@ public class DeduceTypes2 {
 				aIdentTableEntry.type.setAttached(result.getResolved());
 			}
 		});
-		final GenType genType = new GenType();
+		final GenType genType = new GenType(resolver());
 		genType.setCi(dm.getInvocation());
 		if (genType.getCi() instanceof NamespaceInvocation) {
 			genType.setResolvedn(((NamespaceInvocation) genType.getCi()).getNamespace());
@@ -1072,7 +1072,7 @@ public class DeduceTypes2 {
 		final VariableTableEntry testing_var    = gf.getVarTableEntry(testing_var_.getIndex());
 		final TypeTableEntry     testing_type__ = gf.getTypeTableEntry(testing_type_.getIndex());
 
-		final GenType genType = testing_type__.genType;
+		final GenType genType = testing_type__.getGenType();
 		if (genType.getResolved() == null) {
 			try {
 				genType.setResolved(resolve_type(genType.getTypeName(), gf.getFD().getContext()).getResolved());
@@ -1180,7 +1180,7 @@ public class DeduceTypes2 {
 	}
 
 	@NotNull GenType resolve_type(final OS_Module module, final @Nullable OS_Type type, final Context ctx) throws ResolveError {
-		@NotNull final GenType R = new GenType();
+		@NotNull final GenType R = new GenType(resolver());
 		R.setTypeName(type);
 
 		switch (type.getType()) {
@@ -1407,7 +1407,7 @@ public class DeduceTypes2 {
 			for (final VariableTableEntry variableTableEntry : generatedFunction.vte_list) {
 				final @NotNull Collection<TypeTableEntry> pot = variableTableEntry.potentialTypes();
 				final int                                 y   = 2;
-				if (pot.size() == 1 && variableTableEntry.genType.isNull()) {
+				if (pot.size() == 1 && variableTableEntry.getGenType().isNull()) {
 					final OS_Type x = pot.iterator().next().getAttached();
 					if (x != null)
 						if (x.getType() == OS_Type.Type.USER_CLASS) {
@@ -1475,14 +1475,14 @@ public class DeduceTypes2 {
 
 			if (vte.type != null) {
 				if (vte.type.getAttached() != null) {
-					phase.typeDecided((GeneratedFunction) generatedFunction, vte.type.genType);
+					phase.typeDecided((GeneratedFunction) generatedFunction, vte.type.getGenType());
 				} else {
 					@NotNull final Collection<TypeTableEntry> pot1 = vte.potentialTypes();
 					@NotNull final ArrayList<TypeTableEntry>  pot  = new ArrayList<TypeTableEntry>(pot1);
 					if (pot.size() == 1) {
-						phase.typeDecided((GeneratedFunction) generatedFunction, pot.get(0).genType);
+						phase.typeDecided((GeneratedFunction) generatedFunction, pot.get(0).getGenType());
 					} else if (pot.size() == 0) {
-						@NotNull final GenType unitType = new GenType();
+						@NotNull final GenType unitType = new GenType(resolver());
 						unitType.setTypeName(new OS_BuiltinType(BuiltInTypes.Unit));
 						phase.typeDecided((GeneratedFunction) generatedFunction, unitType);
 					} else {
@@ -1498,7 +1498,7 @@ public class DeduceTypes2 {
 				// if Result is not present, then make function return Unit
 				// TODO May not be correct in all cases, such as when Value is present
 				// but works for current code structure, where Result is a always present
-				@NotNull final GenType unitType = new GenType();
+				@NotNull final GenType unitType = new GenType(resolver());
 				unitType.setTypeName(new OS_BuiltinType(BuiltInTypes.Unit));
 				phase.typeDecided((GeneratedFunction) generatedFunction, unitType);
 			}
@@ -1509,7 +1509,7 @@ public class DeduceTypes2 {
 	 * See {@link Implement_construct#_implement_construct_type}
 	 */
 	private @Nullable ClassInvocation genCI(@NotNull final TypeTableEntry aType) {
-		final GenType genType = aType.genType;
+		final GenType genType = aType.getGenType();
 		if (genType.getNonGenericTypeName() != null) {
 			@NotNull final NormalTypeName aTyn1           = (NormalTypeName) genType.getNonGenericTypeName();
 			@Nullable final String        constructorName = null; // TODO this comes from nowhere
@@ -1602,12 +1602,12 @@ public class DeduceTypes2 {
 				// TODO this should have been set somewhere already
 				//  typeName and nonGenericTypeName are not set
 				//  but at this point probably wont be needed
-				vte.type.genType.setResolved(attached);
+				vte.type.getGenType().setResolved(attached);
 				vte.type.setAttached(attached);
 			}
 			vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(vte.getResolvedElement()));
 			{
-				final GenType genType = vte.type.genType;
+				final GenType genType = vte.type.getGenType();
 				if (genType.getResolved() != null && genType.getNode() == null) {
 					genCI(genType, genType.getNonGenericTypeName());
 //					genType.node = makeNode(genType);
@@ -1697,7 +1697,7 @@ public class DeduceTypes2 {
 											public void onDone(@NotNull final GenType result) {
 												pe.satisfy(result);
 												@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved()); // TODO there has to be a better way
-												tte.genType.copy(result);
+												tte.getGenType().copy(result);
 												vte.addPotentialType(instructionIndex, tte);
 											}
 										});
@@ -1718,7 +1718,7 @@ public class DeduceTypes2 {
 			for (int i = 0; i < args.size(); i++) {
 				final TypeTableEntry tte = args.get(i); // TODO this looks wrong
 	//			LOG.info("770 "+tte);
-				final IExpression e = tte.expression;
+				final IExpression e = tte.getExpression();
 				if (e == null) continue;
 				switch (e.getKind()) {
 				case NUMERIC:
@@ -1755,7 +1755,7 @@ public class DeduceTypes2 {
 									@Override
 									public void typeDecided(@NotNull final GenType aType) {
 										tte.setAttached(gt(aType)); // TODO stop setting attached!
-										tte.genType.copy(aType);
+										tte.getGenType().copy(aType);
 										//										vte.addPotentialType(instructionIndex, tte);
 									}
 								});
@@ -2025,7 +2025,7 @@ public class DeduceTypes2 {
 				public void onDone(final GenType result) {
 //					assert vte != vte1;
 //					aTte.setAttached(result.resolved != null ? result.resolved : result.typeName);
-					aTte.genType.copy(result);
+					aTte.getGenType().copy(result);
 //					vte.addPotentialType(aInstructionIndex, result); // TODO!!
 				}
 			});
@@ -2096,7 +2096,7 @@ public class DeduceTypes2 {
 		final @NotNull ProcTableEntry pte = generatedFunction.getProcTableEntry(to_int(fca.getArg(0)));
 		for (final @NotNull TypeTableEntry tte : pte.getArgs()) {
 			LOG.info("771 " + tte);
-			final IExpression e = tte.expression;
+			final IExpression e = tte.getExpression();
 			if (e == null) continue;
 			switch (e.getKind()) {
 			case NUMERIC: {
@@ -2269,7 +2269,7 @@ public class DeduceTypes2 {
 			if (aParent instanceof NamespaceStatement)
 				aInvocation = phase.registerNamespaceInvocation((NamespaceStatement) aParent);
 		}
-		@Nullable final DeferredMember dm = new DeferredMember(aParent, aInvocation, aVariableStatement);
+		@Nullable final DeferredMember dm = new DeferredMember(aParent, aInvocation, aVariableStatement, resolver());
 		phase.addDeferredMember(dm);
 		return dm;
 	}
@@ -2304,7 +2304,7 @@ public class DeduceTypes2 {
 		public void doResolveType(final OS_Module module, final Context aCtx, final DeduceTypes2 aDeduceTypes2) {
 			final ElLog LOG = aDeduceTypes2._LOG();
 
-			@NotNull final GenType R = new GenType();
+			@NotNull final GenType R = new GenType(aDeduceTypes2.resolver());
 			R.setTypeName(type);
 
 			try {
@@ -2621,6 +2621,10 @@ public class DeduceTypes2 {
 
 		public @NotNull ArrayList<TypeTableEntry> getPotentialTypesVte(final VariableTableEntry aVte) {
 			return dt2.getPotentialTypesVte(aVte);
+		}
+
+		public DeduceTypeResolve2 resolver() {
+			return dt2.resolver();
 		}
 	}
 

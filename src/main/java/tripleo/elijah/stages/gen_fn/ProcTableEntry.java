@@ -212,8 +212,8 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 //				if (aDeduceTypes2 != null)
 //					LOG.err("267 attached == null for "+typeTableEntry);
 
-				if (typeTableEntry.expression != null)
-					l.add(String.format("<Unknown expression: %s>", typeTableEntry.expression));
+				if (typeTableEntry.getExpression() != null)
+					l.add(String.format("<Unknown expression: %s>", typeTableEntry.getExpression()));
 				else
 					l.add("<Unknkown>");
 			}

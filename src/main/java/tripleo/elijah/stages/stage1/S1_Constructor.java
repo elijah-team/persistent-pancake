@@ -13,6 +13,7 @@ import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions.S1toG_GC_Processor;
 import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
@@ -34,9 +35,13 @@ public class S1_Constructor {
 	private GeneratedConstructor gf;
 	private ConstructorDef       source;
 	private FunctionInvocation   invocation;
+	private final DeduceTypeResolve2 resolver;
 
-	public S1_Constructor(final ConstructorDef aConstructorDef, final ClassStatement parent,
-	                      final FunctionInvocation aFunctionInvocation) {
+	public S1_Constructor(final ConstructorDef aConstructorDef,
+	                      final ClassStatement parent,
+	                      final FunctionInvocation aFunctionInvocation,
+	                      final DeduceTypeResolve2 aResolver) {
+		resolver = aResolver;
 		setSource(aConstructorDef);
 		setInvocation(aFunctionInvocation);
 		setParent(parent); // TODO smelly
@@ -45,7 +50,7 @@ public class S1_Constructor {
 
 	public void setSource(final ConstructorDef aConstructorDef) {
 		source = aConstructorDef;
-		gf     = new GeneratedConstructor(source);
+		gf     = new GeneratedConstructor(source, resolver);
 	}
 
 	public void setInvocation(final FunctionInvocation aFunctionInvocation) {
@@ -78,7 +83,7 @@ public class S1_Constructor {
 			final OS_Type        attached = tte1.getAttached();
 
 			// TODO for reference now...
-			final GenType  genType  = new GenType();
+			final GenType  genType  = new GenType(resolver);
 			final TypeName typeName = fali.typeName();
 			if (typeName != null) {
 				genType.setTypeName(new OS_UserType(typeName));

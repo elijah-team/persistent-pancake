@@ -92,7 +92,7 @@ class Do_assign_call {
 										public void onDone(@NotNull final GenType result) {
 											pe.satisfy(result);
 											@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved()); // TODO there has to be a better way
-											tte.genType.copy(result);
+											tte.getGenType().copy(result);
 											vte.addPotentialType(instructionIndex, tte);
 										}
 									});
@@ -113,7 +113,7 @@ class Do_assign_call {
 		for (int i = 0; i < args.size(); i++) {
 			final TypeTableEntry tte = args.get(i); // TODO this looks wrong
 //			LOG.info("770 "+tte);
-			final IExpression e = tte.expression;
+			final IExpression e = tte.getExpression();
 			if (e == null) continue;
 			switch (e.getKind()) {
 				case NUMERIC:
@@ -150,7 +150,7 @@ class Do_assign_call {
 									@Override
 									public void typeDecided(@NotNull final GenType aType) {
 										tte.setAttached(deduceTypes2.gt(aType)); // TODO stop setting attached!
-										tte.genType.copy(aType);
+										tte.getGenType().copy(aType);
 //										vte.addPotentialType(instructionIndex, tte);
 									}
 								});

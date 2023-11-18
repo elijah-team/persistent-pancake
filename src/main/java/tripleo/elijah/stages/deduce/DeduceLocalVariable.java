@@ -68,7 +68,7 @@ public class DeduceLocalVariable {
 		final Context            ctx = context;
 
 		if (vte.vtt == VariableTableType.TEMP) {
-			final GenType genType = vte.type.genType;
+			final GenType genType = vte.type.getGenType();
 			final int     pts     = vte.potentialTypes().size();
 			if (genType.getTypeName() != null && genType.getTypeName() == genType.getResolved()) {
 				try {
@@ -93,7 +93,7 @@ public class DeduceLocalVariable {
 				// TODO this should have been set somewhere already
 				//  typeName and nonGenericTypeName are not set
 				//  but at this point probably wont be needed
-				vte.type.genType.setResolved(attached);
+				vte.type.getGenType().setResolved(attached);
 				vte.type.setAttached(attached);
 			}
 			if (vte.type.getAttached() == null && vte.potentialTypes().size() > 0) {
@@ -104,15 +104,15 @@ public class DeduceLocalVariable {
 				if (attached_list.size() == 1) {
 					final TypeTableEntry pot = attached_list.get(0);
 					vte.type.setAttached(pot.getAttached());
-					vte.type.genType.genCI(null, deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
-					final ClassInvocation classInvocation = (ClassInvocation) vte.type.genType.getCi();
+					vte.type.getGenType().genCI(null, deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
+					final ClassInvocation classInvocation = (ClassInvocation) vte.type.getGenType().getCi();
 					if (classInvocation != null) {
 						classInvocation.resolvePromise().then(new DoneCallback<GeneratedClass>() {
 							@Override
 							public void onDone(final GeneratedClass result) {
-								vte.type.genType.setNode(result);
+								vte.type.getGenType().setNode(result);
 								vte.resolveTypeToClass(result);
-								vte.genType = vte.type.genType; // TODO who knows if this is necessary?
+								vte.setGenType(vte.type.getGenType()); // TODO who knows if this is necessary?
 							}
 						});
 					} // TODO else ??
@@ -123,7 +123,7 @@ public class DeduceLocalVariable {
 				final int y = 2;
 			}
 			{
-				final GenType genType = vte.type.genType;
+				final GenType genType = vte.type.getGenType();
 				final int     pts     = vte.potentialTypes().size();
 				if (genType.getTypeName() != null && genType.getTypeName() == genType.getResolved()) {
 					try {
@@ -139,7 +139,7 @@ public class DeduceLocalVariable {
 			}
 			vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(vte.getResolvedElement()));
 			{
-				final GenType genType = vte.type.genType;
+				final GenType genType = vte.type.getGenType();
 				if (genType.getResolved() != null && genType.getNode() == null) {
 					if (genType.getResolved().getType() != OS_Type.Type.USER_CLASS && genType.getResolved().getType() != OS_Type.Type.FUNCTION) {
 						try {
@@ -215,8 +215,8 @@ public class DeduceLocalVariable {
 	public void resolve_var_table_entry_potential_types_1(final @NotNull VariableTableEntry vte, final BaseGeneratedFunction generatedFunction) {
 		if (vte.potentialTypes().size() == 1) {
 			final TypeTableEntry tte1 = vte.potentialTypes().iterator().next();
-			if (tte1.tableEntry instanceof ProcTableEntry) {
-				final ProcTableEntry procTableEntry = (ProcTableEntry) tte1.tableEntry;
+			if (tte1.getTableEntry() instanceof ProcTableEntry) {
+				final ProcTableEntry procTableEntry = (ProcTableEntry) tte1.getTableEntry();
 				final DeduceProcCall dpc            = procTableEntry.deduceProcCall();
 				// TODO for argument, we need a DeduceExpression (DeduceProcCall) which is bounud to self
 				//  (inherited), so we can extract the invocation

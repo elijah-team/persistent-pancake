@@ -18,6 +18,7 @@ import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
 import tripleo.elijah.stages.deduce.zero.ITE_Zero;
@@ -313,9 +314,9 @@ class Resolve_Ident_IA {
 		assert tte.getAttached() == null;
 		//<ENTRY
 
-		if (tte.expression instanceof ProcedureCallExpression) {
-			if (tte.tableEntry != null) {
-				if (tte.tableEntry instanceof @NotNull final ProcTableEntry pte) {
+		if (tte.getExpression() instanceof ProcedureCallExpression) {
+			if (tte.getTableEntry() != null) {
+				if (tte.getTableEntry() instanceof @NotNull final ProcTableEntry pte) {
 					@NotNull final IdentIA         x   = (IdentIA) pte.expression_num;
 					@NotNull final IdentTableEntry y   = x.getEntry();
 					if (y.getResolvedElement() == null) {
@@ -341,7 +342,9 @@ class Resolve_Ident_IA {
 			final FunctionInvocation fi = pte.getFunctionInvocation();
 			final ClassInvocation    ci = fi.getClassInvocation();
 			if (fi.getFunction() instanceof ConstructorDef) {
-				@NotNull final GenType genType = new GenType(ci.getKlass());
+				DeduceTypeResolve2 aResolver = dc._dt2().resolver();
+
+				@NotNull final GenType genType = new GenType(ci.getKlass(), aResolver);
 				genType.setCi(ci);
 				assert ci.resolvePromise().isResolved();
 				ci.resolvePromise().then(result -> genType.setNode(result));
@@ -447,7 +450,9 @@ class Resolve_Ident_IA {
 //		fi.setClassInvocation(ci);
 		pte.setFunctionInvocation(fi);
 		if (fi.getFunction() instanceof ConstructorDef) {
-			@NotNull final GenType genType = new GenType(ci.getKlass());
+			DeduceTypeResolve2 aResolver = dc._dt2().resolver();
+
+			@NotNull final GenType genType = new GenType(ci.getKlass(), aResolver);
 			genType.setCi(ci);
 			ci.resolvePromise().then(new DoneCallback<GeneratedClass>() {
 				@Override
@@ -595,7 +600,7 @@ class Resolve_Ident_IA {
 				if (el instanceof FunctionDef) {
 					__el_is_FunctionDef();
 				} else if (el instanceof ClassStatement) {
-					@NotNull final GenType genType = new GenType((ClassStatement) el);
+					@NotNull final GenType genType = new GenType((ClassStatement) el, dc._dt2().resolver());
 					generatedFunction.addDependentType(genType);
 				}
 			}
@@ -641,12 +646,12 @@ class Resolve_Ident_IA {
 				case UNKNOWN:
 					break;
 				case CLASS:
-					genType = new GenType((ClassStatement) parent);
+					genType = new GenType((ClassStatement) parent, dc._dt2().resolver());
 					@Nullable final ClassInvocation ci = new ClassInvocation((ClassStatement) parent, null);
 					invocation = phase.registerClassInvocation(ci);
 					break;
 				case NAMESPACE:
-					genType = new GenType((NamespaceStatement) parent);
+					genType = new GenType((NamespaceStatement) parent, dc._dt2().resolver());
 					invocation = phase.registerNamespaceInvocation((NamespaceStatement) parent);
 					break;
 				default:

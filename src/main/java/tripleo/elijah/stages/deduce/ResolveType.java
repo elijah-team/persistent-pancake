@@ -39,7 +39,7 @@ public class ResolveType {
 	                                     final Context ctx,
 	                                     final ElLog LOG,
 	                                     final @NotNull DeduceTypes2 dt2) throws ResolveError {
-		@NotNull final GenType R = new GenType();
+		@NotNull final GenType R = new GenType(dt2.resolver());
 		if (type.getType() != OS_Type.Type.USER_CLASS)
 			R.setTypeName(type);
 

@@ -16,19 +16,22 @@ import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.deduce.NamespaceInvocation;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 
 /**
  * Created 6/27/21 9:45 AM
  */
 public class GeneratedConstructor extends BaseGeneratedFunction {
-	public final @Nullable ConstructorDef cd;
+	public final @Nullable ConstructorDef     cd;
+	private final          DeduceTypeResolve2 resolver;
 
-	public GeneratedConstructor(final @Nullable ConstructorDef aConstructorDef) {
+	public GeneratedConstructor(final @Nullable ConstructorDef aConstructorDef, final DeduceTypeResolve2 aResolver) {
 		cd = aConstructorDef;
+		resolver = aResolver;
 	}
 
 	public void setFunctionInvocation(final FunctionInvocation fi) {
-		final GenType genType = new GenType();
+		final GenType genType = new GenType(resolver);
 
 		// TODO will fail on namespace constructors; next line too
 		if (genType.getCi() instanceof ClassInvocation) {

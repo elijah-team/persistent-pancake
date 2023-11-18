@@ -25,6 +25,7 @@ import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
@@ -61,7 +62,7 @@ class Found_Element_For_ITE {
 		final OS_Element y = ite.getResolvedElement();
 
 		if (y instanceof VariableStatement) {
-			action_VariableStatement(ite, (VariableStatement) y);
+			action_VariableStatement(ite, (VariableStatement) y, dc.resolver());
 		} else if (y instanceof ClassStatement) {
 			action_ClassStatement(ite, (ClassStatement) y);
 		} else if (y instanceof FunctionDef) {
@@ -93,7 +94,7 @@ class Found_Element_For_ITE {
 		}
 	}
 
-	public void action_VariableStatement(@NotNull final IdentTableEntry ite, @NotNull final VariableStatement vs) {
+	public void action_VariableStatement(@NotNull final IdentTableEntry ite, @NotNull final VariableStatement vs, final DeduceTypeResolve2 aResolver) {
 		@NotNull final TypeName typeName = vs.typeName();
 		if (ite.type == null || ite.type.getAttached() == null) {
 			if (!(typeName.isNull())) {
@@ -169,9 +170,9 @@ class Found_Element_For_ITE {
 
 					@Nullable GenType genType = null;
 					if (parent instanceof NamespaceStatement)
-						genType = new GenType((NamespaceStatement) parent);
+						genType = new GenType((NamespaceStatement) parent, aResolver);
 					else if (parent instanceof ClassStatement)
-						genType = new GenType((ClassStatement) parent);
+						genType = new GenType((ClassStatement) parent, aResolver);
 
 					generatedFunction.addDependentType(genType);
 				}
@@ -218,7 +219,7 @@ class Found_Element_For_ITE {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, attached);
 		} else
 			ite.type.setAttached(attached);
-		dc.genCIForGenType2(ite.type.genType);
+		dc.genCIForGenType2(ite.type.getGenType());
 		final int yy = 2;
 	}
 

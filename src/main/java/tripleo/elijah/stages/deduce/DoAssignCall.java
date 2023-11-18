@@ -165,7 +165,7 @@ public class DoAssignCall {
 										public void onDone(@NotNull final GenType result) {
 											pe.satisfy(result);
 											@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved()); // TODO there has to be a better way
-											tte.genType.copy(result);
+											tte.getGenType().copy(result);
 											vte.addPotentialType(instructionIndex, tte);
 										}
 									});
@@ -186,7 +186,7 @@ public class DoAssignCall {
 		for (int i = 0; i < args.size(); i++) {
 			final TypeTableEntry tte = args.get(i); // TODO this looks wrong
 //			LOG.info("770 "+tte);
-			IExpression e = tte.expression;
+			IExpression e = tte.getExpression();
 			if (e == null) continue;
 			if (e instanceof SubExpression) e = ((SubExpression) e).getExpression();
 			switch (e.getKind()) {
@@ -429,7 +429,7 @@ public class DoAssignCall {
 										vte1.type.setAttached(attached); // !!
 										break;
 									case USER_CLASS:
-										final GenType gt = vte1.genType;
+										final GenType gt = vte1.getGenType();
 										gt.setResolved(attached);
 										vte1.resolveType(gt);
 										break;
@@ -463,7 +463,7 @@ public class DoAssignCall {
 												vte1.type.setAttached(attached); // !!
 												break;
 											case USER_CLASS:
-												final GenType gt = vte1.genType;
+												final GenType gt = vte1.getGenType();
 												gt.setResolved(attached);
 												vte1.resolveType(gt);
 												break;
@@ -486,7 +486,7 @@ public class DoAssignCall {
 								if (p.isResolved())
 									System.out.printf("915 Already resolved type: vte2.type = %s, gf = %s %n", vte1.type, generatedFunction);
 								else {
-									final GenType gt       = vte1.genType;
+									final GenType gt       = vte1.getGenType();
 									final OS_Type attached = vte2.type.getAttached();
 									gt.setResolved(attached);
 									vte1.resolveType(gt);

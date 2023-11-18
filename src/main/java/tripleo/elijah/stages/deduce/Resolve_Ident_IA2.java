@@ -32,6 +32,7 @@ import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UnknownType;
 import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
@@ -287,7 +288,7 @@ class Resolve_Ident_IA2 {
 		int                                      state     = 0;
 		final @NotNull ArrayList<TypeTableEntry> pot       = deduceTypes2.getPotentialTypesVte(aVte);
 		final OS_Type                            attached1 = pot.get(0).getAttached();
-		final @Nullable TableEntryIV             te        = pot.get(0).tableEntry;
+		final @Nullable TableEntryIV             te        = pot.get(0).getTableEntry();
 		if (te instanceof ProcTableEntry) {
 			final @NotNull ProcTableEntry procTableEntry = (ProcTableEntry) te;
 			// This is how it should be done, with an Incremental
@@ -389,14 +390,14 @@ class Resolve_Ident_IA2 {
 				} else if (bl instanceof IdentIA) {
 					final @NotNull IdentIA identIA = (IdentIA) bl;
 					@NotNull final IdentTableEntry ite = identIA.getEntry();
-					if (ite.type.genType.getCi() != null)
-						invocation = ite.type.genType.getCi();
+					if (ite.type.getGenType().getCi() != null)
+						invocation = ite.type.getGenType().getCi();
 					else if (ite.type.getAttached() != null) {
 						@NotNull final OS_Type attached1 = ite.type.getAttached();
 						assert attached1.getType() == OS_Type.Type.USER_CLASS;
 						invocation = phase.registerClassInvocation(attached1.getClassOf(), null); // TODO will fail one day
 						// TODO dont know if next line is right
-						final ClassInvocation invocation2 = DeduceTypes2.ClassInvocationMake.withGenericPart(attached1.getClassOf(), null, (NormalTypeName) tte.genType.getNonGenericTypeName(), deduceTypes2, errSink);
+						final ClassInvocation invocation2 = DeduceTypes2.ClassInvocationMake.withGenericPart(attached1.getClassOf(), null, (NormalTypeName) tte.getGenType().getNonGenericTypeName(), deduceTypes2, errSink);
 						final int             y           = 2;
 					}
 				} else if (bl instanceof ProcIA) {
@@ -434,7 +435,7 @@ class Resolve_Ident_IA2 {
 
 			final OS_Type attached = idte2.type.getAttached();
 			if (attached.getType() == OS_Type.Type.USER_CLASS) {
-				if (idte2.type.genType.getResolved() == null) {
+				if (idte2.type.getGenType().getResolved() == null) {
 					@NotNull final GenType rtype = deduceTypes2.resolve_type(attached, ctx);
 					if (rtype.getResolved() != null) {
 						switch (rtype.getResolved().getType()) {
@@ -472,7 +473,9 @@ class Resolve_Ident_IA2 {
 				x.then(attP::resolve);
 //					x.fail(); // TODO
 			} else { // if (vs.typeName() != null) {
-				final GenType attached = new GenType();
+				DeduceTypeResolve2 aResolver = this.deduceTypes2.resolver();
+
+				final GenType attached = new GenType(aResolver);
 				attached.set(new OS_UserType(vs.typeName()));
 				attP.resolve(attached);
 			}
@@ -567,7 +570,7 @@ class Resolve_Ident_IA2 {
 		try {
 			@Nullable FunctionDef fd = null;
 			@Nullable ProcTableEntry pte = null;
-			final TableEntryIV xx = pot.get(0).tableEntry;
+			final TableEntryIV xx = pot.get(0).getTableEntry();
 			if (xx != null) {
 				if (xx instanceof ProcTableEntry) {
 					final @NotNull ProcTableEntry procTableEntry = (ProcTableEntry) xx;
@@ -583,10 +586,10 @@ class Resolve_Ident_IA2 {
 					}
 				}
 			} else {
-				final LookupResultList lrl = DeduceLookupUtils.lookupExpression(pot.get(0).expression.getLeft(), ctx, deduceTypes2);
+				final LookupResultList lrl = DeduceLookupUtils.lookupExpression(pot.get(0).getExpression().getLeft(), ctx, deduceTypes2);
 				@Nullable final OS_Element best = lrl.chooseBest(Helpers.List_of(
 						new DeduceUtils.MatchFunctionArgs(
-								(ProcedureCallExpression) pot.get(0).expression)));
+								(ProcedureCallExpression) pot.get(0).getExpression())));
 				if (best instanceof FunctionDef) {
 					fd = (FunctionDef) best;
 				} else {

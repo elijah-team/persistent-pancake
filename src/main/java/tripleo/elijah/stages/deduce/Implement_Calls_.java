@@ -90,7 +90,7 @@ class Implement_Calls_ {
 		//
 		// try to get dunder method from class
 		//
-		final IExpression exp = pte.getArgs().get(0).expression;
+		final IExpression exp = pte.getArgs().get(0).getExpression();
 		if (exp instanceof IdentExpression) {
 			return action_dunder_doIt(pn, (IdentExpression) exp);
 		}
