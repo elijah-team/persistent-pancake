@@ -11,6 +11,7 @@ package tripleo.elijah.stages.gen_fn;
 
 //import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+import com.google.common.base.MoreObjects;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
@@ -55,7 +56,18 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	public                GeneratedNode                                   externalRef;
 	public                boolean                                         fefi                  = false;
 	public                ProcTableEntry                                  constructable_pte;
-	public                DeduceTypes2.PromiseExpectation<String>         resolveExpectation;
+
+//	@Override
+	public String toString2() {
+		return MoreObjects.toStringHelper(this)
+		                  .add("index", index)
+		                  .add("ident", ident)
+		                  .add("pc", pc)
+		                  .add("type", type)
+		                  .toString();
+	}
+
+	public DeduceTypes2.PromiseExpectation<String> resolveExpectation;
 	InstructionArgument backlink;
 	boolean             insideGetResolvedElement = false;
 	private GeneratedNode                  resolvedType;
