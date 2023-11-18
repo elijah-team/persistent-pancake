@@ -10,10 +10,12 @@
 package tripleo.elijah.stages.deduce;
 
 import org.jdeferred2.DoneCallback;
+import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.ErrSink;
+import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.*;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
@@ -44,6 +46,7 @@ import tripleo.elijah.work.WorkJob;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created 7/8/21 2:31 AM
@@ -530,6 +533,13 @@ class Resolve_Ident_IA {
 			idte = ia.getEntry();
 		}
 
+		interface _ControlPlane {
+			void setElement(OS_Element aElement);
+			void setContext(Context aContext);
+
+			void setReturn(RIA_STATE aRIAState);
+		}
+
 		public RIA_STATE run() {
 			if (run_one()) return RIA_STATE.RETURN;
 
@@ -538,37 +548,42 @@ class Resolve_Ident_IA {
 			if (idte.getStatus() == BaseTableEntry.Status.UNCHECKED) {
 				if (idte.getBacklink() == null) {
 					final String text = idte.getIdent().getText();
-					if (idte.getResolvedElement() == null) {
-						final LookupResultList lrl = ectx.lookup(text);
-						el = lrl.chooseBest(null);
-					} else {
-						assert false;
-						el = idte.getResolvedElement();
-					}
-					{
-						if (el instanceof FunctionDef) {
-							__el_is_FunctionDef();
-						} else if (el instanceof ClassStatement) {
-							@NotNull final GenType genType = new GenType((ClassStatement) el);
-							generatedFunction.addDependentType(genType);
-						}
-					}
-					if (el != null) {
-						while (el instanceof AliasStatement) {
-							el = dc.resolveAlias((AliasStatement) el);
+
+					var cp = new _ControlPlane(){
+						public Optional<RIA_STATE> optRet = Optional.empty();
+
+						@Override
+						public void setElement(final OS_Element aElement) {
+							el = aElement;
 						}
 
-						idte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
+						@Override
+						public void setContext(final Context aContext) {
+							ectx = aContext;
+						}
 
-						if (el.getContext() == null)
-							throw new IllegalStateException("2468 null context");
+						@Override
+						public void setReturn(RIA_STATE aRIAState) {
+							optRet = Optional.of(aRIAState);
+						}
+					};
 
-						ectx = el.getContext();
+					if (true) {
+						final DeferredObject<OS_Element, Diagnostic, Void> pr = idte.getDei().getResolvedElementPromise();
+						pr.then(el7 -> {
+							_001(text, cp);
+						});
+
+						if (cp.optRet.isPresent()) {
+							return cp.optRet.get();
+						}
+
+						return RIA_STATE.IGNORE;
 					} else {
-//					errSink.reportError("1179 Can't resolve " + text);
-						idte.setStatus(BaseTableEntry.Status.UNKNOWN, null);
-						foundElement.doNoFoundElement();
-						return RIA_STATE.RETURN;
+						_001(text, cp);
+						if (cp.optRet.isPresent()) {
+							return cp.optRet.get();
+						}
 					}
 				} else /*if (false)*/ {
 					__backlink_is_not_null();
@@ -590,6 +605,41 @@ class Resolve_Ident_IA {
 			}
 
 			return RIA_STATE.NEXT;
+		}
+
+		private void _001(final String text, final _ControlPlane aCp) {
+			if (idte.getResolvedElement() == null) {
+				final LookupResultList lrl = ectx.lookup(text);
+				el = lrl.chooseBest(null);
+			} else {
+				assert false;
+				el = idte.getResolvedElement();
+			}
+			{
+				if (el instanceof FunctionDef) {
+					__el_is_FunctionDef();
+				} else if (el instanceof ClassStatement) {
+					@NotNull final GenType genType = new GenType((ClassStatement) el);
+					generatedFunction.addDependentType(genType);
+				}
+			}
+			if (el != null) {
+				while (el instanceof AliasStatement) {
+					el = dc.resolveAlias((AliasStatement) el);
+				}
+
+				idte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
+
+				if (el.getContext() == null)
+					throw new IllegalStateException("2468 null context");
+
+				ectx = el.getContext();
+			} else {
+//					errSink.reportError("1179 Can't resolve " + text);
+				idte.setStatus(BaseTableEntry.Status.UNKNOWN, null);
+				foundElement.doNoFoundElement();
+//						return RIA_STATE.RETURN;
+			}
 		}
 
 		public boolean run_one() {
@@ -674,7 +724,7 @@ class Resolve_Ident_IA {
 	}
 
 	enum RIA_STATE {
-		CONTINUE, RETURN, NEXT
+		CONTINUE, RETURN, IGNORE, NEXT
 	}
 }
 

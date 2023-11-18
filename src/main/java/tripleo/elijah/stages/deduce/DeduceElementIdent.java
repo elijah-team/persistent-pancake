@@ -94,6 +94,10 @@ public class DeduceElementIdent {
 
 		return null;
 	}
+
+	public DeferredObject<OS_Element, Diagnostic, Void> getResolvedElementPromise() {
+		return _resolvedElementPromise;
+	}
 }
 
 //

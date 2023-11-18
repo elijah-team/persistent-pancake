@@ -47,9 +47,9 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	final                 DeferredObject<ProcTableEntry, Void, Void>      constructableDeferred = new DeferredObject<>();
 	private final         int                                             index;
 	private final         IdentExpression                                 ident;
-	private final         Context                                         pc;
-	private final         DeduceElementIdent                              dei                   = new DeduceElementIdent(this);
-	public                boolean                                         preUpdateStatusListenerAdded;
+	private final Context            pc;
+	private final DeduceElementIdent dei = new DeduceElementIdent(this);
+	public        boolean            preUpdateStatusListenerAdded;
 	public                TypeTableEntry                                  type;
 	public                GeneratedNode                                   externalRef;
 	public                boolean                                         fefi                  = false;
@@ -265,6 +265,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	public DeduceTypes2 __getDeduceTypes2() {
 		return _de3.deduceTypes2;
+	}
+
+	public DeduceElementIdent getDei() {
+		return dei;
 	}
 
 //	private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();
