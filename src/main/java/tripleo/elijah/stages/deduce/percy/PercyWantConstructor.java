@@ -1,5 +1,6 @@
 package tripleo.elijah.stages.deduce.percy;
 
+import org.jdeferred2.DoneCallback;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.stages.deduce.ClassInvocation;
@@ -16,9 +17,15 @@ public interface PercyWantConstructor {
 
 	void provide(ClassInvocation aClassInvocation);
 
-	void provide(ConstructorDef aEl2);
+	void provide(ConstructorDef aConstructorDef);
 
 	void provide(GeneratedConstructor aGeneratedConstructor);
 
-	void genType(GenType aResolved2);
+	void setEnclosingGenType(GenType aResolved2);
+
+	void provide(DeduceTypeResolve2 aResolver);
+
+	GenType getEnclosingGenType();
+
+	void onResolver(DoneCallback<DeduceTypeResolve2> cb);
 }

@@ -39,7 +39,7 @@ import tripleo.elijah.util.NotImplementedException;
 import java.util.Collection;
 import java.util.List;
 
-class Implement_construct {
+public class Implement_construct {
 
 	private final DeduceTypes2          deduceTypes2;
 	private final BaseGeneratedFunction generatedFunction;
@@ -161,6 +161,15 @@ class Implement_construct {
 						if (!(el3 instanceof VariableStatement vs)) {
 //							throw new AssertionError();
 							System.err.println("FAIL 139");
+
+							if (aPwc.getEventualConstructorDef().isPending()) {
+								if (aPwc.getEnclosingGenType() != null) {
+									aPwc.onResolver(resolver -> {
+										NotImplementedException.raise_stop();
+									});
+								}
+							}
+
 						} else {
 							luck.force(vs);
 							return;
@@ -192,6 +201,10 @@ class Implement_construct {
 					throw new NotImplementedException();
 				}
 			}
+		}
+
+		if (aPwc.getEventualConstructorDef().isPending()) {
+			assert false;
 		}
 	}
 

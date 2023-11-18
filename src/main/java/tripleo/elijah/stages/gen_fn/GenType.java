@@ -150,6 +150,8 @@ public class GenType {
 	}
 
 	public void copy(final GenType aGenType) {
+		// TODO 11/17 else .copy(...) ??
+
 		if (resolvedn == null) resolvedn = aGenType.resolvedn;
 		if (typeName == null) typeName = aGenType.typeName;
 		if (nonGenericTypeName == null) nonGenericTypeName = aGenType.nonGenericTypeName;

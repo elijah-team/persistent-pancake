@@ -32,6 +32,7 @@ import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
 import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
+import tripleo.elijah.stages.deduce.percy.Implement_construct2;
 import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
 import tripleo.elijah.stages.deduce.percy.Provided;
 import tripleo.elijah.stages.deduce.percy.Resolving;
@@ -2057,83 +2058,8 @@ public class DeduceTypes2 {
 	}
 
 	void implement_construct(final BaseGeneratedFunction generatedFunction, final Instruction instruction) {
-		final @NotNull Implement_construct ic = newImplement_construct(generatedFunction, instruction);
-
-		final Provided<PercyWantConstructor> p = new Provided<PercyWantConstructor>() {
-			@Override
-			public void on(final DoneCallback<PercyWantConstructor> t) {
-				prom.then(t);
-			}
-
-			@Override
-			public void provide(PercyWantConstructor pwc) {
-				prom.resolve(pwc);
-			}
-
-			private final Eventual<PercyWantConstructor> prom = new Eventual<>();
-		};
-
-		PercyWantConstructor pwc1 = new PercyWantConstructor() {
-			@Override
-			public void onFinalSuccess(final Consumer<Void> cb) {
-				throw new NotImplementedException();
-			}
-
-			@Override
-			public void onFailure(final Consumer<Void> cb) {
-				throw new NotImplementedException();
-			}
-
-			@Override
-			public Eventual<ConstructorDef> getEventualConstructorDef() {
-				return _p_cd;
-			}
-
-			@Override
-			public void provide(final ConstructorDef aConstructorDef) {
-				final Eventual<ConstructorDef> g = getEventualConstructorDef();
-				if (g != null) {
-					g.resolve(aConstructorDef);
-				}
-			}
-
-			@Override
-			public void provide(final ClassInvocation aClassInvocation) {
-				final Eventual<ClassInvocation> g = getEventualClassInvocation();
-				if (g != null) {
-					g.resolve(aClassInvocation);
-				}
-			}
-
-			private Eventual<ClassInvocation> getEventualClassInvocation() {
-				return _p_ci;
-			}
-
-			@Override
-			public void provide(final GeneratedConstructor aGeneratedConstructor) {
-				final Eventual<GeneratedConstructor> g = getEventualGeneratedConstructor();
-				if (g != null) {
-					g.resolve(aGeneratedConstructor);
-				}
-			}
-
-			private Eventual<GeneratedConstructor> getEventualGeneratedConstructor() {
-				return _p_ec;
-			}
-
-			@Override
-			public void genType(final GenType aResolved2) {
-				NotImplementedException.raise_stop();
-			}
-
-			private final Eventual<ConstructorDef> _p_cd = new Eventual<>();
-			private final Eventual<ClassInvocation> _p_ci = new Eventual<>();
-			private final Eventual<GeneratedConstructor> _p_ec = new Eventual<>();
-		};
-
-		p.provide(pwc1);
-
-		ic.action(p);
+		final @NotNull Implement_construct2 ic2 = new Implement_construct2(this ,generatedFunction, instruction);
+		ic2.action();
 	}
 
 	@NotNull

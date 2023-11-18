@@ -14,6 +14,7 @@ import org.jdeferred2.FailCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.LookupResultList;
@@ -22,7 +23,9 @@ import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
+import tripleo.elijah.stages.deduce.percy.PercyMakeType;
 import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
+import tripleo.elijah.stages.deduce.percy.PercyWantType;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GenericElementHolder;
@@ -181,18 +184,35 @@ public class DeducePath {
 				final Context  ctx1 = type.nonGenericTypeName.getContext();
 
 				final DeduceTypes2 dt2 = base.__getDeduceTypes2();
-				try {
-					@NotNull final GenType resolved2 = dt2.resolve_type(resolved, ctx1);
-					System.out.println("177 "+resolved2.asString());
+				PercyMakeType mt11 = new PercyMakeType();
+				mt11.resolved = resolved;
+				mt11.onResolveError(re -> {
+					throw new NotImplementedException();
+				});
+				resolver.makeGenType(new PercyWantType(){
+					@Override public void onFinalSuccess(GenType gt11) {
+					}
 
-					type.copy(resolved2);
+					@Override
+					public void provide(final PercyMakeType aMt) {
+						@NotNull final GenType resolved2;
+						try {
+							resolved2 = dt2.resolve_type(aMt.resolved, ctx1);
+//							System.out.println("177 "+resolved2.asString());
 
-					pwc.genType(resolved2);
+							type.copy(resolved2);
 
-					NotImplementedException.raise_stop();
-				} catch (ResolveError aE) {
-					throw new RuntimeException(aE);
-				}
+							pwc.setEnclosingGenType(type);
+
+							pwc.provide(resolver);
+						} catch (ResolveError aE) {
+							aMt.resolveError(aE);
+						}
+					}
+				}, mt11);
+
+
+				NotImplementedException.raise_stop();
 
 //				return resolved.getElement().getContext().lookup(name, level, Result, alreadySearched, one);
 				System.err.println("FAIL 162");
