@@ -8,7 +8,6 @@
  */
 package tripleo.elijah.stages.deduce;
 
-import org.junit.Test;
 import tripleo.elijah.DebugFlags;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.IO;
@@ -16,7 +15,10 @@ import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.factory.comp.CompilationFactory;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static tripleo.elijah.util.Helpers.List_of;
 
@@ -72,7 +74,7 @@ public class ClassInstantiationTest {
 		c.feedCmdLine(List_of(f));
 
 		//assertEquals(128, c.errorCount());
-		assertEquals(5, c.errorCount());
+		assertEquals(6, c.errorCount());
 
 //		org.hamcrest.Matchers.containsInAnyOrder
 
@@ -147,7 +149,7 @@ public class ClassInstantiationTest {
 
 
 		assertEquals(8, c.errorCount());
-		assertEquals(8, c.reports().codeOutputSize());
+		assertEquals(10, c.reports().codeOutputSize());
 
 		// pr should
 //		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.h"));
@@ -162,12 +164,18 @@ public class ClassInstantiationTest {
 //		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Prelude.c"));
 
 		// does
-		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_103.c"));
-		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_103.h"));
 		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Foo.h"));
 		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Foo.c"));
 		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Main.h"));
 		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Main.c"));
+
+		// confused
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_103.c"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_103.h"));
+		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_104.c"));
+		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_104.h"));
+		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_106.c"));
+		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_106.h"));
 
 		// dups
 //		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Foo.h"));
@@ -232,19 +240,19 @@ public class ClassInstantiationTest {
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.c"));
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.h"));
 
-		// def shuold not
-//		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_110.h"));
-//		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_116.c"));
-//		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_114.c"));
-//		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_112.c"));
-//		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_110.c"));
-//		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_107.h"));
-//		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_105.h"));
-//		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_109.c"));
-//		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_107.c"));
-//		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_109.h"));
+		// def. should not
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_110.h"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_116.c"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_114.c"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_112.c"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_110.c"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_107.h"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_105.h"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_109.c"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_107.c"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_109.h"));
 
-		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_103.h"));
+//		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_103.h"));
 		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Main.c"));
 	}
 }
