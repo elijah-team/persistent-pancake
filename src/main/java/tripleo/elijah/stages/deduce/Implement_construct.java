@@ -4,9 +4,11 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.DebugFlags;
+import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.DecideElObjectType;
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.NormalTypeName;
 import tripleo.elijah.lang.OS_Element;
@@ -176,16 +178,23 @@ public class Implement_construct {
 						}
 					} else {
 						if (i + 1 == deducePath.size()) {
-							assert el3 == el2;
-							if (el2 instanceof ConstructorDef) {
-								@Nullable final GenType type = deducePath.getType(i);
-								if (type.getNonGenericTypeName() == null) {
-									type.setNonGenericTypeName(deducePath.getType(i - 1).getNonGenericTypeName()); // HACK. not guararnteed to work!
-								}
-								@NotNull final OS_Type ty = new OS_UserType(type.getNonGenericTypeName());
-								implement_construct_type(idte2, ty, s);
+							if (el3 != null ) {
+								assert el3 == el2;
+								if (el2 instanceof ConstructorDef) {
+									@Nullable final GenType type = deducePath.getType(i);
+									if (type.getNonGenericTypeName() == null) {
+										type.setNonGenericTypeName(deducePath.getType(i - 1).getNonGenericTypeName()); // HACK. not guararnteed to work!
+									}
+									@NotNull final OS_Type ty = new OS_UserType(type.getNonGenericTypeName());
+									implement_construct_type(idte2, ty, s);
 
-								ppwc.on(pwc -> pwc.provide((ConstructorDef) el2));
+									ppwc.on(pwc -> pwc.provide((ConstructorDef) el2));
+								}
+							} else {
+								ppwc.on(pwc -> {
+									luck.force((VariableStatement) el2);
+//									pwc.provide((VariableStatement) el2);
+								});
 							}
 						} else {
 							ectx = deducePath.getContext(i);
@@ -244,9 +253,29 @@ public class Implement_construct {
 		final String               s    = aTyn1.getName();
 		final LookupResultList     lrl  = aTyn1.getContext().lookup(s);
 		@Nullable final OS_Element best = lrl.chooseBest(null);
-		assert best instanceof ClassStatement;
-		@NotNull final List<TypeName> gp     = ((ClassStatement) best).getGenericPart();
-		@Nullable ClassInvocation     clsinv = new ClassInvocation((ClassStatement) best, constructorName);
+
+		switch (DecideElObjectType.getElObjectType(best)) {
+		case CLASS -> {
+			final ClassStatement          classStatement  = (ClassStatement) best;
+			_ict_ClassStatement(co, constructorName, aTyn1, classStatement);
+		}
+		case TYPE_NAME_ELEMENT -> {
+			final ClassContext.OS_TypeNameElement typeNameElement = (ClassContext.OS_TypeNameElement) best;
+			_ict_TypeNameElement(co, constructorName, aTyn1, typeNameElement);
+		}
+
+		default -> {
+			throw new IllegalStateException("Unexpected value: " + DecideElObjectType.getElObjectType(best));
+		}
+		}
+	}
+
+	private void _ict_ClassStatement(final @Nullable Constructable co,
+	                                 final @Nullable String constructorName,
+	                                 final @NotNull NormalTypeName aTyn1,
+	                                 final ClassStatement classStatement) {
+		@NotNull final List<TypeName> gp     = classStatement.getGenericPart();
+		@Nullable ClassInvocation     clsinv = new ClassInvocation(classStatement, constructorName);
 		if (gp.size() > 0) {
 			final TypeNameList gp2 = aTyn1.getGenericPart();
 			for (int i = 0; i < gp.size(); i++) {
@@ -284,12 +313,12 @@ public class Implement_construct {
 			}
 		}
 		pte.setClassInvocation(clsinv);
-		pte.setResolvedElement(best);
+		pte.setResolvedElement(classStatement);
 		// set FunctionInvocation with pte args
 		{
 			@Nullable ConstructorDef cc = null;
 			if (constructorName != null) {
-				final Collection<ConstructorDef> cs = ((ClassStatement) best).getConstructors();
+				final Collection<ConstructorDef> cs = classStatement.getConstructors();
 				for (@NotNull final ConstructorDef c : cs) {
 					if (c.name().equals(constructorName)) {
 						cc = c;
@@ -297,6 +326,72 @@ public class Implement_construct {
 					}
 				}
 			}
+			// TODO also check arguments
+			{
+				assert cc != null || pte.getArgs().size() == 0;
+				@NotNull final FunctionInvocation fi = deduceTypes2.newFunctionInvocation(cc, pte, clsinv, deduceTypes2.phase);
+				pte.setFunctionInvocation(fi);
+			}
+		}
+	}
+
+	private void _ict_TypeNameElement(final @Nullable Constructable co,
+	                                  final @Nullable String constructorName,
+	                                  final @NotNull NormalTypeName aTyn1,
+	                                  final ClassContext.OS_TypeNameElement aTypeNameElement) {
+//		@NotNull final List<TypeName> gp     = aTypeNameElement.getGenericPart();
+		@Nullable ClassInvocation     clsinv = null;
+//		clsinv = new ClassInvocation(aTypeNameElement, constructorName);
+//		if (gp.size() > 0) {
+//			final TypeNameList gp2 = aTyn1.getGenericPart();
+//			for (int i = 0; i < gp.size(); i++) {
+//				final TypeName         typeName = gp2.get(i);
+//				@NotNull final GenType typeName2;
+//				try {
+//					// TODO transition to GenType
+//					typeName2 = deduceTypes2.resolve_type(new OS_UserType(typeName), typeName.getContext());
+//					clsinv.set(i, gp.get(i), typeName2.getResolved());
+//				} catch (final ResolveError aResolveError) {
+//					aResolveError.printStackTrace();
+//				}
+//			}
+//		}
+		clsinv = deduceTypes2.phase.registerClassInvocation(clsinv);
+		if (co != null) {
+			if (co instanceof IdentTableEntry) {
+				final @Nullable IdentTableEntry idte3 = (IdentTableEntry) co;
+				idte3.type.genTypeCI(clsinv);
+				clsinv.resolvePromise().then(new DoneCallback<GeneratedClass>() {
+					@Override
+					public void onDone(final GeneratedClass result) {
+						idte3.resolveTypeToClass(result);
+					}
+				});
+			} else if (co instanceof VariableTableEntry) {
+				final @NotNull VariableTableEntry vte = (VariableTableEntry) co;
+				vte.type.genTypeCI(clsinv);
+				clsinv.resolvePromise().then(new DoneCallback<GeneratedClass>() {
+					@Override
+					public void onDone(final GeneratedClass result) {
+						vte.resolveTypeToClass(result);
+					}
+				});
+			}
+		}
+		pte.setClassInvocation(clsinv);
+		pte.setResolvedElement(aTypeNameElement);
+		// set FunctionInvocation with pte args
+		{
+			@Nullable ConstructorDef cc = null;
+//			if (constructorName != null) {
+//				final Collection<ConstructorDef> cs = aTypeNameElement.getConstructors();
+//				for (@NotNull final ConstructorDef c : cs) {
+//					if (c.name().equals(constructorName)) {
+//						cc = c;
+//						break;
+//					}
+//				}
+//			}
 			// TODO also check arguments
 			{
 				assert cc != null || pte.getArgs().size() == 0;

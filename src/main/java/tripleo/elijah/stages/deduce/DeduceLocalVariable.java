@@ -126,6 +126,7 @@ public class DeduceLocalVariable {
 				final int y = 2;
 			}
 			{
+				vte.type.provide(deduceTypes2);
 				final GenType genType = vte.type.getGenType();
 				final int     pts     = vte.potentialTypes().size();
 				if (genType.getTypeName() != null && genType.getTypeName() == genType.getResolved()) {

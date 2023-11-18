@@ -9,6 +9,7 @@
 package tripleo.elijah.lang;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.contexts.ClassContext;
 
 /**
  * Created 6/22/21 12:59 AM
@@ -32,6 +33,9 @@ public class DecideElObjectType {
 			return ElObjectType.FORMAL_ARG_LIST_ITEM;
 		else if (input instanceof OS_Module)
 			return ElObjectType.MODULE;
+		else if (input instanceof ClassContext.OS_TypeNameElement) {
+			return ElObjectType.TYPE_NAME_ELEMENT;
+		}
 		return ElObjectType.UNKNOWN;
 	}
 

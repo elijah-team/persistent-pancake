@@ -210,11 +210,13 @@ public class TypeTableEntry {
 	}
 
 	public void setAttached(final GenType aGenType) {
-		if (__genType() != null) {
+		_p_genTypeSet.then(gt -> {
+			assert gt == genType;
+
 			genType.copy(aGenType);
 
 			setAttached(genType.getResolved(), resolver);
-		}
+		});
 	}
 
 	public void addSetAttached(final OnSetAttached osa) {
