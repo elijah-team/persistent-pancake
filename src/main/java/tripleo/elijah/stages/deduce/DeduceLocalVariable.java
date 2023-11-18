@@ -93,6 +93,7 @@ public class DeduceLocalVariable {
 				// TODO this should have been set somewhere already
 				//  typeName and nonGenericTypeName are not set
 				//  but at this point probably wont be needed
+				vte.type.provide(deduceTypes2);
 				vte.type.getGenType().setResolved(attached);
 				vte.type.setAttached(attached, deduceTypes2.resolver());
 			}

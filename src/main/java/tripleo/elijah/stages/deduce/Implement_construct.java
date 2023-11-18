@@ -229,13 +229,13 @@ public class Implement_construct {
 		}
 		if (co != null) {
 			co.setConstructable(pte);
-			final ClassInvocation best = pte.getClassInvocation();
-			assert best != null;
-			best.resolvePromise().done(new DoneCallback<GeneratedClass>() {
-				@Override
-				public void onDone(final GeneratedClass result) {
-					co.resolveTypeToClass(result);
-				}
+			pte.onClassInvocation(classInvocation -> {
+				classInvocation.resolvePromise().done(new DoneCallback<GeneratedClass>() {
+					@Override
+					public void onDone(final GeneratedClass result) {
+						co.resolveTypeToClass(result);
+					}
+				});
 			});
 		}
 	}

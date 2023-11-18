@@ -124,12 +124,11 @@ class Resolve_Variable_Table_Entry {
 					pte1.setStatus(BaseTableEntry.Status.KNOWN, new ConstructableElementHolder(e, vte));
 //					vte.setCallablePTE(pte1);
 
-					final GenType gt = aPot.getGenType();
-					setup_GenType(e, gt);
-//					if (gt.node == null)
-//						gt.node = vte.genType.node;
-
-					vte.getGenType().copy(gt);
+					aPot.onGenType(gt -> {
+						assert gt != null;
+						setup_GenType(e, gt);
+						vte.getGenType().copy(gt);
+					});
 				}
 				final int y = 2;
 			} else if (aPot.getTableEntry() == null) {
@@ -235,6 +234,7 @@ class Resolve_Variable_Table_Entry {
 			while (el instanceof AliasStatement) {
 				el = DeduceLookupUtils._resolveAlias((AliasStatement) el, deduceTypes2);
 			}
+			assert aGt != null;
 			setup_GenType(el, aGt);
 		} else // TODO will fail on FunctionDef's
 			throw new IllegalStateException("Unknown parent");

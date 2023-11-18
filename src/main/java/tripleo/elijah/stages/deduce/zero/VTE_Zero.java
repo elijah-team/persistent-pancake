@@ -112,6 +112,8 @@ public class VTE_Zero {
                 case USER:
                     final @NotNull GenType ty2 = deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
 
+                    tte.provide(deduceTypes2);
+
                     if (tte.getGenType().getResolved() == null) {
                         if (ty2.getResolved().getType() == OS_Type.Type.USER_CLASS) {
                             tte.getGenType().copy(ty2);

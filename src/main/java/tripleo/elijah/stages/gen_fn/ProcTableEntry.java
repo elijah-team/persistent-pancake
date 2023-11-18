@@ -15,6 +15,7 @@ import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.IExpression;
@@ -58,6 +59,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 
 	private PTE_Zero _zero;
 	private DeduceTypeResolve2 resolver;
+	private Eventual<ClassInvocation> _p_classInvocation = new Eventual<>();
 
 	public List<TypeTableEntry> getArgs() {
 		return args;
@@ -122,9 +124,11 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 
 	public void setClassInvocation(final ClassInvocation aClassInvocation) {
 		classInvocation = aClassInvocation;
+		_p_classInvocation.resolve(aClassInvocation);
 	}
 
-	public ClassInvocation getClassInvocation() {
+	@Deprecated public ClassInvocation getClassInvocation() {
+		// maybe deprecated
 		return classInvocation;
 	}
 
@@ -272,6 +276,10 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		                  .add("status", status)
 		                  .add("typeResolve", typeResolve)
 		                  .toString();
+	}
+
+	public void onClassInvocation(final DoneCallback<? super ClassInvocation> aO) {
+		_p_classInvocation.then(aO);
 	}
 }
 

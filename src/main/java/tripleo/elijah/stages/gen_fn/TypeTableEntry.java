@@ -8,8 +8,10 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
+import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.lang.GenericTypeName;
 import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.OS_Type;
@@ -17,6 +19,7 @@ import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.ArrayList;
@@ -38,6 +41,7 @@ public class TypeTableEntry {
 	private OS_Type      attached;
 	private @Nullable DeduceTypes2 deduceTypes2;
 	private DeduceTypeResolve2 resolver;
+	private Eventual<GenType> _p_genTypeSet = new Eventual<>();
 
 	public Type getLifetime() {
 		return lifetime;
@@ -51,6 +55,7 @@ public class TypeTableEntry {
 		if (genType == null) {
 			if (deduceTypes2 != null) {
 				genType = new GenType(deduceTypes2.resolver());
+				_p_genTypeSet.resolve(genType);
 			}
 		}
 		return genType;
@@ -65,6 +70,14 @@ public class TypeTableEntry {
 	}
 
 	public void setDeduceTypes2(final DeduceTypes2 aDeduceTypes2) {
+		deduceTypes2 = aDeduceTypes2;
+	}
+
+	public void onGenType(final DoneCallback<? super GenType> aO) {
+		_p_genTypeSet.then(aO);
+	}
+
+	public void provide(final DeduceTypes2 aDeduceTypes2) {
 		deduceTypes2 = aDeduceTypes2;
 	}
 
@@ -93,47 +106,54 @@ public class TypeTableEntry {
 
 	private void _settingAttached(@NotNull final OS_Type aAttached) {
 		final GenType genType1 = __genType();
-		switch (aAttached.getType()) {
-			case USER:
-				if (genType1.getTypeName() != null) {
-					final TypeName typeName = aAttached.getTypeName();
-					if (!(typeName instanceof GenericTypeName))
-						genType1.setNonGenericTypeName(typeName);
-				} else
-					genType1.setTypeName(aAttached)/*.getTypeName()*/;
-				break;
-			case USER_CLASS:
-//			ClassStatement c = attached.getClassOf();
-				genType1.setResolved(aAttached)/*attached*/; // c
-				break;
-			case UNIT_TYPE:
-				genType1.setResolved(aAttached);
-			case BUILT_IN:
-				if (genType1.getTypeName() != null)
+
+		if (genType1 != null) {
+			switch (aAttached.getType()) {
+				case USER:
+					if (genType1.getTypeName() != null) {
+						final TypeName typeName = aAttached.getTypeName();
+						if (!(typeName instanceof GenericTypeName))
+							genType1.setNonGenericTypeName(typeName);
+					} else
+						genType1.setTypeName(aAttached)/*.getTypeName()*/;
+					break;
+				case USER_CLASS:
+	//			ClassStatement c = attached.getClassOf();
+					genType1.setResolved(aAttached)/*attached*/; // c
+					break;
+				case UNIT_TYPE:
 					genType1.setResolved(aAttached);
-				else
-					genType1.setTypeName(aAttached);
-				break;
-			case FUNCTION:
-				assert genType1.getResolved() == null || genType1.getResolved() == aAttached || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
-				genType1.setResolved(aAttached);
-				break;
-			case FUNC_EXPR:
-				assert genType1.getResolved() == null || genType1.getResolved() == aAttached;// || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
-				genType1.setResolved(aAttached);
-				break;
-			default:
-//			throw new NotImplementedException();
-				SimplePrintLoggerToRemoveSoon.println_err2("73 " + aAttached);
-				break;
+				case BUILT_IN:
+					if (genType1.getTypeName() != null)
+						genType1.setResolved(aAttached);
+					else
+						genType1.setTypeName(aAttached);
+					break;
+				case FUNCTION:
+					assert genType1.getResolved() == null || genType1.getResolved() == aAttached || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
+					genType1.setResolved(aAttached);
+					break;
+				case FUNC_EXPR:
+					assert genType1.getResolved() == null || genType1.getResolved() == aAttached;// || /*HACK*/ aAttached.getType() == OS_Type.Type.FUNCTION;
+					genType1.setResolved(aAttached);
+					break;
+				default:
+	//			throw new NotImplementedException();
+					SimplePrintLoggerToRemoveSoon.println_err2("73 " + aAttached);
+					break;
+			}
+		} else {
+			NotImplementedException.raise_stop();
 		}
 	}
 
 	private @Nullable GenType __genType() {
 		if (resolver != null && genType == null) {
 			genType = new GenType(resolver);
+			_p_genTypeSet.resolve(genType);
 		} else if (deduceTypes2 != null && genType == null) {
 			genType = new GenType(deduceTypes2.resolver());
+			_p_genTypeSet.resolve(genType);
 		} else {
 			System.err.println("FAIL 135");
 //			throw new AssertionError();
@@ -156,17 +176,22 @@ public class TypeTableEntry {
 	}
 
 	public void resolve(final GeneratedNode aResolved) {
-		genType.setNode(aResolved);
+		if (__genType() != null) {
+			genType.setNode(aResolved);
+		}
 	}
-
 	public GeneratedNode resolved() {
-		return genType.getNode();
+		if (__genType() != null) {
+			return genType.getNode();
+		}
+		return null;
 	}
-
 	public boolean isResolved() {
-		return genType.getNode() != null;
+		if (__genType() != null) {
+			return genType.getNode() != null;
+		}
+		return false;
 	}
-
 	public OS_Type getAttached() {
 		return attached;
 	}
@@ -184,12 +209,11 @@ public class TypeTableEntry {
 	}
 
 	public void setAttached(final GenType aGenType) {
-		genType.copy(aGenType);
-//		if (aGenType.resolved != null) genType.resolved = aGenType.resolved;
-//		if (aGenType.ci != null) genType.ci = aGenType.ci;
-//		if (aGenType.node != null) genType.node = aGenType.node;
+		if (__genType() != null) {
+			genType.copy(aGenType);
 
-		setAttached(genType.getResolved(), resolver);
+			setAttached(genType.getResolved(), resolver);
+		}
 	}
 
 	public void addSetAttached(final OnSetAttached osa) {
@@ -197,7 +221,9 @@ public class TypeTableEntry {
 	}
 
 	public void genTypeCI(final ClassInvocation aClsinv) {
-		genType.setCi(aClsinv);
+		if (__genType() != null) {
+			genType.setCi(aClsinv);
+		}
 	}
 
 	public enum Type {
