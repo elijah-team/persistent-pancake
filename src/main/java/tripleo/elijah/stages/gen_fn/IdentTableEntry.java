@@ -45,8 +45,8 @@ import java.util.Map;
  * Created 9/12/20 10:27 PM
  */
 public class IdentTableEntry extends BaseTableEntry1 implements Constructable, TableEntryIV, DeduceTypes2.ExpectationBase {
-	public final @NotNull Map<Integer, TypeTableEntry>                    potentialTypes        = new HashMap<Integer, TypeTableEntry>();
-	protected final       DeferredObject<InstructionArgument, Void, Void> backlinkSet           = new DeferredObject<InstructionArgument, Void, Void>();
+	private final @NotNull Map<Integer, TypeTableEntry>                    potentialTypes = new HashMap<Integer, TypeTableEntry>();
+	protected final        DeferredObject<InstructionArgument, Void, Void> backlinkSet    = new DeferredObject<InstructionArgument, Void, Void>();
 	final                 DeferredObject<ProcTableEntry, Void, Void>      constructableDeferred = new DeferredObject<>();
 	private final         int                                             index;
 	private final         IdentExpression                                 ident;
@@ -292,6 +292,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	public void doConstructable(final ClassInvocation aClsinv) {
 		this.type.genTypeCI(aClsinv);
 		aClsinv.resolvePromise().then(this::resolveTypeToClass);
+	}
+
+	public Map<Integer, TypeTableEntry> getPotentialTypes() {
+		return potentialTypes;
 	}
 
 //	private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();
