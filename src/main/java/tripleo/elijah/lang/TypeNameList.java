@@ -11,6 +11,7 @@ package tripleo.elijah.lang;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import tripleo.elijah.lang.nextgen.names2.ENU_Understanding;
 import tripleo.elijah.lang.nextgen.names2.EN_TypeNameListMember;
 import tripleo.elijah.util.Helpers;
 
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 public class TypeNameList {
 
 	final List<TypeName> p = new ArrayList<TypeName>();
+	private List<ENU_Understanding> us;
 
 	public void add(final TypeName tn) {
 		p.add(tn);
@@ -47,6 +49,11 @@ public class TypeNameList {
 				return input.toString();
 			}
 		}));
+	}
+
+	public void addUnderstanding(final ENU_Understanding aUnderstanding) {
+		if (us==null) us = new ArrayList<>();
+		us.add(aUnderstanding);
 	}
 }
 

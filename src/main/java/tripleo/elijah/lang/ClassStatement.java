@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.contexts.ClassContext;
+import tripleo.elijah.lang.nextgen.names2.ENU_ClassStatementGenericTypeNameList;
 import tripleo.elijah.lang.types.OS_UserClassType;
 import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
@@ -208,8 +209,9 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 
 	// endregion
 
-	public void setGenericPart(final TypeNameList genericPart) {
-		this.genericPart = genericPart;
+	public void setGenericPart(final TypeNameList aTypeNameList) {
+		this.genericPart = aTypeNameList;
+		this.genericPart.addUnderstanding(new ENU_ClassStatementGenericTypeNameList(this));
 	}
 
 	public @NotNull List<TypeName> getGenericPart() {
