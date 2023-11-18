@@ -39,6 +39,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 
 	<classpathentry kind="lib" path="/home/user/.m2/repository/org/checkerframework/checker-qual/3.33.0/checker-qual-3.33.0.jar"/>
-
+	<classpathentry kind="lib" path="spotbugs-annotations-4.7.3"/>
 	<classpathentry kind="output" path="build/classes/java/main"/>
 </classpath>
