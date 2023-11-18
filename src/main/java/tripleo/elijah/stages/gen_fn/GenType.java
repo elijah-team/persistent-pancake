@@ -109,13 +109,20 @@ public class GenType {
 	}
 
 	public String asString() {
+		final String ngtn                     = nonGenericTypeName != null ? nonGenericTypeName.asString() : "<<null>>";
+		final String resolvedString           = resolved != null ? resolved.asString() : "<<null>>";
+		final String ciString                 = ci != null ? ci.asString() : "<<null>>";
+		final String nodeString               = node != null ? node.asString() : "<<null>>";
+		final String functionInvocationString = functionInvocation != null ? functionInvocation.asString() : "<<null>>";
+		final String typeNameString           = typeName != null ? typeName.asString() : "<<null>>";
+
 		final String sb = "GenType{" + "resolvedn=" + resolvedn +
-		  ", typeName=" + typeName.asString() +
-		  ", nonGenericTypeName=" + nonGenericTypeName.asString() +
-		  ", resolved=" + resolved.asString() +
-		  ", ci=" + ci.asString() +
-		  ", node=" + node.asString() +
-		  ", functionInvocation=" + functionInvocation.asString() +
+		  ", typeName=" + typeNameString +
+		  ", nonGenericTypeName=" + ngtn +
+		  ", resolved=" + resolvedString +
+		  ", ci=" + ciString +
+		  ", node=" + nodeString +
+		  ", functionInvocation=" + functionInvocationString +
 		  '}';
 		return sb;
 	}
