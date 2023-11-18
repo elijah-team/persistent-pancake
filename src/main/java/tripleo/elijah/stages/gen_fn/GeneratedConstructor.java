@@ -16,36 +16,39 @@ import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.deduce.NamespaceInvocation;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 
 /**
  * Created 6/27/21 9:45 AM
  */
 public class GeneratedConstructor extends BaseGeneratedFunction {
-	public final @Nullable ConstructorDef cd;
+	public final @Nullable ConstructorDef     cd;
+	private final          DeduceTypeResolve2 resolver;
 
-	public GeneratedConstructor(final @Nullable ConstructorDef aConstructorDef) {
+	public GeneratedConstructor(final @Nullable ConstructorDef aConstructorDef, final DeduceTypeResolve2 aResolver) {
 		cd = aConstructorDef;
+		resolver = aResolver;
 	}
 
 	public void setFunctionInvocation(final FunctionInvocation fi) {
-		final GenType genType = new GenType();
+		final GenType genType = new GenType(resolver);
 
 		// TODO will fail on namespace constructors; next line too
-		if (genType.ci instanceof ClassInvocation) {
+		if (genType.getCi() instanceof ClassInvocation) {
 //			throw new IllegalStateException("34 Needs class invocation");
 
-			final ClassInvocation classInvocation = (ClassInvocation) genType.ci;
+			final ClassInvocation classInvocation = (ClassInvocation) genType.getCi();
 
-			genType.ci       = classInvocation;
-			genType.resolved = classInvocation.getKlass().getOS_Type();
-		} else if (genType.ci instanceof NamespaceInvocation) {
-			final NamespaceInvocation namespaceInvocation = (NamespaceInvocation) genType.ci;
+			genType.setCi(classInvocation);
+			genType.setResolved(classInvocation.getKlass().getOS_Type());
+		} else if (genType.getCi() instanceof NamespaceInvocation) {
+			final NamespaceInvocation namespaceInvocation = (NamespaceInvocation) genType.getCi();
 
-			genType.ci       = namespaceInvocation;
-			genType.resolved = namespaceInvocation.getNamespace().getOS_Type();
+			genType.setCi(namespaceInvocation);
+			genType.setResolved(namespaceInvocation.getNamespace().getOS_Type());
 		}
 
-		genType.node = this;
+		genType.setNode(this);
 
 		resolveTypeDeferred(genType);
 	}

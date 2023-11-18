@@ -59,7 +59,7 @@ public class VTE_Zero {
         try {
             @NotNull final GenType ty2 = deduceTypes2.resolve_type(aTy, aTy.getTypeName().getContext());
             // TODO ite.setAttached(ty2) ??
-            final OS_Element           ele  = ty2.resolved.getElement();
+            final OS_Element           ele  = ty2.getResolved().getElement();
             final LookupResultList     lrl  = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), deduceTypes2);
             @Nullable final OS_Element best = lrl.chooseBest(null);
             ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(best));
@@ -83,8 +83,8 @@ public class VTE_Zero {
             assert best != null;
             ite.setResolvedElement(best);
 
-            final @NotNull GenType          genType  = new GenType(klass);
-            final TypeName                  typeName = vte.type.genType.nonGenericTypeName;
+            final @NotNull GenType          genType  = new GenType(klass, deduceTypes2.resolver());
+            final TypeName                  typeName = vte.type.getGenType().getNonGenericTypeName();
             final @Nullable ClassInvocation ci       = genType.genCI(typeName, deduceTypes2, errSink, phase);
 //							resolve_vte_for_class(vte, klass);
             ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
@@ -112,13 +112,15 @@ public class VTE_Zero {
                 case USER:
                     final @NotNull GenType ty2 = deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
 
-                    if (tte.genType.resolved == null) {
-                        if (ty2.resolved.getType() == OS_Type.Type.USER_CLASS) {
-                            tte.genType.copy(ty2);
+                    tte.provide(deduceTypes2);
+
+                    if (tte.getGenType().getResolved() == null) {
+                        if (ty2.getResolved().getType() == OS_Type.Type.USER_CLASS) {
+                            tte.getGenType().copy(ty2);
                         }
                     }
 
-                    final OS_Element ele = ty2.resolved.getElement();
+                    final OS_Element ele = ty2.getResolved().getElement();
                     final LookupResultList lrl = DeduceLookupUtils.lookupExpression(iteIdent, ele.getContext(), deduceTypes2);
 
                     ele2 = lrl.chooseBest(null);

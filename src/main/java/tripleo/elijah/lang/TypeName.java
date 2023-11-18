@@ -20,6 +20,10 @@ public interface TypeName extends Locatable {
 
 	Context getContext();
 
+	default String asString() {
+		return toString();
+	}
+
 	enum Type {
 		NORMAL, GENERIC, TYPE_OF, FUNCTION
 	}

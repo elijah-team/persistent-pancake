@@ -11,12 +11,15 @@ package tripleo.elijah.stages.deduce;
 
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.stages.deduce.percy.Resolving;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
+import tripleo.elijah.util.NotImplementedException;
 
 /**
  * Created 11/22/21 8:23 PM
@@ -93,6 +96,19 @@ public class DeduceElementIdent {
 		}
 
 		return null;
+	}
+
+	public DeferredObject<OS_Element, Diagnostic, Void> getResolvedElementPromise() {
+		return _resolvedElementPromise;
+	}
+
+	public void addResolving(final Resolving aResolving) {
+		if (aResolving.getImmediacy() == Resolving.t.IMMEDIATE) {
+			aResolving.action();
+			return;
+		}
+
+		throw new NotImplementedException();
 	}
 }
 

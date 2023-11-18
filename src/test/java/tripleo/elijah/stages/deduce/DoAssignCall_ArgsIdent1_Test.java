@@ -70,7 +70,7 @@ public class DoAssignCall_ArgsIdent1_Test {
 		final OS_Type           sts_int           = new OS_BuiltinType(BuiltInTypes.SystemInteger);
 		final TypeTableEntry    b1_type           = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, sts_int);
 		final OS_Type           b1_attached       = sts_int;
-		b1_type.setAttached(sts_int);
+		b1_type.setAttached(sts_int, d.resolver());
 
 		final String          b1_name       = "b1";
 		final int             index_b1 = generatedFunction.addVariableTableEntry(b1_name, VariableTableType.VAR, b1_type, null);

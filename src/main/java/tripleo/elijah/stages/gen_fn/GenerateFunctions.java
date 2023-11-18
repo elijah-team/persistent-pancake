@@ -1816,6 +1816,7 @@ import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceConstructStatement;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.instructions.ConstTableIA;
 import tripleo.elijah.stages.instructions.FnCallArgs;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -1875,7 +1876,9 @@ public class GenerateFunctions {
 	public @NotNull GeneratedConstructor generateConstructor(final ConstructorDef aConstructorDef,
 	                                                         final ClassStatement parent, // TODO Namespace constructors
 	                                                         final FunctionInvocation aFunctionInvocation) {
-		final S1_Constructor s1c = new S1_Constructor(aConstructorDef, parent, aFunctionInvocation);
+		DeduceTypeResolve2 aResolver = null; // TODO this will fail
+
+		final S1_Constructor s1c = new S1_Constructor(aConstructorDef, parent, aFunctionInvocation, aResolver);
 
 		s1c.process(new S1toG_GC_Processor(this), true);
 
@@ -1886,7 +1889,9 @@ public class GenerateFunctions {
 	public @NotNull GeneratedConstructor generateConstructor_000(final ConstructorDef aConstructorDef,
 	                                                             final ClassStatement parent, // TODO Namespace constructors
 	                                                             final FunctionInvocation aFunctionInvocation) {
-		final GeneratedConstructor gf = new GeneratedConstructor(aConstructorDef);
+		DeduceTypeResolve2 aResolver = null ; // TODO this will fail later (use provided/fix_tables)
+
+		final GeneratedConstructor gf = new GeneratedConstructor(aConstructorDef, aResolver);
 		gf.setFunctionInvocation(aFunctionInvocation);
 		if (parent instanceof ClassStatement) {
 			final OS_Type         parentType = parent.getOS_Type();
@@ -1906,15 +1911,15 @@ public class GenerateFunctions {
 				final OS_Type        attached = tte1.getAttached();
 
 				// TODO for reference now...
-				final GenType  genType  = new GenType();
+				final GenType  genType  = new GenType(aResolver);
 				final TypeName typeName = fali.typeName();
 				if (typeName != null)
-					genType.typeName = new OS_UserType(typeName);
-				genType.resolved = attached;
+					genType.setTypeName(new OS_UserType(typeName));
+				genType.setResolved(attached);
 
 				final OS_Type attached1;
 				if (attached == null && typeName != null)
-					attached1 = genType.typeName;
+					attached1 = genType.getTypeName();
 				else
 					attached1 = attached;
 
@@ -2071,6 +2076,8 @@ public class GenerateFunctions {
 	@NotNull GeneratedFunction generateFunction(@NotNull final FunctionDef fd,
 	                                            final OS_Element parent,
 	                                            @NotNull final FunctionInvocation aFunctionInvocation) {
+		DeduceTypeResolve2 aResolver = null ; // TODO this will fail later (use provided/fix_tables)
+
 //		LOG.err("601.1 fn "+fd.name() + " " + parent);
 		final GeneratedFunction gf = new GeneratedFunction(fd);
 		if (parent instanceof ClassStatement)
@@ -2101,15 +2108,15 @@ public class GenerateFunctions {
 					final OS_Type        attached = tte1.getAttached();
 
 					// TODO for reference now...
-					final GenType  genType  = new GenType();
+					final GenType  genType  = new GenType(aResolver);
 					final TypeName typeName = fali.typeName();
 					if (typeName != null)
-						genType.typeName = new OS_UserType(typeName);
-					genType.resolved = attached;
+						genType.setTypeName(new OS_UserType(typeName));
+					genType.setResolved(attached);
 
 					final OS_Type attached1;
 					if (attached == null && typeName != null)
-						attached1 = genType.typeName;
+						attached1 = genType.getTypeName();
 					else
 						attached1 = attached;
 
@@ -2660,8 +2667,8 @@ public class GenerateFunctions {
 				pte.typePromise().then(new DoneCallback<GenType>() { // TODO should this be done here?
 					@Override
 					public void onDone(final GenType result) {
-						@NotNull final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.resolved);
-						tte.genType.copy(result);
+						@NotNull final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved());
+						tte.getGenType().copy(result);
 						idte.addPotentialType(instructionIndex, tte);
 					}
 				});

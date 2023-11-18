@@ -17,6 +17,7 @@ import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.stages.deduce.DeduceTypeResolve;
 import tripleo.elijah.stages.deduce.ResolveError;
 import tripleo.elijah.stages.deduce.ResolveUnknown;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +101,8 @@ public abstract class BaseTableEntry {
 	}
 
 	protected void setupResolve() {
-		typeResolve = new DeduceTypeResolve(this);
+		DeduceTypeResolve2 aResolver =null; // TODO this will fail
+		typeResolve = new DeduceTypeResolve(this, aResolver);
 	}
 
 
