@@ -9,6 +9,7 @@
 package tripleo.elijah.lang;
 
 import tripleo.elijah.diagnostic.Locatable;
+import tripleo.elijah.lang.nextgen.names2.EN_Name;
 
 /**
  * Created 8/16/20 2:16 AM
@@ -23,6 +24,8 @@ public interface TypeName extends Locatable {
 	default String asString() {
 		return toString();
 	}
+
+	EN_Name getEnName();
 
 	enum Type {
 		NORMAL, GENERIC, TYPE_OF, FUNCTION

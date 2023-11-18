@@ -1,5 +1,7 @@
 package tripleo.elijah.lang;
 
+import tripleo.elijah.UnintendedUseException;
+import tripleo.elijah.lang.nextgen.names2.EN_Name;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.io.File;
@@ -61,6 +63,12 @@ public class FuncTypeName implements TypeName {
 	@Override
 	public Context getContext() {
 		return _ctx;
+	}
+
+	@Override
+	public EN_Name getEnName() {
+//		return null;
+		throw new UnintendedUseException();
 	}
 
 	@Override

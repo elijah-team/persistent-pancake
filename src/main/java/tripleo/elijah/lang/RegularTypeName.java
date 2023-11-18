@@ -14,6 +14,9 @@
  */
 package tripleo.elijah.lang;
 
+import tripleo.elijah.lang.nextgen.names2.EN_Name;
+import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
+
 import java.io.File;
 
 public class RegularTypeName extends AbstractTypeName2 implements NormalTypeName {
@@ -22,6 +25,7 @@ public class RegularTypeName extends AbstractTypeName2 implements NormalTypeName
 	private Context _ctx;
 //	private OS_Type _resolved;
 	private OS_Element _resolvedElement;
+	private EN_Name_Q en_name;
 
 	public RegularTypeName(final Context cur) {
 		super();
@@ -55,6 +59,11 @@ public String getName() {
 	}
 
 	@Override
+	public EN_Name getEnName() {
+		return en_name;
+	}
+
+	@Override
 	public boolean hasResolvedElement() {
 		return _resolvedElement != null;
 	}
@@ -73,6 +82,7 @@ public String getName() {
 	@Override
 	public void setName(final Qualident aS) {
 		this.typeName=aS;
+		this.en_name = new EN_Name_Q(aS, this);
 	}
 
 	/* (non-Javadoc)

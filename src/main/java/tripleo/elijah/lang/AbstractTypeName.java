@@ -8,16 +8,25 @@
  */
 package tripleo.elijah.lang;
 
+import tripleo.elijah.lang.nextgen.names2.EN_Name;
+import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
+
 import java.util.Objects;
 
 public abstract class AbstractTypeName implements NormalTypeName {
 
 	private boolean isNullable = false;
+	private EN_Name en_name;
 
 	@Override
 	public boolean isNull() {
 		return !pr_constant && !pr_reference && !pr_out && !pr_in
 				&& (pr_name == null);
+	}
+
+	@Override
+	public EN_Name getEnName() {
+		return null;
 	}
 
 	@Override
@@ -68,6 +77,7 @@ public abstract class AbstractTypeName implements NormalTypeName {
 	@Override
 	public void setName(final Qualident s) {
 		pr_name = s;
+		en_name = new EN_Name_Q(s, this);
 	}
 	
 	@Override

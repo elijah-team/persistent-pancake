@@ -11,6 +11,7 @@ package tripleo.elijah.lang;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import tripleo.elijah.lang.nextgen.names2.EN_TypeNameListMember;
 import tripleo.elijah.util.Helpers;
 
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ public class TypeNameList {
 
 	public void add(final TypeName tn) {
 		p.add(tn);
+
+		tn.getEnName().addUnderstanding(new EN_TypeNameListMember(this));
 	}
 
 	public TypeName get(final int index) {

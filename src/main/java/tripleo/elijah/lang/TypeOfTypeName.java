@@ -1,6 +1,8 @@
 package tripleo.elijah.lang;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.UnintendedUseException;
+import tripleo.elijah.lang.nextgen.names2.EN_Name;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
@@ -49,6 +51,12 @@ public class TypeOfTypeName implements TypeName {
 	@Override
 	public Context getContext() {
 		return _ctx;
+	}
+
+	@Override
+	public EN_Name getEnName() {
+//		return null;
+		throw new UnintendedUseException();
 	}
 
 	public TypeName resolve(final @NotNull Context ctx, final DeduceTypes2 deduceTypes2) throws ResolveError {
