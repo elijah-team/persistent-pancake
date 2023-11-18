@@ -1,25 +1,33 @@
 package tripleo.elijah.comp;
 
-import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.lang.LookupResultList;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.NotNull;
+
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+
 public class Finally {
 	public int codeOutputSize() {
-		final List<String> r2 = outputs.stream().map(Output::getFilename).collect(Collectors.toList());
+		final List<String> r2 = outputs.stream()
+		                               .map(Output::getFilename)
+		                               .filter(n -> n != null && !n.isEmpty())
+		                               .collect(Collectors.toList());
 		final List<Output> r = outputs.stream()
 		                              .unordered()
 		                              .filter(LookupResultList.distinctByKey(Output::getFilename))
 		                              .distinct()
 		                              .collect(Collectors.toList());
-		System.err.println("1414 "+ r2);
 
+		r2.stream().forEach(arg0 -> System.out.println("1414 " + arg0));
+
+//		System.err.println("1414 "+ r2);
+
+		assert r2.size() == outputs.size(); // duh
 //		assert r.size() == outputs.size();
 
 		return r.size();
