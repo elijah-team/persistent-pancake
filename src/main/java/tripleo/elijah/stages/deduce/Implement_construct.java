@@ -17,7 +17,6 @@ import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.percy.DeduceElement3_LookingUpCtx;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
-import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.Constructable;
 import tripleo.elijah.stages.gen_fn.GenType;
@@ -76,7 +75,7 @@ class Implement_construct {
 
 	public void action_IdentIA() {
 		@NotNull final IdentTableEntry idte       = ((IdentIA) expression).getEntry();
-		final DeducePath               deducePath = idte.buildDeducePath(generatedFunction);
+		final DeducePath               deducePath = idte.buildDeducePath(generatedFunction, deduceTypes2.resolver());
 		{
 			@Nullable OS_Element el3;
 			@Nullable Context    ectx = generatedFunction.getFD().getContext();

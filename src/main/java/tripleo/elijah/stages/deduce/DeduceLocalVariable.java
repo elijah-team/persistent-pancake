@@ -221,7 +221,7 @@ public class DeduceLocalVariable {
 				// TODO for argument, we need a DeduceExpression (DeduceProcCall) which is bounud to self
 				//  (inherited), so we can extract the invocation
 				final InstructionArgument ia = procTableEntry.expression_num;
-				final DeducePath          dp = (((IdentIA) ia).getEntry()).buildDeducePath(generatedFunction);
+				final DeducePath          dp = (((IdentIA) ia).getEntry()).buildDeducePath(generatedFunction, deduceTypes2.resolver());
 				final OS_Element          Self;
 				if (dp.size() == 1) { //ia.getEntry().backlink == null
 					final @Nullable OS_Element e          = dp.getElement(0);

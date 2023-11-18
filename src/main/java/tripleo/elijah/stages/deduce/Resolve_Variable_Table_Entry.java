@@ -101,7 +101,7 @@ class Resolve_Variable_Table_Entry {
 				if (e instanceof FunctionDef) {
 //						final FunctionDef fd = (FunctionDef) e;
 					@NotNull final IdentTableEntry ite1 = ((IdentIA) pte1.expression_num).getEntry();
-					final DeducePath               dp   = ite1.buildDeducePath(generatedFunction);
+					final DeducePath               dp   = ite1.buildDeducePath(generatedFunction, deduceTypes2.resolver());
 					@Nullable final GenType        t    = dp.getType(dp.size() - 1);
 					ite1.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(e));
 					pte1.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(e));

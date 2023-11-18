@@ -94,7 +94,7 @@ class Resolve_Ident_IA2 {
 			s = BaseGeneratedFunction._getIdentIAPathList(identIA);
 
 		if (identIA != null) {
-			final DeducePath          dp    = identIA.getEntry().buildDeducePath(generatedFunction);
+			final DeducePath          dp    = identIA.getEntry().buildDeducePath(generatedFunction, deduceTypes2.resolver());
 			final int                 index = dp.size() - 1;
 			final InstructionArgument ia2   = dp.getIA(index);
 			// ia2 is not == equals to identIA, but functionally equivalent
@@ -307,7 +307,7 @@ class Resolve_Ident_IA2 {
 			final InstructionArgument en = procTableEntry.expression_num;
 			if (en instanceof IdentIA) {
 				final @NotNull IdentIA     identIA2 = (IdentIA) en;
-				final DeducePath           ded      = identIA2.getEntry().buildDeducePath(generatedFunction);
+				final DeducePath           ded      = identIA2.getEntry().buildDeducePath(generatedFunction, deduceTypes2.resolver());
 				@Nullable final OS_Element el2      = ded.getElement(ded.size() - 1);
 				if (el2 != null) {
 					state = 1;
@@ -576,7 +576,7 @@ class Resolve_Ident_IA2 {
 					if (xxx instanceof IdentIA) {
 						final @NotNull IdentIA identIA2 = (IdentIA) xxx;
 						@NotNull final IdentTableEntry ite = identIA2.getEntry();
-						final DeducePath deducePath = ite.buildDeducePath(generatedFunction);
+						final DeducePath deducePath = ite.buildDeducePath(generatedFunction, deduceTypes2.resolver());
 						@Nullable final OS_Element el5 = deducePath.getElement(deducePath.size() - 1);
 						final int y = 2;
 						fd = (FunctionDef) el5;

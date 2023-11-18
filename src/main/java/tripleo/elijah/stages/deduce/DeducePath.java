@@ -21,6 +21,7 @@ import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GenericElementHolder;
@@ -46,8 +47,12 @@ public class DeducePath {
 	private final GenType @NotNull []                 types;
 	private final MemberContext @NotNull []           contexts;
 
+	private final DeduceTypeResolve2 resolver;
+
 	@Contract(pure = true)
-	public DeducePath(final IdentTableEntry aIdentTableEntry, @NotNull final List<InstructionArgument> aX) {
+	public DeducePath(final IdentTableEntry aIdentTableEntry, @NotNull final List<InstructionArgument> aX, final DeduceTypeResolve2 aResolver) {
+		resolver = aResolver;
+
 		final int size = aX.size();
 		assert size > 0;
 
@@ -129,7 +134,7 @@ public class DeducePath {
 
 	public @Nullable Context getContext(final int aIndex) {
 		if (contexts[aIndex] == null) {
-			final @Nullable MemberContext memberContext = new MemberContext(this, aIndex, getElement(aIndex));
+			final @Nullable MemberContext memberContext = new MemberContext(this, aIndex, getElement(aIndex), this.resolver);
 			contexts[aIndex] = memberContext;
 			return memberContext;
 		} else
@@ -147,8 +152,10 @@ public class DeducePath {
 		private final int index;
 		private final OS_Element element;
 		private final @Nullable GenType type;
+		private final DeduceTypeResolve2 resolver;
 
-		public MemberContext(final DeducePath aDeducePath, final int aIndex, final OS_Element aElement) {
+		public MemberContext(final DeducePath aDeducePath, final int aIndex, final OS_Element aElement, final DeduceTypeResolve2 aResolver) {
+			resolver = aResolver;
 			assert aIndex >= 0;
 
 			deducePath = aDeducePath;
@@ -175,6 +182,9 @@ public class DeducePath {
 				try {
 					@NotNull final GenType resolved2 = dt2.resolve_type(resolved, ctx1);
 					System.out.println("177 "+resolved2.asString());
+
+					type.copy(resolved2);
+
 					NotImplementedException.raise_stop();
 				} catch (ResolveError aE) {
 					throw new RuntimeException(aE);

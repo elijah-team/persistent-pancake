@@ -114,7 +114,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 		@Nullable final FunctionInvocation fi;
 		final GenType genType;
 		if (pte.expression_num != null) {
-			final DeducePath dp = ((IdentIA) pte.expression_num).getEntry().buildDeducePath(generatedFunction);
+			final DeducePath dp = ((IdentIA) pte.expression_num).getEntry().buildDeducePath(generatedFunction, dc.resolver());
 
 			if (dp.size() > 1) {
 				@Nullable final OS_Element el_self = dp.getElement(dp.size() - 2);

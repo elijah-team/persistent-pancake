@@ -25,6 +25,7 @@ import tripleo.elijah.stages.deduce.DeducePath;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.OnType;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.deduce.zero.ITE_Zero;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -197,9 +198,9 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		return constructableDeferred.promise();
 	}
 
-	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction) {
+	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction, final DeduceTypeResolve2 aResolver) {
 		@NotNull final List<InstructionArgument> x = BaseGeneratedFunction._getIdentIAPathList(new IdentIA(index, generatedFunction));
-		return new DeducePath(this, x);
+		return new DeducePath(this, x, aResolver);
 	}
 
 	public void fefiDone(final GenType aGenType) {
