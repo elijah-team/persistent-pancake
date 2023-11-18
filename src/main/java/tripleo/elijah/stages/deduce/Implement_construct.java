@@ -18,6 +18,7 @@ import tripleo.elijah.lang.TypeNameList;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.percy.DeduceElement3_LookingUpCtx;
+import tripleo.elijah.stages.deduce.percy.PFInvocation;
 import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
 import tripleo.elijah.stages.deduce.percy.Provided;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
@@ -274,42 +275,47 @@ public class Implement_construct {
 	                                 final @Nullable String constructorName,
 	                                 final @NotNull NormalTypeName aTyn1,
 	                                 final ClassStatement classStatement) {
-		@NotNull final List<TypeName> gp     = classStatement.getGenericPart();
-		@Nullable ClassInvocation     clsinv = new ClassInvocation(classStatement, constructorName);
-		if (gp.size() > 0) {
-			final TypeNameList gp2 = aTyn1.getGenericPart();
-			for (int i = 0; i < gp.size(); i++) {
-				final TypeName         typeName = gp2.get(i);
-				@NotNull final GenType typeName2;
-				try {
-					// TODO transition to GenType
-					typeName2 = deduceTypes2.resolve_type(new OS_UserType(typeName), typeName.getContext());
-					clsinv.set(i, gp.get(i), typeName2.getResolved());
-				} catch (final ResolveError aResolveError) {
-					aResolveError.printStackTrace();
+		final PFInvocation.Setter[] ss = {null};
+
+		final PFInvocation pinv = deduceTypes2.get(generatedFunction).makeInvocation(classStatement);
+
+//		pinv.//addInvocation(classStatement, clsinv, __re);
+		pinv.setter((final PFInvocation.Setter s)->{
+			ss[0] = s;
+
+			@NotNull final List<TypeName> gp     = classStatement.getGenericPart();
+			@Nullable ClassInvocation     clsinv = new ClassInvocation(classStatement, constructorName);
+
+			if (!gp.isEmpty()) {
+				final TypeNameList gp2 = aTyn1.getGenericPart();
+				for (int i = 0; i < gp.size(); i++) {
+					final TypeName         typeName = gp2.get(i);
+					@NotNull final GenType typeName2;
+					try {
+						// TODO transition to GenType
+						typeName2 = deduceTypes2.resolve_type(new OS_UserType(typeName), typeName.getContext());
+						clsinv.set(i, gp.get(i), typeName2.getResolved());
+
+						clsinv = deduceTypes2.phase.registerClassInvocation(clsinv);
+						s.classInvocation/*AndRegister*/(clsinv);
+					} catch (final ResolveError aResolveError) {
+						aResolveError.printStackTrace();
+
+						s.resolveError(aResolveError);
+//						return;
+					}
 				}
 			}
-		}
-		clsinv = deduceTypes2.phase.registerClassInvocation(clsinv);
+		});
+
+		final ClassInvocation clsinv = ss[0].getClassInvocation();
+
 		if (co != null) {
 			if (co instanceof IdentTableEntry) {
-				final @Nullable IdentTableEntry idte3 = (IdentTableEntry) co;
-				idte3.type.genTypeCI(clsinv);
-				clsinv.resolvePromise().then(new DoneCallback<GeneratedClass>() {
-					@Override
-					public void onDone(final GeneratedClass result) {
-						idte3.resolveTypeToClass(result);
-					}
-				});
+				((IdentTableEntry) co).doConstructable(clsinv);
 			} else if (co instanceof VariableTableEntry) {
 				final @NotNull VariableTableEntry vte = (VariableTableEntry) co;
-				vte.type.genTypeCI(clsinv);
-				clsinv.resolvePromise().then(new DoneCallback<GeneratedClass>() {
-					@Override
-					public void onDone(final GeneratedClass result) {
-						vte.resolveTypeToClass(result);
-					}
-				});
+				vte.doConstructable(clsinv);
 			}
 		}
 		pte.setClassInvocation(clsinv);
