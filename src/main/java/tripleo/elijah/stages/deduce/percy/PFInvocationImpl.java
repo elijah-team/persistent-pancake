@@ -54,6 +54,11 @@ public class PFInvocationImpl implements PFInvocation {
 			public void hookClassInvocation(final DoneCallback<ClassInvocation> cb) {
 				_p_CI.then(cb);
 			}
+
+			@Override
+			public void exception(final Exception aFailure) {
+				throw new UnintendedUseException();
+			}
 		});
 	}
 

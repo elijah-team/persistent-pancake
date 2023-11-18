@@ -14,18 +14,13 @@
  */
 package tripleo.elijah.lang;
 
-import tripleo.elijah.lang.nextgen.names2.EN_Name;
-import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
-
 import java.io.File;
 
 public class RegularTypeName extends AbstractTypeName2 implements NormalTypeName {
-
 	private TypeNameList genericPart;
 	private Context _ctx;
 //	private OS_Type _resolved;
 	private OS_Element _resolvedElement;
-	private EN_Name_Q en_name;
 
 	public RegularTypeName(final Context cur) {
 		super();
@@ -44,8 +39,8 @@ public class RegularTypeName extends AbstractTypeName2 implements NormalTypeName
 
 @Override
 public String getName() {
-	if (typeName == null) return null;
-	return this.typeName.asSimpleString();
+	if (getText() == null) return null;
+	return this.getText().asSimpleString();
 }
 
 	@Override
@@ -56,11 +51,6 @@ public String getName() {
 	@Override
 	public Context getContext() {
 		return _ctx;
-	}
-
-	@Override
-	public EN_Name getEnName() {
-		return en_name;
 	}
 
 	@Override
@@ -81,8 +71,7 @@ public String getName() {
 
 	@Override
 	public void setName(final Qualident aS) {
-		this.typeName=aS;
-		this.en_name = new EN_Name_Q(aS, this);
+		this._setText(aS, this);
 	}
 
 	/* (non-Javadoc)
@@ -91,7 +80,7 @@ public String getName() {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		for (final TypeModifiers modifier : _ltm) {
+		for (final TypeModifiers modifier : getModifiers()) {
 			switch (modifier) {
 				case CONST:      sb.append("const "); break;
 				case REFPAR:     sb.append("ref "); break;
@@ -110,7 +99,7 @@ public String getName() {
 				default: 		 throw new IllegalStateException("Cant be here!");
 			}
 		}
-		if (typeName != null) {
+		if (getText() != null) {
 			if (genericPart != null) {
 				sb.append(String.format("%s[%s]", getName(), genericPart.toString()));
 			} else
@@ -132,7 +121,7 @@ public String getName() {
 
 	@Override
 	public Qualident getRealName() {
-		return typeName;
+		return getText();
 	}
 
 	// region Locatable

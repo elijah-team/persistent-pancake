@@ -2224,7 +2224,7 @@ public class DeduceTypes2 {
 
 	public DeduceTypeResolve2 resolver() {
 		if (this._resolver == null) {
-			this._resolver = new DeduceTypeResolve2();
+			this._resolver = new DeduceTypeResolve2(this);
 		}
 		return this._resolver;
 	}

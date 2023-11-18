@@ -22,5 +22,7 @@ public interface PFInvocation {
 		ClassInvocation getClassInvocation();
 
 		void hookClassInvocation(DoneCallback<ClassInvocation> cb);
+
+		void exception(Exception aFailure);
 	}
 }

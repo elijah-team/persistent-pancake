@@ -103,7 +103,7 @@ public class DeduceTypesTest {
 	 */
 	@Test
 	public void testDeduceIdentExpression2() {
-		final RegularTypeName tn  = new RegularTypeName();
+		final RegularTypeName tn  = new RegularTypeName(null); // README 11/18 better than nothing?
 		final Qualident       tnq = new Qualident();
 		tnq.append(Helpers.string_to_ident("Integer"));
 		tn.setName(tnq);

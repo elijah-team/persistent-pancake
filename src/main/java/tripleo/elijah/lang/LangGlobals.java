@@ -16,4 +16,14 @@ public class LangGlobals {
 		return _dp;
 	}
 
+	@NotNull
+	static RegularTypeName getUnitType() {
+		if (unitType == null) {
+			unitType = new RegularTypeName();
+			unitType.setName(Helpers.string_to_qualident("Unit"));
+		}
+		return unitType;
+	}
+
+	private static RegularTypeName unitType;
 }

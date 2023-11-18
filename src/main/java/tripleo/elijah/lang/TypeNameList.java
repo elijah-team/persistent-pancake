@@ -21,8 +21,11 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 public class TypeNameList {
+	public TypeNameList() {
+		int y=2;
+	}
 
-	final List<TypeName> p = new ArrayList<TypeName>();
+	final   List<TypeName>          p = new ArrayList<>();
 	private List<ENU_Understanding> us;
 
 	public void add(final TypeName tn) {

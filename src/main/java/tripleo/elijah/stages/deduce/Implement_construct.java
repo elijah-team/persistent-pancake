@@ -1,8 +1,11 @@
 package tripleo.elijah.stages.deduce;
 
+import java.util.Collection;
+
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import tripleo.elijah.DebugFlags;
 import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.lang.ClassStatement;
@@ -14,11 +17,12 @@ import tripleo.elijah.lang.NormalTypeName;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
-import tripleo.elijah.lang.TypeNameList;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.percy.DeduceElement3_LookingUpCtx;
 import tripleo.elijah.stages.deduce.percy.PFInvocation;
+import tripleo.elijah.stages.deduce.percy.PFluffyClassStatement;
+import tripleo.elijah.stages.deduce.percy.PFluffyClassStatementImpl;
 import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
 import tripleo.elijah.stages.deduce.percy.Provided;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
@@ -38,9 +42,6 @@ import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.util.NotImplementedException;
-
-import java.util.Collection;
-import java.util.List;
 
 public class Implement_construct {
 
@@ -193,7 +194,7 @@ public class Implement_construct {
 								}
 							} else {
 								ppwc.on(pwc -> {
-									luck.force((VariableStatement) el2);
+									luck.force(el2);
 //									pwc.provide((VariableStatement) el2);
 								});
 							}
@@ -283,29 +284,8 @@ public class Implement_construct {
 		pinv.setter((final PFInvocation.Setter s)->{
 			ss[0] = s;
 
-			@NotNull final List<TypeName> gp     = classStatement.getGenericPart();
-			@Nullable ClassInvocation     clsinv = new ClassInvocation(classStatement, constructorName);
-
-			if (!gp.isEmpty()) {
-				final TypeNameList gp2 = aTyn1.getGenericPart();
-				for (int i = 0; i < gp.size(); i++) {
-					final TypeName         typeName = gp2.get(i);
-					@NotNull final GenType typeName2;
-					try {
-						// TODO transition to GenType
-						typeName2 = deduceTypes2.resolve_type(new OS_UserType(typeName), typeName.getContext());
-						clsinv.set(i, gp.get(i), typeName2.getResolved());
-
-						clsinv = deduceTypes2.phase.registerClassInvocation(clsinv);
-						s.classInvocation/*AndRegister*/(clsinv);
-					} catch (final ResolveError aResolveError) {
-						aResolveError.printStackTrace();
-
-						s.resolveError(aResolveError);
-//						return;
-					}
-				}
-			}
+			PFluffyClassStatement fcs = new PFluffyClassStatementImpl(classStatement);
+			fcs.extracted(constructorName, aTyn1, s, deduceTypes2);
 		});
 
 		var b = classStatement.getContext(); // ??
@@ -342,48 +322,32 @@ public class Implement_construct {
 	                                  final @Nullable String constructorName,
 	                                  final @NotNull NormalTypeName aTyn1,
 	                                  final ClassContext.OS_TypeNameElement aTypeNameElement) {
-//		@NotNull final List<TypeName> gp     = aTypeNameElement.getGenericPart();
 		@Nullable ClassInvocation     clsinv = null;
-//		clsinv = new ClassInvocation(aTypeNameElement, constructorName);
-//		if (gp.size() > 0) {
-//			final TypeNameList gp2 = aTyn1.getGenericPart();
-//			for (int i = 0; i < gp.size(); i++) {
-//				final TypeName         typeName = gp2.get(i);
-//				@NotNull final GenType typeName2;
-//				try {
-//					// TODO transition to GenType
-//					typeName2 = deduceTypes2.resolve_type(new OS_UserType(typeName), typeName.getContext());
-//					clsinv.set(i, gp.get(i), typeName2.getResolved());
-//				} catch (final ResolveError aResolveError) {
-//					aResolveError.printStackTrace();
-//				}
-//			}
-//		}
 
 		@NotNull final IdentTableEntry ite = ((IdentIA) this.expression).getEntry();
 
-/*
-		final DeduceElement de = instruction.deduceElement;
-		@Nullable DeduceConstructStatement dcs = null;
-		if (de instanceof DeduceConstructStatement aDeduceConstructStatement) {
-			dcs = aDeduceConstructStatement;
-		}
-
-		assert dcs != null;
-
-		final @NotNull ProcTableEntry c = dcs.call.getEntry(); // README also this.pte??
-
-		assert c == this.pte;
-*/
+		final ClassStatement        classStatement = (ClassStatement) generatedFunction.getFD().getParent();
 
 		// FIXME 11/18 invocation table, aka prte_list
-		final PFInvocation pinv = deduceTypes2.get(generatedFunction).makeInvocation((ClassStatement) generatedFunction.getFD().getParent());
+		final PFInvocation          pinv   = deduceTypes2.get(generatedFunction).makeInvocation(classStatement);
+		final PFInvocation.Setter[] ss     = { null };
+
+		pinv.setter((final PFInvocation.Setter s) -> {
+			ss[0] = s;
+
+			PFluffyClassStatement fcs = new PFluffyClassStatementImpl(classStatement);
+			fcs.extracted(constructorName, aTyn1, s, deduceTypes2);
+		});
+
+		int y = 2;
 
 		if (ite.getType().getGenType() == null) {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, (OS_Type) null);
 			final GenType gt = ite.getType().getGenType();
-			//assert gt != null;
+			assert gt != null;
 		}
+
+		assert clsinv != null;
 
 		clsinv = deduceTypes2.phase.registerClassInvocation(clsinv);
 		if (co != null) {

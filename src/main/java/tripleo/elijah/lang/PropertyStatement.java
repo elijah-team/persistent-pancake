@@ -17,7 +17,6 @@ import tripleo.elijah.util.Helpers;
  * Created 8/6/20 4:00 PM
  */
 public class PropertyStatement implements OS_Element, OS_Element2, ClassItem {
-
 	private final Context context;
 	private final OS_Element parent;
 
@@ -42,8 +41,7 @@ public class PropertyStatement implements OS_Element, OS_Element2, ClassItem {
 		final FormalArgListItem      fali = fal.next();
 		fali.setName(Helpers.string_to_ident("Value"));
 		fali.setTypeName(this.typeName);
-		final RegularTypeName unitType = new RegularTypeName();
-		unitType.setName(Helpers.string_to_qualident("Unit"));
+		final RegularTypeName unitType = LangGlobals.getUnitType();
 		functionDef.setReturnType(unitType/*BuiltInTypes.Unit*/);
 		functionDef.setFal(fal);
 		return functionDef;
