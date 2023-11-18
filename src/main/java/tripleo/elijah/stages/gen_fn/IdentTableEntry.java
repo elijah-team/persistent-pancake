@@ -9,13 +9,20 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
-//import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.google.common.base.MoreObjects;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.google.common.base.MoreObjects;
+
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.IExpression;
@@ -36,16 +43,11 @@ import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.util.Holder;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Created 9/12/20 10:27 PM
  */
 public class IdentTableEntry extends BaseTableEntry1 implements Constructable, TableEntryIV, DeduceTypes2.ExpectationBase {
-	private final @NotNull Map<Integer, TypeTableEntry>                    potentialTypes        = new HashMap<Integer, TypeTableEntry>();
+	private final  ITE_PT                    potentialTypes        = new ITE_PT();
 	private final          DeferredObject<InstructionArgument, Void, Void> backlinkSet           = new DeferredObject<InstructionArgument, Void, Void>();
 	private final          DeferredObject<ProcTableEntry, Void, Void>      constructableDeferred = new DeferredObject<>();
 	private final          int                                             index;
@@ -160,7 +162,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	// region constructable
 
-	//	@SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
+	@SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
 	public @NotNull Collection<TypeTableEntry> potentialTypes() {
 		return potentialTypes.values();
 	}
@@ -295,7 +297,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	}
 
 	public Map<Integer, TypeTableEntry> getPotentialTypes() {
-		return potentialTypes;
+		return potentialTypes.asMap();
 	}
 
 	public DeferredObject<InstructionArgument, Void, Void> getBacklinkSet() {
@@ -362,11 +364,21 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		insideGetResolvedElement = aInsideGetResolvedElement;
 	}
 
-//	private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();
-//
-//	public Promise<GenType, Void, Void> typeResolvePromise() {
-//		return typeDeferred.promise();
-//	}
+	class ITE_PT {
+		private final @NotNull Map<Integer, TypeTableEntry>                    potentialTypes        = new HashMap<Integer, TypeTableEntry>();
+
+		public void put(final int aInstructionIndex, final TypeTableEntry aTte) {
+			potentialTypes.put(aInstructionIndex, aTte);
+		}
+
+		public @NotNull Collection<TypeTableEntry> values() {
+			return potentialTypes.values();
+		}
+
+		public Map<Integer, TypeTableEntry> asMap() {
+			return Collections.unmodifiableMap(potentialTypes);
+		}
+	}
 }
 
 //
