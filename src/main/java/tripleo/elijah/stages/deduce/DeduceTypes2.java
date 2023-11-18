@@ -2259,6 +2259,13 @@ public class DeduceTypes2 {
 		return LOG;
 	}
 
+	public DeduceTypeResolve2 resolver() {
+		if (this._resolver == null) {
+			this._resolver = new DeduceTypeResolve2();
+		}
+		return this._resolver;
+	}
+
 
 	interface IElementProcessor {
 		void elementIsNull();
@@ -2625,6 +2632,9 @@ public class DeduceTypes2 {
 			return deduceTypes2.LOG;
 		}
 
+		public DeduceTypeResolve2 resolver() {
+			return deduceTypes2.resolver();
+		}
 	}
 
 	static class GenericPart {
