@@ -22,6 +22,7 @@ import static tripleo.elijah.util.Helpers.List_of;
  * Created 9/9/21 4:16 AM
  */
 public class Feb2021 {
+	private boolean __unboundedGate = false;
 
 	@Test
 	public void testProperty() {
@@ -31,20 +32,25 @@ public class Feb2021 {
 
 		assertEquals(0, c.errorCount());
 
+		assertEquals(6, c.reports().codeOutputSize());
+
 		assertTrue(c.reports().containsCodeOutput("property/Pr.h"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/ConstString.c"));
-		assertTrue(c.reports().containsCodeOutput("property/Main.c"));
 		assertTrue(c.reports().containsCodeOutput("property/Pr.c"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.h"));
+		assertTrue(c.reports().containsCodeOutput("property/Main.c"));
 		assertTrue(c.reports().containsCodeOutput("property/Main.h"));
 		assertTrue(c.reports().containsCodeOutput("property/Foo.h"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.c"));
 		assertTrue(c.reports().containsCodeOutput("property/Foo.c"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Prelude.h"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Prelude.c"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/ConstString.h"));
 
-		assertEquals(24, c.reports().codeOutputSize());
+		assertTrue(!c.reports().containsCodeOutput("prelude/Prelude/Prelude.h"));
+		assertTrue(!c.reports().containsCodeOutput("prelude/Prelude/Prelude.c"));
+		assertTrue(!c.reports().containsCodeOutput("prelude/Prelude/IPrintable.h"));
+		assertTrue(!c.reports().containsCodeOutput("prelude/Prelude/IPrintable.c"));
+		assertTrue(!c.reports().containsCodeOutput("prelude/Prelude/ConstString.c"));
+		assertTrue(!c.reports().containsCodeOutput("prelude/Prelude/ConstString.h"));
+
+		if (__unboundedGate) {
+			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+		}
 	}
 
 	@Test
@@ -59,6 +65,10 @@ public class Feb2021 {
 		assertTrue(c.reports().containsCodeOutput("function/Main.h"));
 
 		assertEquals(2, c.reports().codeOutputSize());
+
+		if (__unboundedGate) {
+			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+		}
 	}
 
 	@Test
@@ -77,8 +87,11 @@ public class Feb2021 {
 		assertTrue(c.reports().containsCodeOutput("hier/Bar.c"));
 
 		assertEquals(6, c.reports().codeOutputSize());
-	}
 
+		if (__unboundedGate) {
+			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+		}
+	}
 }
 
 //
