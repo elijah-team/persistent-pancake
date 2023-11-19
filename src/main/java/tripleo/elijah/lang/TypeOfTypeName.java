@@ -12,7 +12,7 @@ import java.io.File;
 /**
  * Created 8/16/20 7:42 AM
  */
-public class TypeOfTypeName implements TypeName {
+public class TypeOfTypeName extends _AbstractNameable2 implements TypeName {
 	private Context       _ctx;
 	private Qualident     _typeOf;
 	private TypeModifiers modifiers;

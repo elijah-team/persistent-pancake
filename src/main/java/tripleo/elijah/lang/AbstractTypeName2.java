@@ -8,19 +8,18 @@
  */
 package tripleo.elijah.lang;
 
-import tripleo.elijah.lang.nextgen.names2.EN_Name;
-import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
-
 import java.util.Collection;
 import java.util.LinkedHashSet;
+
+import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
 
 /**
  * Created on 5/4/2019 at 12:25
  */
-public abstract class AbstractTypeName2 implements NormalTypeName {
+public abstract class AbstractTypeName2 extends _AbstractNameable2 implements NormalTypeName {
 	private final Collection<TypeModifiers> _ltm = new LinkedHashSet<>();
 	private       Qualident                 text;
-	private EN_Name_Q en_name;
+//	private EN_Name_Q en_name;
 
 	@Override
 	public boolean isNull() {
@@ -98,12 +97,7 @@ public abstract class AbstractTypeName2 implements NormalTypeName {
 
 	protected void _setText(final Qualident aS, final RegularTypeName aRegularTypeName) {
 		this.setText(aS);
-		this.en_name = new EN_Name_Q(aS, aRegularTypeName);
-	}
-
-	@Override
-	public EN_Name getEnName() {
-		return en_name;
+		__nameHook(new EN_Name_Q(aS, aRegularTypeName));
 	}
 }
 

@@ -20,7 +20,6 @@ public class RegularTypeName extends AbstractTypeName2 implements NormalTypeName
 	private TypeNameList genericPart;
 	private Context _ctx;
 //	private OS_Type _resolved;
-	private OS_Element _resolvedElement;
 
 	public RegularTypeName(final Context cur) {
 		super();
@@ -52,22 +51,6 @@ public String getName() {
 	public Context getContext() {
 		return _ctx;
 	}
-
-	@Override
-	public boolean hasResolvedElement() {
-		return _resolvedElement != null;
-	}
-
-	@Override
-	public OS_Element getResolvedElement() {
-		return _resolvedElement;
-	}
-
-	@Override
-	public void setResolvedElement(final OS_Element element) {
-		_resolvedElement = element;
-	}
-
 
 	@Override
 	public void setName(final Qualident aS) {

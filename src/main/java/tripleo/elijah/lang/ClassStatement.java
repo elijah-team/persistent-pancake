@@ -219,6 +219,11 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 	public void setGenericPart(final TypeNameList aTypeNameList) {
 		this.genericPart = aTypeNameList;
 		this.genericPart.addUnderstanding(new ENU_ClassStatementGenericTypeNameList(this));
+		for (TypeName typeName : this.genericPart.p) {
+			if (this.parent instanceof OS_Module m) {
+				m.addTypeName(typeName, this);
+			} else assert false;
+		}
 	}
 
 	public @NotNull List<TypeName> getGenericPart() {

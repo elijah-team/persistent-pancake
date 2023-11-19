@@ -17,6 +17,7 @@ package tripleo.elijah.lang;
 import antlr.Token;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jdt.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.LibraryStatementPart;
@@ -231,6 +232,17 @@ public class OS_Module implements OS_Element, OS_Container {
 	public Compilation getCompilation() {
 		return parent;
 	}
+
+	public List<Pair<TypeName, ClassStatement>> get__typeNames() {
+		return __typeNames;
+	}
+
+	private final List<Pair<TypeName, ClassStatement>> __typeNames = new ArrayList<>();
+
+	public void addTypeName(final TypeName aTypeName, final ClassStatement aClassStatement) {
+		__typeNames.add(Pair.of(aTypeName, aClassStatement));
+	}
+
 }
 
 //

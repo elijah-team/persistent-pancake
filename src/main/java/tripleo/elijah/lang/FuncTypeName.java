@@ -9,7 +9,7 @@ import java.io.File;
 /**
  * Created 8/16/20 2:16 AM
  */
-public class FuncTypeName implements TypeName {
+public class FuncTypeName extends _AbstractNameable2 implements TypeName {
 	private final Context _ctx;
 	private TypeModifiers _modifiers;
 	private TypeNameList _arglist = null/*new TypeNameList()*/;

@@ -20,7 +20,7 @@ import java.io.File;
 /**
  * Created 8/16/20 7:42 AM
  */
-public class GenericTypeName implements TypeName {
+public class GenericTypeName  extends _AbstractNameable2 implements TypeName {
 	private final Context _ctx;
 	private Qualident _typeName;
 	private TypeModifiers modifiers;
