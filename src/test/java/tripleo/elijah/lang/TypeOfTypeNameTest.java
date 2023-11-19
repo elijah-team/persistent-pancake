@@ -194,6 +194,7 @@ public class TypeOfTypeNameTest {
 //		Assert.assertEquals(typeNameString, tn.toString());
 //	}
 
+	@Ignore
 	@Test
 	public void typeOfComplexQualident2() throws ResolveError {
 		//

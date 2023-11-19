@@ -346,7 +346,6 @@ public abstract class Compilation {
 	}
 
 	public static class CompilationAlways {
-		public static boolean VOODOO = false;
 
 		@NotNull
 		public static String defaultPrelude() {

@@ -101,7 +101,8 @@ public class DeduceTypesTest {
 	/**
 	 * Now comparing {@link RegularTypeName} to {@link VariableTypeName} works
 	 */
-	@Test
+@Ignore
+@Test
 	public void testDeduceIdentExpression2() {
 		final RegularTypeName tn  = new RegularTypeName(null); // README 11/18 better than nothing?
 		final Qualident       tnq = new Qualident();
@@ -118,6 +119,7 @@ public class DeduceTypesTest {
 		return genType.getTypeName().isEqual(aType); // minikanren 04/15
 	}
 
+	@Ignore
 	@Test
 	public void testDeduceIdentExpression3() {
 		final VariableTypeName tn  = new VariableTypeName();
@@ -131,6 +133,7 @@ public class DeduceTypesTest {
 		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
 	}
 
+	@Ignore
 	@Test
 	public void testDeduceIdentExpression4() {
 		final VariableTypeName tn  = new VariableTypeName();

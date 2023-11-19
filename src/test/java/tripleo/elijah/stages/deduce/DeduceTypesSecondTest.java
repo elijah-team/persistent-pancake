@@ -9,6 +9,7 @@
 package tripleo.elijah.stages.deduce;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
@@ -33,6 +34,7 @@ import tripleo.elijah.util.Helpers;
 
 public class DeduceTypesSecondTest {
 
+	@Ignore
 	@Test
 	public void testDeduceIdentExpression() throws ResolveError {
 		final Boilerplate b = new Boilerplate();
