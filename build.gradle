@@ -3,17 +3,59 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'idea'
+
+    id('groovy')
 }
+
+//// Spock works with Java 1.8 and above
+//java {
+//    toolchain {
+//        languageVersion.set(JavaLanguageVersion.of(8))
+//    }
+//}
 
 repositories {
     mavenLocal()
     maven {url = uri("https://gitlab.com/api/v4/projects/10309690/packages/maven"); name='1'}
     maven {url = uri("https://gitlab.com/api/v4/projects/20346374/packages/maven"); name='2'}
     maven {url = uri("https://gitlab.com/api/v4/projects/21223510/packages/maven"); name='3'}
-    maven {url = uri("https://repo.maven.apache.org/maven2/")}
+
+    // same??
+//    maven {url = uri("https://repo.maven.apache.org/maven2/")}
+    mavenCentral()
+
+    // Spock snapshots are available from the Sonatype OSS snapshot repository
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
+    // Spock Groovy Junit5
+    // mandatory dependencies for using Spock
+    implementation platform('org.apache.groovy:groovy-bom:4.0.15')
+    implementation 'org.apache.groovy:groovy'
+    testImplementation platform("org.spockframework:spock-bom:2.3-groovy-4.0")
+    testImplementation "org.spockframework:spock-core"
+    testImplementation "org.spockframework:spock-junit4"  // you can remove this if your code does not rely on old JUnit 4 rules
+
+    // optional dependencies for using Spock
+    testImplementation "org.hamcrest:hamcrest-core:2.2"   // only necessary if Hamcrest matchers are used
+    testRuntimeOnly 'net.bytebuddy:byte-buddy:1.14.8' // allows mocking of classes (in addition to interfaces)
+    testRuntimeOnly "org.objenesis:objenesis:3.3"      // allows mocking of classes without default constructor (together with ByteBuddy or CGLIB)
+
+//    // dependencies used by examples in this project (https://github.com/spockframework/spock-example/blob/master/build.gradle)
+//    testRuntimeOnly "com.h2database:h2:2.2.222"
+//    implementation "org.apache.groovy:groovy-sql"
+
+    // Junit4
+/*
+    api 'org.spockframework:spock-core:1.3-groovy-2.5'
+    testImplementation 'org.codehaus.groovy:groovy-all:2.5.7'
+//    testImplementation 'net.bytebuddy:byte-buddy:1.9.3'
+//    testImplementation 'org.objenesis:objenesis:2.6'
+//    testImplementation 'org.hamcrest:hamcrest-core:1.3'
+    //api 'com.h2database:h2:1.4.197'
+*/
+
     api("com.squareup.okhttp3:okhttp:4.10.0")
     api("com.codahale.metrics:metrics-healthchecks:3.0.2")
     api("com.codahale.metrics:metrics-core:3.0.2")
@@ -90,3 +132,12 @@ java.sourceCompatibility = JavaVersion.VERSION_16
 //    }
 //}
 //
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+

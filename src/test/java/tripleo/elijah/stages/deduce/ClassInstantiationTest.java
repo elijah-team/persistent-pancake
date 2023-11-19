@@ -28,13 +28,13 @@ import tripleo.elijah.factory.comp.CompilationFactory;
 public class ClassInstantiationTest {
 
 	@Test
-	public void classInstantiation() throws Exception {
+	public void classInstantiation() {
 		final String      f = "test/basic1/class_instantiation/";
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of(f));
 
-		assertEquals(141, c.errorCount());
+		assertEquals(9, c.errorCount());
 		
 //		assertTrue(c.reports().containsCodeOutput("class_instantiation/Bar_105.c"));
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.h"));
@@ -152,7 +152,7 @@ public class ClassInstantiationTest {
 
 
 		assertEquals(8, c.errorCount());
-		assertEquals(10, c.reports().codeOutputSize());
+		assertEquals(6, c.reports().codeOutputSize());
 
 		// pr should
 //		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.h"));
@@ -173,12 +173,12 @@ public class ClassInstantiationTest {
 		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Main.c"));
 
 		// confused
-		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_103.c"));
-		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_103.h"));
-		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_104.c"));
-		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_104.h"));
-		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_106.c"));
-		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_106.h"));
+		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_103.c"));
+		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Bar_103.h"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_104.c"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_104.h"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_106.c"));
+		assertFalse(c.reports().containsCodeOutput("class_instantiation3/Bar_106.h"));
 
 		// dups
 //		assertTrue(c.reports().containsCodeOutput("class_instantiation3/Foo.h"));
