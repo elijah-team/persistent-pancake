@@ -2,9 +2,9 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'idea'
+//    id 'idea'
 
-    id('groovy')
+//    id('groovy')
 }
 
 //// Spock works with Java 1.8 and above
@@ -21,24 +21,26 @@ repositories {
     maven {url = uri("https://gitlab.com/api/v4/projects/21223510/packages/maven"); name='3'}
 
     // same??
-//    maven {url = uri("https://repo.maven.apache.org/maven2/")}
-    mavenCentral()
+    maven {url = uri("https://repo.maven.apache.org/maven2/")}
+//    mavenCentral()
 
     // Spock snapshots are available from the Sonatype OSS snapshot repository
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+//    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
     // Spock Groovy Junit5
+/*
     // mandatory dependencies for using Spock
     implementation platform('org.apache.groovy:groovy-bom:4.0.15')
     implementation 'org.apache.groovy:groovy'
     testImplementation platform("org.spockframework:spock-bom:2.3-groovy-4.0")
     testImplementation "org.spockframework:spock-core"
     testImplementation "org.spockframework:spock-junit4"  // you can remove this if your code does not rely on old JUnit 4 rules
+*/
 
     // optional dependencies for using Spock
-//    testImplementation "org.hamcrest:hamcrest-core:2.2"   // only necessary if Hamcrest matchers are used
+    testImplementation "org.hamcrest:hamcrest-core:2.2"   // only necessary if Hamcrest matchers are used
 //    testRuntimeOnly 'net.bytebuddy:byte-buddy:1.14.8' // allows mocking of classes (in addition to interfaces)
 //    testRuntimeOnly "org.objenesis:objenesis:3.3"      // allows mocking of classes without default constructor (together with ByteBuddy or CGLIB)
 
@@ -105,7 +107,7 @@ sourceSets {
          java {
             srcDirs = [
                     'src/main/java'
-                    ,'src-cef/src/main/java'
+//                    ,'src-cef/src/main/java'
                     ,'src-mal/src/main/java'
                     ,'src-undertow/main/java'
                     ,'tripleo-small/main/java'
@@ -125,8 +127,10 @@ sourceSets {
 
 group = "tripleo.elijah"
 version = "2023.10.0-wont-stop"
+//description = "eljc-v1-fluffy-umbrella"
 description = "eljc-v1-fluffy-umbrella"
-java.sourceCompatibility = JavaVersion.VERSION_16
+//java.sourceCompatibility = JavaVersion.VERSION_16
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 //publishing {
 //    publications.create<MavenPublication>("maven") {
@@ -135,11 +139,9 @@ java.sourceCompatibility = JavaVersion.VERSION_16
 //}
 //
 
-test {
-    useJUnitPlatform()
+//test {
+//    useJUnitPlatform()
 //    testLogging {
 //        events "passed", "skipped", "failed"
 //    }
-}
-
-
+//}
