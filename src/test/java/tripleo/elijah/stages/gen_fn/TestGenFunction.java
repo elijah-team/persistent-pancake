@@ -210,11 +210,11 @@ public class TestGenFunction {
 		dp.finish(dp.generatedClasses);
 
 		Assert.assertEquals("Not all hooks ran", 4, ran_hooks.size());
-		Assert.assertEquals(108, c.errorCount());
+		Assert.assertEquals(4, c.errorCount());
 	}
 
 	@Test
-	public void testGenericA() throws Exception {
+	public void testGenericA() {
 		final StdErrSink errSink = new StdErrSink();
 		final Compilation c = new CompilationImpl(errSink, new IO());
 

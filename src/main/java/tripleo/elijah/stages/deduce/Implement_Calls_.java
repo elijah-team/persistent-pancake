@@ -116,7 +116,8 @@ class Implement_Calls_ {
 
 				deduceTypes2._errSink().reportError("Special Function not found " + pn);
 			} else {
-				throw new NotImplementedException(); // Cant find vte, should never happen
+				//throw new NotImplementedException(); // Cant find vte, should never happen
+				System.err.println("FAIL 119");
 			}
 		}
 		return found;

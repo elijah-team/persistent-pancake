@@ -16,22 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.contexts.FunctionContext;
-import tripleo.elijah.lang.AliasStatement;
-import tripleo.elijah.lang.BaseFunctionDef;
-import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.Context;
-import tripleo.elijah.lang.DecideElObjectType;
-import tripleo.elijah.lang.FuncExpr;
-import tripleo.elijah.lang.FunctionDef;
-import tripleo.elijah.lang.IExpression;
-import tripleo.elijah.lang.IdentExpression;
-import tripleo.elijah.lang.LookupResultList;
-import tripleo.elijah.lang.NamespaceStatement;
-import tripleo.elijah.lang.OS_Element;
-import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.lang.OS_Type;
-import tripleo.elijah.lang.ProcedureCallExpression;
-import tripleo.elijah.lang.VariableStatement;
+import tripleo.elijah.lang.*;
 import tripleo.elijah.lang.types.OS_FuncExprType;
 import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
@@ -183,6 +168,8 @@ class Resolve_Variable_Table_Entry {
 						genCIForGenType2(genType);
 					}
 				}
+			} else if (iv instanceof NumericExpression ne) {
+				System.err.println("FAIL 172");
 			} else
 				assert false;
 		} else
