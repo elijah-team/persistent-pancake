@@ -33,6 +33,10 @@ public class Finally {
 		return r.size();
 	}
 
+	public int unboundedCodeOutputSize() {
+		return outputs.size();
+	}
+
 	public static class Input {
 		private final @NotNull Nameable nameable;
 		private final Out2 ty;

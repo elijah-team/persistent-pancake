@@ -25,20 +25,19 @@ import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static tripleo.elijah.util.Helpers.List_of;
 
 /**
  * @author Tripleo(envy)
  */
 public class TestBasic {
+
+	private boolean __unboundedGate = false;
 
 	@Test
 	public final void testBasicParse() throws Exception {
@@ -54,33 +53,8 @@ public class TestBasic {
 		assertEquals(0, c.errorCount());
 	}
 
-	//	@Test
-	public final void testBasic() throws Exception {
-		final List<String>          ez_files   = Files.readLines(new File("test/basic/ez_files.txt"), Charsets.UTF_8);
-		final Map<Integer, Integer> errorCount = new HashMap<Integer, Integer>();
-		int                         index      = 0;
-
-		for (final String s : ez_files) {
-//			List<String> args = List_of("test/basic", "-sO"/*, "-out"*/);
-			final ErrSink     eee = new StdErrSink();
-			final Compilation c   = new CompilationImpl(eee, new IO());
-
-			c.feedCmdLine(List_of(s, "-sO"));
-
-			if (c.errorCount() != 0)
-				System.err.printf("Error count should be 0 but is %d for %s%n", c.errorCount(), s);
-			errorCount.put(index, c.errorCount());
-			index++;
-		}
-
-		// README this needs changing when running make
-		assertEquals(7, (int) errorCount.get(0)); // TODO Error count obviously should be 0
-		assertEquals(20, (int) errorCount.get(1)); // TODO Error count obviously should be 0
-		assertEquals(9, (int) errorCount.get(2)); // TODO Error count obviously should be 0
-	}
-
 	@Test
-	public final void testBasic_listfolders3() throws Exception {
+	public final void testBasic_listfolders3() {
 		final String s = "test/basic/listfolders3/listfolders3.ez";
 
 		final ErrSink     eee = new StdErrSink();
@@ -91,21 +65,28 @@ public class TestBasic {
 		if (c.errorCount() != 0)
 			System.err.printf("Error count should be 0 but is %d for %s%n", c.errorCount(), s);
 
-		assertEquals(46, c.getOutputTree().getList().size());
-		assertEquals(42, c.errorCount()); // TODO Error count obviously should be 0
+		assertEquals(35, c.errorCount()); // TODO Error count obviously should be 0
 
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.h"));
+		assertEquals(36, c.getOutputTree().getList().size());
+		assertEquals(8, c.reports().codeOutputSize());
+
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Boolean.c"));
-		assertTrue(c.reports().containsCodeOutput("listfolders3/wpkotlin_c.demo.list_folders/MainLogic.c"));
-		assertTrue(c.reports().containsCodeOutput("listfolders3/wpkotlin_c.demo.list_folders/__MODULE__.h"));
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Boolean.h"));
+		assertTrue(c.reports().containsCodeOutput("listfolders3/wpkotlin_c.demo.list_folders/__MODULE__.h"));
+		assertTrue(c.reports().containsCodeOutput("listfolders3/wpkotlin_c.demo.list_folders/__MODULE__.c"));
+		assertTrue(c.reports().containsCodeOutput("listfolders3/wpkotlin_c.demo.list_folders/MainLogic.c"));
 		assertTrue(c.reports().containsCodeOutput("listfolders3/wpkotlin_c.demo.list_folders/MainLogic.h"));
 		assertTrue(c.reports().containsCodeOutput("listfolders3/Main.c"));
-		assertTrue(c.reports().containsCodeOutput("listfolders3/wpkotlin_c.demo.list_folders/__MODULE__.c"));
 		assertTrue(c.reports().containsCodeOutput("listfolders3/Main.h"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Arguments.h"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.c"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Arguments.c"));
+
+		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/Arguments.h"));
+		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/Arguments.c"));
+		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/Integer64.h"));
+		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/Integer64.c"));
+
+		if (__unboundedGate) {
+			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+		}
 	}
 
 	@Test
@@ -120,11 +101,15 @@ public class TestBasic {
 		if (c.errorCount() != 0)
 			System.err.printf("Error count should be 0 but is %d for %s%n", c.errorCount(), s);
 
-		assertEquals(58, c.errorCount()); // TODO Error count obviously should be 0
+		assertEquals(51, c.errorCount()); // TODO Error count obviously should be 0
+
+		if (__unboundedGate) {
+			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+		}
 	}
 
 	@Test
-	public final void testBasic_fact1() throws Exception {
+	public final void testBasic_fact1() {
 		final String s = "test/basic/fact1/main2";
 
 		final ErrSink     eee = new StdErrSink();
@@ -138,7 +123,7 @@ public class TestBasic {
 
 		final @NotNull EOT_OutputTree cot = c.getOutputTree();
 
-		assertEquals(54, cot.getList().size()); // TODO why not 6?
+		assertEquals(28, cot.getList().size()); // TODO why not 6?
 
 		select(cot.getList(), f -> f.getFilename().equals("/main2/Main.h"))
 		  .then(f -> {
@@ -150,26 +135,34 @@ public class TestBasic {
 		  });
 
 		// TODO Error count obviously should be 0
-		assertEquals(116, c.errorCount()); // FIXME why 123?? 04/15
+		assertEquals(13, c.errorCount()); // FIXME why 123?? 04/15
 
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.h"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Prelude.c"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Unsigned64.h"));
+		assertEquals(10, c.reports().codeOutputSize());
+
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Arguments.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Arguments.h"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/ConstString.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/ConstString.h"));
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Boolean.c"));
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Boolean.h"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/ConstString.h"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.c"));
-		assertTrue(c.reports().containsCodeOutput("main2/Main.h"));
-		assertTrue(c.reports().containsCodeOutput("main2/wprust.demo.fact/fact1.h"));
-		assertTrue(c.reports().containsCodeOutput("main2/wprust.demo.fact/fact1.c"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Arguments.h"));
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.c"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Prelude.h"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Unsigned64.c"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/ConstString.c"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Arguments.c"));
+		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Integer64.h"));
 		assertTrue(c.reports().containsCodeOutput("main2/Main.c"));
-		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.h"));
+		assertTrue(c.reports().containsCodeOutput("main2/Main.h"));
+
+		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/Prelude.c"));
+		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/Prelude.h"));
+		assertFalse(c.reports().containsCodeOutput("main2/wprust.demo.fact/fact1.c"));
+		assertFalse(c.reports().containsCodeOutput("main2/wprust.demo.fact/fact1.h"));
+		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/Unsigned64.c"));
+		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/Unsigned64.h"));
+		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.c"));
+		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/IPrintable.h"));
+
+
+		if (__unboundedGate) {
+			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+		}
 	}
 
 	static <T> @NotNull Promise<T, Void, Void> select(@NotNull final List<T> list, final Predicate<T> p) {

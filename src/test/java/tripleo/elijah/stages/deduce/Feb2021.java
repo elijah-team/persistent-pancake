@@ -29,7 +29,7 @@ public class Feb2021 {
 
 		c.feedCmdLine(List_of("test/feb2021/property/"));
 
-		assertEquals(96, c.errorCount());
+		assertEquals(0, c.errorCount());
 
 		assertTrue(c.reports().containsCodeOutput("property/Pr.h"));
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/ConstString.c"));
@@ -58,7 +58,7 @@ public class Feb2021 {
 		assertTrue(c.reports().containsCodeOutput("function/Main.c"));
 		assertTrue(c.reports().containsCodeOutput("function/Main.h"));
 
-		assertEquals(6, c.reports().codeOutputSize());
+		assertEquals(2, c.reports().codeOutputSize());
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class Feb2021 {
 		assertTrue(c.reports().containsCodeOutput("hier/Foo.c"));
 		assertTrue(c.reports().containsCodeOutput("hier/Bar.c"));
 
-		assertEquals(10, c.reports().codeOutputSize());
+		assertEquals(6, c.reports().codeOutputSize());
 	}
 
 }

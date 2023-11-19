@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import com.google.common.base.MoreObjects;
 
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.IExpression;
@@ -188,7 +189,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	@Override
 	public void setGenType(final GenType aGenType) {
 		if (type != null) {
-			type.getGenType().copy(aGenType);
+//			type.provide(this.);
+if(null!=type.getGenType()) {
+	type.getGenType().copy(aGenType);
+}
 		} else {
 			throw new IllegalStateException("idte-102 Attempting to set a null type");
 //			tripleo.elijah.util.Stupidity.println_err2("idte-102 Attempting to set a null type");
@@ -200,7 +204,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 			makeType(gf, TypeTableEntry.Type.SPECIFIED, genType.getResolved());
 		}
 
-		type.getGenType().copy(genType);
+		@Nullable final GenType genType1 = type.getGenType();
+		if (genType1 != null) {
+			genType1.copy(genType);
+		}
 	}
 
 	// endregion constructable

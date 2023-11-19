@@ -331,6 +331,10 @@ public class DeduceLocalVariable {
 		return null;
 	}
 
+	public DeduceTypes2 _deduceTypes2() {
+		return this.deduceTypes2;
+	}
+
 	static class MemberInvocation {
 		final OS_Element element;
 		final Role       role;

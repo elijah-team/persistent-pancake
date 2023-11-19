@@ -152,11 +152,16 @@ public class TypeTableEntry {
 			genType = new GenType(resolver);
 			_p_genTypeSet.resolve(genType);
 		} else if (deduceTypes2 != null && genType == null) {
-			assert false;
+//			assert false;
 			genType = new GenType(deduceTypes2.resolver());
 			_p_genTypeSet.resolve(genType);
 		} else {
-			System.err.println("FAIL 135");
+			if (genType == null) {
+				// FIZME 11/19 resolver is never used anyway. this may be a small
+				genType = new GenType(null);
+				_p_genTypeSet.resolve(genType);
+//				System.err.println("FAIL 135");
+			}
 //			throw new AssertionError();
 		}
 		return genType;

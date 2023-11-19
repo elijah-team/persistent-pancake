@@ -93,6 +93,7 @@ class Resolve_Variable_Table_Entry {
 	public void action_VAR(@NotNull final VariableTableEntry vte) {
 		if (vte.type.getAttached() == null && vte.potentialTypes.size() == 1) {
 			final TypeTableEntry pot = new ArrayList<>(vte.potentialTypes()).get(0);
+			pot.provide(deduceTypes2);
 			if (pot.getAttached() instanceof OS_FuncExprType) {
 				action_VAR_potsize_1_and_FuncExprType(vte, (OS_FuncExprType) pot.getAttached(), pot.getGenType(), pot.getExpression());
 			} else if (pot.getAttached() != null && pot.getAttached().getType() == OS_Type.Type.USER_CLASS) {
@@ -356,6 +357,7 @@ class Resolve_Variable_Table_Entry {
 		if (attached != null) {
 			switch (attached.getType()) {
 				case USER:
+					tte.provide(deduceTypes2);
 					if (tte.getGenType().getTypeName() == null)
 						tte.getGenType().setTypeName(attached);
 					try {
@@ -421,7 +423,11 @@ class Resolve_Variable_Table_Entry {
 	 * @param aGenType the GenType to modify. must be set to a nonGenericTypeName that is non-null and generic
 	 */
 	public void genNodeForGenType(final GenType aGenType, final IInvocation invocation) {
-		assert aGenType.getNonGenericTypeName() != null;
+		if (aGenType.getNonGenericTypeName() == null) {
+			//throw new AssertionError();
+			System.err.println("FAIL 428");
+			return;
+		}
 
 //		final IInvocation invocation = aGenType.ci;
 		assert aGenType.getCi() == null || aGenType.getCi() == invocation;

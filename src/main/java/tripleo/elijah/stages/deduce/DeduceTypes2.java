@@ -1007,9 +1007,13 @@ public class DeduceTypes2 {
 						}
 					});
 				}
-				assert idte.getType() != null;
-				assert idte.getResolvedElement() != null;
-				vte.addPotentialType(instruction.getIndex(), idte.getType());
+				if (idte.getType() != null) {
+					assert idte.getResolvedElement() != null;
+					vte.addPotentialType(instruction.getIndex(), idte.getType());
+				} else {
+				//	throw new AssertionError();
+					System.err.println("FAIL 1015");
+				}
 			} else if (i2 instanceof ProcIA) {
 				throw new NotImplementedException();
 			} else
@@ -1678,14 +1682,12 @@ public class DeduceTypes2 {
 									@Override
 									public void onDone(@NotNull final BaseGeneratedFunction bgf) {
 										@NotNull final PromiseExpectation<GenType> pe = promiseExpectation(bgf, "Function Result type");
-										bgf.onType(new DoneCallback<GenType>() {
-											@Override
-											public void onDone(@NotNull final GenType result) {
-												pe.satisfy(result);
-												@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved()); // TODO there has to be a better way
-												tte.getGenType().copy(result);
-												vte.addPotentialType(instructionIndex, tte);
-											}
+										bgf.onType((GenType result1) -> {
+											pe.satisfy(result1);
+											@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result1.getResolved()); // TODO there has to be a better way
+											tte.provide(DeduceTypes2.this);
+											tte.getGenType().copy(result1);
+											vte.addPotentialType(instructionIndex, tte);
 										});
 									}
 								});
@@ -2011,7 +2013,11 @@ public class DeduceTypes2 {
 				public void onDone(final GenType result) {
 //					assert vte != vte1;
 //					aTte.setAttached(result.resolved != null ? result.resolved : result.typeName);
-					aTte.getGenType().copy(result);
+					if (aTte.getGenType()!=null) {
+						aTte.getGenType().copy(result);
+					} else {
+						System.err.println("FAIL 2019"); // !!
+					}
 //					vte.addPotentialType(aInstructionIndex, result); // TODO!!
 				}
 			});

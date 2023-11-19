@@ -111,7 +111,22 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 			final TypeTableEntry v = potentialTypes.get(instructionIndex);
 			if (v.getAttached() == null) {
 				v.setAttached(tte.getAttached(), resolver);
-				type.getGenType().copy(tte.getGenType()); // README don't lose information
+				if (_de3 != null) {
+					tte.provide(_de3.deduceTypes2());
+				} else {
+					if (dlv != null) {
+//						dlv.type.then((GenType gt11) ->{
+//							tte.provide(gt11);
+//						});
+						tte.provide(dlv._deduceTypes2());
+					}
+				}
+				final GenType genType1 = type.getGenType();
+				if (genType1 != null) {
+					genType1.copy(tte.getGenType()); // README don't lose information
+				}else {
+					System.err.println("FAIL 128");
+				}
 			} else if (tte.getLifetime() == TypeTableEntry.Type.TRANSIENT && v.getLifetime() == TypeTableEntry.Type.SPECIFIED) {
 				//v.attached = v.attached; // leave it as is
 			} else if (tte.getLifetime() == v.getLifetime() && v.getAttached() == tte.getAttached()) {
@@ -236,6 +251,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 	}
 
 	public void setLikelyType(final GenType aGenType) {
+		type.provide(this.dlv._deduceTypes2());
 		final GenType bGenType = type.getGenType();
 
 		// 1. copy arg into member

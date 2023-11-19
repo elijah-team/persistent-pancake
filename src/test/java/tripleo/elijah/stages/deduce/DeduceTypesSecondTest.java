@@ -88,6 +88,7 @@ public class DeduceTypesSecondTest {
 	}
 
 	private boolean genTypeEquals(final GenType a, final GenType b) {
+		if (a == null || b == null) return false;
 		// TODO hack
 		return a.getTypeName().isEqual(b.getTypeName()) &&
 				a.getResolved().isEqual(b.getResolved());

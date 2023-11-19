@@ -23,6 +23,7 @@ import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang.AliasStatement;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.DecideElObjectType;
 import tripleo.elijah.lang.FormalArgListItem;
 import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.lang.IdentExpression;
@@ -238,14 +239,23 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 		final LookupResultList     lrl  = ctx.lookup(e_text);
 		final @Nullable OS_Element best = lrl.chooseBest(null);
 
-		if (best instanceof @NotNull final FormalArgListItem fali) {
-			__dlpsi0__FormalArgListItem(vte1, errSink, vte, fali);
-		} else if (best instanceof final @NotNull VariableStatement vs) {
-			__dlpsi0__VariableStatement(p, vte1, e_text, vte, vs);
-		} else {
+		switch (DecideElObjectType.getElObjectType(best)) {
+		case FORMAL_ARG_LIST_ITEM -> __dlpsi0__FormalArgListItem(vte1, errSink, vte, (FormalArgListItem) best);
+		case VAR -> __dlpsi0__VariableStatement(p, vte1, e_text, vte, (VariableStatement) best);
+		default -> {
+			if (best == null) return;
+//			throw new IllegalStateException("Unexpected value: " + DecideElObjectType.getElObjectType(best));
+		}
+		}
+
+		if (false) {
 			final int y = 2;
 			LOG.err("543 " + best.getClass().getName());
-			throw new NotImplementedException();
+			if (best != null) {
+				throw new NotImplementedException();
+			} else {
+				System.err.println("FAIL 251");
+			}
 		}
 	}
 
