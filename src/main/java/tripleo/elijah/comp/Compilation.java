@@ -26,9 +26,6 @@ import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.lang.Qualident;
-import tripleo.elijah.stages.deduce.FunctionMapHook;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
-import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijjah.ElijjahLexer;
@@ -149,31 +146,40 @@ public class Compilation {
 					}
 				}
 
-				System.err.println("130 GEN_LANG: "+cis.get(0).genLang());
-				findStdLib("c"); // TODO find a better place for this
+				if (cis.size() > 0) {
+					System.err.println("130 GEN_LANG: " + cis.get(0).genLang());
+					findStdLib("c"); // TODO find a better place for this
 
-				for (final CompilerInstructions ci : cis) {
-					use(ci, do_out);
-				}
+					for (final CompilerInstructions ci : cis) {
+						use(ci, do_out);
+					}
 
-				//
-				if (stage.equals("E")) {
-					// do nothing. job over
-				} else {
-					pipelineLogic = new PipelineLogic(silent ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE);
-					final DeducePipeline dpl = new DeducePipeline(this);
-					pipelines.add(dpl);
-					if (stage.equals("O")) {
-						final GeneratePipeline gpl = new GeneratePipeline(this, dpl);
-						pipelines.add(gpl);
-						final WritePipeline wpl = new WritePipeline(this, pipelineLogic.gr);
-						pipelines.add(wpl);
-					} else
-						assert stage.equals("D");
+					//
+					if (stage.equals("E")) {
+						// do nothing. job over
+					} else {
+						pipelineLogic = new PipelineLogic(silent ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE);
+						final DeducePipeline dpl = new DeducePipeline(this);
+						pipelines.add(dpl);
+						if (stage.equals("O")) {
+							final GeneratePipeline gpl = new GeneratePipeline(this, dpl);
+							pipelines.add(gpl);
+							final WritePipeline wpl = new WritePipeline(this, pipelineLogic.gr);
+							pipelines.add(wpl);
+						} else
+							assert stage.equals("D");
 
-					pipelines.run();
+						pipelines.run();
 
-					writeLogs(silent, pipelineLogic.elLogs);
+						pipelineLogic.write_files(this);
+						pipelineLogic.write_buffers(this);
+
+						writeLogs(silent, pipelineLogic.elLogs);
+
+						if (ez_file != null) {
+								System.out.println(String.format("*** %d errors for %s", errorCount(), ez_file.getFilename()));
+						}
+					}
 				}
 			} else {
 				System.err.println("Usage: eljc [--showtree] [-sE|O] <directory or .ez file names>");
@@ -485,10 +491,6 @@ public class Compilation {
 
 	public ErrSink getErrSink() {
 		return eee;
-	}
-
-	public void addFunctionMapHook(FunctionMapHook aFunctionMapHook) {
-		pipelineLogic.dp.addFunctionMapHook(aFunctionMapHook);
 	}
 }
 

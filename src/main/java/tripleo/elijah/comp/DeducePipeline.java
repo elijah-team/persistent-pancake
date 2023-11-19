@@ -23,7 +23,10 @@ public class DeducePipeline implements PipelineMember {
 
 	public DeducePipeline(Compilation aCompilation) {
 		c = aCompilation;
+	}
 
+	@Override
+	public void run() {
 		for (final OS_Module module : c.modules) {
 			if (false) {
 /*
@@ -43,10 +46,6 @@ public class DeducePipeline implements PipelineMember {
 				c.pipelineLogic.addModule(module);
 			}
 		}
-	}
-
-	@Override
-	public void run() {
 		c.pipelineLogic.everythingBeforeGenerate(lgc);
 		lgc = c.pipelineLogic.dp.generatedClasses.copy();
 	}

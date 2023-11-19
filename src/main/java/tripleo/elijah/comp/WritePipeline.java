@@ -8,8 +8,10 @@
  */
 package tripleo.elijah.comp;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
@@ -45,13 +47,9 @@ public class WritePipeline implements PipelineMember {
 	final OutputStrategy os;
 	final ElSystem sys;
 
-	private final File file_prefix;
-
 	public WritePipeline(Compilation aCompilation, GenerateResult aGr) {
 		c = aCompilation;
 		gr = aGr;
-
-		file_prefix = new File("COMP", c.getCompilationNumberString());
 
 		os = new OutputStrategy();
 		os.per(OutputStrategy.Per.PER_CLASS); // TODO this needs to be configured per lsp
@@ -75,9 +73,14 @@ public class WritePipeline implements PipelineMember {
 		Multimap<String, Buffer> mb = ArrayListMultimap.create();
 
 		for (GenerateResultItem ab : gr.results()) {
-			mb.put(ab.output, ab.buffer);
+			String output = ab.output;
+
+//			Preconditions.checkNotNull(output);
+
+			mb.put(output, ab.buffer);
 		}
 
+		final File file_prefix = new File("COMP", c.getCompilationNumberString());
 		file_prefix.mkdirs();
 		String prefix = file_prefix.toString();
 
@@ -138,9 +141,10 @@ public class WritePipeline implements PipelineMember {
 	}
 
 	public void write_buffers() throws FileNotFoundException {
-		file_prefix.mkdirs();
+		final File file1 = new File("COMP", c.getCompilationNumberString());
+		file1.mkdirs();
 
-		PrintStream db_stream = new PrintStream(new File(file_prefix, "buffers.txt"));
+		PrintStream db_stream = new PrintStream(new File(file1, "buffers.txt"));
 		PipelineLogic.debug_buffers(gr, db_stream);
 	}
 
