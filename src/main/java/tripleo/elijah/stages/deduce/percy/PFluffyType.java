@@ -9,9 +9,9 @@ import tripleo.elijah.stages.gen_fn.GenType;
 
 public class PFluffyType implements PFluffyItem {
 	private DeduceTypes2 deduceTypes2;
-	private OS_Type osType;
-	private Context context;
-	private GenType genType;
+	private OS_Type      osType;
+	private Context      context;
+	private GenType      genType;
 
 	public void provide(final DeduceTypes2 aDeduceTypes2) {
 		deduceTypes2 = aDeduceTypes2;
@@ -30,15 +30,15 @@ public class PFluffyType implements PFluffyItem {
 		return genType;
 	}
 
-	private void provide(final GenType aGenType) {
-		genType = aGenType;
+	private void provide(final OS_Type aOSType) {
+		osType = aOSType;
 	}
 
 	private void provide(final Context aContext) {
 		context = aContext;
 	}
 
-	private void provide(final OS_Type aOSType) {
-		osType = aOSType;
+	private void provide(final GenType aGenType) {
+		genType = aGenType;
 	}
 }

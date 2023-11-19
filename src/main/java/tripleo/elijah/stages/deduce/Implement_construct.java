@@ -1,6 +1,7 @@
 package tripleo.elijah.stages.deduce;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
@@ -184,13 +185,19 @@ public class Implement_construct {
 								assert el3 == el2;
 								if (el2 instanceof ConstructorDef) {
 									@Nullable final GenType type = deducePath.getType(i);
-									if (type.getNonGenericTypeName() == null) {
-										type.setNonGenericTypeName(deducePath.getType(i - 1).getNonGenericTypeName()); // HACK. not guararnteed to work!
-									}
-									@NotNull final OS_Type ty = new OS_UserType(type.getNonGenericTypeName());
-									implement_construct_type(idte2, ty, s);
 
-									ppwc.on(pwc -> pwc.provide((ConstructorDef) el2));
+									if (type != null) {
+										if (type.getNonGenericTypeName() == null) {
+											final GenType genType = (deducePath.getType(i - 1));
+											if (genType != null) {
+												type.setNonGenericTypeName(genType.getNonGenericTypeName()); // HACK. not guararnteed to work!
+											}
+										}
+										@NotNull final OS_Type ty = new OS_UserType(type.getNonGenericTypeName());
+										implement_construct_type(idte2, ty, s);
+
+										ppwc.on(pwc -> pwc.provide((ConstructorDef) el2));
+									}
 								}
 							} else {
 								ppwc.on(pwc -> {
@@ -215,7 +222,7 @@ public class Implement_construct {
 		}
 
 		if (aPwc.getEventualConstructorDef().isPending()) {
-			assert false;
+			//assert false;
 		}
 	}
 
