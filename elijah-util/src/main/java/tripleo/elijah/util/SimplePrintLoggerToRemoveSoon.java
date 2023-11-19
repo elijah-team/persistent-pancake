@@ -2,7 +2,7 @@ package tripleo.elijah.util;
 
 import org.jetbrains.annotations.Contract;
 
-public enum Stupidity {
+public enum SimplePrintLoggerToRemoveSoon {
 	;
 
 	@Contract(pure = true)

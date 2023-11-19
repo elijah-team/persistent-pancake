@@ -106,13 +106,13 @@ sourceSets {
     main {
         java {
             srcDirs = [
-                'tripleo-small/main/java'
-                ,'elijah-util/main/java'
+                'tripleo-small/src/main/java'
+                ,'elijah-util/src/main/java'
                 ,'elijah-good-api/src/main/java'
-                ,'elijah-ek/main/java'
+                ,'elijah-ek/src/main/java'
                 ,'src-mal/src/main/java'
                 ,'src/main/java'
-                ,'src-undertow/main/java'
+                ,'src-undertow/src/main/java'
 //              ,'src-cef/src/main/java'
             ]
         }
