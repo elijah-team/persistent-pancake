@@ -227,27 +227,26 @@ public class Implement_construct {
 	}
 
 	private void implement_construct_type(@Nullable final Constructable co, @Nullable final OS_Type aTy, final String constructorName) {
-		assert aTy != null;
-		if (aTy.getType() == OS_Type.Type.USER) {
-			final TypeName tyn = aTy.getTypeName();
-			if (tyn instanceof NormalTypeName) {
-				final @NotNull NormalTypeName tyn1 = (NormalTypeName) tyn;
-				_implement_construct_type(co, constructorName, tyn1);
+		if (aTy != null) {
+			switch (aTy.getType()) {
+			case USER -> {
+				final TypeName tyn = aTy.getTypeName();
+				if (tyn instanceof NormalTypeName) {
+					final @NotNull NormalTypeName tyn1 = (NormalTypeName) tyn;
+					_implement_construct_type(co, constructorName, tyn1);
+				}
+			}
+			default -> {
+				throw new NotImplementedException();
+	//			return;
+			}
+			}
+			if (co != null) {
+				co.setConstructable(pte);
+				pte.onClassInvocation(classInvocation -> classInvocation.resolvePromise().done(co::resolveTypeToClass));
 			}
 		} else {
-//			throw new NotImplementedException();
-			return;
-		}
-		if (co != null) {
-			co.setConstructable(pte);
-			pte.onClassInvocation(classInvocation -> {
-				classInvocation.resolvePromise().done(new DoneCallback<GeneratedClass>() {
-					@Override
-					public void onDone(final GeneratedClass result) {
-						co.resolveTypeToClass(result);
-					}
-				});
-			});
+			throw new AssertionError();
 		}
 	}
 
