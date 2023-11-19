@@ -81,6 +81,15 @@ public class Finally {
 			off = aOff;
 		}
 
+		@Override
+		public String toString() {
+			final StringBuilder sb = new StringBuilder("Output{");
+			sb.append("off=").append(off.getType());
+			sb.append(", fileNameProvider=").append(fileNameProvider.getFilename());
+			sb.append('}');
+			return sb.toString();
+		}
+
 		public String name() {
 			return fileNameProvider.getFilename();
 		}
