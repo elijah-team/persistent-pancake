@@ -59,7 +59,7 @@
 //						el = DeduceLookupUtils.lookup(((VariableStatement) vte.getResolvedElement()).getNameToken(), ctx, deduceTypes2);
 //					vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(el));
 //				} catch (final ResolveError aResolveError) {
-//					deduceTypes2.errSink.reportDiagnostic(aResolveError);
+//					deduceTypes2._errSink().reportDiagnostic(aResolveError);
 //					return;
 //				}
 //			}
@@ -68,7 +68,7 @@
 //		if (identIA != null) {
 ////			LOG.info("594 "+identIA.getEntry().getStatus());
 //
-//			deduceTypes2.resolveIdentIA_(ctx, identIA, generatedFunction, new FoundElement(deduceTypes2.phase) {
+//			deduceTypes2.resolveIdentIA_(ctx, identIA, generatedFunction, new FoundElement(deduceTypes2._phase()) {
 //
 //				final String xx = generatedFunction.getIdentIAPathNormal(identIA);
 //
@@ -105,7 +105,7 @@
 //				@Override
 //				public void noFoundElement() {
 //					// TODO create Diagnostic and quit
-//					deduceTypes2.LOG.info("1005 Can't find element for " + xx);
+//					deduceTypes2._LOG().info("1005 Can't find element for " + xx);
 //				}
 //			});
 //		}
@@ -139,14 +139,14 @@
 //								final OS_Element            parent = best.getParent();
 //								@Nullable final IInvocation invocation;
 //								if (parent instanceof NamespaceStatement) {
-//									invocation = deduceTypes2.phase.registerNamespaceInvocation((NamespaceStatement) parent);
+//									invocation = deduceTypes2._phase().registerNamespaceInvocation((NamespaceStatement) parent);
 //								} else if (parent instanceof ClassStatement) {
 //									@NotNull final ClassInvocation ci = new ClassInvocation((ClassStatement) parent, null);
-//									invocation = deduceTypes2.phase.registerClassInvocation(ci);
+//									invocation = deduceTypes2._phase().registerClassInvocation(ci);
 //								} else
 //									throw new NotImplementedException(); // TODO implement me
 //
-//								deduceTypes2.forFunction(deduceTypes2.newFunctionInvocation((FunctionDef) best, pte, invocation, deduceTypes2.phase), new ForFunction() {
+//								deduceTypes2.forFunction(deduceTypes2.newFunctionInvocation((FunctionDef) best, pte, invocation, deduceTypes2._phase()), new ForFunction() {
 //									@Override
 //									public void typeDecided(@NotNull final GenType aType) {
 //										tte.setAttached(deduceTypes2.gt(aType), ); // TODO stop setting attached!
@@ -192,7 +192,7 @@
 //								tte.setAttached(tte1.getAttached(), );
 //							} else {
 //								final int y = 2;
-//								deduceTypes2.LOG.err(best.getClass().getName());
+//								deduceTypes2._LOG().err(best.getClass().getName());
 //								throw new NotImplementedException();
 //							}
 //						} else {
@@ -227,14 +227,14 @@
 //					if (best != null)
 //						pte.setResolvedElement(best); // TODO do we need to add a dependency for class?
 //					else {
-//						deduceTypes2.errSink.reportError("Cant resolve " + text);
+//						deduceTypes2._errSink().reportError("Cant resolve " + text);
 //					}
 //				} else {
 //					deduceTypes2.implement_calls(generatedFunction, ctx.getParent(), instruction.getArg(1), pte, instructionIndex);
 //				}
 //			} else {
 //				final int y = 2;
-//				deduceTypes2.resolveIdentIA_(ctx, identIA, generatedFunction, new FoundElement(deduceTypes2.phase) {
+//				deduceTypes2.resolveIdentIA_(ctx, identIA, generatedFunction, new FoundElement(deduceTypes2._phase()) {
 //
 //					final String x = generatedFunction.getIdentIAPathNormal(identIA);
 //
@@ -249,7 +249,7 @@
 //								invocation = deduceTypes2.getInvocation((GeneratedFunction) generatedFunction);
 //							} else {
 //								if (fd.getParent() instanceof NamespaceStatement) {
-//									final NamespaceInvocation ni = deduceTypes2.phase.registerNamespaceInvocation((NamespaceStatement) fd.getParent());
+//									final NamespaceInvocation ni = deduceTypes2._phase().registerNamespaceInvocation((NamespaceStatement) fd.getParent());
 //									invocation = ni;
 //								} else if (fd.getParent() instanceof ClassStatement) {
 //									final @NotNull ClassStatement classStatement = (ClassStatement) fd.getParent();
@@ -259,12 +259,12 @@
 //										// TODO handle generic parameters somehow (getInvocationFromBacklink?)
 //
 //									}
-//									ci         = deduceTypes2.phase.registerClassInvocation(ci);
+//									ci         = deduceTypes2._phase().registerClassInvocation(ci);
 //									invocation = ci;
 //								} else
 //									throw new NotImplementedException();
 //							}
-//							deduceTypes2.forFunction(deduceTypes2.newFunctionInvocation(fd, pte, invocation, deduceTypes2.phase), new ForFunction() {
+//							deduceTypes2.forFunction(deduceTypes2.newFunctionInvocation(fd, pte, invocation, deduceTypes2._phase()), new ForFunction() {
 //								@Override
 //								public void typeDecided(@NotNull final GenType aType) {
 //									if (!vte.typeDeferred_isPending()) {
@@ -278,7 +278,7 @@
 //												}
 //											});
 //										}
-//										deduceTypes2.LOG.err("2041 type already found " + vte);
+//										deduceTypes2._LOG().err("2041 type already found " + vte);
 //										return; // type already found
 //									}
 //									// I'm not sure if below is ever called
@@ -295,13 +295,13 @@
 //
 //							deduceTypes2.register_and_resolve(vte, kl);
 //						} else {
-//							deduceTypes2.LOG.err("7890 " + el.getClass().getName());
+//							deduceTypes2._LOG().err("7890 " + el.getClass().getName());
 //						}
 //					}
 //
 //					@Override
 //					public void noFoundElement() {
-////						deduceTypes2.LOG.err("IdentIA path cannot be resolved " + x);
+////						deduceTypes2._LOG().err("IdentIA path cannot be resolved " + x);
 //					}
 //				});
 //			}

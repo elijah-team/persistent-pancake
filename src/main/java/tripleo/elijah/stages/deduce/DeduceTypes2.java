@@ -36,6 +36,7 @@ import tripleo.elijah.stages.deduce.percy.Implement_construct2;
 import tripleo.elijah.stages.deduce.percy.PFluffyEvaFunction;
 import tripleo.elijah.stages.deduce.percy.PFluffyEvaFunctionImpl;
 import tripleo.elijah.stages.deduce.percy.PFluffyItem;
+import tripleo.elijah.stages.deduce.percy.PFluffyType;
 import tripleo.elijah.stages.deduce.percy.Resolving;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
@@ -78,8 +79,9 @@ public class DeduceTypes2 {
 	final @NotNull         ElLog              LOG;
 	private final @NotNull OS_Module          module;
 	private final          Map<Object, IZero> _zeros = new HashMap<>();
-	private       DeduceTypeResolve2 _resolver;
-	private final Map<Object, PFluffyItem>  pfs = new HashMap<>();
+	private       DeduceTypeResolve2       _resolver;
+	private final Map<Object, PFluffyItem> pfs = new HashMap<>();
+	private List<PFluffyType> _fluffyTypes = new ArrayList<>();
 
 	public DeduceTypes2(@NotNull final OS_Module module, @NotNull final DeducePhase phase) {
 		this(module, phase, ElLog.Verbosity.VERBOSE);
@@ -2238,6 +2240,15 @@ public class DeduceTypes2 {
 		return pf;
 	}
 
+	public PFluffyType newPFluffyType() {
+		final PFluffyType result = new PFluffyType();
+		result.provide(this);
+		
+		_fluffyTypes.add(result);
+		
+		return result;
+	}
+
 	interface IElementProcessor {
 		void elementIsNull();
 
@@ -2578,6 +2589,10 @@ public class DeduceTypes2 {
 		public DeduceTypeResolve2 resolver() {
 			return dt2.resolver();
 		}
+
+		public PFluffyType newPFluffyType() {
+			return dt2.newPFluffyType();
+		}
 	}
 
 	static class DeduceClient2 {
@@ -2588,23 +2603,23 @@ public class DeduceTypes2 {
 		}
 
 		public @Nullable ClassInvocation registerClassInvocation(@NotNull final ClassInvocation ci) {
-			return deduceTypes2.phase.registerClassInvocation(ci);
+			return deduceTypes2._phase().registerClassInvocation(ci);
 		}
 
 		public @NotNull FunctionInvocation newFunctionInvocation(final BaseFunctionDef constructorDef, final ProcTableEntry pte, @NotNull final IInvocation ci) {
-			return deduceTypes2.newFunctionInvocation(constructorDef, pte, ci, deduceTypes2.phase);
+			return deduceTypes2.newFunctionInvocation(constructorDef, pte, ci, deduceTypes2._phase());
 		}
 
 		public NamespaceInvocation registerNamespaceInvocation(final NamespaceStatement namespaceStatement) {
-			return deduceTypes2.phase.registerNamespaceInvocation(namespaceStatement);
+			return deduceTypes2._phase().registerNamespaceInvocation(namespaceStatement);
 		}
 
 		public @NotNull ClassInvocation genCI(@NotNull final GenType genType, final TypeName typeName) {
-			return genType.genCI(typeName, deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
+			return genType.genCI(typeName, deduceTypes2, deduceTypes2._errSink(), deduceTypes2._phase());
 		}
 
 		public @NotNull ElLog getLOG() {
-			return deduceTypes2.LOG;
+			return deduceTypes2._LOG();
 		}
 
 		public DeduceTypeResolve2 resolver() {
@@ -2754,7 +2769,7 @@ public class DeduceTypes2 {
 		}
 
 		public ElLog getLOG() {
-			return deduceTypes2.LOG;
+			return deduceTypes2._LOG();
 		}
 
 		public LookupResultList lookupExpression(final IExpression aExp, final Context aContext) throws ResolveError {
@@ -2782,11 +2797,11 @@ public class DeduceTypes2 {
 		}
 
 		public GenType resolve_type(final OS_Type aType, final Context aContext) throws ResolveError {
-			return deduceTypes2.resolve_type(aType, aContext);
+			return deduceTypes2.newPFluffyType().resolve_type(aType, aContext);
 		}
 
 		public DeducePhase getPhase() {
-			return deduceTypes2.phase;
+			return deduceTypes2._phase();
 		}
 
 		public void addJobs(final WorkJob j) {
@@ -2816,7 +2831,7 @@ public class DeduceTypes2 {
 		}
 
 		public @NotNull FunctionInvocation newFunctionInvocation(final BaseFunctionDef aFunctionDef, final ProcTableEntry aPte, final @NotNull IInvocation aInvocation) {
-			return deduceTypes2.newFunctionInvocation(aFunctionDef, aPte, aInvocation, deduceTypes2.phase);
+			return deduceTypes2.newFunctionInvocation(aFunctionDef, aPte, aInvocation, deduceTypes2._phase());
 		}
 
 		public OS_Element resolveAlias(final AliasStatement aAliasStatement) {

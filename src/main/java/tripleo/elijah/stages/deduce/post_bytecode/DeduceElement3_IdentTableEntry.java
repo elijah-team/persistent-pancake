@@ -53,7 +53,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 	public Operation2<GenType> resolve1(final IdentTableEntry ite, final @NotNull Context aContext) {
 		// FoundElement is the "disease"
 		try {
-			return Operation2.success(deduceTypes2.resolve_type(ite.getType().getAttached(), aContext));
+			return Operation2.success(deduceTypes2.newPFluffyType().resolve_type(ite.getType().getAttached(), aContext));
 		} catch (final ResolveError aE) {
 			return Operation2.failure(aE);
 		}

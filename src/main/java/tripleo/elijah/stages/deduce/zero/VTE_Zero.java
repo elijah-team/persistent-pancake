@@ -57,7 +57,7 @@ public class VTE_Zero {
                                              final @NotNull IdentTableEntry ite,
                                              final @NotNull ErrSink errSink) {
         try {
-            @NotNull final GenType ty2 = deduceTypes2.resolve_type(aTy, aTy.getTypeName().getContext());
+            @NotNull final GenType ty2 = deduceTypes2.newPFluffyType().resolve_type(aTy, aTy.getTypeName().getContext());
             // TODO ite.setAttached(ty2) ??
             final OS_Element           ele  = ty2.getResolved().getElement();
             final LookupResultList     lrl  = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), deduceTypes2);
@@ -110,7 +110,7 @@ public class VTE_Zero {
 
             switch (ty.getType()) {
                 case USER:
-                    final @NotNull GenType ty2 = deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
+                    final @NotNull GenType ty2 = deduceTypes2.newPFluffyType().resolve_type(ty, ty.getTypeName().getContext());
 
                     tte.provide(deduceTypes2);
 

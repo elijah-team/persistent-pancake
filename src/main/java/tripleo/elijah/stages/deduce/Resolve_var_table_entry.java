@@ -37,7 +37,7 @@ class Resolve_var_table_entry {
 			{
 				final GenType genType = vte.type.getGenType();
 				if (genType.getResolved() != null && genType.getNode() == null) {
-					genType.genCI(genType.getNonGenericTypeName(), deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
+					genType.genCI(genType.getNonGenericTypeName(), deduceTypes2, deduceTypes2._errSink(), deduceTypes2._phase());
 //					genType.node = makeNode(genType);
 					//
 					// registerClassInvocation does the job of makeNode, so results should be immediately available

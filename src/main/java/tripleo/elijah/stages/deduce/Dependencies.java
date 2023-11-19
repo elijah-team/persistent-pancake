@@ -67,9 +67,9 @@ class Dependencies {
 		// TODO work this out further, maybe like a Deepin flavor
 		if (genType.getResolvedn() != null) {
 			@NotNull final OS_Module           mod = genType.getResolvedn().getContext().module();
-			final @NotNull GenerateFunctions   gf  = deduceTypes2.phase.generatePhase.getGenerateFunctions(mod);
-			final NamespaceInvocation          ni  = deduceTypes2.phase.registerNamespaceInvocation(genType.getResolvedn());
-			@NotNull final WlGenerateNamespace gen = new WlGenerateNamespace(gf, ni, deduceTypes2.phase.generatedClasses, deduceTypes2.phase.codeRegistrar);
+			final @NotNull GenerateFunctions   gf  = deduceTypes2._phase().generatePhase.getGenerateFunctions(mod);
+			final NamespaceInvocation          ni  = deduceTypes2._phase().registerNamespaceInvocation(genType.getResolvedn());
+			@NotNull final WlGenerateNamespace gen = new WlGenerateNamespace(gf, ni, deduceTypes2._phase().generatedClasses, deduceTypes2._phase().codeRegistrar);
 
 			assert genType.getCi() == null || genType.getCi() == ni;
 			genType.setCi(ni);
@@ -91,11 +91,11 @@ class Dependencies {
 
 			final ClassStatement             c   = genType.getResolved().getClassOf();
 			final @NotNull OS_Module         mod = c.getContext().module();
-			final @NotNull GenerateFunctions gf  = deduceTypes2.phase.generatePhase.getGenerateFunctions(mod);
+			final @NotNull GenerateFunctions gf  = deduceTypes2._phase().generatePhase.getGenerateFunctions(mod);
 			@Nullable ClassInvocation        ci;
 			if (genType.getCi() == null) {
 				ci = new ClassInvocation(c, null);
-				ci = deduceTypes2.phase.registerClassInvocation(ci);
+				ci = deduceTypes2._phase().registerClassInvocation(ci);
 
 				genType.setCi(ci);
 			} else {
@@ -103,7 +103,7 @@ class Dependencies {
 				ci = (ClassInvocation) genType.getCi();
 			}
 
-			final Promise<ClassDefinition, Diagnostic, Void> pcd = deduceTypes2.phase.generateClass(gf, ci);
+			final Promise<ClassDefinition, Diagnostic, Void> pcd = deduceTypes2._phase().generateClass(gf, ci);
 
 			pcd.then(new DoneCallback<ClassDefinition>() {
 				@Override

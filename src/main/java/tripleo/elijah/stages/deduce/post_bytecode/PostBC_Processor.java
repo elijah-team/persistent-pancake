@@ -279,7 +279,7 @@ public interface PostBC_Processor {
             switch (attachedType) {
                 case USER:
                     try {
-                        final GenType aGenType = deduceTypes2.resolve_type(attached, fd_ctx);
+                        final GenType aGenType = deduceTypes2.newPFluffyType().resolve_type(attached, fd_ctx);
                         SimplePrintLoggerToRemoveSoon.println2("xxxxxxxxxxxxxx " + aGenType);
 	                    r = new Maybe<>(aGenType.getResolved(), null); // TODO incomplete!! (send whole GenType)
                         // -------------------------- vte.type.setAttached(aGenType);

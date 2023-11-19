@@ -59,7 +59,7 @@ class Resolve_ident_table_entry {
 			return;
 		if (true) {
 			final @NotNull IdentIA identIA = new IdentIA(ite.getIndex(), generatedFunction);
-			deduceTypes2.resolveIdentIA_(ite.getPC(), identIA, generatedFunction, new FoundElement(deduceTypes2.phase) {
+			deduceTypes2.resolveIdentIA_(ite.getPC(), identIA, generatedFunction, new FoundElement(deduceTypes2._phase()) {
 
 				final String x = generatedFunction.getIdentIAPathNormal(identIA);
 

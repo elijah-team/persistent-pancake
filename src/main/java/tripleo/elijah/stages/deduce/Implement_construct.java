@@ -137,11 +137,11 @@ public class Implement_construct {
 								// README Don't remember enough about the constructors to select a different one
 								@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, ty);
 								try {
-									@NotNull final GenType resolved = deduceTypes2.resolve_type(ty, tn.getContext());
-									deduceTypes2.LOG.err("892 resolved: " + resolved);
+									@NotNull final GenType resolved = deduceTypes2.newPFluffyType().resolve_type(ty, tn.getContext());
+									deduceTypes2._LOG().err("892 resolved: " + resolved);
 									tte.setAttached(resolved);
 								} catch (final ResolveError aResolveError) {
-									deduceTypes2.errSink.reportDiagnostic(aResolveError);
+									deduceTypes2._errSink().reportDiagnostic(aResolveError);
 								}
 
 								idte2.setType(tte);
@@ -310,7 +310,7 @@ public class Implement_construct {
 				// TODO also check arguments
 				{
 					assert cc != null || pte.getArgs().size() == 0;
-					@NotNull final FunctionInvocation fi = deduceTypes2.newFunctionInvocation(cc, pte, clsinv2, deduceTypes2.phase);
+					@NotNull final FunctionInvocation fi = deduceTypes2.newFunctionInvocation(cc, pte, clsinv2, deduceTypes2._phase());
 					pte.setFunctionInvocation(fi);
 				}
 			}
@@ -348,7 +348,7 @@ public class Implement_construct {
 
 		assert clsinv != null;
 
-		clsinv = deduceTypes2.phase.registerClassInvocation(clsinv);
+		clsinv = deduceTypes2._phase().registerClassInvocation(clsinv);
 		if (co != null) {
 			if (co instanceof IdentTableEntry) {
 				final @Nullable IdentTableEntry idte3 = (IdentTableEntry) co;
@@ -387,7 +387,7 @@ public class Implement_construct {
 			// TODO also check arguments
 			{
 				assert cc != null || pte.getArgs().size() == 0;
-				@NotNull final FunctionInvocation fi = deduceTypes2.newFunctionInvocation(cc, pte, clsinv, deduceTypes2.phase);
+				@NotNull final FunctionInvocation fi = deduceTypes2.newFunctionInvocation(cc, pte, clsinv, deduceTypes2._phase());
 				pte.setFunctionInvocation(fi);
 			}
 		}

@@ -32,7 +32,7 @@ public class DeduceTypeResolve2 {
 		@NotNull
 		GenType result;
 		try {
-			result = deduceTypes2.resolve_type(new OS_UserType(typeName), typeName.getContext());
+			result = deduceTypes2.newPFluffyType().resolve_type(new OS_UserType(typeName), typeName.getContext());
 		} catch (ResolveError e) {
 //			e.printStackTrace();
 			return Operation.failure(e);

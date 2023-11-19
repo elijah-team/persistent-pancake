@@ -46,7 +46,7 @@ public class ITE_Zero {
                     ty2 = zero_type.genType();
                 }
 
-//				ty2 = aFoundParent.deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
+//				ty2 = aFoundParent.deduceTypes2.newPFluffyType().resolve_type(ty, ty.getTypeName().getContext());
                 final OS_Element ele;
                 if (tte_vte.getGenType().getResolved() == null) {
                     if (ty2.getResolved().getType() == OS_Type.Type.USER_CLASS) {

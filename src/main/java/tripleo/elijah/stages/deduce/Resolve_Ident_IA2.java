@@ -77,7 +77,7 @@ class Resolve_Ident_IA2 {
 		generatedFunction = aGeneratedFunction;
 		foundElement = aFoundElement;
 		//
-		LOG = deduceTypes2.LOG;
+		LOG = deduceTypes2._LOG();
 	}
 
 	@Nullable OS_Element el = null;
@@ -267,7 +267,7 @@ class Resolve_Ident_IA2 {
 					break;
 				case USER:
 					try {
-						@NotNull final GenType ty = deduceTypes2.resolve_type(attached, ctx);
+						@NotNull final GenType ty = deduceTypes2.newPFluffyType().resolve_type(attached, ctx);
 						ectx = ty.getResolved().getClassOf().getContext();
 					} catch (final ResolveError resolveError) {
 						LOG.err("1300 Can't resolve " + attached);
@@ -437,7 +437,7 @@ class Resolve_Ident_IA2 {
 			final OS_Type attached = idte2.getType().getAttached();
 			if (attached.getType() == OS_Type.Type.USER_CLASS) {
 				if (idte2.getType().getGenType().getResolved() == null) {
-					@NotNull final GenType rtype = deduceTypes2.resolve_type(attached, ctx);
+					@NotNull final GenType rtype = deduceTypes2.newPFluffyType().resolve_type(attached, ctx);
 					if (rtype.getResolved() != null) {
 						switch (rtype.getResolved().getType()) {
 						case USER_CLASS:

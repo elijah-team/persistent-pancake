@@ -74,14 +74,14 @@ public class DeduceLocalVariable {
 			final int     pts     = vte.potentialTypes().size();
 			if (genType.getTypeName() != null && genType.getTypeName() == genType.getResolved()) {
 				try {
-					genType.setResolved(deduceTypes2.resolve_type(genType.getTypeName(), ctx/*genType.typeName.getTypeName().getContext()*/).getResolved());
+					genType.setResolved(deduceTypes2.newPFluffyType().resolve_type(genType.getTypeName(), ctx/*genType.typeName.getTypeName().getContext()*/).getResolved());
 					genType.genCIForGenType2(deduceTypes2);
 					vte.resolveType(genType);
 					vte.resolveTypeToClass(genType.getNode());
 					final int y = 2;
 				} catch (final ResolveError aResolveError) {
 //					aResolveError.printStackTrace();
-					deduceTypes2.errSink.reportDiagnostic(aResolveError);
+					deduceTypes2._errSink().reportDiagnostic(aResolveError);
 				}
 			}
 		}
@@ -107,7 +107,7 @@ public class DeduceLocalVariable {
 				if (attached_list.size() == 1) {
 					final TypeTableEntry pot = attached_list.get(0);
 					vte.type.setAttached(pot.getAttached(), deduceTypes2.resolver());
-					vte.type.getGenType().genCI(null, deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
+					vte.type.getGenType().genCI(null, deduceTypes2, deduceTypes2._errSink(), deduceTypes2._phase());
 					final ClassInvocation classInvocation = (ClassInvocation) vte.type.getGenType().getCi();
 					if (classInvocation != null) {
 						classInvocation.resolvePromise().then(new DoneCallback<GeneratedClass>() {
@@ -131,13 +131,13 @@ public class DeduceLocalVariable {
 				final int     pts     = vte.potentialTypes().size();
 				if (genType.getTypeName() != null && genType.getTypeName() == genType.getResolved()) {
 					try {
-						genType.setResolved(deduceTypes2.resolve_type(genType.getTypeName(), ctx/*genType.typeName.getTypeName().getContext()*/).getResolved());
+						genType.setResolved(deduceTypes2.newPFluffyType().resolve_type(genType.getTypeName(), ctx/*genType.typeName.getTypeName().getContext()*/).getResolved());
 						genType.genCIForGenType2(deduceTypes2);
 						vte.resolveType(genType);
 						vte.resolveTypeToClass(genType.getNode());
 					} catch (final ResolveError aResolveError) {
 //						aResolveError.printStackTrace();
-						deduceTypes2.errSink.reportDiagnostic(aResolveError);
+						deduceTypes2._errSink().reportDiagnostic(aResolveError);
 					}
 				}
 			}
@@ -147,7 +147,7 @@ public class DeduceLocalVariable {
 				if (genType.getResolved() != null && genType.getNode() == null) {
 					if (genType.getResolved().getType() != OS_Type.Type.USER_CLASS && genType.getResolved().getType() != OS_Type.Type.FUNCTION) {
 						try {
-							genType.setResolved(deduceTypes2.resolve_type(genType.getResolved(), ctx).getResolved());
+							genType.setResolved(deduceTypes2.newPFluffyType().resolve_type(genType.getResolved(), ctx).getResolved());
 						} catch (final ResolveError aResolveError) {
 							aResolveError.printStackTrace();
 							assert false;

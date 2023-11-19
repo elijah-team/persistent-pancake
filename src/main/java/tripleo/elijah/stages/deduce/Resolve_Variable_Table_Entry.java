@@ -56,10 +56,10 @@ class Resolve_Variable_Table_Entry {
 		ctx               = aCtx;
 		deduceTypes2      = aDeduceTypes2;
 		//
-		LOG     = deduceTypes2.LOG;
+		LOG     = deduceTypes2._LOG();
 		wm      = deduceTypes2.wm;
-		errSink = deduceTypes2.errSink;
-		phase   = deduceTypes2.phase;
+		errSink = deduceTypes2._errSink();
+		phase   = deduceTypes2._phase();
 	}
 
 	public void action(final @NotNull VariableTableEntry vte, final @NotNull DeduceTypes2.IVariableConnector aConnector) {
@@ -342,7 +342,7 @@ class Resolve_Variable_Table_Entry {
 					if (tte.getGenType().getTypeName() == null)
 						tte.getGenType().setTypeName(attached);
 					try {
-						tte.getGenType().copy(deduceTypes2.resolve_type(attached, ctx));
+						tte.getGenType().copy(deduceTypes2.newPFluffyType().resolve_type(attached, ctx));
 						tte.setAttached(tte.getGenType().getResolved(), deduceTypes2.resolver() ); // TODO probably not necessary, but let's leave it for now
 					} catch (final ResolveError aResolveError) {
 						errSink.reportDiagnostic(aResolveError);
@@ -376,7 +376,7 @@ class Resolve_Variable_Table_Entry {
 	public void genCIForGenType(final GenType aGenType) {
 		assert aGenType.getNonGenericTypeName() != null;//&& ((NormalTypeName) aGenType.nonGenericTypeName).getGenericPart().size() > 0;
 
-		aGenType.genCI(aGenType.getNonGenericTypeName(), deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
+		aGenType.genCI(aGenType.getNonGenericTypeName(), deduceTypes2, deduceTypes2._errSink(), deduceTypes2._phase());
 		final IInvocation invocation = aGenType.getCi();
 		if (invocation instanceof NamespaceInvocation) {
 			final NamespaceInvocation namespaceInvocation = (NamespaceInvocation) invocation;
@@ -435,7 +435,7 @@ class Resolve_Variable_Table_Entry {
 	 * @param aGenType the GenType to modify. doesn;t care about  nonGenericTypeName
 	 */
 	public void genCIForGenType2(final GenType aGenType) {
-		aGenType.genCI(aGenType.getNonGenericTypeName(), deduceTypes2, deduceTypes2.errSink, deduceTypes2.phase);
+		aGenType.genCI(aGenType.getNonGenericTypeName(), deduceTypes2, deduceTypes2._errSink(), deduceTypes2._phase());
 		final IInvocation invocation = aGenType.getCi();
 		if (invocation instanceof NamespaceInvocation) {
 			final NamespaceInvocation namespaceInvocation = (NamespaceInvocation) invocation;

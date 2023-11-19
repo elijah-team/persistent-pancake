@@ -64,7 +64,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 			} else if (bte instanceof IdentTableEntry) {
 				final @NotNull IdentTableEntry ite = (IdentTableEntry) bte;
 
-				final ErrSink errSink = deduceTypes2.errSink;
+				final ErrSink errSink = deduceTypes2._errSink();
 
 				onChangeITE(ite.zero(), ite, errSink);
 			}
@@ -78,8 +78,8 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 		final VTE_Zero            zero = vte.zero();
 		final Zero_PotentialTypes pot1 = zero.potentialTypes();
 
-		final ErrSink              errSink = deduceTypes2.errSink;
-		@NotNull final DeducePhase phase   = deduceTypes2.phase;
+		final ErrSink              errSink = deduceTypes2._errSink();
+		@NotNull final DeducePhase phase   = deduceTypes2._phase();
 
 		if (vte.getStatus() == BaseTableEntry.Status.KNOWN && vte.type.getAttached() != null && vte.getResolvedElement() != null) {
 			zero.fp_onChange__001(vte.type, ite, deduceTypes2, errSink);
@@ -119,7 +119,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 				  });
 			}
 		} else {
-			deduceTypes2.LOG.info("1621");
+			deduceTypes2._LOG().info("1621");
 			@Nullable LookupResultList lrl = null;
 			try {
 				lrl = DeduceLookupUtils.lookupExpression(ite.getIdent(), ctx, deduceTypes2);
@@ -139,7 +139,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 			zero.fp_onChange__001(identTableEntry.getType(), this.ite, deduceTypes2, errSink);
 		} else {
 			if (!identTableEntry.isFefi()) {
-				final Found_Element_For_ITE fefi = new Found_Element_For_ITE(generatedFunction, ctx, deduceTypes2.LOG, deduceTypes2.errSink, new DeduceTypes2.DeduceClient1(deduceTypes2));
+				final Found_Element_For_ITE fefi = new Found_Element_For_ITE(generatedFunction, ctx, deduceTypes2._LOG(), deduceTypes2._errSink(), new DeduceTypes2.DeduceClient1(deduceTypes2));
 				fefi.action(identTableEntry);
 				identTableEntry.setFefi(true);
 				identTableEntry.onFefiDone(new DoneCallback<GenType>() {
@@ -193,7 +193,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 					ite.setType(tte);
 				}
 			} catch (final ResolveError aResolveError) {
-				deduceTypes2.errSink.reportDiagnostic(aResolveError);
+				deduceTypes2._errSink().reportDiagnostic(aResolveError);
 			}
 		}
 	}
@@ -209,7 +209,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 		@Nullable GenType ty2 = null;
 		if (!aTyp.isNull()) {
 			assert ty.getTypeName() != null;
-			ty2 = deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
+			ty2 = deduceTypes2.newPFluffyType().resolve_type(ty, ty.getTypeName().getContext());
 			return ty2;
 		}
 
@@ -255,7 +255,7 @@ public class FoundParent implements BaseTableEntry.StatusListener {
 							break;
 						case USER:
 							try {
-								@NotNull final GenType ty3 = deduceTypes2.resolve_type(attached1, attached1.getTypeName().getContext());
+								@NotNull final GenType ty3 = deduceTypes2.newPFluffyType().resolve_type(attached1, attached1.getTypeName().getContext());
 								// no expression or TableEntryIV below
 								@NotNull final TypeTableEntry tte4 = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null);
 								// README trying to keep genType up to date
