@@ -174,6 +174,11 @@ public class FunctionInvocation {
 		                  .add("_generated", _generated.asString())
 		                  .toString();
 	}
+
+	public static boolean sameAs(FunctionInvocation functionInvocation, final FunctionInvocation fi) {
+		return functionInvocation.getClassInvocation() == fi.getClassInvocation()
+				&& functionInvocation.getFunction() == fi.getFunction() && functionInvocation.pte == fi.pte;
+	}
 }
 
 //

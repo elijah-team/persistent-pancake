@@ -9,17 +9,48 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.AliasStatement;
+import tripleo.elijah.lang.BaseFunctionDef;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.DecideElObjectType;
+import tripleo.elijah.lang.DefFunctionDef;
+import tripleo.elijah.lang.DotExpression;
+import tripleo.elijah.lang.ElObjectType;
+import tripleo.elijah.lang.FormalArgListItem;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.GetItemExpression;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.NamespaceStatement;
+import tripleo.elijah.lang.NormalTypeName;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.ProcedureCallExpression;
+import tripleo.elijah.lang.Qualident;
+import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.TypeNameList;
+import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_AnyType;
 import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.lang.types.OS_FuncExprType;
@@ -43,7 +74,31 @@ import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
 import tripleo.elijah.stages.deduce.zero.IZero;
 import tripleo.elijah.stages.deduce.zero.Zero_FuncExprType;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.elijah.stages.gen_fn.BaseTableEntry;
+import tripleo.elijah.stages.gen_fn.ConstantTableEntry;
+import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah.stages.gen_fn.GenerateFunctions;
+import tripleo.elijah.stages.gen_fn.GeneratePhase;
+import tripleo.elijah.stages.gen_fn.GeneratedClass;
+import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
+import tripleo.elijah.stages.gen_fn.GeneratedContainer;
+import tripleo.elijah.stages.gen_fn.GeneratedContainerNC;
+import tripleo.elijah.stages.gen_fn.GeneratedFunction;
+import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
+import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah.stages.gen_fn.GenericElementHolder;
+import tripleo.elijah.stages.gen_fn.GenericElementHolderWithType;
+import tripleo.elijah.stages.gen_fn.IElementHolder;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.ProcTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.stages.gen_fn.VariableTableEntry;
+import tripleo.elijah.stages.gen_fn.WlGenerateClass;
+import tripleo.elijah.stages.gen_fn.WlGenerateCtor;
+import tripleo.elijah.stages.gen_fn.WlGenerateDefaultCtor;
+import tripleo.elijah.stages.gen_fn.WlGenerateFunction;
+import tripleo.elijah.stages.gen_fn.WlGenerateNamespace;
 import tripleo.elijah.stages.instructions.ConstTableIA;
 import tripleo.elijah.stages.instructions.FnCallArgs;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -62,12 +117,6 @@ import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.work.WorkJob;
 import tripleo.elijah.work.WorkList;
 import tripleo.elijah.work.WorkManager;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created 9/15/20 12:51 PM
@@ -294,28 +343,7 @@ public class DeduceTypes2 {
 //										if (procTableEntry == pte) tripleo.elijah.util.Stupidity.println_err2("940 procTableEntry == pte");
 									if (procTableEntry != null) {
 										// TODO doesn't seem like we need this
-										procTableEntry.onFunctionInvocation(new DoneCallback<FunctionInvocation>() {
-											@Override
-											public void onDone(@NotNull final FunctionInvocation functionInvocation) {
-												final ClassInvocation     ci  = functionInvocation.getClassInvocation();
-												final NamespaceInvocation nsi = functionInvocation.getNamespaceInvocation();
-												// do we register?? probably not
-												assert ci != null || nsi != null;
-												@NotNull final FunctionInvocation fi = newFunctionInvocation((FunctionDef) el, pte, ci != null ? ci : nsi, phase);
-
-												{
-													if (functionInvocation.getClassInvocation() == fi.getClassInvocation() &&
-													  functionInvocation.getFunction() == fi.getFunction() &&
-													  functionInvocation.pte == fi.pte) {
-//														tripleo.elijah.util.Stupidity.println_err2("955 It seems like we are generating the same thing...");
-													} else {
-														final int ok = 2;
-													}
-
-												}
-												generatedFunction.addDependentFunction(fi);
-											}
-										});
+										procTableEntry.onFunctionInvocation(functionInvocation -> callback_001(functionInvocation, (FunctionDef) el, pte, generatedFunction));
 										// END
 									}
 								}
@@ -361,8 +389,20 @@ public class DeduceTypes2 {
 		}
 	}
 
+	private void callback_001(final @NotNull FunctionInvocation functionInvocation,
+	                          final FunctionDef aFunctionDef,
+	                          final ProcTableEntry aProcTableEntry,
+	                          final @NotNull BaseGeneratedFunction aGeneratedFunction) {
+		DeduceCallbacks.callback_001(functionInvocation, aFunctionDef, aProcTableEntry, aGeneratedFunction, this, phase);
+	}
+
+	static IInvocation choose(final ClassInvocation ci, final NamespaceInvocation nsi) {
+		return ci != null ? ci : nsi;
+	}
+
 	@NotNull FunctionInvocation newFunctionInvocation(final BaseFunctionDef aFunctionDef, final ProcTableEntry aPte, @NotNull final IInvocation aInvocation, @NotNull final DeducePhase aDeducePhase) {
 		@NotNull final FunctionInvocation fi = new FunctionInvocation(aFunctionDef, aPte, aInvocation, aDeducePhase.generatePhase);
+		this.functionInvocations.add(fi);
 		// TODO register here
 		return fi;
 	}
@@ -1346,7 +1386,7 @@ public class DeduceTypes2 {
 		// resolve var table. moved from `E'
 		//
 		for (@NotNull final VariableTableEntry vte : generatedFunction.vte_list) {
-			final DeduceElement3_VariableTableEntry vte_de = (DeduceElement3_VariableTableEntry) vte.getDeduceElement3();
+			final DeduceElement3_VariableTableEntry vte_de = vte.getDeduceElement3();
 			vte_de.mvState(null, DeduceElement3_VariableTableEntry.ST.EXIT_RESOLVE);
 		}
 		for (@NotNull final IStateRunnable runnable : onRunnables) {
@@ -1359,7 +1399,7 @@ public class DeduceTypes2 {
 		//
 		for (final @NotNull VariableTableEntry vte : generatedFunction.vte_list) {
 //						LOG.info("704 "+vte.type.attached+" "+vte.potentialTypes());
-			final DeduceElement3_VariableTableEntry vte_de = (DeduceElement3_VariableTableEntry) vte.getDeduceElement3();
+			final DeduceElement3_VariableTableEntry vte_de = vte.getDeduceElement3();
 			vte_de.setDeduceTypes2(this, generatedFunction);
 			vte_de.mvState(null, DeduceElement3_VariableTableEntry.ST.EXIT_CONVERT_USER_TYPES);
 		}
@@ -1379,7 +1419,7 @@ public class DeduceTypes2 {
 		// ATTACH A TYPE TO IDTE'S
 		//
 		for (@NotNull final IdentTableEntry ite : generatedFunction.idte_list) {
-			final DeduceElement3_IdentTableEntry ite_de = (DeduceElement3_IdentTableEntry) ite.getDeduceElement3(this, generatedFunction);
+			final DeduceElement3_IdentTableEntry ite_de = ite.getDeduceElement3(this, generatedFunction);
 			ite_de._ctxts(aFd_ctx, aContext);
 			ite_de.mvState(null, DeduceElement3_IdentTableEntry.ST.EXIT_GET_TYPE);
 		}
@@ -1976,7 +2016,7 @@ public class DeduceTypes2 {
 				}
 			});
 			onFinish(() -> {
-				final DeduceElement3_VariableTableEntry vte_ = (DeduceElement3_VariableTableEntry) vte.getDeduceElement3();
+				final DeduceElement3_VariableTableEntry vte_ = vte.getDeduceElement3();
 				vte_.setDeduceTypes2(DeduceTypes2.this, generatedFunction);
 				vte_.potentialTypesRunnableDo(vte_ia, LOG, vte1, errSink, ctx, e_text, vte);
 			});
@@ -3155,6 +3195,14 @@ public class DeduceTypes2 {
 
 //			LOG.info(String.format("Expectation (%s, %d) set: %s %s", DeduceTypes2.this, counter, desc, base.expectationString()));
 		}
+	}
+
+	/*
+	 * @param generatePhase unused
+	 */
+	public @Nullable FunctionInvocation newFunctionInvocation(BaseFunctionDef el, @Nullable ProcTableEntry pte,
+			@Nullable IInvocation invocation, GeneratePhase generatePhase) {
+		return newFunctionInvocation(el, pte, invocation, phase);
 	}
 }
 

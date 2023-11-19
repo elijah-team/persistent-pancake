@@ -8,12 +8,30 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import java.util.ArrayList;
+
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.contexts.FunctionContext;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.AliasStatement;
+import tripleo.elijah.lang.BaseFunctionDef;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.DecideElObjectType;
+import tripleo.elijah.lang.FuncExpr;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.IdentExpression;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.NamespaceStatement;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.ProcedureCallExpression;
+import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_FuncExprType;
 import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
@@ -35,8 +53,6 @@ import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkList;
 import tripleo.elijah.work.WorkManager;
-
-import java.util.ArrayList;
 
 /**
  * Created 9/5/21 2:54 AM
@@ -270,7 +286,8 @@ class Resolve_Variable_Table_Entry {
 			final @Nullable ProcTableEntry     pte  = findProcTableEntry(generatedFunction, aPotentialExpression);
 			assert pte != null;
 			callable_pte = pte;
-			@NotNull final FunctionInvocation fi = new FunctionInvocation(fd1, pte, modi, phase.generatePhase);
+			@NotNull
+			final FunctionInvocation fi = deduceTypes2.newFunctionInvocation(fd1, pte, modi, phase.generatePhase);
 			wl.addJob(new WlGenerateNamespace(gen, modi, phase.generatedClasses, phase.codeRegistrar)); // TODO hope this works (for more than one)
 			final @Nullable WlGenerateFunction wlgf = new WlGenerateFunction(gen, fi, phase.codeRegistrar);
 			wl.addJob(wlgf);

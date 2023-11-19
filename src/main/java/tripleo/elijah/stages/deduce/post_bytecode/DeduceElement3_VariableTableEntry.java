@@ -1,12 +1,21 @@
 package tripleo.elijah.stages.deduce.post_bytecode;
 
-import com.google.common.collect.Collections2;
+import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import com.google.common.collect.Collections2;
+
 import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
@@ -49,13 +58,6 @@ import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
-
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 
 public class DeduceElement3_VariableTableEntry extends DefaultStateful implements IDeduceElement3 {
 
@@ -401,7 +403,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 			// assuming no constructor name or generic parameters based on function syntax
 			ci = new ClassInvocation((ClassStatement) resolvedElement, null);
 			ci = phase.registerClassInvocation(ci);
-			fi = new FunctionInvocation(null, pte, ci, phase.generatePhase);
+			fi = dc.newFunctionInvocation(null, pte, ci);
 			p  = new ImmutablePair<ClassInvocation, FunctionInvocation>(ci, fi);
 		} else if (resolvedElement instanceof final FunctionDef functionDef) {
 			final IInvocation invocation = dc.getInvocation((GeneratedFunction) generatedFunction);

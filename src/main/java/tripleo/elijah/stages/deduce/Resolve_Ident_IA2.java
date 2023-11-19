@@ -8,12 +8,16 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.FailCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.BaseFunctionDef;
@@ -50,9 +54,6 @@ import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created 7/21/21 7:33 PM
@@ -415,7 +416,7 @@ class Resolve_Ident_IA2 {
 					final int y = 2;
 					// assert false;
 				}
-				fi = new FunctionInvocation((BaseFunctionDef) el, pte, invocation, phase.generatePhase);
+				fi = deduceTypes2.newFunctionInvocation((BaseFunctionDef) el, pte, invocation, phase.generatePhase);
 				pte.setFunctionInvocation(fi);
 			}
 
@@ -557,10 +558,12 @@ class Resolve_Ident_IA2 {
 			ctx = aCtx;
 		}
 
+		@Override
 		public Promise<GenType, ResolveError, Void> promise() {
 			return DeduceLookupUtils.deduceExpression_p(deduceTypes2, vs.initialValue(), ctx);
 		}
 
+		@Override
 		public @NotNull IExpression initialValue() {
 			return vs.initialValue();
 		}

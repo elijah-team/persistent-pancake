@@ -2,6 +2,7 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
@@ -141,7 +142,8 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                                 if (best != null) {
                                     final FunctionDef fun = (FunctionDef) best;
 
-                                    final FunctionInvocation fi2 = new FunctionInvocation(fun, null, ci, deduceTypes2._phase().generatePhase); // TODO pte??
+									final FunctionInvocation fi2 = deduceTypes2.newFunctionInvocation(fun, null, ci,
+											deduceTypes2._phase().generatePhase); // TODO pte??
 
                                     principal.setFunctionInvocation(fi2); // TODO pte above
 
@@ -216,7 +218,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                 // assuming no constructor name or generic parameters based on function syntax
                 ci = new ClassInvocation((ClassStatement) resolvedElement, null);
                 ci = phase.registerClassInvocation(ci);
-                fi = new FunctionInvocation(null, pte, ci, phase.generatePhase);
+				fi = dc.newFunctionInvocation(null, pte, ci);
             } else if (resolvedElement instanceof final FunctionDef functionDef) {
                 final IInvocation invocation  = dc.getInvocation((GeneratedFunction) generatedFunction);
                 fi = new FunctionInvocation(functionDef, pte, invocation, phase.generatePhase);

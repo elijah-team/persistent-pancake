@@ -9,14 +9,36 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.lang.AliasStatement;
+import tripleo.elijah.lang.BaseFunctionDef;
+import tripleo.elijah.lang.ClassStatement;
+import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.DecideElObjectType;
+import tripleo.elijah.lang.FuncExpr;
+import tripleo.elijah.lang.FunctionDef;
+import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.MatchConditional;
+import tripleo.elijah.lang.NamespaceStatement;
+import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.ProcedureCallExpression;
+import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
@@ -44,10 +66,6 @@ import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.work.WorkJob;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Created 7/8/21 2:31 AM
@@ -373,7 +391,7 @@ class Resolve_Ident_IA {
 		} else if (_backlink instanceof final @NotNull IntegerIA backlink_) {
 			@NotNull final VariableTableEntry backlink  = backlink_.getEntry();
 
-			final DeduceElement3_VariableTableEntry vte_de3 = (DeduceElement3_VariableTableEntry) backlink.getDeduceElement3();
+			final DeduceElement3_VariableTableEntry vte_de3 = backlink.getDeduceElement3();
 			vte_de3._action_002_no_resolved_element(errSink, pte, ite, dc, phase);
 		} else {
 			System.err.println("=== 397 ===================================");
@@ -400,10 +418,10 @@ class Resolve_Ident_IA {
 				// assuming no constructor name or generic parameters based on function syntax
 				ci = new ClassInvocation((ClassStatement) resolvedElement, null);
 				ci = phase.registerClassInvocation(ci);
-				fi = new FunctionInvocation(null, pte, ci, phase.generatePhase);
+				fi = dc.newFunctionInvocation(null, pte, ci);
 			} else if (resolvedElement instanceof final FunctionDef functionDef) {
 				final IInvocation invocation  = dc.getInvocation((GeneratedFunction) generatedFunction);
-				fi = new FunctionInvocation(functionDef, pte, invocation, phase.generatePhase);
+				fi = this.dc.newFunctionInvocation(functionDef, pte, invocation);
 				if (functionDef.getParent() instanceof ClassStatement) {
 					final ClassStatement classStatement = (ClassStatement) fi.getFunction().getParent();
 					ci = new ClassInvocation(classStatement, null); // TODO generics
@@ -446,7 +464,8 @@ class Resolve_Ident_IA {
 			NotImplementedException.raise();
 		}
 		assert ((ClassStatement) el).getGenericPart().size() == 0;
-		@NotNull final FunctionInvocation fi = new FunctionInvocation(selected_constructor, pte, ci, phase.generatePhase);
+		@NotNull
+		final FunctionInvocation fi = dc.newFunctionInvocation(selected_constructor, pte, ci);
 //		fi.setClassInvocation(ci);
 		pte.setFunctionInvocation(fi);
 		if (fi.getFunction() instanceof ConstructorDef) {
@@ -664,7 +683,8 @@ class Resolve_Ident_IA {
 
 				// TODO might not be needed
 				if (invocation != null) {
-					@NotNull final FunctionInvocation fi = new FunctionInvocation((BaseFunctionDef) el, null, invocation, phase.generatePhase);
+					@NotNull
+					final FunctionInvocation fi = dc.newFunctionInvocation((BaseFunctionDef) el, null, invocation);
 					generatedFunction.addDependentFunction(fi); // README program fails if this is included
 				}
 			}
