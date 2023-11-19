@@ -28,11 +28,9 @@ import java.io.File;
  * @author Tripleo(sb)
  *
  */
-public class IdentExpression implements IExpression, OS_Element, Resolvable, Locatable {
-
+public class IdentExpression implements IExpression, OS_Element, Locatable {
 	public final  Attached   _a;
 	private final Token      text;
-	private       OS_Element _resolvedElement;
 
 	public IdentExpression(final Token r1) {
 		this.text = r1;
@@ -128,21 +126,6 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 
 	public void setContext(final Context cur) {
 		_a.setContext(cur);
-	}
-
-	@Override
-	public boolean hasResolvedElement() {
-		return _resolvedElement != null;
-	}
-
-	@Override
-	public OS_Element getResolvedElement() {
-		return _resolvedElement;
-	}
-
-	@Override
-	public void setResolvedElement(final OS_Element element) {
-		_resolvedElement = element;
 	}
 
 	@Contract("_ -> new")
