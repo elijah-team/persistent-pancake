@@ -38,9 +38,9 @@ dependencies {
     testImplementation "org.spockframework:spock-junit4"  // you can remove this if your code does not rely on old JUnit 4 rules
 
     // optional dependencies for using Spock
-    testImplementation "org.hamcrest:hamcrest-core:2.2"   // only necessary if Hamcrest matchers are used
-    testRuntimeOnly 'net.bytebuddy:byte-buddy:1.14.8' // allows mocking of classes (in addition to interfaces)
-    testRuntimeOnly "org.objenesis:objenesis:3.3"      // allows mocking of classes without default constructor (together with ByteBuddy or CGLIB)
+//    testImplementation "org.hamcrest:hamcrest-core:2.2"   // only necessary if Hamcrest matchers are used
+//    testRuntimeOnly 'net.bytebuddy:byte-buddy:1.14.8' // allows mocking of classes (in addition to interfaces)
+//    testRuntimeOnly "org.objenesis:objenesis:3.3"      // allows mocking of classes without default constructor (together with ByteBuddy or CGLIB)
 
 //    // dependencies used by examples in this project (https://github.com/spockframework/spock-example/blob/master/build.gradle)
 //    testRuntimeOnly "com.h2database:h2:2.2.222"
@@ -50,11 +50,13 @@ dependencies {
 /*
     api 'org.spockframework:spock-core:1.3-groovy-2.5'
     testImplementation 'org.codehaus.groovy:groovy-all:2.5.7'
-//    testImplementation 'net.bytebuddy:byte-buddy:1.9.3'
-//    testImplementation 'org.objenesis:objenesis:2.6'
-//    testImplementation 'org.hamcrest:hamcrest-core:1.3'
+    testImplementation 'net.bytebuddy:byte-buddy:1.9.3'
+    testImplementation 'org.objenesis:objenesis:2.6'
+    testImplementation 'org.hamcrest:hamcrest-core:1.3'
     //api 'com.h2database:h2:1.4.197'
 */
+
+
 
     api("com.squareup.okhttp3:okhttp:4.10.0")
     api("com.codahale.metrics:metrics-healthchecks:3.0.2")
@@ -109,7 +111,7 @@ sourceSets {
                     ,'tripleo-small/main/java'
                     ,'elijah-ek/main/java'
                     ,'elijah-util/main/java'
-		    ,'elijah-good-api/src/main/java'
+		            ,'elijah-good-api/src/main/java'
             ]
          }
     }
@@ -135,9 +137,9 @@ java.sourceCompatibility = JavaVersion.VERSION_16
 
 test {
     useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
+//    testLogging {
+//        events "passed", "skipped", "failed"
+//    }
 }
 
 
