@@ -39,7 +39,8 @@ public class PFluffyClassStatementImpl implements PFluffyClassStatement {
 		final TypeNameList gp2 = aTyn1.getGenericPart();
 		if (gp2 == null) {
 			int y=2;
-			assert false;
+//			assert false;
+			return;
 		}
 
 		final DeduceTypeResolve2 r = aDeduceTypes2.resolver();

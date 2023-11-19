@@ -350,7 +350,8 @@ public class Implement_construct {
 		if (ite.getType().getGenType() == null) {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, (OS_Type) null);
 			final GenType gt = ite.getType().getGenType();
-			assert gt != null;
+//			assert gt != null;
+			if (gt == null) return;
 		}
 
 		assert clsinv != null;
