@@ -32,12 +32,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static org.junit.Assert.*;
 import static tripleo.elijah.util.Helpers.List_of;
 
 /**
  * Created 9/10/20 2:20 PM
  */
 public class TestGenFunction {
+
+	private boolean __unboundedGate;
 
 	@Test
 	public void testDemoElNormalFact1Elijah() throws Exception {
@@ -47,7 +50,7 @@ public class TestGenFunction {
 		final String f = "test/demo-el-normal/fact1.elijah";
 		final File file = new File(f);
 		final OS_Module m = c.realParseElijjahFile(f, file, false);
-		Assert.assertNotNull("Method parsed correctly", m);
+		assertNotNull("Method parsed correctly", m);
 		m.prelude = c.findPrelude("c").success(); // TODO we dont know which prelude to find yet
 
 		//
@@ -106,13 +109,13 @@ public class TestGenFunction {
 				final GeneratedFunction gf = aGeneratedFunctions.iterator().next();
 
 				int pc = 0;
-				Assert.assertEquals(InstructionName.E, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.AGN, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.CALL, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.X, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.E, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.AGN, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.CALL, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.X, gf.getInstruction(pc++).getName());
 
 				ran_hooks.add(this);
 			}
@@ -132,19 +135,19 @@ public class TestGenFunction {
 				final GeneratedFunction gf = aGeneratedFunctions.iterator().next();
 
 				int pc = 0;
-				Assert.assertEquals(InstructionName.E, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.ES, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.JE, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.CALLS, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.CALLS, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.JMP, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.XS, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.AGN, gf.getInstruction(pc++).getName());
-				Assert.assertEquals(InstructionName.X, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.E, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.ES, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.DECL, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.AGNK, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.JE, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.CALLS, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.CALLS, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.JMP, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.XS, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.AGN, gf.getInstruction(pc++).getName());
+				assertEquals(InstructionName.X, gf.getInstruction(pc++).getName());
 
 				ran_hooks.add(this);
 			}
@@ -209,8 +212,8 @@ public class TestGenFunction {
 		dp.deduceModule(m, lgc, false, Compilation.gitlabCIVerbosity());
 		dp.finish(dp.generatedClasses);
 
-		Assert.assertEquals("Not all hooks ran", 4, ran_hooks.size());
-		Assert.assertEquals(4, c.errorCount());
+		assertEquals("Not all hooks ran", 4, ran_hooks.size());
+		assertEquals(4, c.errorCount());
 	}
 
 	@Test
@@ -224,7 +227,7 @@ public class TestGenFunction {
 	}
 
 //	@Test // ignore because of generateAllTopLevelClasses
-	public void testBasic1Backlink1Elijah() throws Exception {
+	public void testBasic1Backlink1Elijah() {
 //		final StdErrSink eee = new StdErrSink();
 //		final Compilation c = new CompilationImpl(eee, new IO());
 //
@@ -304,12 +307,27 @@ public class TestGenFunction {
 	}
 
 	@Test
-	public void testBasic1Backlink3Elijah() throws Exception {
+	public void testBasic1Backlink3Elijah() {
 		final StdErrSink eee = new StdErrSink();
 		final Compilation c = new CompilationImpl(eee, new IO());
 
 		final String ff = "test/basic1/backlink3/";
 		c.feedCmdLine(List_of(ff));
+
+		assertEquals(4, c.reports().codeOutputSize());
+
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Foo.c"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Foo.h"));
+
+		if (__unboundedGate) {
+			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+		}
 	}
 }
 
