@@ -64,6 +64,7 @@ import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.stages.gen_fn.WlGenerateClass;
 import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.testing.comp.IFunctionMapHook;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkList;
 
@@ -158,9 +159,9 @@ public class DeducePhase {
 	}
 
 	@NotNull
-	public List<FunctionMapHook> functionMapHooks = new ArrayList<FunctionMapHook>();
+	public List<IFunctionMapHook> functionMapHooks = new ArrayList<IFunctionMapHook>();
 
-	public void addFunctionMapHook(final FunctionMapHook aFunctionMapHook) {
+	public void addFunctionMapHook(final IFunctionMapHook aFunctionMapHook) {
 		functionMapHooks.add(aFunctionMapHook);
 	}
 
@@ -612,7 +613,7 @@ public class DeducePhase {
 		}
 		sanityChecks();
 		for (final Map.@NotNull Entry<FunctionDef, Collection<GeneratedFunction>> entry : functionMap.asMap().entrySet()) {
-			for (@NotNull final FunctionMapHook functionMapHook : functionMapHooks) {
+			for (@NotNull final IFunctionMapHook functionMapHook : functionMapHooks) {
 				if (functionMapHook.matches(entry.getKey())) {
 					functionMapHook.apply(entry.getValue());
 				}

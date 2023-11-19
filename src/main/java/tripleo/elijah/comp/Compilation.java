@@ -27,10 +27,10 @@ import tripleo.elijah.lang.Qualident;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.deduce.FunctionMapHook;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.testing.comp.IFunctionMapHook;
 import tripleo.elijah.ut.UT_Controller;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah.world.impl.DefaultLivingRepo;
@@ -192,7 +192,7 @@ public abstract class Compilation {
 		return use.findPrelude(prelude_name);
 	}
 
-	public void addFunctionMapHook(final FunctionMapHook aFunctionMapHook) {
+	public void addFunctionMapHook(final IFunctionMapHook aFunctionMapHook) {
 		getDeducePhase().addFunctionMapHook(aFunctionMapHook);
 	}
 

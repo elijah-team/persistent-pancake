@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="All in tripleo.elijah.srht-wontstop__gh-persistent_pancake" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
-    <module name="tripleo.elijah.srht-wontstop__gh-persistent_pancake" />
+  <configuration default="false" name="All in cur" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+    <module name="persistent-pancake" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="ALTERNATIVE_JRE_PATH" value="jdks-semeru-17" />
     <option name="PACKAGE_NAME" value="" />

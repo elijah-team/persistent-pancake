@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="16">
+    <bytecodeTargetLevel target="17">
       <module name="el-fluffy-umbrella__wont-stop2.buildSrc" target="17" />
       <module name="el-fluffy-umbrella__wont-stop2.buildSrc.main" target="17" />
       <module name="el-fluffy-umbrella__wont-stop2.buildSrc.test" target="17" />

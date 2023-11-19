@@ -1,7 +1,7 @@
 package tripleo.elijah.nextgen.expansion;
 
-import junit.framework.TestCase;
 import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
@@ -18,8 +18,8 @@ import tripleo.elijah.nextgen.outputstatement.EG_SyntheticStatement;
 import tripleo.elijah.nextgen.outputstatement.EX_Rule;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
-import tripleo.elijah.nextgen.small.ES_Symbol;
 import tripleo.elijah.util.Helpers;
+import tripleo.small.ES_Symbol;
 
 import java.util.HashSet;
 import java.util.List;
@@ -28,8 +28,9 @@ import java.util.stream.Collectors;
 
 import static tripleo.elijah.util.Helpers.List_of;
 
-public class SX_NodeTest2 extends TestCase {
+public class SX_NodeTest2 {
 
+	@Test
 	public void testFullText() {
 		final StdErrSink      errSink = new StdErrSink();
 		final IO              io      = new IO();

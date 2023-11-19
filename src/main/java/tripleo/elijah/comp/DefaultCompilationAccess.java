@@ -4,9 +4,9 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.functionality.f202.F202;
-import tripleo.elijah.stages.deduce.FunctionMapHook;
 import tripleo.elijah.stages.gen_fn.DeferredObject2;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.testing.comp.IFunctionMapHook;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,28 +18,6 @@ public class DefaultCompilationAccess implements ICompilationAccess {
 
 	public DefaultCompilationAccess(final Compilation aCompilation) {
 		compilation = aCompilation;
-	}
-
-//	void registerPipelineLogic(final Consumer<PipelineLogic> aPipelineLogicConsumer) {
-//		pipelineLogicDeferred.then(new DoneCallback<PipelineLogic>() {
-//			@Override
-//			public void onDone(final PipelineLogic result) {
-//				try {
-//					aPipelineLogicConsumer.accept(result);
-//				} catch (final Throwable aE) {
-//					throw new RuntimeException(aE);
-//				}
-//			}
-//		});
-//	}
-
-	@Override
-	public void setPipelineLogic(final PipelineLogic pl) {
-		throw new Error() {
-		};
-//		compilation.pipelineLogic = pl;
-//
-//		pipelineLogicDeferred.resolve(pl);
 	}
 
 	@Override
@@ -64,7 +42,7 @@ public class DefaultCompilationAccess implements ICompilationAccess {
 	}
 
 	@Override
-	public List<FunctionMapHook> functionMapHooks() {
+	public List<IFunctionMapHook> functionMapHooks() {
 		return compilation.getDeducePhase().functionMapHooks;
 	}
 

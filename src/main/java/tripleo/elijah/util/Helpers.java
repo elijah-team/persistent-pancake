@@ -111,17 +111,17 @@ public enum Helpers {
 		return instructionArguments.stream().map(x -> x.toString()).collect(Collectors.toList());
 	}
 
-	public static void printXML(final Object obj, @NotNull final TabbedOutputStream tos) {
-		System.err.println("** XStream support has been disabled");
-		/*
-		 * final XStream x = new XStream(); //x.setMode(XStream.ID_REFERENCES);
-		 * x.toXML(obj, tos.getStream());
-		 */
-	}
-
-	public static @Nullable IExpression qualidentToDotExpression2(@NotNull final List<IdentExpression> ts) {
-		return qualidentToDotExpression2(ts, 1);
-	}
+//	public static void printXML(final Object obj, @NotNull final TabbedOutputStream tos) {
+//		System.err.println("** XStream support has been disabled");
+//		/*
+//		 * final XStream x = new XStream(); //x.setMode(XStream.ID_REFERENCES);
+//		 * x.toXML(obj, tos.getStream());
+//		 */
+//	}
+//
+//	public static @Nullable IExpression qualidentToDotExpression2(@NotNull final List<IdentExpression> ts) {
+//		return qualidentToDotExpression2(ts, 1);
+//	}
 
 	public static @Nullable IExpression qualidentToDotExpression2(@NotNull final List<IdentExpression> ts, int i) {
 		if (ts.size() == 1)

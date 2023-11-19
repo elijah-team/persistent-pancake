@@ -104,18 +104,18 @@ dependencies {
 
 sourceSets {
     main {
-         java {
+        java {
             srcDirs = [
-                    'src/main/java'
-//                    ,'src-cef/src/main/java'
-                    ,'src-mal/src/main/java'
-                    ,'src-undertow/main/java'
-                    ,'tripleo-small/main/java'
-                    ,'elijah-ek/main/java'
-                    ,'elijah-util/main/java'
-		            ,'elijah-good-api/src/main/java'
+                'tripleo-small/main/java'
+                ,'elijah-util/main/java'
+                ,'elijah-good-api/src/main/java'
+                ,'elijah-ek/main/java'
+                ,'src-mal/src/main/java'
+                ,'src/main/java'
+                ,'src-undertow/main/java'
+//              ,'src-cef/src/main/java'
             ]
-         }
+        }
     }
 
     test {
