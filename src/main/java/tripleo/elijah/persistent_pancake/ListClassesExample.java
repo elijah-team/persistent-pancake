@@ -1,5 +1,6 @@
 package tripleo.elijah.persistent_pancake;
 
+import tripleo.elijah.ci.CiExpressionList;
 import tripleo.elijah.comp.USE;
 import tripleo.elijah.persistent_pancake.javaparser.JavaParser;
 import tripleo.elijah.persistent_pancake.javaparser.ParseException;
@@ -10,8 +11,16 @@ import tripleo.elijah.persistent_pancake.me.tomassetti.support.DirExplorer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static tripleo.elijah.util.Helpers.List_of;
 
 public class ListClassesExample {
+	private static boolean flag;
+	private static       boolean            quiet = false;
+	static final List<List<String>> ts    = new ArrayList<>();
+
 	public static void listClasses(final File projectDir) {
 		new DirExplorer(
 		  (level, path, file) -> {
@@ -23,8 +32,8 @@ public class ListClassesExample {
 			  return false;
 		  },
 		  (level, path, file) -> {
-			System.out.println(path);
-			System.out.println(Strings.repeat("=", path.length()));
+			_l(path);
+			_l(Strings.repeat("=", path.length()));
 			try {
 				new VoidVisitorAdapter<Object>() {
 					@Override
@@ -33,10 +42,16 @@ public class ListClassesExample {
 
 						assert n != null;
 
-						System.out.println(" * " + n.getName());
+						final String nn = n.getName().asString();
+						final String pn  = n.getPackageName().asString();
+						_l(String.format("** class `%s' in `%s'%n", nn, pn));
+
+						_ll(List_of(path, nn, pn));
+
+						flag = true;
 					}
 				}.visit(JavaParser.parse(file), null);
-				System.out.println(); // empty line
+				_l(""); // empty line
 //			} catch (final ParseException e) {
 //				throw new RuntimeException(e);
 //				System.err.println("** IGNORING "+path);
@@ -45,5 +60,23 @@ public class ListClassesExample {
 				System.err.println("** IGNORING "+path);
 			}
 		  }).explore(projectDir);
+	}
+
+	private static void _ll(final List<String> t) {
+		ts.add(t);
+	}
+
+	private static void _l(final String string) {
+		if (!quiet) {
+			System.out.println(string);
+		}
+	}
+
+	public static void setQuiet() {
+		quiet = true;
+	}
+
+	public boolean isFlag() {
+		return flag;
 	}
 }
