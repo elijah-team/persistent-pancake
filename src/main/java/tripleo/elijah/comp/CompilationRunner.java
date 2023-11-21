@@ -10,6 +10,7 @@ import tripleo.elijah.comp.diagnostic.TooManyEz_ActuallyNone;
 import tripleo.elijah.comp.diagnostic.TooManyEz_BeSpecific;
 import tripleo.elijah.comp.i.IProgressSink;
 import tripleo.elijah.comp.i.ProgressSinkComponent;
+import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.comp.internal.DefaultProgressSink;
 import tripleo.elijah.comp.internal.ProcessRecord;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
@@ -34,13 +35,13 @@ import static tripleo.elijah.util.Helpers.List_of;
 
 public class CompilationRunner {
 	final         Map<String, CompilerInstructions> fn2ci = new HashMap<>();
-	private final Compilation                       compilation;
-	private final Compilation.CIS                   cis;
-	private final CCI                               cci;
+	private final Compilation         compilation;
+	private final CompilationImpl.CIS cis;
+	private final CCI                 cci;
 	private final ICompilationBus                   cb;
 
 	@Contract(pure = true)
-	public CompilationRunner(final Compilation aCompilation, final Compilation.CIS a_cis, final ICompilationBus aCb, final IProgressSink ps1) {
+	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb, final IProgressSink ps1) {
 		compilation = aCompilation;
 		cis         = a_cis;
 		cci         = new CCI(compilation, a_cis, ps1);
@@ -49,7 +50,7 @@ public class CompilationRunner {
 	}
 
 	@Contract(pure = true)
-	public CompilationRunner(final Compilation aCompilation, final Compilation.CIS a_cis, final ICompilationBus aCb) {
+	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb) {
 		compilation = aCompilation;
 		cis         = a_cis;
 		final DefaultProgressSink ps1 = new DefaultProgressSink();
@@ -57,7 +58,7 @@ public class CompilationRunner {
 		cb  = aCb;
 	}
 
-	void start(final CompilerInstructions ci, final boolean do_out) throws Exception {
+	public void start(final CompilerInstructions ci, final boolean do_out) throws Exception {
 		final CR_State st1 = new CR_State();
 
 		cb.add(new ICompilationBus.CB_Process() {

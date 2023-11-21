@@ -228,6 +228,8 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	@Override
 	public void gr_slot(final GenerateResult gr) {
 		this.gr = gr;
+
+		sys.__gr_slot(gr);
 	}
 
 	public Consumer<Supplier<GenerateResult>> consumer() {
@@ -280,8 +282,8 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 	static class MB {
 		final Multimap<String, Buffer> mb = ArrayListMultimap.create();
-		final Map<String, OS_Module> modmap = new HashMap<String, OS_Module>();
-		private List<MBB> bz = new ArrayList<>();
+		final         Map<String, OS_Module> modmap = new HashMap<String, OS_Module>();
+		private final List<MBB>              bz     = new ArrayList<>();
 
 		public void add(final MBB aMBB) {
 			bz.add(aMBB);

@@ -12,6 +12,7 @@ import tripleo.elijah.comp.i.IProgressSink;
 import tripleo.elijah.comp.i.ProgressSinkComponent;
 */
 
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.comp.ApacheOptionsProcessor;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.CompilationRunner;
@@ -28,7 +29,7 @@ public class UT_Controller implements CompilerController {
 	List<String>    args;
 	String[]        args2;
 	ICompilationBus cb;
-	private final UT_Root     utr;
+	private final UT_Root      utr;
 	private       Compilation c;
 
 	public UT_Controller(final UT_Root aUtr) {
@@ -43,7 +44,7 @@ public class UT_Controller implements CompilerController {
 	@Override
 	public void processOptions() {
 		final OptionsProcessor             op  = new ApacheOptionsProcessor();
-		final CompilerInstructionsObserver cio = new CompilerInstructionsObserver(c, op, c._cis);
+//		final CompilerInstructionsObserver cio = new CompilerInstructionsObserver(c, op, c._cis);
 		cb = new UT_CompilationBus(c, this);
 
 		try {
@@ -57,16 +58,18 @@ public class UT_Controller implements CompilerController {
 	@Override
 	public void runner() {
 		try {
-			c.__cr = new CompilationRunner(c, c._cis, cb, new IProgressSink() {
-				@Override
-				public void note(final int code, final ProgressSinkComponent component, final int type, final Object[] params) {
-					if (component.isPrintErr(code, type)) {
-						final String s = component.printErr(code, type, params);
-						System.err.println(s);
-					}
-				}
-			});
-			c.__cr.doFindCIs(args2, cb);
+			// FIXME 11/21 not now
+			throw new UnintendedUseException();
+//			c.__cr = new CompilationRunner(c, c._cis, cb, new IProgressSink() {
+//				@Override
+//				public void note(final int code, final ProgressSinkComponent component, final int type, final Object[] params) {
+//					if (component.isPrintErr(code, type)) {
+//						final String s = component.printErr(code, type, params);
+//						System.err.println(s);
+//					}
+//				}
+//			});
+//			c.__cr.doFindCIs(args2, cb);
 		} catch (final Exception e) {
 			c.getErrSink().exception(e);
 			throw new RuntimeException(e);

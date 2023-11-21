@@ -22,6 +22,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.lang2.ElElementVisitor;
@@ -41,7 +42,7 @@ public class OS_Module implements OS_Element, OS_Container {
 	public final @NotNull                      EntryPointList       entryPoints    = new EntryPointList();
 	private final                              Stack<Qualident>     packageNames_q = new Stack<Qualident>();
 	public @org.jetbrains.annotations.Nullable OS_Module            prelude;
-	public                                     Compilation          parent;
+	public                                     Compilation         parent;
 	private                                    LibraryStatementPart lsp;
 	private                                    String               _fileName;
 	private                                    IndexingStatement    indexingStatement;

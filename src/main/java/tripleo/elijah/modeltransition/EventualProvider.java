@@ -13,7 +13,21 @@ public class EventualProvider<T> implements Provided<T> {
 	}
 
 	@Override
-	public void provide(T t) {
+	public void provide(final T t) {
 		prom.resolve(t);
+	}
+
+	// FIXME 11/21 remove these three
+	@Override
+	public boolean has() {
+		return prom.isResolved();
+	}
+
+	@Override
+	public T get() {
+		final Object[] result = new Object[1];
+		prom.then(result1 -> result[0] =result1);
+		//noinspection unchecked
+		return (T) result[0];
 	}
 }

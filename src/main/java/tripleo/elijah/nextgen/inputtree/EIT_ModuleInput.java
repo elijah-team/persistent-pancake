@@ -5,9 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.lang.ModuleItem;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_generic.GenerateFiles;
@@ -17,7 +17,6 @@ import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.work.WorkManager;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -60,7 +59,7 @@ public class EIT_ModuleInput implements EIT_Input {
 		final LibraryStatementPart lsp  = module.getLsp();
 		final CompilerInstructions ci   = lsp.getInstructions();
 
-		if (ci == null) return "\'c\'";
+		if (ci == null) return "'c'";
 
 		final String               lang0    = ci.genLang();
 		final String               lang = lang0 == null ? Compilation.CompilationAlways.defaultPrelude() : lang0;

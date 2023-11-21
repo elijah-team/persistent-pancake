@@ -26,9 +26,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AccessBus {
-	public final  GenerateResult                                  gr                    = new GenerateResult();
-	private final Compilation                                     _c;
-	private final DeferredObject<PipelineLogic, Void, Void>       pipeLineLogicPromise  = new DeferredObject<>();
+	public final  GenerateResult                            gr                    = new GenerateResult();
+	private final Compilation                              _c;
+	private final DeferredObject<PipelineLogic, Void, Void> pipeLineLogicPromise  = new DeferredObject<>();
 	private final DeferredObject<List<GeneratedNode>, Void, Void> lgcPromise            = new DeferredObject<>();
 	private final DeferredObject<EIT_ModuleList, Void, Void>      moduleListPromise     = new DeferredObject<>();
 	final         DeferredObject<GenerateResult, Void, Void>      generateResultPromise = new DeferredObject<>();
@@ -138,7 +138,7 @@ public class AccessBus {
 	public void writeLogs() {
 		@NotNull final Compilation comp = getCompilation(); // this._c
 
-		comp.writeLogs(comp.cfg.silent, comp.elLogs);
+		comp.writeLogs();
 	}
 
 	public PipelineLogic __getPL() {

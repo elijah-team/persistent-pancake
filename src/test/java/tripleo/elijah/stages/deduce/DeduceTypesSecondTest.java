@@ -40,7 +40,7 @@ public class DeduceTypesSecondTest {
 		final Boilerplate b = new Boilerplate();
 		b.get();
 		final Compilation c   = b.comp;
-		final OS_Module   mod = b.defaultMod();
+		final OS_Module    mod = b.defaultMod();
 
 		mod.prelude = mod.parent.findPrelude("c").success();
 		final ModuleContext mctx = new ModuleContext(mod);
@@ -68,7 +68,7 @@ public class DeduceTypesSecondTest {
 		//
 		//
 		//
-		final ElLog.Verbosity verbosity1 = Compilation.gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity1 = Compilation.CompilationAlways.gitlabCIVerbosity();
 		final AccessBus       ab         = new AccessBus(c);
 		final PipelineLogic   pl         = new PipelineLogic(ab);
 		final DeducePhase     dp         = pl.dp;

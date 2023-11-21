@@ -34,7 +34,7 @@ public class TypeOfTypeNameTest {
 		// CREATE MOCKS
 		//
 		final Context     ctx = mock(Context.class);
-		final OS_Module   mod = mock(OS_Module.class);
+		final OS_Module    mod = mock(OS_Module.class);
 		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO());
 
 		//
@@ -85,7 +85,7 @@ public class TypeOfTypeNameTest {
 		// CREATE MOCKS
 		//
 		final Context     ctx = mock(Context.class);
-		final OS_Module   mod = mock(OS_Module.class);
+		final OS_Module    mod = mock(OS_Module.class);
 		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO());
 
 		//
@@ -255,11 +255,8 @@ public class TypeOfTypeNameTest {
 //		expect(mod.parent.getSilence()).andReturn(true); //ElLog.Verbosity.SILENT); // TODO is this *really* correct
 //		expect(mod.parent.getSilence()).andReturn(true); //ElLog.Verbosity.SILENT); // TODO is this *really* correct
 
-//		OS_Module mod = mock(OS_Module.class);
-		final ElLog.Verbosity verbosity1    = Compilation.gitlabCIVerbosity();
 		final AccessBus       ab            = new AccessBus(mod.parent);
 		final PipelineLogic   pl            = new PipelineLogic(ab);
-		final GeneratePhase   generatePhase = pl.generatePhase;
 		final DeduceTypes2    deduceTypes2  = new DeduceTypes2(mod, pl.dp);
 //		expect(mod.getFileName()).andReturn("foo.elijah");
 		expect(ctx.lookup("x")).andReturn(lrl);

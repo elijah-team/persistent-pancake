@@ -8,13 +8,12 @@
  */
 package tripleo.elijah.stages.generate;
 
-import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.modeltransition.ElSystemSink;
 import tripleo.elijah.modeltransition.EventualProvider;
 import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
-import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
 import tripleo.elijah.stages.deduce.percy.Provided;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
@@ -27,46 +26,54 @@ import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Created 1/8/21 11:02 PM
  */
 public class ElSystem {
-	private Provided<ElSystemSink> cmElSystemSink = new EventualProvider<>();
-	private OutputStrategy         outputStrategy;
+	private final Provided<ElSystemSink> cmElSystemSink = new EventualProvider<>();
+	private       OutputStrategy         outputStrategy;
 	private Compilation compilation;
 	private final Map<GeneratedFunction, String> gfm_map = new HashMap<GeneratedFunction, String>();
 	public boolean verbose = true;
+	private GenerateResult gr;
 
 	public ElSystem() {
 		cmElSystemSink.on(result -> result.provide(ElSystem.this));
 	}
 
-	public void generateOutputs(@NotNull final GenerateResult gr, ElSystemSink sink) {
+	public void generateOutputs(@NotNull final GenerateResult gr, final ElSystemSink sink) {
 		cmElSystemSink.provide(sink);
 		generateOutputs(gr);
 	}
 
 	public void generateOutputs(@NotNull final GenerateResult gr) {
-		final @NotNull OutputStrategyC outputStrategyC = new OutputStrategyC(this.outputStrategy);
+		// ling my place here
+		final ElSystemSink s;
+		if (cmElSystemSink.has()) {
+			s = cmElSystemSink.get();
+		} else {
+			s = new ElSystemSink() {
+				@Override
+				public void provide(final ElSystem aSystem) {
+					throw new UnintendedUseException();
+				}
 
-//		if (cmElSystemSink.has()) {
-//
-//		}
+				@Override
+				public OutputStrategyC strategy(final OutputStrategy aOutputStrategy) {
+//					return new OutputStrategyC(aOutputStrategy);
+					throw new UnintendedUseException();
+				}
 
-		for (final GenerateResultItem ab : gr.results()) {
-			final EOT_FileNameProvider fn = generateOutputs_Internal2(ab.node, ab.ty, outputStrategyC);
-
-			assert fn.getFilename() != null;
-			ab.output = fn.getFilename();
+				@Override
+				public void addGenerateResultItem(final GenerateResultItem ab, final Supplier<EOT_FileNameProvider> aSupplier) {
+					throw new UnintendedUseException();
+				}
+			};
 		}
 
-		if (verbose) {
-			for (final GenerateResultItem ab : gr.results()) {
-				if (ab.node instanceof GeneratedFunction) continue;
-				SimplePrintLoggerToRemoveSoon.println2("** " + ab.node + " " + ab.output);
-			}
-		}
+		resultInto(s);
 	}
 
 	private EOT_FileNameProvider generateOutputs_Internal2(final GeneratedNode node, final GenerateResult.TY ty, final OutputStrategyC outputStrategyC) {
@@ -112,6 +119,27 @@ public class ElSystem {
 
 	public void setCompilation(final Compilation compilation) {
 		this.compilation = compilation;
+	}
+
+	public void resultInto(final ElSystemSink sink) {
+		final @NotNull OutputStrategyC outputStrategyC = sink.strategy(this.outputStrategy);
+
+		assert gr != null;
+
+		for (final GenerateResultItem ab : gr.results()) {
+			sink.addGenerateResultItem(ab, ()->generateOutputs_Internal2(ab.node, ab.ty, outputStrategyC);
+		}
+
+		if (verbose) {
+			for (final GenerateResultItem ab : gr.results()) {
+				if (ab.node instanceof GeneratedFunction) continue;
+				SimplePrintLoggerToRemoveSoon.println2("** " + ab.node + " " + ab.output);
+			}
+		}
+	}
+
+	public void __gr_slot(final GenerateResult aGr) {
+		gr = aGr;
 	}
 }
 

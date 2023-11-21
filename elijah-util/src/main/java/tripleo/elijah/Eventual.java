@@ -15,7 +15,7 @@ public class Eventual<P> {
 	private final DiagnosticVoidDeferredObject<P>/*<P, Diagnostic, Void>*/ prom = new DiagnosticVoidDeferredObject();
 
 	public void resolve(final P p) {
-		for (DoneCallback<? super P> doneCallback : prom.__doneCallbacks()) {
+		for (final DoneCallback<? super P> doneCallback : prom.__doneCallbacks()) {
 			if (doneCallback instanceof EventualDoneCallback edc) {
 				//throw new UnintendedUseException();
 				System.err.println("2121 "+edc);
@@ -27,6 +27,10 @@ public class Eventual<P> {
 
 	public void then(final DoneCallback<? super P> cb) {
 		prom.then(cb);
+	}
+
+	public boolean isResoved() {
+		return prom.isResolved();
 	}
 
 	public interface EventualDoneCallback<D> extends DoneCallback<D> {}
@@ -74,10 +78,10 @@ public class Eventual<P> {
 		prom.then(fg -> {
 			xx[0] = fg;
 		});
-		return Optional.of((P) xx[0]);
+		return Optional.of(xx[0]);
 	}
 
-	public Optional<P> getOptional(Supplier<P> s) {
+	public Optional<P> getOptional(final Supplier<P> s) {
 		if (!prom.isResolved()) {
 			return Optional.empty();
 		}
@@ -85,7 +89,7 @@ public class Eventual<P> {
 		prom.then(fg -> {
 			xx[0] = s.get();
 		});
-		return Optional.of((P) xx[0]);
+		return Optional.of(xx[0]);
 	}
 
 	@Override

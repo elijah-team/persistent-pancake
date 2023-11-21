@@ -21,10 +21,7 @@ import org.junit.Test;
 
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.DotExpression;
@@ -69,7 +66,7 @@ public class TestIdentNormal {
 		final Context     ctx1 = mock(Context.class);
 		final Context     ctx2 = mock(Context.class);
 
-		final ElLog.Verbosity verbosity1    = Compilation.gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity1    = Compilation.CompilationAlways.gitlabCIVerbosity();
 		final AccessBus       ab            = new AccessBus(comp);
 		final PipelineLogic   pl            = new PipelineLogic(ab);
 		final GeneratePhase   generatePhase = pl.generatePhase;
@@ -127,12 +124,12 @@ public class TestIdentNormal {
 		final Boilerplate b = new Boilerplate();
 		b.get();
 		final Compilation comp = b.comp;
-		final OS_Module   mod  = b.defaultMod();
+		final OS_Module    mod  = b.defaultMod();
 
 //		FunctionDef fd = mock(FunctionDef.class);
 		final Context ctx2 = mock(Context.class);
 
-		final ElLog.Verbosity verbosity1    = new CompilationImpl(new StdErrSink(), new IO()).gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity1    = Compilation.CompilationAlways.gitlabCIVerbosity();
 		final AccessBus       ab            = new AccessBus(comp);
 		final PipelineLogic   pl            = new PipelineLogic(ab);
 		final GeneratePhase   generatePhase = pl.generatePhase;

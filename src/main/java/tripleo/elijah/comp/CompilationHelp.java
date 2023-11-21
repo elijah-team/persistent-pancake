@@ -180,7 +180,7 @@ class OStageProcess implements RuntimeProcess {
 		ab.subscribePipelineLogic(pl -> {
 			final Compilation comp = ca.getCompilation();
 
-			comp.mod.modules.stream().forEach(pl::addModule);
+			comp.modulesStream().forEach(pl::addModule);
 		});
 	}
 

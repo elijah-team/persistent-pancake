@@ -44,8 +44,8 @@ public class TestGenFunction {
 
 	@Test
 	public void testDemoElNormalFact1Elijah() throws Exception {
-		final StdErrSink eee = new StdErrSink();
-		final Compilation c = new CompilationImpl(eee, new IO());
+		final StdErrSink   eee = new StdErrSink();
+		final Compilation c   = new CompilationImpl(eee, new IO());
 
 		final String f = "test/demo-el-normal/fact1.elijah";
 		final File file = new File(f);
@@ -209,7 +209,7 @@ public class TestGenFunction {
 			}
 		});
 
-		dp.deduceModule(m, lgc, false, Compilation.gitlabCIVerbosity());
+		dp.deduceModule(m, lgc, false, Compilation.CompilationAlways.gitlabCIVerbosity());
 		dp.finish(dp.generatedClasses);
 
 		assertEquals("Not all hooks ran", 4, ran_hooks.size());

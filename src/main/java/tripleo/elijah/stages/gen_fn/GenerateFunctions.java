@@ -1802,6 +1802,7 @@ import com.google.common.collect.Collections2;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.comp.CentralController;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.entrypoints.EntryPointList;
@@ -1852,6 +1853,17 @@ public class GenerateFunctions {
 	private final        GeneratePhase phase;
 	private final        ElLog         LOG;
 
+	public GenerateFunctions(final CentralController c2, final OS_Module aModule) {
+		assert c2.hasGeneratePhase();
+		assert c2.hasPipelineLogic();
+
+		phase  = c2.getGeneratePhase();
+		module = aModule;
+		LOG    = new ElLog(module.getFileName(), phase.getVerbosity(), PHASE);
+
+		c2.getPipelineLogic().addLog(LOG);
+	}
+
 	public GenerateFunctions(final GeneratePhase aPhase, final OS_Module aModule, final PipelineLogic aPipelineLogic) {
 		phase  = aPhase;
 		module = aModule;
@@ -1876,7 +1888,7 @@ public class GenerateFunctions {
 	public @NotNull GeneratedConstructor generateConstructor(final ConstructorDef aConstructorDef,
 	                                                         final ClassStatement parent, // TODO Namespace constructors
 	                                                         final FunctionInvocation aFunctionInvocation) {
-		DeduceTypeResolve2 aResolver = null; // TODO this will fail
+		final DeduceTypeResolve2 aResolver = null; // TODO this will fail
 
 		final S1_Constructor s1c = new S1_Constructor(aConstructorDef, parent, aFunctionInvocation, aResolver);
 
@@ -1889,7 +1901,7 @@ public class GenerateFunctions {
 	public @NotNull GeneratedConstructor generateConstructor_000(final ConstructorDef aConstructorDef,
 	                                                             final ClassStatement parent, // TODO Namespace constructors
 	                                                             final FunctionInvocation aFunctionInvocation) {
-		DeduceTypeResolve2 aResolver = null ; // TODO this will fail later (use provided/fix_tables)
+		final DeduceTypeResolve2 aResolver = null ; // TODO this will fail later (use provided/fix_tables)
 
 		final GeneratedConstructor gf = new GeneratedConstructor(aConstructorDef, aResolver);
 		gf.setFunctionInvocation(aFunctionInvocation);
@@ -2076,7 +2088,7 @@ public class GenerateFunctions {
 	@NotNull GeneratedFunction generateFunction(@NotNull final FunctionDef fd,
 	                                            final OS_Element parent,
 	                                            @NotNull final FunctionInvocation aFunctionInvocation) {
-		DeduceTypeResolve2 aResolver = null ; // TODO this will fail later (use provided/fix_tables)
+		final DeduceTypeResolve2 aResolver = null ; // TODO this will fail later (use provided/fix_tables)
 
 //		LOG.err("601.1 fn "+fd.name() + " " + parent);
 		final GeneratedFunction gf = new GeneratedFunction(fd);

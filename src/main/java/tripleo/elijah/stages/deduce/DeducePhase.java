@@ -83,7 +83,7 @@ public class DeducePhase {
 
 	private final @NotNull ElLog LOG;
 
-	private final List<State> registeredStates = new ArrayList<>();
+	private final List<State>  registeredStates = new ArrayList<>();
 	private final Compilation _compilation;
 
 	public void addFunction(final GeneratedFunction generatedFunction, final FunctionDef fd) {

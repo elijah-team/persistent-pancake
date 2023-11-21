@@ -1,11 +1,14 @@
 package tripleo.elijah.nextgen.outputtree;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import org.jetbrains.annotations.*;
 import tripleo.elijah.nextgen.outputstatement.*;
+import tripleo.elijah.stages.gen_generic.GenerateResultItem;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * @author tripleo
@@ -13,15 +16,12 @@ import java.util.*;
 public class EOT_OutputTree {
 	private final List<EOT_OutputFile> list = new ArrayList<>();
 
-	public void add(final @NotNull EOT_OutputFile aOff) {
-		// 05/18 System.err.printf("[add] %s %s%n", aOff.getFilename(),
-		// aOff.getStatementSequence().getText());
+	public void add(final @NotNull EOT_OutputFile aOutputFile) {
+		// 05/18
+		// 11/21: re
+		System.err.printf("-- [EOT_OutputTree::add] %s %s%n", aOutputFile.getFilename(), aOutputFile.getStatementSequence().getText());
 
-		list.add(aOff);
-	}
-
-	public void addAll(final @NotNull List<EOT_OutputFile> aLeof) {
-		list.addAll(aLeof);
+		list.add(aOutputFile);
 	}
 
 	public @NotNull List<EOT_OutputFile> getList() {
@@ -31,25 +31,25 @@ public class EOT_OutputTree {
 	public void recompute() {
 		// TODO big wtf
 		final Multimap<String, EOT_OutputFile> mmfn = ArrayListMultimap.create();
-		for (EOT_OutputFile outputFile : list) {
+		for (final EOT_OutputFile outputFile : list) {
 			mmfn.put(outputFile.getFilename(), outputFile);
 		}
 
-		for (Map.Entry<String, Collection<EOT_OutputFile>> sto : mmfn.asMap().entrySet()) {
-			var tt = sto.getValue();
+		for (final Map.Entry<String, Collection<EOT_OutputFile>> sto : mmfn.asMap().entrySet()) {
+			final var tt = sto.getValue();
 			if (tt.size() > 1) {
 				list.removeAll(tt);
 
-				var model = tt.iterator().next();
+				final var model = tt.iterator().next();
 
-				var type = model.getType();
-				var inputs = model.getInputs(); // FIXME can possibly contain others
-				var filename = sto.getKey();
+				final var type   = model.getType();
+				final var inputs = model.getInputs(); // FIXME can possibly contain others
+				final var filename = sto.getKey();
 
 				final List<EG_Statement> list2 = _EOT_OutputTree__Utils._extractStatementSequenceFromAllOutputFiles(tt);
 
-				var seq = new EG_SequenceStatement(new EG_Naming("redone"), list2);
-				var ofn = new EOT_OutputFile(inputs, filename, type, seq);
+				final var seq = new EG_SequenceStatement(new EG_Naming("redone"), list2);
+				final var ofn = new EOT_OutputFile(inputs, filename, type, seq);
 
 				list.add(ofn);
 			}
@@ -61,6 +61,15 @@ public class EOT_OutputTree {
 	}
 
 	public void _putSeq(final String aKey, final Path aPath, final EG_CompoundStatement aSeq) {
-		//_putSeq(aKey, aPath, aSeq);
+//		_putSeq(aKey, aPath, aSeq);
+	}
+
+	public void addGenerateResultItem(final GenerateResultItem ab, final Supplier<EOT_FileNameProvider> aSupplier) {
+		final EOT_FileNameProvider fn       = aSupplier.get();
+		final String               filename = fn.getFilename();
+
+		Preconditions.checkNotNull(filename);
+
+		ab.output = filename;
 	}
 }

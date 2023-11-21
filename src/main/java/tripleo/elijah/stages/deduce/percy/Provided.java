@@ -6,4 +6,8 @@ public interface Provided<T> {
 	void on(DoneCallback<T> t);
 
 	void provide(T pwc);
+
+	boolean has();
+
+	T get();
 }

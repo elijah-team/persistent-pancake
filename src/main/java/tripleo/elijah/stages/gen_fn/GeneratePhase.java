@@ -39,9 +39,9 @@ public class GeneratePhase {
 	@NotNull
 	public GenerateFunctions getGenerateFunctions(@NotNull final OS_Module mod) {
 		final GenerateFunctions Result;
-		if (generateFunctions.containsKey(mod))
+		if (generateFunctions.containsKey(mod)) {
 			Result = generateFunctions.get(mod);
-		else {
+		} else {
 			Result = new GenerateFunctions(this, mod, pipelineLogic);
 			generateFunctions.put(mod, Result);
 		}

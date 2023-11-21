@@ -37,7 +37,7 @@ import static tripleo.elijah.util.Helpers.List_of;
  */
 public class TestBasic {
 
-	private boolean __unboundedGate = false;
+	private final boolean __unboundedGate = false;
 
 	@Test
 	public final void testBasicParse() throws Exception {
@@ -67,7 +67,7 @@ public class TestBasic {
 
 		assertEquals(35, c.errorCount()); // TODO Error count obviously should be 0
 
-		assertEquals(36, c.getOutputTree().getList().size());
+		assertEquals(36, c.getOutputTreeSize());
 		assertEquals(8, c.reports().codeOutputSize());
 
 		assertTrue(c.reports().containsCodeOutput("prelude/Prelude/Boolean.c"));

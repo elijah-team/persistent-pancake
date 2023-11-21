@@ -76,7 +76,7 @@ public class Finally {
 		EZ, ELIJAH
 	}
 
-	static class Output {
+	public static class Output {
 		private final EOT_FileNameProvider fileNameProvider;
 		@SuppressWarnings("FieldCanBeLocal")
 		private final EOT_OutputFile       off;
@@ -88,11 +88,10 @@ public class Finally {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("Output{");
-			sb.append("off=").append(off.getType());
-			sb.append(", fileNameProvider=").append(fileNameProvider.getFilename());
-			sb.append('}');
-			return sb.toString();
+			final String sb = "Output{" + "off=" + off.getType() +
+			  ", fileNameProvider=" + fileNameProvider.getFilename() +
+			  '}';
+			return sb;
 		}
 
 		public String name() {
