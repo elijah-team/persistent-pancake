@@ -186,7 +186,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 							@NotNull final GenerateFunctions gf  = aDeducePhase.generatePhase.getGenerateFunctions(xci.getKlass().getContext().module());
 							final WlGenerateClass            wgc = new WlGenerateClass(gf, xci, aDeducePhase.generatedClasses, aDeducePhase.codeRegistrar);
 							wgc.run(null); // !
-							potentialType.getGenType().setCi(xci); // just for completeness
+							potentialType.getGenType(null).setCi(xci); // just for completeness
 							potentialType.resolve(wgc.getResult());
 							Result = true;
 						} else {
@@ -287,7 +287,7 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 						final int              y = 2;
 						final @NotNull GenType genType;
 						try {
-							if (potentialType.getGenType().getTypeName() == null) {
+							if (potentialType.getGenType(aDeduceTypes2).getTypeName() == null) {
 								final OS_Type attached = potentialType.getAttached();
 								if (attached == null) continue;
 
@@ -297,12 +297,12 @@ public class GeneratedClass extends GeneratedContainerNC implements GNCoded {
 									genType.setTypeName(null);
 								}
 							} else {
-								if (potentialType.getGenType().getResolved() == null && potentialType.getGenType().getResolvedn() == null) {
-									final OS_Type attached = potentialType.getGenType().getTypeName();
+								if (potentialType.getGenType(aDeduceTypes2).getResolved() == null && potentialType.getGenType(aDeduceTypes2).getResolvedn() == null) {
+									final OS_Type attached = potentialType.getGenType(aDeduceTypes2).getTypeName();
 
 									genType = aDeduceTypes2.resolve_type(attached, aContext);
 								} else
-									genType = potentialType.getGenType();
+									genType = potentialType.getGenType(aDeduceTypes2);
 							}
 							if (genType.getTypeName() != null) {
 								final TypeName typeName = genType.getTypeName().getTypeName();

@@ -30,12 +30,12 @@ class Resolve_var_table_entry {
 				// TODO this should have been set somewhere already
 				//  typeName and nonGenericTypeName are not set
 				//  but at this point probably wont be needed
-				vte.type.getGenType().setResolved(attached);
+				vte.type.getGenType(deduceTypes2).setResolved(attached);
 				vte.type.setAttached(attached, deduceTypes2.resolver());
 			}
 			vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(vte.getResolvedElement()));
 			{
-				final GenType genType = vte.type.getGenType();
+				final GenType genType = vte.type.getGenType(deduceTypes2);
 				if (genType.getResolved() != null && genType.getNode() == null) {
 					genType.genCI(genType.getNonGenericTypeName(), deduceTypes2, deduceTypes2._errSink(), deduceTypes2._phase());
 //					genType.node = makeNode(genType);

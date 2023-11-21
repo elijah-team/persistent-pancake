@@ -84,7 +84,7 @@ public class VTE_Zero {
             ite.setResolvedElement(best);
 
             final @NotNull GenType          genType  = new GenType(klass, deduceTypes2.resolver());
-            final TypeName                  typeName = vte.type.getGenType().getNonGenericTypeName();
+            final TypeName                  typeName = vte.type.getGenType(deduceTypes2).getNonGenericTypeName();
             final @Nullable ClassInvocation ci       = genType.genCI(typeName, deduceTypes2, errSink, phase);
 //							resolve_vte_for_class(vte, klass);
             ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
@@ -114,9 +114,9 @@ public class VTE_Zero {
 
                     tte.provide(deduceTypes2);
 
-                    if (tte.getGenType().getResolved() == null) {
+                    if (tte.getGenType(deduceTypes2).getResolved() == null) {
                         if (ty2.getResolved().getType() == OS_Type.Type.USER_CLASS) {
-                            tte.getGenType().copy(ty2);
+                            tte.getGenType(deduceTypes2).copy(ty2);
                         }
                     }
 

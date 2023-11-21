@@ -598,7 +598,7 @@ public class DeducePhase {
 								// call typePromises and externalRefPromisess
 
 								// TODO just getting first element here (without processing of any kind); HACK
-								final GenType ty = gc_vte.connectionPairs.get(0).vte.type.getGenType();
+								final GenType ty = gc_vte.connectionPairs.get(0).vte.type.getGenType(null);
 								assert ty.getResolved() != null;
 								gc_vte.varType = ty.getResolved(); // TODO make sure this is right in all cases
 								if (deferredMember.typeResolved().isPending())

@@ -51,8 +51,9 @@ public class TypeTableEntry {
 		return tableEntry;
 	}
 
-	public GenType getGenType() {
+	public GenType getGenType(final @Nullable DeduceTypes2 aO) {
 		if (genType == null) {
+			if (deduceTypes2 == null && aO != null) {deduceTypes2=aO;}
 			if (deduceTypes2 != null) {
 				genType = new GenType(deduceTypes2.resolver());
 				_p_genTypeSet.resolve(genType);
@@ -71,6 +72,7 @@ public class TypeTableEntry {
 
 	public void setDeduceTypes2(final DeduceTypes2 aDeduceTypes2) {
 		deduceTypes2 = aDeduceTypes2;
+		provide(aDeduceTypes2);
 	}
 
 	public void onGenType(final DoneCallback<? super GenType> aO) {

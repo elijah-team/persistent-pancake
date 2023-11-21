@@ -1,7 +1,6 @@
 package tripleo.elijah.stages.deduce;
 
 import java.util.Collection;
-import java.util.Objects;
 
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
@@ -347,9 +346,9 @@ public class Implement_construct {
 
 		int y = 2;
 
-		if (ite.getType().getGenType() == null) {
+		if (ite.getType().getGenType(deduceTypes2) == null) {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, (OS_Type) null);
-			final GenType gt = ite.getType().getGenType();
+			final GenType gt = ite.getType().getGenType(deduceTypes2);
 //			assert gt != null;
 			if (gt == null) return;
 		}

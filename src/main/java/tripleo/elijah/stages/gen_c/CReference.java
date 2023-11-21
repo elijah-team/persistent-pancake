@@ -76,9 +76,9 @@ public class CReference {
 				final VariableTableEntry vte = generatedFunction.getVarTableEntry(to_int(ia));
 
 				if (vte.getName().equals("a1")) {
-					final GenType        gt1 = vte.getGenType();
-					final GenType        gt2 = vte.type.getGenType();
-					final GeneratedClass gc1 = (GeneratedClass) vte.getGenType().getNode();
+					final GenType        gt1 = vte.getGenType(null);
+					final GenType        gt2 = vte.type.getGenType(null);
+					final GeneratedClass gc1 = (GeneratedClass) vte.getGenType(null).getNode();
 
 					_cheat = gc1;
 

@@ -214,7 +214,7 @@ public class DeduceTypes2 {
 			if (result_index != null) {
 				@NotNull final VariableTableEntry vte = ((IntegerIA) result_index).getEntry();
 				if (vte.resolvedType() == null) {
-					final GenType b = vte.getGenType();
+					final GenType b = vte.getGenType(this);
 					final OS_Type a = vte.type.getAttached();
 					if (a != null) {
 						// see resolve_function_return_type
@@ -223,12 +223,12 @@ public class DeduceTypes2 {
 							dof_uc(vte, a);
 							break;
 						case USER:
-							vte.getGenType().setTypeName(a);
+							vte.getGenType(this).setTypeName(a);
 							try {
 								@NotNull final GenType rt = resolve_type(a, a.getTypeName().getContext());
 								if (rt.getResolved() != null && rt.getResolved().getType() == OS_Type.Type.USER_CLASS) {
 									if (rt.getResolved().getClassOf().getGenericPart().size() > 0)
-										vte.getGenType().setNonGenericTypeName(a.getTypeName()); // TODO might be wrong
+										vte.getGenType(this).setNonGenericTypeName(a.getTypeName()); // TODO might be wrong
 									dof_uc(vte, rt.getResolved());
 								}
 							} catch (final ResolveError aResolveError) {
@@ -443,8 +443,8 @@ public class DeduceTypes2 {
 		@Nullable ClassInvocation ci = new ClassInvocation(aA.getClassOf(), null);
 		ci = phase.registerClassInvocation(ci);
 
-		aVte.getGenType().setResolved(aA); // README assuming OS_Type cannot represent namespaces
-		aVte.getGenType().setCi(ci);
+		aVte.getGenType(this).setResolved(aA); // README assuming OS_Type cannot represent namespaces
+		aVte.getGenType(this).setCi(ci);
 
 		ci.resolvePromise().done(new DoneCallback<GeneratedClass>() {
 			@Override
@@ -759,7 +759,7 @@ public class DeduceTypes2 {
 			if (result_index != null) {
 				@NotNull final VariableTableEntry vte = ((IntegerIA) result_index).getEntry();
 				if (vte.resolvedType() == null) {
-					final GenType b = vte.getGenType();
+					final GenType b = vte.getGenType(this);
 					final OS_Type a = vte.type.getAttached();
 					if (a != null) {
 						// see resolve_function_return_type
@@ -1122,7 +1122,7 @@ public class DeduceTypes2 {
 		final VariableTableEntry testing_var    = gf.getVarTableEntry(testing_var_.getIndex());
 		final TypeTableEntry     testing_type__ = gf.getTypeTableEntry(testing_type_.getIndex());
 
-		final GenType genType = testing_type__.getGenType();
+		final GenType genType = testing_type__.getGenType(this);
 		if (genType.getResolved() == null) {
 			try {
 				genType.setResolved(resolve_type(genType.getTypeName(), gf.getFD().getContext()).getResolved());
@@ -1457,7 +1457,7 @@ public class DeduceTypes2 {
 			for (final VariableTableEntry variableTableEntry : generatedFunction.vte_list) {
 				final @NotNull Collection<TypeTableEntry> pot = variableTableEntry.potentialTypes();
 				final int                                 y   = 2;
-				if (pot.size() == 1 && variableTableEntry.getGenType().isNull()) {
+				if (pot.size() == 1 && variableTableEntry.getGenType(this).isNull()) {
 					final OS_Type x = pot.iterator().next().getAttached();
 					if (x != null)
 						if (x.getType() == OS_Type.Type.USER_CLASS) {
@@ -1525,12 +1525,12 @@ public class DeduceTypes2 {
 
 			if (vte.type != null) {
 				if (vte.type.getAttached() != null) {
-					phase.typeDecided((GeneratedFunction) generatedFunction, vte.type.getGenType());
+					phase.typeDecided((GeneratedFunction) generatedFunction, vte.type.getGenType(this));
 				} else {
 					@NotNull final Collection<TypeTableEntry> pot1 = vte.potentialTypes();
 					@NotNull final ArrayList<TypeTableEntry>  pot  = new ArrayList<TypeTableEntry>(pot1);
 					if (pot.size() == 1) {
-						phase.typeDecided((GeneratedFunction) generatedFunction, pot.get(0).getGenType());
+						phase.typeDecided((GeneratedFunction) generatedFunction, pot.get(0).getGenType(this));
 					} else if (pot.size() == 0) {
 						@NotNull final GenType unitType = new GenType(resolver());
 						unitType.setTypeName(new OS_BuiltinType(BuiltInTypes.Unit));
@@ -1592,12 +1592,12 @@ public class DeduceTypes2 {
 				// TODO this should have been set somewhere already
 				//  typeName and nonGenericTypeName are not set
 				//  but at this point probably wont be needed
-				vte.type.getGenType().setResolved(attached);
+				vte.type.getGenType(this).setResolved(attached);
 				vte.type.setAttached(attached, _resolver);
 			}
 			vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(vte.getResolvedElement()));
 			{
-				final GenType genType = vte.type.getGenType();
+				final GenType genType = vte.type.getGenType(this);
 				if (genType.getResolved() != null && genType.getNode() == null) {
 					genCI(genType, genType.getNonGenericTypeName());
 //					genType.node = makeNode(genType);
@@ -1686,7 +1686,7 @@ public class DeduceTypes2 {
 											pe.satisfy(result1);
 											@NotNull final TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result1.getResolved()); // TODO there has to be a better way
 											tte.provide(DeduceTypes2.this);
-											tte.getGenType().copy(result1);
+											tte.getGenType(DeduceTypes2.this).copy(result1);
 											vte.addPotentialType(instructionIndex, tte);
 										});
 									}
@@ -1743,7 +1743,7 @@ public class DeduceTypes2 {
 									@Override
 									public void typeDecided(@NotNull final GenType aType) {
 										tte.setAttached(gt(aType), _resolver); // TODO stop setting attached!
-										tte.getGenType().copy(aType);
+										tte.getGenType(DeduceTypes2.this).copy(aType);
 										//										vte.addPotentialType(instructionIndex, tte);
 									}
 								});
@@ -2013,8 +2013,8 @@ public class DeduceTypes2 {
 				public void onDone(final GenType result) {
 //					assert vte != vte1;
 //					aTte.setAttached(result.resolved != null ? result.resolved : result.typeName);
-					if (aTte.getGenType()!=null) {
-						aTte.getGenType().copy(result);
+					if (aTte.getGenType(DeduceTypes2.this)!=null) {
+						aTte.getGenType(DeduceTypes2.this).copy(result);
 					} else {
 						System.err.println("FAIL 2019"); // !!
 					}

@@ -392,14 +392,14 @@ class Resolve_Ident_IA2 {
 				} else if (bl instanceof IdentIA) {
 					final @NotNull IdentIA identIA = (IdentIA) bl;
 					@NotNull final IdentTableEntry ite = identIA.getEntry();
-					if (ite.getType().getGenType().getCi() != null)
-						invocation = ite.getType().getGenType().getCi();
+					if (ite.getType().getGenType(deduceTypes2).getCi() != null)
+						invocation = ite.getType().getGenType(deduceTypes2).getCi();
 					else if (ite.getType().getAttached() != null) {
 						@NotNull final OS_Type attached1 = ite.getType().getAttached();
 						assert attached1.getType() == OS_Type.Type.USER_CLASS;
 						invocation = phase.registerClassInvocation(attached1.getClassOf(), null); // TODO will fail one day
 						// TODO dont know if next line is right
-						final ClassInvocation invocation2 = DeduceTypes2.ClassInvocationMake.withGenericPart(attached1.getClassOf(), null, (NormalTypeName) tte.getGenType().getNonGenericTypeName(), deduceTypes2, errSink);
+						final ClassInvocation invocation2 = DeduceTypes2.ClassInvocationMake.withGenericPart(attached1.getClassOf(), null, (NormalTypeName) tte.getGenType(deduceTypes2).getNonGenericTypeName(), deduceTypes2, errSink);
 						final int             y           = 2;
 					}
 				} else if (bl instanceof ProcIA) {
@@ -437,7 +437,7 @@ class Resolve_Ident_IA2 {
 
 			final OS_Type attached = idte2.getType().getAttached();
 			if (attached.getType() == OS_Type.Type.USER_CLASS) {
-				if (idte2.getType().getGenType().getResolved() == null) {
+				if (idte2.getType().getGenType(deduceTypes2).getResolved() == null) {
 					@NotNull final GenType rtype = deduceTypes2.newPFluffyType().resolve_type(attached, ctx);
 					if (rtype.getResolved() != null) {
 						switch (rtype.getResolved().getType()) {

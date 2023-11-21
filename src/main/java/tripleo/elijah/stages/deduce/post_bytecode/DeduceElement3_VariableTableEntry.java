@@ -274,7 +274,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 					vte1.type.setAttached(attached, deduceTypes2().resolver()); // !!
 					break;
 				case USER_CLASS:
-					final GenType gt = vte1.getGenType();
+					final GenType gt = vte1.getGenType(deduceTypes2);
 					gt.setResolved(attached);
 					vte1.resolveType(gt);
 					break;
@@ -301,7 +301,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 		if (p.isResolved())
 			System.out.printf("915 Already resolved type: vte2.type = %s, gf = %s %n", vte1.type, generatedFunction);
 		else {
-			final GenType gt       = vte1.getGenType();
+			final GenType gt       = vte1.getGenType(deduceTypes2);
 			final OS_Type attached = vte2.type.getAttached();
 			gt.setResolved(attached);
 			vte1.resolveType(gt);
@@ -329,7 +329,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 				vte1.type.setAttached(attached, deduceTypes2.resolver()); // !!
 				break;
 			case USER_CLASS:
-				final GenType gt = vte1.getGenType();
+				final GenType gt = vte1.getGenType(deduceTypes2);
 				gt.setResolved(attached);
 				vte1.resolveType(gt);
 				break;

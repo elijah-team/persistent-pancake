@@ -219,7 +219,7 @@ class Found_Element_For_ITE {
 			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, attached);
 		} else
 			ite.getType().setAttached(attached, dc.resolver());
-		final GenType genType = ite.getType().getGenType();
+		final GenType genType = ite.getType().getGenType(null);
 		if (genType != null) {
 			dc.genCIForGenType2(genType);
 		}

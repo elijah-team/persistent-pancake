@@ -121,9 +121,9 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 						tte.provide(dlv._deduceTypes2());
 					}
 				}
-				final GenType genType1 = type.getGenType();
+				final GenType genType1 = type.getGenType(null);
 				if (genType1 != null) {
-					genType1.copy(tte.getGenType()); // README don't lose information
+					genType1.copy(tte.getGenType(null)); // README don't lose information
 				}else {
 					System.err.println("FAIL 128");
 				}
@@ -252,7 +252,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 
 	public void setLikelyType(final GenType aGenType) {
 		type.provide(this.dlv._deduceTypes2());
-		final GenType bGenType = type.getGenType();
+		final GenType bGenType = type.getGenType(null);
 
 		// 1. copy arg into member
 		bGenType.copy(aGenType);
@@ -267,7 +267,8 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 
 	}
 
-	public GenType getGenType() {
+	public GenType getGenType(/*@Nullable DeduceTypes2 aDeduceTypes2*/final @Nullable DeduceTypes2 aO) {
+//		if (de) provide(aDeduceTypes2);
 		return genType;
 	}
 

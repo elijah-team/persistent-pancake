@@ -2668,7 +2668,7 @@ public class GenerateFunctions {
 					@Override
 					public void onDone(final GenType result) {
 						@NotNull final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved());
-						tte.getGenType().copy(result);
+						tte.getGenType(null).copy(result);
 						idte.addPotentialType(instructionIndex, tte);
 					}
 				});
