@@ -8,9 +8,9 @@
  */
 package tripleo.elijah.stages.deduce;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
@@ -34,9 +34,9 @@ import tripleo.elijah.util.Helpers;
 
 public class DeduceTypesSecondTest {
 
-	@Ignore
+	@Disabled
 	@Test
-	public void testDeduceIdentExpression() throws ResolveError {
+	void testDeduceIdentExpression() throws ResolveError {
 		final Boilerplate b = new Boilerplate();
 		b.get();
 		final Compilation c   = b.comp;
@@ -85,7 +85,7 @@ public class DeduceTypesSecondTest {
 		tn.setContext(fd.getContext());
 
 //		Assert.assertEquals(new OS_Type(tn).getTypeName(), x.getTypeName());
-		Assert.assertTrue(genTypeEquals(d.resolve_type(new OS_UserType(tn), tn.getContext()), x));
+		Assertions.assertTrue(genTypeEquals(d.resolve_type(new OS_UserType(tn), tn.getContext()), x));
 //		Assert.assertEquals(new OS_Type(tn).toString(), x.toString());
 	}
 

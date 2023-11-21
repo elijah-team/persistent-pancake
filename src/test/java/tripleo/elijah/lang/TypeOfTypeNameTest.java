@@ -8,9 +8,9 @@
  */
 package tripleo.elijah.lang;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.IO;
@@ -27,9 +27,9 @@ import static org.easymock.EasyMock.*;
 
 public class TypeOfTypeNameTest {
 
-	@Ignore
+	@Disabled
 	@Test
-	public void typeOfSimpleQualident() throws ResolveError {
+	void typeOfSimpleQualident() throws ResolveError {
 		//
 		// CREATE MOCKS
 		//
@@ -76,11 +76,11 @@ public class TypeOfTypeNameTest {
 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
 //		System.out.println(tn);
 		verify(ctx, mod);
-		Assert.assertEquals(typeNameString, tn.toString());
+		Assertions.assertEquals(typeNameString, tn.toString());
 	}
 
 	@Test
-	public void typeOfComplexQualident() throws ResolveError {
+	void typeOfComplexQualident() throws ResolveError {
 		//
 		// CREATE MOCKS
 		//
@@ -128,7 +128,7 @@ public class TypeOfTypeNameTest {
 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
 //		System.out.println(tn);
 		verify(ctx, mod);
-		Assert.assertEquals(typeNameString, tn.toString());
+		Assertions.assertEquals(typeNameString, tn.toString());
 	}
 
 //	@Test
@@ -194,9 +194,9 @@ public class TypeOfTypeNameTest {
 //		Assert.assertEquals(typeNameString, tn.toString());
 //	}
 
-	@Ignore
+	@Disabled
 	@Test
-	public void typeOfComplexQualident2() throws ResolveError {
+	void typeOfComplexQualident2() throws ResolveError {
 		//
 		// CREATE MOCK
 		//
@@ -272,7 +272,7 @@ public class TypeOfTypeNameTest {
 		final TypeName tn = t.resolve(ctx, deduceTypes2);
 //		System.out.println(tn);
 		verify(ctx/*, mod.parent*/);
-		Assert.assertEquals(typeNameString, tn.toString());
+		Assertions.assertEquals(typeNameString, tn.toString());
 	}
 
 }

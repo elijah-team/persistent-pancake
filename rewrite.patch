@@ -1,0 +1,1009 @@
+diff --git a/src/test/java/tripleo/elijah/QualidentToDotExpressionTest.java b/src/test/java/tripleo/elijah/QualidentToDotExpressionTest.java
+index 8fd86e9..7f84357 100644
+--- a/src/test/java/tripleo/elijah/QualidentToDotExpressionTest.java
++++ b/src/test/java/tripleo/elijah/QualidentToDotExpressionTest.java
+@@ -1,21 +1,21 @@ org.openrewrite.config.CompositeRecipe
+ package tripleo.elijah;
+ 
+-import org.junit.Assert;
+-import org.junit.Test;
++import org.junit.jupiter.api.Assertions;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.lang.IExpression;
+ import tripleo.elijah.lang.Qualident;
+ import tripleo.elijah.util.Helpers;
+ 
+ public class QualidentToDotExpressionTest {
+ 
+-    @Test
+-    public void qualidentToDotExpression2() {
++	@Test
++	void qualidentToDotExpression2() {
+         final Qualident q = new Qualident();
+         q.append(tripleo.elijah.util.Helpers.string_to_ident("a"));
+         q.append(tripleo.elijah.util.Helpers.string_to_ident("b"));
+         q.append(tripleo.elijah.util.Helpers.string_to_ident("c"));
+         final IExpression e = Helpers.qualidentToDotExpression2(q);
+         System.out.println(e);
+-        Assert.assertEquals("a.b.c", e.toString());
++        Assertions.assertEquals("a.b.c", e.toString());
+     }
+ }
+\ No newline at end of file
+
+diff --git a/src/test/java/tripleo/elijah/CompilationTest.java b/src/test/java/tripleo/elijah/CompilationTest.java
+index 3188b9c..62fadde 100644
+--- a/src/test/java/tripleo/elijah/CompilationTest.java
++++ b/src/test/java/tripleo/elijah/CompilationTest.java
+@@ -8,8 +8,8 @@ org.openrewrite.config.CompositeRecipe
+  */
+ package tripleo.elijah;
+ 
+-import org.junit.Assert;
+-import org.junit.Test;
++import org.junit.jupiter.api.Assertions;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.Compilation;
+ import tripleo.elijah.comp.ErrSink;
+ import tripleo.elijah.comp.IO;
+@@ -28,18 +28,18 @@
+ public class CompilationTest {
+ 
+ 	@Test
+-	public final void testEz() throws Exception {
++	final void testEz() throws Exception {
+ 		final List<String> args = List_of("test/comp_test/main3", "-sE"/*, "-out"*/);
+ 		final ErrSink      eee  = new StdErrSink();
+ 		final Compilation  c    = new CompilationImpl(eee, new IO());
+ 
+ 		c.feedCmdLine(args);
+ 
+-		Assert.assertTrue(c.getIO().recordedRead(new File("test/comp_test/main3/main3.ez")));
+-		Assert.assertTrue(c.getIO().recordedRead(new File("test/comp_test/main3/main3.elijah")));
+-		Assert.assertTrue(c.getIO().recordedRead(new File("test/comp_test/fact1.elijah")));
++		Assertions.assertTrue(c.getIO().recordedRead(new File("test/comp_test/main3/main3.ez")));
++		Assertions.assertTrue(c.getIO().recordedRead(new File("test/comp_test/main3/main3.elijah")));
++		Assertions.assertTrue(c.getIO().recordedRead(new File("test/comp_test/fact1.elijah")));
+ //		Assert.assertTrue(c.cis.size() > 0);
+-		Assert.assertTrue(c.modules_size() > 2);
++		Assertions.assertTrue(c.modules_size() > 2);
+ 	}
+ 
+ }
+
+diff --git a/src/test/java/tripleo/elijah/Tfact1_main2Test.java b/src/test/java/tripleo/elijah/Tfact1_main2Test.java
+index 35691cb..10b4469 100644
+--- a/src/test/java/tripleo/elijah/Tfact1_main2Test.java
++++ b/src/test/java/tripleo/elijah/Tfact1_main2Test.java
+@@ -1,16 +1,16 @@ org.openrewrite.config.CompositeRecipe
+ package tripleo.elijah;
+ 
+-import org.junit.Test;
++import org.junit.jupiter.api.Test;
+ 
+ import java.util.List;
+ 
+-import static org.junit.Assert.assertEquals;
++import static org.junit.jupiter.api.Assertions.assertEquals;
+ import static tripleo.elijah.util.Helpers.List_of;
+ 
+ public class Tfact1_main2Test {
+ 
+ 	@Test
+-	public void z100_main_fn_hdr() {
++	void z100_main_fn_hdr() {
+ 		final EL_Hdr eh = new EL_Hdr();
+ 
+ 		eh.rt(new el_type_NoneType());
+@@ -33,7 +33,7 @@
+ 	}
+ 
+ 	@Test
+-	public void z100_main_fn_hdr2() {
++	void z100_main_fn_hdr2() {
+ 		final EL_Hdr eh = new EL_Hdr();
+ 
+ 		eh.rt(new el_type_NoneType());
+
+diff --git a/src/test/java/tripleo/elijah/FindBothSourceFiles.java b/src/test/java/tripleo/elijah/FindBothSourceFiles.java
+index 04e2332..b414947 100644
+--- a/src/test/java/tripleo/elijah/FindBothSourceFiles.java
++++ b/src/test/java/tripleo/elijah/FindBothSourceFiles.java
+@@ -8,8 +8,8 @@ org.openrewrite.config.CompositeRecipe
+  */
+ package tripleo.elijah;
+ 
+-import org.junit.Assert;
+-import org.junit.Test;
++import org.junit.jupiter.api.Assertions;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.Compilation;
+ import tripleo.elijah.comp.ErrSink;
+ import tripleo.elijah.comp.IO;
+@@ -35,7 +35,7 @@
+ 	 * @throws Exception
+ 	 */
+ 	@Test
+-	public final void compilerShouldFindBothParseFiles() throws Exception {
++	final void compilerShouldFindBothParseFiles() throws Exception {
+ 		final List<String> args = List_of("test/demo-el-normal", "test/demo-el-normal/main2", "-sE");
+ //		ErrSink eee = JMock.of(ErrSink.class);
+ 		final ErrSink     eee = new StdErrSink();
+@@ -44,8 +44,8 @@
+ 		c.feedCmdLine(args);
+ 
+ 		//fail("Not yet implemented"); // TODO
+-		Assert.assertTrue(c.getIO().recordedRead(new File(new File("test", "demo-el-normal"), "fact1.elijah")));
+-		Assert.assertTrue(c.getIO().recordedRead(new File(new File(new File("test", "demo-el-normal"), "main2"), "main2.elijah")));
++		Assertions.assertTrue(c.getIO().recordedRead(new File(new File("test", "demo-el-normal"), "fact1.elijah")));
++		Assertions.assertTrue(c.getIO().recordedRead(new File(new File(new File("test", "demo-el-normal"), "main2"), "main2.elijah")));
+ 	}
+ 
+ /*
+
+diff --git a/src/test/java/tripleo/elijah/nextgen/expansion/SX_NodeTest.java b/src/test/java/tripleo/elijah/nextgen/expansion/SX_NodeTest.java
+index 03a19a6..b8e5094 100644
+--- a/src/test/java/tripleo/elijah/nextgen/expansion/SX_NodeTest.java
++++ b/src/test/java/tripleo/elijah/nextgen/expansion/SX_NodeTest.java
+@@ -1,6 +1,6 @@ org.openrewrite.config.CompositeRecipe
+ package tripleo.elijah.nextgen.expansion;
+ 
+-import junit.framework.TestCase;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.AccessBus;
+ import tripleo.elijah.comp.Compilation.CompilationAlways;
+ import tripleo.elijah.comp.IO;
+@@ -22,8 +22,9 @@
+ 
+ import static tripleo.elijah.util.Helpers.List_of;
+ 
+-public class SX_NodeTest extends TestCase {
++public class SX_NodeTest {
+ 
++	@Test
+ 	public void testFullText() {
+ 		final StdErrSink      errSink       = new StdErrSink();
+ 		final IO              io            = new IO();
+
+diff --git a/src/test/java/tripleo/elijah/nextgen/expansion/SX_NodeTest2.java b/src/test/java/tripleo/elijah/nextgen/expansion/SX_NodeTest2.java
+index 57a9cef..77dd815 100644
+--- a/src/test/java/tripleo/elijah/nextgen/expansion/SX_NodeTest2.java
++++ b/src/test/java/tripleo/elijah/nextgen/expansion/SX_NodeTest2.java
+@@ -1,7 +1,7 @@ org.openrewrite.config.CompositeRecipe
+ package tripleo.elijah.nextgen.expansion;
+ 
+ import org.jetbrains.annotations.NotNull;
+-import org.junit.Test;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.IO;
+ import tripleo.elijah.comp.StdErrSink;
+ import tripleo.elijah.comp.internal.CompilationImpl;
+@@ -31,7 +31,7 @@
+ public class SX_NodeTest2 {
+ 
+ 	@Test
+-	public void testFullText() {
++	void testFullText() {
+ 		final StdErrSink      errSink = new StdErrSink();
+ 		final IO              io      = new IO();
+ 		final CompilationImpl comp    = new CompilationImpl(errSink, io);
+
+diff --git a/src/test/java/tripleo/elijah/TestBasic.java b/src/test/java/tripleo/elijah/TestBasic.java
+index a5c889d..96f7e65 100644
+--- a/src/test/java/tripleo/elijah/TestBasic.java
++++ b/src/test/java/tripleo/elijah/TestBasic.java
+@@ -13,7 +13,7 @@ org.openrewrite.config.CompositeRecipe
+ import org.jdeferred2.Promise;
+ import org.jdeferred2.impl.DeferredObject;
+ import org.jetbrains.annotations.NotNull;
+-import org.junit.Test;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.Compilation;
+ import tripleo.elijah.comp.ErrSink;
+ import tripleo.elijah.comp.IO;
+@@ -29,7 +29,7 @@
+ import java.util.function.Predicate;
+ import java.util.stream.Collectors;
+ 
+-import static org.junit.Assert.*;
++import static org.junit.jupiter.api.Assertions.*;
+ import static tripleo.elijah.util.Helpers.List_of;
+ 
+ /**
+@@ -40,7 +40,7 @@
+ 	private final boolean __unboundedGate = false;
+ 
+ 	@Test
+-	public final void testBasicParse() throws Exception {
++	final void testBasicParse() throws Exception {
+ 		final List<String> ez_files = Files.readLines(new File("test/basic/ez_files.txt"), Charsets.UTF_8);
+ 		final List<String> args     = new ArrayList<String>();
+ 		args.addAll(ez_files);
+@@ -54,7 +54,7 @@
+ 	}
+ 
+ 	@Test
+-	public final void testBasic_listfolders3() {
++	final void testBasic_listfolders3() {
+ 		final String s = "test/basic/listfolders3/listfolders3.ez";
+ 
+ 		final ErrSink     eee = new StdErrSink();
+@@ -85,12 +85,12 @@
+ 		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/Integer64.c"));
+ 
+ 		if (__unboundedGate) {
+-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
++			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
+ 		}
+ 	}
+ 
+ 	@Test
+-	public final void testBasic_listfolders4() {
++	final void testBasic_listfolders4() {
+ 		final String s = "test/basic/listfolders4/listfolders4.ez";
+ 
+ 		final ErrSink     eee = new StdErrSink();
+@@ -104,12 +104,12 @@
+ 		assertEquals(51, c.errorCount()); // TODO Error count obviously should be 0
+ 
+ 		if (__unboundedGate) {
+-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
++			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
+ 		}
+ 	}
+ 
+ 	@Test
+-	public final void testBasic_fact1() {
++	final void testBasic_fact1() {
+ 		final String s = "test/basic/fact1/main2";
+ 
+ 		final ErrSink     eee = new StdErrSink();
+@@ -161,7 +161,7 @@
+ 
+ 
+ 		if (__unboundedGate) {
+-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
++			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
+ 		}
+ 	}
+ 
+
+diff --git a/src/test/java/tripleo/elijah/stages/gen_fn/GetIdentIAPathTest_ForC.java b/src/test/java/tripleo/elijah/stages/gen_fn/GetIdentIAPathTest_ForC.java
+index 65efadf..5003104 100644
+--- a/src/test/java/tripleo/elijah/stages/gen_fn/GetIdentIAPathTest_ForC.java
++++ b/src/test/java/tripleo/elijah/stages/gen_fn/GetIdentIAPathTest_ForC.java
+@@ -9,10 +9,9 @@ org.openrewrite.config.CompositeRecipe
+ package tripleo.elijah.stages.gen_fn;
+ 
+ import org.jetbrains.annotations.NotNull;
+-import org.junit.Assert;
+-import org.junit.Before;
+-import org.junit.Test;
+-
++import org.junit.jupiter.api.Assertions;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.AccessBus;
+ import tripleo.elijah.comp.Compilation;
+ import tripleo.elijah.comp.PipelineLogic;
+@@ -47,7 +46,7 @@
+ 	GeneratedFunction gf;
+ 	OS_Module mod;
+ 
+-	@Before
++	@BeforeEach
+ 	public void setUp() throws Exception {
+ 		mod = mock(OS_Module.class);
+ 		final FunctionDef fd = mock(FunctionDef.class);
+@@ -57,7 +56,7 @@
+ 	}
+ 
+ 	@Test
+-	public void testManualXDotFoo() {
++	void testManualXDotFoo() {
+ 		@NotNull final IdentExpression x_ident   = IdentExpression.forString("X");
+ 		@NotNull final IdentExpression foo_ident = IdentExpression.forString("foo");
+ 		//
+@@ -75,11 +74,11 @@
+ 		ite.setBacklink(new IntegerIA(int_index, gf));
+ 		final IdentIA ident_ia = new IdentIA(ite_index, gf);
+ 		final String  x        = getIdentIAPath(ident_ia, gf);
+-		Assert.assertEquals("vvx->vmfoo", x);
++		Assertions.assertEquals("vvx->vmfoo", x);
+ 	}
+ 
+ 	@Test
+-	public void testManualXDotFoo2() {
++	void testManualXDotFoo2() {
+ 		@NotNull final IdentExpression x_ident = IdentExpression.forString("x");
+ 		@NotNull final IdentExpression foo_ident = IdentExpression.forString("foo");
+ 		//
+@@ -129,11 +128,11 @@
+ 		final String x = getIdentIAPath(ident_ia, gf);
+ //		Assert.assertEquals("vvx->vmfoo", x);  // TODO real expectation, IOW output below is wrong
+ 		// TODO actually compiler should comlain that it can't find x
+-		Assert.assertEquals("->vmx->vmfoo", x);
++		Assertions.assertEquals("->vmx->vmfoo", x);
+ 	}
+ 
+ 	@Test
+-	public void testManualXDotFoo3() {
++	void testManualXDotFoo3() {
+ 		final IdentExpression          x_ident   = Helpers.string_to_ident("x");
+ 		@NotNull final IdentExpression foo_ident = Helpers.string_to_ident("foo");
+ 		//
+@@ -171,11 +170,11 @@
+ 
+ 		final String x = getIdentIAPath(ident_ia, gf);
+ //		Assert.assertEquals("vvx->vmfoo", x); // TODO real expectation
+-		Assert.assertEquals("vvx->vmfoo", x);
++		Assertions.assertEquals("vvx->vmfoo", x);
+ 	}
+ 
+ 	@Test
+-	public void testManualXDotFooWithFooBeingFunction() {
++	void testManualXDotFooWithFooBeingFunction() {
+ 		@NotNull final IdentExpression x_ident = Helpers.string_to_ident("x");
+ 		@NotNull final IdentExpression foo_ident = Helpers.string_to_ident("foo");
+ 		//
+@@ -253,7 +252,7 @@
+ 
+ 		verify(mod, ctx, mockContext);
+ 
+-		Assert.assertEquals("z-1foo(vvx)", x); // FIXME (??) if foo is a named ctor then make this cap, otherwise, oops
++		Assertions.assertEquals("z-1foo(vvx)", x); // FIXME (??) if foo is a named ctor then make this cap, otherwise, oops
+ 	}
+ 
+ 	String getIdentIAPath(final IdentIA ia2, final GeneratedFunction generatedFunction) {
+
+diff --git a/src/test/java/tripleo/elijah/stages/gen_fn/TestIdentNormal.java b/src/test/java/tripleo/elijah/stages/gen_fn/TestIdentNormal.java
+index a265da7..db5dbb1 100644
+--- a/src/test/java/tripleo/elijah/stages/gen_fn/TestIdentNormal.java
++++ b/src/test/java/tripleo/elijah/stages/gen_fn/TestIdentNormal.java
+@@ -16,9 +16,8 @@ org.openrewrite.config.CompositeRecipe
+ import java.util.List;
+ 
+ import org.jetbrains.annotations.NotNull;
+-import org.junit.Ignore;
+-import org.junit.Test;
+-
++import org.junit.jupiter.api.Disabled;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.AccessBus;
+ import tripleo.elijah.comp.Compilation;
+ import tripleo.elijah.comp.PipelineLogic;
+@@ -118,9 +117,10 @@
+ 		});
+ 	}
+ 
+-	@Ignore
+-	@Test // TODO just a mess
+-	public void test2() {
++	// TODO just a mess
++	@Disabled
++	@Test
++	void test2() {
+ 		final Boilerplate b = new Boilerplate();
+ 		b.get();
+ 		final Compilation comp = b.comp;
+
+diff --git a/src/test/java/tripleo/elijah/stages/gen_c/GetRealTargetNameTest.java b/src/test/java/tripleo/elijah/stages/gen_c/GetRealTargetNameTest.java
+index 87dfc1d..06a339a 100644
+--- a/src/test/java/tripleo/elijah/stages/gen_c/GetRealTargetNameTest.java
++++ b/src/test/java/tripleo/elijah/stages/gen_c/GetRealTargetNameTest.java
+@@ -10,9 +10,9 @@ org.openrewrite.config.CompositeRecipe
+ package tripleo.elijah.stages.gen_c;
+ 
+ import org.jetbrains.annotations.NotNull;
+-import org.junit.Assert;
+-import org.junit.Before;
+-import org.junit.Test;
++import org.junit.jupiter.api.Assertions;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.AccessBus;
+ import tripleo.elijah.comp.IO;
+ import tripleo.elijah.comp.PipelineLogic;
+@@ -39,7 +39,7 @@
+ 	GeneratedFunction gf;
+ 	OS_Module mod;
+ 
+-	@Before
++	@BeforeEach
+ 	public void setUp() throws Exception {
+ 		mod = mock(OS_Module.class);
+ 		final FunctionDef fd = mock(FunctionDef.class);
+@@ -47,7 +47,7 @@
+ 	}
+ 
+ 	@Test
+-	public void testManualXDotFoo() {
++	void testManualXDotFoo() {
+ 		final IdentExpression          x_ident   = Helpers.string_to_ident("x");
+ 		@NotNull final IdentExpression foo_ident = Helpers.string_to_ident("foo");
+ 		//
+@@ -70,7 +70,7 @@
+ 		//
+ 		Emit.emitting = false;
+ 		final String x = c.getRealTargetName(gf, ident_ia, Generate_Code_For_Method.AOG.GET, null); // TODO is null correct?
+-		Assert.assertEquals("vvx->vmfoo", x);
++		Assertions.assertEquals("vvx->vmfoo", x);
+ 	}
+ }
+ 
+
+diff --git a/src/test/java/tripleo/elijah/stages/deduce/Feb2021.java b/src/test/java/tripleo/elijah/stages/deduce/Feb2021.java
+index ce055eb..80cf4d3 100644
+--- a/src/test/java/tripleo/elijah/stages/deduce/Feb2021.java
++++ b/src/test/java/tripleo/elijah/stages/deduce/Feb2021.java
+@@ -8,14 +8,14 @@ org.openrewrite.config.CompositeRecipe
+  */
+ package tripleo.elijah.stages.deduce;
+ 
+-import org.junit.Test;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.Compilation;
+ import tripleo.elijah.comp.IO;
+ import tripleo.elijah.comp.StdErrSink;
+ import tripleo.elijah.comp.internal.CompilationImpl;
+ 
+-import static org.junit.Assert.assertEquals;
+-import static org.junit.Assert.assertTrue;
++import static org.junit.jupiter.api.Assertions.assertEquals;
++import static org.junit.jupiter.api.Assertions.assertTrue;
+ import static tripleo.elijah.util.Helpers.List_of;
+ 
+ /**
+@@ -25,7 +25,7 @@
+ 	private boolean __unboundedGate = false;
+ 
+ 	@Test
+-	public void testProperty() {
++	void testProperty() {
+ 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+ 
+ 		c.feedCmdLine(List_of("test/feb2021/property/"));
+@@ -49,12 +49,12 @@
+ 		assertTrue(!c.reports().containsCodeOutput("prelude/Prelude/ConstString.h"));
+ 
+ 		if (__unboundedGate) {
+-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
++			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
+ 		}
+ 	}
+ 
+ 	@Test
+-	public void testFunction() {
++	void testFunction() {
+ 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+ 
+ 		c.feedCmdLine(List_of("test/feb2021/function/"));
+@@ -67,12 +67,12 @@
+ 		assertEquals(2, c.reports().codeOutputSize());
+ 
+ 		if (__unboundedGate) {
+-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
++			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
+ 		}
+ 	}
+ 
+ 	@Test
+-	public void testHier() {
++	void testHier() {
+ 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+ 
+ 		c.feedCmdLine(List_of("test/feb2021/hier/"));
+@@ -89,7 +89,7 @@
+ 		assertEquals(6, c.reports().codeOutputSize());
+ 
+ 		if (__unboundedGate) {
+-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
++			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
+ 		}
+ 	}
+ }
+
+diff --git a/src/test/java/tripleo/elijah/stages/deduce/DeduceTypesTest.java b/src/test/java/tripleo/elijah/stages/deduce/DeduceTypesTest.java
+index e16b36f..d361b07 100644
+--- a/src/test/java/tripleo/elijah/stages/deduce/DeduceTypesTest.java
++++ b/src/test/java/tripleo/elijah/stages/deduce/DeduceTypesTest.java
+@@ -11,10 +11,10 @@ org.openrewrite.config.CompositeRecipe
+ import org.jdeferred2.Promise;
+ import org.jetbrains.annotations.Contract;
+ import org.jetbrains.annotations.NotNull;
+-import org.junit.Assert;
+-import org.junit.Before;
+-import org.junit.Ignore;
+-import org.junit.Test;
++import org.junit.jupiter.api.Assertions;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Disabled;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.Compilation;
+ import tripleo.elijah.lang.IdentExpression;
+ import tripleo.elijah.lang.OS_Module;
+@@ -38,7 +38,7 @@
+ 	private GenType                              x;
+ 	private Promise<GenType, ResolveError, Void> xx;
+ 
+-	@Before
++	@BeforeEach
+ 	public void setUp() {
+ 		final Boilerplate b = new Boilerplate();
+ 		b.get();
+@@ -77,19 +77,19 @@
+ 	 * TODO This test fails beacause we are comparing a BUILT_IN vs a USER OS_Type.
+ 	 *   It fails because Integer is an interface and not a BUILT_IN
+ 	 */
+-	@Ignore
++	@Disabled
+ 	@Test
+-	public void testDeduceIdentExpression1() {
++	void testDeduceIdentExpression1() {
+ //		assert x == null;
+ 
+-		Assert.assertTrue("Promise not resolved", xx.isResolved());
++		Assertions.assertTrue(xx.isResolved(), "Promise not resolved");
+ 
+ 		xx.then(xxx -> {
+ //			Assert.assertEquals(OS_Type.Type.USER, xxx.resolved.getType());
+ 			System.out.println("1 " + new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType());
+ 			System.out.println("2 " + xxx.getResolved().getBType());
+ 			System.out.println("2.5 " + xxx.getResolved());
+-			Assert.assertNotEquals(new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType(), xxx.getResolved().getBType());
++			Assertions.assertNotEquals(new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType(), xxx.getResolved().getBType());
+ 
+ 			assert false; // never reached
+ 		});
+@@ -101,17 +101,17 @@
+ 	/**
+ 	 * Now comparing {@link RegularTypeName} to {@link VariableTypeName} works
+ 	 */
+-@Ignore
+-@Test
+-	public void testDeduceIdentExpression2() {
++@Disabled
++	@Test
++	void testDeduceIdentExpression2() {
+ 		final RegularTypeName tn  = new RegularTypeName(null); // README 11/18 better than nothing?
+ 		final Qualident       tnq = new Qualident();
+ 		tnq.append(Helpers.string_to_ident("Integer"));
+ 		tn.setName(tnq);
+ 
+-		Assert.assertTrue("Promise not resolved", xx.isResolved());
++		Assertions.assertTrue(xx.isResolved(), "Promise not resolved");
+ 
+-		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x/*.getTypeName()*/));
++		Assertions.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x/*.getTypeName()*/));
+ 	}
+ 
+ 	@Contract(value = "null, _ -> false", pure = true)
+@@ -119,33 +119,33 @@
+ 		return genType.getTypeName().isEqual(aType); // minikanren 04/15
+ 	}
+ 
+-	@Ignore
++	@Disabled
+ 	@Test
+-	public void testDeduceIdentExpression3() {
++	void testDeduceIdentExpression3() {
+ 		final VariableTypeName tn  = new VariableTypeName();
+ 		final Qualident        tnq = new Qualident();
+ 		tnq.append(Helpers.string_to_ident("Integer"));
+ 		tn.setName(tnq);
+ 
+-		Assert.assertTrue("Promise not resolved", xx.isResolved());
++		Assertions.assertTrue(xx.isResolved(), "Promise not resolved");
+ 
+-		Assert.assertEquals(new OS_UserType(tn).getTypeName(), x.getTypeName().getTypeName());
+-		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
++		Assertions.assertEquals(new OS_UserType(tn).getTypeName(), x.getTypeName().getTypeName());
++		Assertions.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
+ 	}
+ 
+-	@Ignore
++	@Disabled
+ 	@Test
+-	public void testDeduceIdentExpression4() {
++	void testDeduceIdentExpression4() {
+ 		final VariableTypeName tn  = new VariableTypeName();
+ 		final Qualident        tnq = new Qualident();
+ 		tnq.append(Helpers.string_to_ident("Integer"));
+ 		tn.setName(tnq);
+ 
+-		Assert.assertTrue("Promise not resolved", xx.isResolved());
++		Assertions.assertTrue(xx.isResolved(), "Promise not resolved");
+ 
+-		Assert.assertEquals(new OS_UserType(tn).getTypeName(), x.getTypeName().getTypeName());
+-		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
+-		Assert.assertEquals(new OS_UserType(tn).asString(), x.getTypeName().asString());
++		Assertions.assertEquals(new OS_UserType(tn).getTypeName(), x.getTypeName().getTypeName());
++		Assertions.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
++		Assertions.assertEquals(new OS_UserType(tn).asString(), x.getTypeName().asString());
+ 	}
+ 
+ }
+
+diff --git a/src/test/java/tripleo/elijah/stages/deduce/DoAssignCall_ArgsIdent1_Test.java b/src/test/java/tripleo/elijah/stages/deduce/DoAssignCall_ArgsIdent1_Test.java
+index d7af45a..486c0ef 100644
+--- a/src/test/java/tripleo/elijah/stages/deduce/DoAssignCall_ArgsIdent1_Test.java
++++ b/src/test/java/tripleo/elijah/stages/deduce/DoAssignCall_ArgsIdent1_Test.java
+@@ -1,7 +1,7 @@ org.openrewrite.config.CompositeRecipe
+ package tripleo.elijah.stages.deduce;
+ 
+ import org.apache.commons.lang3.tuple.Pair;
+-import org.junit.Test;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.AccessBus;
+ import tripleo.elijah.comp.IO;
+ import tripleo.elijah.comp.PipelineLogic;
+@@ -37,13 +37,13 @@
+ 
+ public class DoAssignCall_ArgsIdent1_Test {
+ 	/*
+-	    model and test
++		model and test
+ 
+-	    var f1 = factorial(b1)
++			r f1 = factorial(b1)
+ 	 */
+ 
+ 	@Test
+-	public void f1_eq_factorial_b1() {
++	void f1_eq_factorial_b1() {
+ 		final CompilationImpl c             = new CompilationImpl(new StdErrSink(), new IO());
+ 		final OS_Module       mod           = mock(OS_Module.class);
+ 		final PipelineLogic   pipelineLogic = new PipelineLogic(new AccessBus(c));
+
+diff --git a/src/test/java/tripleo/elijah/stages/deduce/DeduceTypesSecondTest.java b/src/test/java/tripleo/elijah/stages/deduce/DeduceTypesSecondTest.java
+index 22832b7..c9c7d33 100644
+--- a/src/test/java/tripleo/elijah/stages/deduce/DeduceTypesSecondTest.java
++++ b/src/test/java/tripleo/elijah/stages/deduce/DeduceTypesSecondTest.java
+@@ -8,9 +8,9 @@ org.openrewrite.config.CompositeRecipe
+  */
+ package tripleo.elijah.stages.deduce;
+ 
+-import org.junit.Assert;
+-import org.junit.Ignore;
+-import org.junit.Test;
++import org.junit.jupiter.api.Assertions;
++import org.junit.jupiter.api.Disabled;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.AccessBus;
+ import tripleo.elijah.comp.Compilation;
+ import tripleo.elijah.comp.PipelineLogic;
+@@ -34,9 +34,9 @@
+ 
+ public class DeduceTypesSecondTest {
+ 
+-	@Ignore
++	@Disabled
+ 	@Test
+-	public void testDeduceIdentExpression() throws ResolveError {
++	void testDeduceIdentExpression() throws ResolveError {
+ 		final Boilerplate b = new Boilerplate();
+ 		b.get();
+ 		final Compilation c   = b.comp;
+@@ -85,7 +85,7 @@
+ 		tn.setContext(fd.getContext());
+ 
+ //		Assert.assertEquals(new OS_Type(tn).getTypeName(), x.getTypeName());
+-		Assert.assertTrue(genTypeEquals(d.resolve_type(new OS_UserType(tn), tn.getContext()), x));
++		Assertions.assertTrue(genTypeEquals(d.resolve_type(new OS_UserType(tn), tn.getContext()), x));
+ //		Assert.assertEquals(new OS_Type(tn).toString(), x.toString());
+ 	}
+ 
+
+diff --git a/src/test/java/tripleo/elijah/stages/deduce/DotExpressionToStackTest.java b/src/test/java/tripleo/elijah/stages/deduce/DotExpressionToStackTest.java
+index b0d2ab4..a76dbc3 100644
+--- a/src/test/java/tripleo/elijah/stages/deduce/DotExpressionToStackTest.java
++++ b/src/test/java/tripleo/elijah/stages/deduce/DotExpressionToStackTest.java
+@@ -10,9 +10,9 @@ org.openrewrite.config.CompositeRecipe
+ package tripleo.elijah.stages.deduce;
+ 
+ import org.jetbrains.annotations.NotNull;
+-import org.junit.Assert;
+-import org.junit.Before;
+-import org.junit.Test;
++import org.junit.jupiter.api.Assertions;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.lang.DotExpression;
+ import tripleo.elijah.lang.IExpression;
+ import tripleo.elijah.lang.IdentExpression;
+@@ -22,12 +22,12 @@
+ 
+ public class DotExpressionToStackTest {
+ 
+-	@Before
++	@BeforeEach
+ 	public void setUp() throws Exception {
+ 	}
+ 
+ 	@Test
+-	public void test_dot_expression_to_stack() {
++	void test_dot_expression_to_stack() {
+ //		DeduceTypes2 d = new DeduceTypes2(null);
+ 		//
+ 		final IdentExpression c = Helpers.string_to_ident("c");
+@@ -39,13 +39,13 @@
+ 		//
+ 		@NotNull final Stack<IExpression> s = DeduceLookupUtils.dot_expression_to_stack(de);
+ //		IExpression[] sa = (IExpression[]) s.toArray();
+-		Assert.assertEquals(a, s.pop());
+-		Assert.assertEquals(b, s.pop());
+-		Assert.assertEquals(c, s.pop());
++		Assertions.assertEquals(a, s.pop());
++		Assertions.assertEquals(b, s.pop());
++		Assertions.assertEquals(c, s.pop());
+ 	}
+ 
+ 	@Test
+-	public void test_dot_expression_to_stack2() {
++	void test_dot_expression_to_stack2() {
+ //		DeduceTypes2 dt2 = new DeduceTypes2(null);
+ 		//
+ 		final IdentExpression e = Helpers.string_to_ident("e");
+@@ -61,10 +61,10 @@
+ 		//
+ 		@NotNull final Stack<IExpression> s = DeduceLookupUtils.dot_expression_to_stack(de);
+ //		IExpression[] sa = (IExpression[]) s.toArray();
+-		Assert.assertEquals(a, s.pop());
+-		Assert.assertEquals(b, s.pop());
+-		Assert.assertEquals(c, s.pop());
+-		Assert.assertEquals(d, s.pop());
+-		Assert.assertEquals(e, s.pop());
++		Assertions.assertEquals(a, s.pop());
++		Assertions.assertEquals(b, s.pop());
++		Assertions.assertEquals(c, s.pop());
++		Assertions.assertEquals(d, s.pop());
++		Assertions.assertEquals(e, s.pop());
+ 	}
+ }
+
+diff --git a/src/test/java/tripleo/elijah/stages/generate/ElSystemTest.java b/src/test/java/tripleo/elijah/stages/generate/ElSystemTest.java
+index c7b0035..83201fa 100644
+--- a/src/test/java/tripleo/elijah/stages/generate/ElSystemTest.java
++++ b/src/test/java/tripleo/elijah/stages/generate/ElSystemTest.java
+@@ -9,8 +9,8 @@ org.openrewrite.config.CompositeRecipe
+ 
+ package tripleo.elijah.stages.generate;
+ 
+-import org.junit.Before;
+-import org.junit.Test;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.AccessBus;
+ import tripleo.elijah.comp.Compilation;
+ import tripleo.elijah.comp.IO;
+@@ -24,7 +24,7 @@
+ 	Compilation c;
+ 	private AccessBus ab;
+ 
+-	@Before
++	@BeforeEach
+ 	public void setUp() throws Exception {
+ 		c  = new CompilationImpl(new StdErrSink(), new IO());
+ 		ab = new AccessBus(c);
+@@ -38,7 +38,7 @@
+ 	}
+ 
+ 	@Test
+-	public void generateOutputs() {
++	void generateOutputs() {
+ 		final OutputStrategy os = new OutputStrategy();
+ 		os.per(OutputStrategy.Per.PER_CLASS);
+ 		sys.setOutputStrategy(os);
+
+diff --git a/src/test/java/tripleo/elijah/FindClassesInDemoElNormal.java b/src/test/java/tripleo/elijah/FindClassesInDemoElNormal.java
+index aca6935..81767c7 100644
+--- a/src/test/java/tripleo/elijah/FindClassesInDemoElNormal.java
++++ b/src/test/java/tripleo/elijah/FindClassesInDemoElNormal.java
+@@ -8,8 +8,8 @@ org.openrewrite.config.CompositeRecipe
+  */
+ package tripleo.elijah;
+ 
+-import org.junit.Assert;
+-import org.junit.Test;
++import org.junit.jupiter.api.Assertions;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.Compilation;
+ import tripleo.elijah.comp.ErrSink;
+ import tripleo.elijah.comp.IO;
+@@ -28,7 +28,7 @@
+ public class FindClassesInDemoElNormal {
+ 
+ 	@Test
+-	public final void testParseFile() throws Exception {
++	final void testParseFile() throws Exception {
+ 		final List<String> args = tripleo.elijah.util.Helpers.List_of("test/demo-el-normal", "test/demo-el-normal/main2", "-sE");
+ 		final ErrSink      eee  = new StdErrSink();
+ 		final Compilation  c    = new CompilationImpl(eee, new IO());
+@@ -39,12 +39,12 @@
+ 		for (final ClassStatement classStatement : aClassList) {
+ 			System.out.println(classStatement.getPackageName().getName());
+ 		}
+-		Assert.assertEquals(3, aClassList.size());  // NOTE this may change. be aware
++		Assertions.assertEquals(3, aClassList.size());  // NOTE this may change. be aware
+ 	}
+ 
+ 
+ 	@Test
+-	public final void testListFolders() throws Exception {
++	final void testListFolders() throws Exception {
+ 		final List<String> args = Helpers.List_of("test/demo-el-normal/listfolders/", "-sE");
+ 		final ErrSink      eee  = new StdErrSink();
+ 		final Compilation  c    = new CompilationImpl(eee, new IO());
+@@ -52,9 +52,9 @@
+ 		c.feedCmdLine(args);
+ 
+ 		final List<ClassStatement> aClassList = c.findClass("Main");
+-		Assert.assertEquals(1, aClassList.size());
++		Assertions.assertEquals(1, aClassList.size());
+ 
+-		Assert.assertFalse("isMainClass", MainClassEntryPoint.isMainClass(aClassList.get(0)));
++		Assertions.assertFalse(MainClassEntryPoint.isMainClass(aClassList.get(0)), "isMainClass");
+ 	}
+ 
+ }
+
+diff --git a/src/test/java/tripleo/elijah/work/WorkManagerTest.java b/src/test/java/tripleo/elijah/work/WorkManagerTest.java
+index 2b803eb..c5320e8 100644
+--- a/src/test/java/tripleo/elijah/work/WorkManagerTest.java
++++ b/src/test/java/tripleo/elijah/work/WorkManagerTest.java
+@@ -8,7 +8,7 @@ org.openrewrite.config.CompositeRecipe
+  */
+ package tripleo.elijah.work;
+ 
+-import org.junit.Test;
++import org.junit.jupiter.api.Test;
+ 
+ import java.util.ArrayList;
+ import java.util.List;
+@@ -46,7 +46,7 @@
+ 	}
+ 
+ 	@Test
+-	public void testWorkManager() {
++	void testWorkManager() {
+ 		final List<String> sink = new ArrayList<>();
+ 
+ 		final WorkManager workManager = new WorkManager();
+
+diff --git a/src/test/java/tripleo/elijah/lang/TypeOfTypeNameTest.java b/src/test/java/tripleo/elijah/lang/TypeOfTypeNameTest.java
+index ad77a51..fd42372 100644
+--- a/src/test/java/tripleo/elijah/lang/TypeOfTypeNameTest.java
++++ b/src/test/java/tripleo/elijah/lang/TypeOfTypeNameTest.java
+@@ -8,9 +8,9 @@ org.openrewrite.config.CompositeRecipe
+  */
+ package tripleo.elijah.lang;
+ 
+-import org.junit.Assert;
+-import org.junit.Ignore;
+-import org.junit.Test;
++import org.junit.jupiter.api.Assertions;
++import org.junit.jupiter.api.Disabled;
++import org.junit.jupiter.api.Test;
+ import tripleo.elijah.comp.AccessBus;
+ import tripleo.elijah.comp.Compilation;
+ import tripleo.elijah.comp.IO;
+@@ -27,9 +27,9 @@
+ 
+ public class TypeOfTypeNameTest {
+ 
+-	@Ignore
++	@Disabled
+ 	@Test
+-	public void typeOfSimpleQualident() throws ResolveError {
++	void typeOfSimpleQualident() throws ResolveError {
+ 		//
+ 		// CREATE MOCKS
+ 		//
+@@ -76,11 +76,11 @@
+ 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
+ //		System.out.println(tn);
+ 		verify(ctx, mod);
+-		Assert.assertEquals(typeNameString, tn.toString());
++		Assertions.assertEquals(typeNameString, tn.toString());
+ 	}
+ 
+ 	@Test
+-	public void typeOfComplexQualident() throws ResolveError {
++	void typeOfComplexQualident() throws ResolveError {
+ 		//
+ 		// CREATE MOCKS
+ 		//
+@@ -128,7 +128,7 @@
+ 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
+ //		System.out.println(tn);
+ 		verify(ctx, mod);
+-		Assert.assertEquals(typeNameString, tn.toString());
++		Assertions.assertEquals(typeNameString, tn.toString());
+ 	}
+ 
+ //	@Test
+@@ -194,9 +194,9 @@
+ //		Assert.assertEquals(typeNameString, tn.toString());
+ //	}
+ 
+-	@Ignore
++	@Disabled
+ 	@Test
+-	public void typeOfComplexQualident2() throws ResolveError {
++	void typeOfComplexQualident2() throws ResolveError {
+ 		//
+ 		// CREATE MOCK
+ 		//
+@@ -272,7 +272,7 @@
+ 		final TypeName tn = t.resolve(ctx, deduceTypes2);
+ //		System.out.println(tn);
+ 		verify(ctx/*, mod.parent*/);
+-		Assert.assertEquals(typeNameString, tn.toString());
++		Assertions.assertEquals(typeNameString, tn.toString());
+ 	}
+ 
+ }
+
+diff --git a/build.gradle b/build.gradle
+index dbd8ce5..51e23f6 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -69,6 +69,7 @@ org.openrewrite.config.CompositeRecipe
+ 
+ 
+ 
++    testImplementation "org.junit.jupiter:junit-jupiter:5.10.1"
+     api("com.squareup.okhttp3:okhttp:4.10.0")
+     api("com.codahale.metrics:metrics-healthchecks:3.0.2")
+     api("com.codahale.metrics:metrics-core:3.0.2")
+@@ -108,7 +109,6 @@
+     api("tripleo.util.range:range-v1:0.0.3b")
+ 
+     testImplementation("org.easymock:easymock:5.1.0")
+-    testImplementation('junit:junit:4.13.2')
+ }
+ 
+ sourceSets {
+
+diff --git a/src/test/groovy/UsingJUnitRulesSpec.groovy b/src/test/groovy/UsingJUnitRulesSpec.groovy
+index 0d7a5f3..759f3db 100644
+--- a/src/test/groovy/UsingJUnitRulesSpec.groovy
++++ b/src/test/groovy/UsingJUnitRulesSpec.groovy
+@@ -13,15 +13,34 @@ org.openrewrite.config.CompositeRecipe
+  */
+ 
+ import org.junit.Rule
++import org.junit.jupiter.api.BeforeEach
+ import org.junit.rules.TestName
+ import spock.lang.Specification
+ 
+-class UsingJUnitRulesSpec extends Specification {
+-  @Rule TestName name
++import java.lang.reflect.Method
++import java.util.Optional
++
++class UsingJUnitRulesSpec extends Specification { TestName name
+ 
+   def "retrieve test name at runtime"() {
+     println "entering '$name.methodName'"
+     expect: 1 + 1 == 2
+     println "leaving '$name.methodName'"
+   }
++
++    @BeforeEach
++    public void setup(TestInfo testInfo) {
++        Optional<Method> testMethod = testInfo.getTestMethod()
++        if (testMethod.isPresent()) {
++            this.name = testMethod.get().getName()
++        }
++        Optional<Method> testMethod = testInfo.getTestMethod()
++        if (testMethod.isPresent()) {
++            this.name = testMethod.get().getName()
++        }
++        Optional<Method> testMethod = testInfo.getTestMethod()
++        if (testMethod.isPresent()) {
++            this.name = testMethod.get().getName()
++        }
++    }
+ }
+

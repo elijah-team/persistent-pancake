@@ -13,15 +13,34 @@
  */
 
 import org.junit.Rule
+import org.junit.jupiter.api.BeforeEach
 import org.junit.rules.TestName
 import spock.lang.Specification
 
-class UsingJUnitRulesSpec extends Specification {
-  @Rule TestName name
+import java.lang.reflect.Method
+import java.util.Optional
+
+class UsingJUnitRulesSpec extends Specification { TestName name
 
   def "retrieve test name at runtime"() {
     println "entering '$name.methodName'"
     expect: 1 + 1 == 2
     println "leaving '$name.methodName'"
   }
+
+    @BeforeEach
+    public void setup(TestInfo testInfo) {
+        Optional<Method> testMethod = testInfo.getTestMethod()
+        if (testMethod.isPresent()) {
+            this.name = testMethod.get().getName()
+        }
+        Optional<Method> testMethod = testInfo.getTestMethod()
+        if (testMethod.isPresent()) {
+            this.name = testMethod.get().getName()
+        }
+        Optional<Method> testMethod = testInfo.getTestMethod()
+        if (testMethod.isPresent()) {
+            this.name = testMethod.get().getName()
+        }
+    }
 }

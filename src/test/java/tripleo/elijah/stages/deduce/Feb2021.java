@@ -8,14 +8,14 @@
  */
 package tripleo.elijah.stages.deduce;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tripleo.elijah.util.Helpers.List_of;
 
 /**
@@ -25,7 +25,7 @@ public class Feb2021 {
 	private boolean __unboundedGate = false;
 
 	@Test
-	public void testProperty() {
+	void testProperty() {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/property/"));
@@ -49,12 +49,12 @@ public class Feb2021 {
 		assertTrue(!c.reports().containsCodeOutput("prelude/Prelude/ConstString.h"));
 
 		if (__unboundedGate) {
-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
 		}
 	}
 
 	@Test
-	public void testFunction() {
+	void testFunction() {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/function/"));
@@ -67,12 +67,12 @@ public class Feb2021 {
 		assertEquals(2, c.reports().codeOutputSize());
 
 		if (__unboundedGate) {
-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
 		}
 	}
 
 	@Test
-	public void testHier() {
+	void testHier() {
 		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of("test/feb2021/hier/"));
@@ -89,7 +89,7 @@ public class Feb2021 {
 		assertEquals(6, c.reports().codeOutputSize());
 
 		if (__unboundedGate) {
-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
 		}
 	}
 }

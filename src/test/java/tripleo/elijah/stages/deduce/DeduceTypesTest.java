@@ -11,10 +11,10 @@ package tripleo.elijah.stages.deduce;
 import org.jdeferred2.Promise;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.OS_Module;
@@ -38,7 +38,7 @@ public class DeduceTypesTest {
 	private GenType                              x;
 	private Promise<GenType, ResolveError, Void> xx;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		final Boilerplate b = new Boilerplate();
 		b.get();
@@ -77,19 +77,19 @@ public class DeduceTypesTest {
 	 * TODO This test fails beacause we are comparing a BUILT_IN vs a USER OS_Type.
 	 *   It fails because Integer is an interface and not a BUILT_IN
 	 */
-	@Ignore
+	@Disabled
 	@Test
-	public void testDeduceIdentExpression1() {
+	void testDeduceIdentExpression1() {
 //		assert x == null;
 
-		Assert.assertTrue("Promise not resolved", xx.isResolved());
+		Assertions.assertTrue(xx.isResolved(), "Promise not resolved");
 
 		xx.then(xxx -> {
 //			Assert.assertEquals(OS_Type.Type.USER, xxx.resolved.getType());
 			System.out.println("1 " + new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType());
 			System.out.println("2 " + xxx.getResolved().getBType());
 			System.out.println("2.5 " + xxx.getResolved());
-			Assert.assertNotEquals(new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType(), xxx.getResolved().getBType());
+			Assertions.assertNotEquals(new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType(), xxx.getResolved().getBType());
 
 			assert false; // never reached
 		});
@@ -101,17 +101,17 @@ public class DeduceTypesTest {
 	/**
 	 * Now comparing {@link RegularTypeName} to {@link VariableTypeName} works
 	 */
-@Ignore
-@Test
-	public void testDeduceIdentExpression2() {
+@Disabled
+	@Test
+	void testDeduceIdentExpression2() {
 		final RegularTypeName tn  = new RegularTypeName(null); // README 11/18 better than nothing?
 		final Qualident       tnq = new Qualident();
 		tnq.append(Helpers.string_to_ident("Integer"));
 		tn.setName(tnq);
 
-		Assert.assertTrue("Promise not resolved", xx.isResolved());
+		Assertions.assertTrue(xx.isResolved(), "Promise not resolved");
 
-		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x/*.getTypeName()*/));
+		Assertions.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x/*.getTypeName()*/));
 	}
 
 	@Contract(value = "null, _ -> false", pure = true)
@@ -119,33 +119,33 @@ public class DeduceTypesTest {
 		return genType.getTypeName().isEqual(aType); // minikanren 04/15
 	}
 
-	@Ignore
+	@Disabled
 	@Test
-	public void testDeduceIdentExpression3() {
+	void testDeduceIdentExpression3() {
 		final VariableTypeName tn  = new VariableTypeName();
 		final Qualident        tnq = new Qualident();
 		tnq.append(Helpers.string_to_ident("Integer"));
 		tn.setName(tnq);
 
-		Assert.assertTrue("Promise not resolved", xx.isResolved());
+		Assertions.assertTrue(xx.isResolved(), "Promise not resolved");
 
-		Assert.assertEquals(new OS_UserType(tn).getTypeName(), x.getTypeName().getTypeName());
-		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
+		Assertions.assertEquals(new OS_UserType(tn).getTypeName(), x.getTypeName().getTypeName());
+		Assertions.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
-	public void testDeduceIdentExpression4() {
+	void testDeduceIdentExpression4() {
 		final VariableTypeName tn  = new VariableTypeName();
 		final Qualident        tnq = new Qualident();
 		tnq.append(Helpers.string_to_ident("Integer"));
 		tn.setName(tnq);
 
-		Assert.assertTrue("Promise not resolved", xx.isResolved());
+		Assertions.assertTrue(xx.isResolved(), "Promise not resolved");
 
-		Assert.assertEquals(new OS_UserType(tn).getTypeName(), x.getTypeName().getTypeName());
-		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
-		Assert.assertEquals(new OS_UserType(tn).asString(), x.getTypeName().asString());
+		Assertions.assertEquals(new OS_UserType(tn).getTypeName(), x.getTypeName().getTypeName());
+		Assertions.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
+		Assertions.assertEquals(new OS_UserType(tn).asString(), x.getTypeName().asString());
 	}
 
 }

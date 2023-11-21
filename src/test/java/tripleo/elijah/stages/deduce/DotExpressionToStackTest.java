@@ -10,9 +10,9 @@
 package tripleo.elijah.stages.deduce;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.lang.DotExpression;
 import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.IdentExpression;
@@ -22,12 +22,12 @@ import java.util.Stack;
 
 public class DotExpressionToStackTest {
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 	}
 
 	@Test
-	public void test_dot_expression_to_stack() {
+	void test_dot_expression_to_stack() {
 //		DeduceTypes2 d = new DeduceTypes2(null);
 		//
 		final IdentExpression c = Helpers.string_to_ident("c");
@@ -39,13 +39,13 @@ public class DotExpressionToStackTest {
 		//
 		@NotNull final Stack<IExpression> s = DeduceLookupUtils.dot_expression_to_stack(de);
 //		IExpression[] sa = (IExpression[]) s.toArray();
-		Assert.assertEquals(a, s.pop());
-		Assert.assertEquals(b, s.pop());
-		Assert.assertEquals(c, s.pop());
+		Assertions.assertEquals(a, s.pop());
+		Assertions.assertEquals(b, s.pop());
+		Assertions.assertEquals(c, s.pop());
 	}
 
 	@Test
-	public void test_dot_expression_to_stack2() {
+	void test_dot_expression_to_stack2() {
 //		DeduceTypes2 dt2 = new DeduceTypes2(null);
 		//
 		final IdentExpression e = Helpers.string_to_ident("e");
@@ -61,10 +61,10 @@ public class DotExpressionToStackTest {
 		//
 		@NotNull final Stack<IExpression> s = DeduceLookupUtils.dot_expression_to_stack(de);
 //		IExpression[] sa = (IExpression[]) s.toArray();
-		Assert.assertEquals(a, s.pop());
-		Assert.assertEquals(b, s.pop());
-		Assert.assertEquals(c, s.pop());
-		Assert.assertEquals(d, s.pop());
-		Assert.assertEquals(e, s.pop());
+		Assertions.assertEquals(a, s.pop());
+		Assertions.assertEquals(b, s.pop());
+		Assertions.assertEquals(c, s.pop());
+		Assertions.assertEquals(d, s.pop());
+		Assertions.assertEquals(e, s.pop());
 	}
 }

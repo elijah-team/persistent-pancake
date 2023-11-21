@@ -69,6 +69,7 @@ dependencies {
 
 
 
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.1"
     api("com.squareup.okhttp3:okhttp:4.10.0")
     api("com.codahale.metrics:metrics-healthchecks:3.0.2")
     api("com.codahale.metrics:metrics-core:3.0.2")
@@ -108,7 +109,6 @@ dependencies {
     api("tripleo.util.range:range-v1:0.0.3b")
 
     testImplementation("org.easymock:easymock:5.1.0")
-    testImplementation('junit:junit:4.13.2')
 }
 
 sourceSets {

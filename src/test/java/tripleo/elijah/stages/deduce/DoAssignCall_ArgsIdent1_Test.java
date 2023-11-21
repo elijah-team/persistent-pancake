@@ -1,7 +1,7 @@
 package tripleo.elijah.stages.deduce;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
@@ -37,13 +37,13 @@ import static tripleo.elijah.stages.logging.ElLog.Verbosity.VERBOSE;
 
 public class DoAssignCall_ArgsIdent1_Test {
 	/*
-	    model and test
+		model and test
 
-	    var f1 = factorial(b1)
+			r f1 = factorial(b1)
 	 */
 
 	@Test
-	public void f1_eq_factorial_b1() {
+	void f1_eq_factorial_b1() {
 		final CompilationImpl c             = new CompilationImpl(new StdErrSink(), new IO());
 		final OS_Module       mod           = mock(OS_Module.class);
 		final PipelineLogic   pipelineLogic = new PipelineLogic(new AccessBus(c));

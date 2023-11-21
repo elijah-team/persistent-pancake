@@ -1,7 +1,7 @@
 package tripleo.elijah.nextgen.expansion;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
@@ -31,7 +31,7 @@ import static tripleo.elijah.util.Helpers.List_of;
 public class SX_NodeTest2 {
 
 	@Test
-	public void testFullText() {
+	void testFullText() {
 		final StdErrSink      errSink = new StdErrSink();
 		final IO              io      = new IO();
 		final CompilationImpl comp    = new CompilationImpl(errSink, io);

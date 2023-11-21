@@ -13,7 +13,7 @@ import com.google.common.io.Files;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.comp.IO;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tripleo.elijah.util.Helpers.List_of;
 
 /**
@@ -40,7 +40,7 @@ public class TestBasic {
 	private final boolean __unboundedGate = false;
 
 	@Test
-	public final void testBasicParse() throws Exception {
+	final void testBasicParse() throws Exception {
 		final List<String> ez_files = Files.readLines(new File("test/basic/ez_files.txt"), Charsets.UTF_8);
 		final List<String> args     = new ArrayList<String>();
 		args.addAll(ez_files);
@@ -54,7 +54,7 @@ public class TestBasic {
 	}
 
 	@Test
-	public final void testBasic_listfolders3() {
+	final void testBasic_listfolders3() {
 		final String s = "test/basic/listfolders3/listfolders3.ez";
 
 		final ErrSink     eee = new StdErrSink();
@@ -85,12 +85,12 @@ public class TestBasic {
 		assertFalse(c.reports().containsCodeOutput("prelude/Prelude/Integer64.c"));
 
 		if (__unboundedGate) {
-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
 		}
 	}
 
 	@Test
-	public final void testBasic_listfolders4() {
+	final void testBasic_listfolders4() {
 		final String s = "test/basic/listfolders4/listfolders4.ez";
 
 		final ErrSink     eee = new StdErrSink();
@@ -104,12 +104,12 @@ public class TestBasic {
 		assertEquals(51, c.errorCount()); // TODO Error count obviously should be 0
 
 		if (__unboundedGate) {
-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
 		}
 	}
 
 	@Test
-	public final void testBasic_fact1() {
+	final void testBasic_fact1() {
 		final String s = "test/basic/fact1/main2";
 
 		final ErrSink     eee = new StdErrSink();
@@ -161,7 +161,7 @@ public class TestBasic {
 
 
 		if (__unboundedGate) {
-			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
+			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
 		}
 	}
 
