@@ -1,6 +1,5 @@
 package tripleo.elijah.stages.deduce.percy;
 
-import org.apache.commons.lang3.tuple.Triple;
 import org.jdeferred2.DoneCallback;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.UnintendedUseException;
@@ -56,7 +55,7 @@ public class PFInvocationImpl implements PFInvocation {
 			}
 
 			@Override
-			public void exception(final Exception aFailure) {
+			public void exception(final Throwable aFailure) {
 				throw new UnintendedUseException();
 			}
 		});

@@ -6,9 +6,9 @@ import java.io.*;
 import java.util.*;
 
 public class ExceptionDiagnostic implements Diagnostic {
-	private final Exception e;
+	private final Throwable e;
 
-	public ExceptionDiagnostic(final Exception aE) {
+	public ExceptionDiagnostic(final Throwable aE) {
 		e = aE;
 	}
 

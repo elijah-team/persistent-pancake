@@ -68,7 +68,7 @@ public class PFluffyClassStatementImpl implements PFluffyClassStatement {
 					             s.classInvocation(clsinv2);
 				             });
 			} else {
-				final Exception failure = top.failure();
+				final Throwable failure = top.failure();
 				failure.printStackTrace();
 				s.exception(failure);
 			}

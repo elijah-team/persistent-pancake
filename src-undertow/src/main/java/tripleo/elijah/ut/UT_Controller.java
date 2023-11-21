@@ -15,13 +15,9 @@ import tripleo.elijah.comp.i.ProgressSinkComponent;
 import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.comp.ApacheOptionsProcessor;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.CompilationRunner;
 import tripleo.elijah.comp.CompilerController;
-import tripleo.elijah.comp.CompilerInstructionsObserver;
 import tripleo.elijah.comp.ICompilationBus;
 import tripleo.elijah.comp.OptionsProcessor;
-import tripleo.elijah.comp.i.IProgressSink;
-import tripleo.elijah.comp.i.ProgressSinkComponent;
 
 import java.util.List;
 

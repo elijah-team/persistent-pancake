@@ -25,7 +25,7 @@ public class StdErrSink implements ErrSink {
 	private int _errorCount;
 
 	@Override
-	public void exception(final Exception e) {
+	public void exception(final Throwable e) {
 		_errorCount++;
 		SimplePrintLoggerToRemoveSoon.println_err2("exception: " + e);
 		e.printStackTrace(System.err);

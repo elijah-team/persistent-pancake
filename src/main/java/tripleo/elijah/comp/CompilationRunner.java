@@ -255,7 +255,7 @@ public class CompilationRunner {
 				final Operation<CompilerInstructions> cio = parseEzFile_(f, s);
 
 				if (cio.mode() == Mode.FAILURE) {
-					final Exception e = cio.failure();
+					final Throwable e = cio.failure();
 					assert e != null;
 
 					SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));

@@ -38,6 +38,8 @@ public class QuerySourceFileToModule {
 		parser.setFilename(f);
 		try {
 			parser.program();
+		} catch (final AssertionError aE) {
+			return Operation.failure(aE);
 		} catch (final RecognitionException aE) {
 			return Operation.failure(aE);
 		} catch (final TokenStreamException aE) {

@@ -32,12 +32,12 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class USE {
-	private static final FilenameFilter         accept_source_files = (directory, file_name) -> {
+	public static final FilenameFilter accept_source_files = (directory, file_name) -> {
 		final boolean matches = Pattern.matches(".+\\.elijah$", file_name)
 		  || Pattern.matches(".+\\.elijjah$", file_name);
 		return matches;
 	};
-	private final        Compilation            c;
+	private final       Compilation    c;
 	private final        ErrSink                errSink;
 	private final        Map<String, OS_Module> fn2m                = new HashMap<String, OS_Module>();
 
@@ -171,7 +171,7 @@ public class USE {
 		case SUCCESS:
 			return Operation2.success(om.success());
 		case FAILURE:
-			final Exception e = om.failure();
+			final Throwable e = om.failure();
 			errSink.exception(e);
 			return Operation2.failure(new ExceptionDiagnostic(e));
 		default:
@@ -199,7 +199,7 @@ public class USE {
 		try {
 			final Operation<OS_Module> om = parseFile_(f, s, do_out);
 			if (om.mode() != Mode.SUCCESS) {
-				final Exception e = om.failure();
+				final Throwable e = om.failure();
 				assert e != null;
 
 				SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));

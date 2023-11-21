@@ -3,6 +3,7 @@ package tripleo.elijah.lang;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.lang.nextgen.names2.EN_Name;
+import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
@@ -55,8 +56,7 @@ public class TypeOfTypeName extends _AbstractNameable2 implements TypeName {
 
 	@Override
 	public EN_Name getEnName() {
-//		return null;
-		throw new UnintendedUseException();
+		return new EN_Name_Q(this._typeOf, this);
 	}
 
 	public TypeName resolve(final @NotNull Context ctx, final DeduceTypes2 deduceTypes2) throws ResolveError {

@@ -11,7 +11,7 @@ import static tripleo.elijah.util.Mode.SUCCESS;
  * @param <T> the success type
  */
 public class Operation<T> /* extends Operation2<T> */ {
-	public static <T> @NotNull Operation<T> failure(final Exception aException) {
+	public static <T> @NotNull Operation<T> failure(final Throwable aException) {
 		final Operation<T> op = new Operation<>(null, aException, FAILURE);
 		return op;
 	}
@@ -25,9 +25,9 @@ public class Operation<T> /* extends Operation2<T> */ {
 
 	private final T succ;
 
-	private final Exception exc;
+	private final Throwable exc;
 
-	public Operation(final T aSuccess, final Exception aException, final Mode aMode) {
+	public Operation(final T aSuccess, final Throwable aException, final Mode aMode) {
 		succ = aSuccess;
 		exc = aException;
 		mode = aMode;
@@ -49,7 +49,7 @@ public class Operation<T> /* extends Operation2<T> */ {
 		}
 	}
 
-	public Exception failure() {
+	public Throwable failure() {
 		return exc;
 	}
 

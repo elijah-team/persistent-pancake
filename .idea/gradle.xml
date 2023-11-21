@@ -7,7 +7,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/untitled" />
           </set>
         </option>
       </GradleProjectSettings>
