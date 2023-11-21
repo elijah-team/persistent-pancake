@@ -4,6 +4,8 @@ import tripleo.elijah.persistent_pancake.javaparser.ParseResult;
 import tripleo.elijah.persistent_pancake.javaparser.ast.CompilationUnit;
 import tripleo.elijah.persistent_pancake.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
+import java.util.Optional;
+
 public abstract class VoidVisitorAdapter<A> {
 	public abstract void visit(ClassOrInterfaceDeclaration n, A arg);
 
@@ -17,6 +19,9 @@ public abstract class VoidVisitorAdapter<A> {
 	}
 
 	public void visit(final ParseResult<CompilationUnit> aParse, final Object aO) {
-		visit(aParse.getResult().get(), (A) aO);
+		final Optional<CompilationUnit> ocu = aParse.getResult();
+		if (ocu.isPresent()) {
+			visit(ocu.get(), (A) aO);
+		}
 	}
 }

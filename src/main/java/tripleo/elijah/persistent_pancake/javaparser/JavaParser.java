@@ -46,11 +46,12 @@ public class JavaParser {
 //		ParseResult<CompilationUnit> result = parse(COMPILATION_UNIT, provider(file, configuration.getCharacterEncoding()));
 //		result.getResult().ifPresent(cu -> cu.setStorage(file.toPath(), configuration.getCharacterEncoding()));
 
-		final CompilationUnit cu;
+		CompilationUnit cu;
 		try {
 			cu = ___parse(file);
 		} catch (ParseException aE) {
-			throw new RuntimeException(aE);
+//			throw new RuntimeException(aE);
+			cu = null;
 		} catch (IOException aE) {
 			throw new RuntimeException(aE);
 		}

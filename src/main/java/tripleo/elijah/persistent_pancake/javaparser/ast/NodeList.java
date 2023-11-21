@@ -12,6 +12,6 @@ public class NodeList<N> {
 
 	public void forEach(final Consumer<? super N> action) {
 		innerList.forEach(action);
-		throw new UnintendedUseException();
+//		throw new UnintendedUseException();
 	}
 }
