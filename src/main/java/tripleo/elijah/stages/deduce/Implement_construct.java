@@ -1,6 +1,7 @@
 package tripleo.elijah.stages.deduce;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,7 @@ import tripleo.elijah.stages.deduce.percy.DeduceElement3_LookingUpCtx;
 import tripleo.elijah.stages.deduce.percy.PFInvocation;
 import tripleo.elijah.stages.deduce.percy.PFluffyClassStatement;
 import tripleo.elijah.stages.deduce.percy.PFluffyClassStatementImpl;
+import tripleo.elijah.stages.deduce.percy.PFluffy_TableEntry;
 import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
 import tripleo.elijah.stages.deduce.percy.Provided;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
@@ -180,7 +182,7 @@ public class Implement_construct {
 						}
 					} else {
 						if (i + 1 == deducePath.size()) {
-							if (el3 != null ) {
+							if (el3 != null) {
 								assert el3 == el2;
 								if (el2 instanceof ConstructorDef) {
 									@Nullable final GenType type = deducePath.getType(i);
@@ -244,7 +246,7 @@ public class Implement_construct {
 			}
 			default -> {
 				throw new NotImplementedException();
-	//			return;
+				//			return;
 			}
 			}
 			if (co != null) {
@@ -269,12 +271,59 @@ public class Implement_construct {
 		}
 		case TYPE_NAME_ELEMENT -> {
 			final ClassContext.OS_TypeNameElement typeNameElement = (ClassContext.OS_TypeNameElement) best;
-			_ict_TypeNameElement(co, constructorName, aTyn1, typeNameElement);
+			_ict_TypeNameElement(co, constructorName, aTyn1, typeNameElement, () -> new ClassInvocation((ClassStatement) best, constructorName));
 		}
 
 		default -> {
 			throw new IllegalStateException("Unexpected value: " + DecideElObjectType.getElObjectType(best));
 		}
+		}
+	}
+
+	private void _ict_TypeNameElement(final Constructable aCo,
+	                                  final String aConstructorName,
+	                                  final NormalTypeName aTyn1,
+	                                  final ClassContext.OS_TypeNameElement aTypeNameElement,
+	                                  final Supplier<ClassInvocation> aClassInvocationSupplier) {
+		final @Nullable ClassInvocation clsinv1        = aClassInvocationSupplier.get();
+		final @NotNull ClassInvocation  clsinv;
+		final @NotNull IdentTableEntry  ite            = ((IdentIA) this.expression).getEntry();
+		final ClassStatement            classStatement = (ClassStatement) generatedFunction.getFD().getParent();
+
+		// FIXME 11/18 invocation table, aka prte_list
+		final PFInvocation          pinv = deduceTypes2.get(generatedFunction).makeInvocation(classStatement);
+		final PFInvocation.Setter[] ss   = {null};
+
+		pinv.setter((final PFInvocation.Setter s) -> {
+			ss[0] = s;
+
+			PFluffyClassStatement fcs = new PFluffyClassStatementImpl(classStatement);
+			fcs.extracted(aConstructorName, aTyn1, s, deduceTypes2);
+		});
+
+		int y = 2;
+
+		if (ite.getType().getGenType(deduceTypes2) == null) {
+			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, (OS_Type) null);
+			final GenType gt = ite.getType().getGenType(deduceTypes2);
+			if (gt == null) {
+				System.err.println("FAIL 308");
+				return;
+			}
+		}
+
+		if (clsinv1 != null) {
+			final @Nullable ClassInvocation clsinv2 = deduceTypes2._phase().registerClassInvocation(clsinv1);
+			if (clsinv2 != null) {
+				clsinv = clsinv2;
+				if (aCo != null) {
+					PFluffy_TableEntry.handle001(aCo, aTypeNameElement, clsinv, pte, deduceTypes2);
+				} else {
+					throw new AssertionError();
+				}
+			}
+		} else {
+			System.err.println("FAIL 402");
 		}
 	}
 
@@ -286,7 +335,7 @@ public class Implement_construct {
 
 		final PFInvocation pinv = deduceTypes2.get(generatedFunction).makeInvocation(classStatement);
 
-		pinv.setter((final PFInvocation.Setter s)->{
+		pinv.setter((final PFInvocation.Setter s) -> {
 			ss[0] = s;
 
 			PFluffyClassStatement fcs = new PFluffyClassStatementImpl(classStatement);
@@ -323,80 +372,4 @@ public class Implement_construct {
 		});
 	}
 
-	private void _ict_TypeNameElement(final @Nullable Constructable co,
-	                                  final @Nullable String constructorName,
-	                                  final @NotNull NormalTypeName aTyn1,
-	                                  final ClassContext.OS_TypeNameElement aTypeNameElement) {
-		@Nullable ClassInvocation     clsinv = null;
-
-		@NotNull final IdentTableEntry ite = ((IdentIA) this.expression).getEntry();
-
-		final ClassStatement        classStatement = (ClassStatement) generatedFunction.getFD().getParent();
-
-		// FIXME 11/18 invocation table, aka prte_list
-		final PFInvocation          pinv   = deduceTypes2.get(generatedFunction).makeInvocation(classStatement);
-		final PFInvocation.Setter[] ss     = { null };
-
-		pinv.setter((final PFInvocation.Setter s) -> {
-			ss[0] = s;
-
-			PFluffyClassStatement fcs = new PFluffyClassStatementImpl(classStatement);
-			fcs.extracted(constructorName, aTyn1, s, deduceTypes2);
-		});
-
-		int y = 2;
-
-		if (ite.getType().getGenType(deduceTypes2) == null) {
-			ite.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, (OS_Type) null);
-			final GenType gt = ite.getType().getGenType(deduceTypes2);
-//			assert gt != null;
-			if (gt == null) return;
-		}
-
-		assert clsinv != null;
-
-		clsinv = deduceTypes2._phase().registerClassInvocation(clsinv);
-		if (co != null) {
-			if (co instanceof IdentTableEntry) {
-				final @Nullable IdentTableEntry idte3 = (IdentTableEntry) co;
-				idte3.getType().genTypeCI(clsinv);
-				clsinv.resolvePromise().then(new DoneCallback<GeneratedClass>() {
-					@Override
-					public void onDone(final GeneratedClass result) {
-						idte3.resolveTypeToClass(result);
-					}
-				});
-			} else if (co instanceof VariableTableEntry) {
-				final @NotNull VariableTableEntry vte = (VariableTableEntry) co;
-				vte.type.genTypeCI(clsinv);
-				clsinv.resolvePromise().then(new DoneCallback<GeneratedClass>() {
-					@Override
-					public void onDone(final GeneratedClass result) {
-						vte.resolveTypeToClass(result);
-					}
-				});
-			}
-		}
-		pte.setClassInvocation(clsinv);
-		pte.setResolvedElement(aTypeNameElement);
-		// set FunctionInvocation with pte args
-		{
-			@Nullable ConstructorDef cc = null;
-//			if (constructorName != null) {
-//				final Collection<ConstructorDef> cs = aTypeNameElement.getConstructors();
-//				for (@NotNull final ConstructorDef c : cs) {
-//					if (c.name().equals(constructorName)) {
-//						cc = c;
-//						break;
-//					}
-//				}
-//			}
-			// TODO also check arguments
-			{
-				assert cc != null || pte.getArgs().size() == 0;
-				@NotNull final FunctionInvocation fi = deduceTypes2.newFunctionInvocation(cc, pte, clsinv, deduceTypes2._phase());
-				pte.setFunctionInvocation(fi);
-			}
-		}
-	}
 }
