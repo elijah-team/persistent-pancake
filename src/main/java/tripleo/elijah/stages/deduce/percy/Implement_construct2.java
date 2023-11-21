@@ -4,6 +4,7 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.lang.ConstructorDef;
+import tripleo.elijah.modeltransition.EventualProvider;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.Implement_construct;
@@ -16,19 +17,7 @@ import tripleo.elijah.util.NotImplementedException;
 import java.util.function.Consumer;
 
 public class Implement_construct2 {
-	final         Provided<PercyWantConstructor> p = new Provided<PercyWantConstructor>() {
-		private final Eventual<PercyWantConstructor> prom = new Eventual<>();
-
-		@Override
-		public void on(final DoneCallback<PercyWantConstructor> t) {
-			prom.then(t);
-		}
-
-		@Override
-		public void provide(PercyWantConstructor pwc) {
-			prom.resolve(pwc);
-		}
-	};
+	private final Provided<PercyWantConstructor> p = new EventualProvider<>();
 	private final DeduceTypes2                   deduceTypes2;
 	private final BaseGeneratedFunction          generatedFunction;
 	private final Instruction                    instruction;

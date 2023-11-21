@@ -16,6 +16,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import io.reactivex.rxjava3.subjects.Subject;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.functionality.f202.F202;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
@@ -24,11 +25,15 @@ import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.lang.Qualident;
+import tripleo.elijah.modeltransition.ElSystemSink;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
+import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah.stages.generate.ElSystem;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.testing.comp.IFunctionMapHook;
 import tripleo.elijah.ut.UT_Controller;
@@ -44,8 +49,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Supplier;
 
-public abstract class Compilation {
+public abstract class Compilation implements ElSystemSink {
 
 	public final  List<ElLog>          elLogs = new LinkedList<ElLog>();
 	public final  CompilationConfig    cfg    = new CompilationConfig();
@@ -267,6 +273,21 @@ public abstract class Compilation {
 
 		ctl.processOptions();
 		ctl.runner();
+	}
+
+	public void addCodeOutput(final EOT_FileNameProvider aFileNameProvider,
+	                          final Supplier<EOT_OutputFile> aOutputFileSupplier,
+	                          final boolean addFlag) {
+		final EOT_OutputFile eof        = aOutputFileSupplier.get();
+		final Finally.Output e          = reports().addCodeOutput(aFileNameProvider, eof);
+		if (addFlag) {
+			getOutputTree().add(eof);
+		}
+	}
+
+	@Override
+	public void provide(final ElSystem aSystem) {
+		throw new UnintendedUseException();
 	}
 
 	static class MOD {

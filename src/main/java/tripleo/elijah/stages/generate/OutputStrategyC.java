@@ -19,7 +19,7 @@ import tripleo.elijah.lang.NamespaceTypes;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
@@ -100,23 +100,23 @@ public class OutputStrategyC {
 		return aFilename;
 	}
 
-	public EOT_OutputFile.FileNameProvider nameForNamespace2(final GeneratedNamespace aGeneratedNamespace, final GenerateResult.TY aTy) {
+	public EOT_FileNameProvider nameForNamespace2(final GeneratedNamespace aGeneratedNamespace, final GenerateResult.TY aTy) {
 		return new OSC_NS(aGeneratedNamespace, aTy);
 	}
 
-	public EOT_OutputFile.FileNameProvider nameForClass2(final GeneratedClass aGeneratedClass, final GenerateResult.TY aTy) {
+	public EOT_FileNameProvider nameForClass2(final GeneratedClass aGeneratedClass, final GenerateResult.TY aTy) {
 		return new OSC_C(aGeneratedClass, aTy, outputStrategy);
 	}
 
-	public EOT_OutputFile.FileNameProvider nameForFunction2(final GeneratedFunction aGeneratedFunction, final GenerateResult.TY aTy) {
+	public EOT_FileNameProvider nameForFunction2(final GeneratedFunction aGeneratedFunction, final GenerateResult.TY aTy) {
 		return new OSC_F(aGeneratedFunction, aTy, outputStrategy);
 	}
 
-	public EOT_OutputFile.FileNameProvider nameForConstructor2(final GeneratedConstructor aGeneratedConstructor, final GenerateResult.TY aTy) {
+	public EOT_FileNameProvider nameForConstructor2(final GeneratedConstructor aGeneratedConstructor, final GenerateResult.TY aTy) {
 		return new OSC_CTOR(aGeneratedConstructor, aTy, outputStrategy);
 	}
 
-	static class OSC_NS implements EOT_OutputFile.FileNameProvider {
+	static class OSC_NS implements EOT_FileNameProvider {
 		private final GeneratedNamespace generatedNamespace;
 		private final GenerateResult.TY  ty;
 
@@ -167,7 +167,7 @@ public class OutputStrategyC {
 		}
 	}
 
-	static class OSC_C implements EOT_OutputFile.FileNameProvider {
+	static class OSC_C implements EOT_FileNameProvider {
 		private final GeneratedClass generatedClass;
 		private final GenerateResult.TY ty;
 		private final OutputStrategy outputStrategy;
@@ -257,7 +257,7 @@ public class OutputStrategyC {
 		}
 	}
 
-	static class OSC_F implements EOT_OutputFile.FileNameProvider {
+	static class OSC_F implements EOT_FileNameProvider {
 		private final GeneratedFunction generatedFunction;
 		private final GenerateResult.TY ty;
 		private final OutputStrategy outputStrategy;
@@ -283,7 +283,7 @@ public class OutputStrategyC {
 		}
 	}
 
-	static class OSC_CTOR implements EOT_OutputFile.FileNameProvider {
+	static class OSC_CTOR implements EOT_FileNameProvider {
 		private final BaseGeneratedFunction generatedConstructor;
 		private final GenerateResult.TY ty;
 		private final OutputStrategy outputStrategy;

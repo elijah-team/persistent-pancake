@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 
 public class Finally {
 	public int codeOutputSize() {
@@ -76,11 +77,11 @@ public class Finally {
 	}
 
 	static class Output {
-		private final EOT_OutputFile.FileNameProvider fileNameProvider;
+		private final EOT_FileNameProvider fileNameProvider;
 		@SuppressWarnings("FieldCanBeLocal")
-		private final EOT_OutputFile off;
+		private final EOT_OutputFile       off;
 
-		public Output(final EOT_OutputFile.FileNameProvider aFileNameProvider, final EOT_OutputFile aOff) {
+		public Output(final EOT_FileNameProvider aFileNameProvider, final EOT_OutputFile aOff) {
 			fileNameProvider = aFileNameProvider;
 			off = aOff;
 		}
@@ -124,8 +125,10 @@ public class Finally {
 //		inputs.add(new Input(aInp, ty));
 //	}
 
-	public void addCodeOutput(final EOT_OutputFile.FileNameProvider aFileNameProvider, final EOT_OutputFile aOff) {
-		outputs.add(new Output(aFileNameProvider, aOff));
+	public Output addCodeOutput(final EOT_FileNameProvider aFileNameProvider, final EOT_OutputFile aOff) {
+		final Output e = new Output(aFileNameProvider, aOff);
+		outputs.add(e);
+		return e;
 	}
 
 	public void addInput(final Nameable aNameable, final Out2 ty) {

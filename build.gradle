@@ -4,7 +4,7 @@ plugins {
     id 'maven-publish'
     id 'idea'
 
-//    id('groovy')
+    id('groovy')
 }
 
 //// Spock works with Java 1.8 and above
@@ -21,23 +21,23 @@ repositories {
     maven {url = uri("https://gitlab.com/api/v4/projects/21223510/packages/maven"); name='3'}
 
     // same??
-    maven {url = uri("https://repo.maven.apache.org/maven2/")}
-//    mavenCentral()
+//    maven {url = uri("https://repo.maven.apache.org/maven2/")}
+    mavenCentral()
 
     // Spock snapshots are available from the Sonatype OSS snapshot repository
-//    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
     // Spock Groovy Junit5
-/*
+
     // mandatory dependencies for using Spock
     implementation platform('org.apache.groovy:groovy-bom:4.0.15')
     implementation 'org.apache.groovy:groovy'
     testImplementation platform("org.spockframework:spock-bom:2.3-groovy-4.0")
     testImplementation "org.spockframework:spock-core"
     testImplementation "org.spockframework:spock-junit4"  // you can remove this if your code does not rely on old JUnit 4 rules
-*/
+
 
     // optional dependencies for using Spock
     testImplementation "org.hamcrest:hamcrest-core:2.2"   // only necessary if Hamcrest matchers are used

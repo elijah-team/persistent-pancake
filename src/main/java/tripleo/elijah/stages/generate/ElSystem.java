@@ -8,9 +8,14 @@
  */
 package tripleo.elijah.stages.generate;
 
+import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+import tripleo.elijah.modeltransition.ElSystemSink;
+import tripleo.elijah.modeltransition.EventualProvider;
+import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
+import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
+import tripleo.elijah.stages.deduce.percy.Provided;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.stages.gen_fn.GeneratedConstructor;
 import tripleo.elijah.stages.gen_fn.GeneratedFunction;
@@ -27,16 +32,30 @@ import java.util.Map;
  * Created 1/8/21 11:02 PM
  */
 public class ElSystem {
-	private OutputStrategy outputStrategy;
+	private Provided<ElSystemSink> cmElSystemSink = new EventualProvider<>();
+	private OutputStrategy         outputStrategy;
 	private Compilation compilation;
 	private final Map<GeneratedFunction, String> gfm_map = new HashMap<GeneratedFunction, String>();
 	public boolean verbose = true;
 
+	public ElSystem() {
+		cmElSystemSink.on(result -> result.provide(ElSystem.this));
+	}
+
+	public void generateOutputs(@NotNull final GenerateResult gr, ElSystemSink sink) {
+		cmElSystemSink.provide(sink);
+		generateOutputs(gr);
+	}
+
 	public void generateOutputs(@NotNull final GenerateResult gr) {
 		final @NotNull OutputStrategyC outputStrategyC = new OutputStrategyC(this.outputStrategy);
 
+//		if (cmElSystemSink.has()) {
+//
+//		}
+
 		for (final GenerateResultItem ab : gr.results()) {
-			final EOT_OutputFile.FileNameProvider fn = generateOutputs_Internal2(ab.node, ab.ty, outputStrategyC);
+			final EOT_FileNameProvider fn = generateOutputs_Internal2(ab.node, ab.ty, outputStrategyC);
 
 			assert fn.getFilename() != null;
 			ab.output = fn.getFilename();
@@ -50,9 +69,9 @@ public class ElSystem {
 		}
 	}
 
-	private EOT_OutputFile.FileNameProvider generateOutputs_Internal2(final GeneratedNode node, final GenerateResult.TY ty, final OutputStrategyC outputStrategyC) {
-		final EOT_OutputFile.FileNameProvider s;
-		String                                ss;
+	private EOT_FileNameProvider generateOutputs_Internal2(final GeneratedNode node, final GenerateResult.TY ty, final OutputStrategyC outputStrategyC) {
+		final EOT_FileNameProvider s;
+		String                     ss;
 		if (node instanceof GeneratedNamespace) {
 			final GeneratedNamespace generatedNamespace = (GeneratedNamespace) node;
 			s = outputStrategyC.nameForNamespace2(generatedNamespace, ty);

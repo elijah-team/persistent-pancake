@@ -82,7 +82,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 	@Override
 	public void run() throws Exception {
-		sys.generateOutputs(gr);
+		sys.generateOutputs(gr, c);
 
 		write_files();
 		// TODO flag?
@@ -103,12 +103,13 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 		for (final MBB entry : mb2.bz()) {
 			final String             fileName = entry.getFileName();
-			final Collection<Buffer> vs       = entry.getBuffers();
 
-			final EOT_OutputFile eof = EOT_OutputFile.bufferSetToOutputFile(fileName, vs, c, entry.getModule());
-			leof.add(eof);
+			c.addCodeOutput(() -> remove_initial_slash(fileName), () -> {
+				final Collection<Buffer> vs       = entry.getBuffers();
 
-			c.reports().addCodeOutput(()-> remove_initial_slash(fileName), eof);
+				final EOT_OutputFile eof = EOT_OutputFile.bufferSetToOutputFile(fileName, vs, c, entry.getModule());
+				return eof;
+			}, true);
 		}
 
 		c.getOutputTree().set(leof);
