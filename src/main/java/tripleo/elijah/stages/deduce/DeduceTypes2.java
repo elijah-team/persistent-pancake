@@ -1230,16 +1230,140 @@ public class DeduceTypes2 {
 	}
 
 	@NotNull GenType resolve_type(final OS_Module module, final @Nullable OS_Type type, final Context ctx) throws ResolveError {
-		final GenType[] R = new GenType[1];
+		@NotNull final GenType R = new GenType(resolver());
+		R.setTypeName(type);
 
-		final Deduce_Type deduceType = new Deduce_Type(type);
-		deduceType.typePromise.then(result -> R[0] = result);
+		switch (type.getType()) {
 
-		deduceType.doResolveType(module, ctx, this);
+		case BUILT_IN: {
+			switch (type.getBType()) {
+			case SystemInteger: {
+				@NotNull final String typeName = type.getBType().name();
+				assert typeName.equals("SystemInteger");
+				OS_Module prelude = module.prelude;
+				if (prelude == null) // README Assume `module' IS prelude
+					prelude = module;
+				final LookupResultList lrl  = prelude.getContext().lookup(typeName);
+				@Nullable OS_Element   best = lrl.chooseBest(null);
+				while (!(best instanceof ClassStatement)) {
+					if (best instanceof AliasStatement) {
+						best = DeduceLookupUtils._resolveAlias2((AliasStatement) best, this);
+					} else if (OS_Type.isConcreteType(best)) {
+						throw new NotImplementedException();
+					} else
+						throw new NotImplementedException();
+				}
+				if (best == null) {
+					throw new ResolveError(IdentExpression.forString(typeName), lrl);
+				}
+				R.setResolved(new OS_UserClassType((ClassStatement) best));
+				break;
+					}
+					case String_: {
+						@NotNull final String typeName = type.getBType().name();
+						assert typeName.equals("String_");
+						OS_Module prelude = module.prelude;
+						if (prelude == null) // README Assume `module' IS prelude
+							prelude = module;
+						final LookupResultList lrl  = prelude.getContext().lookup("ConstString"); // TODO not sure about String
+						@Nullable OS_Element   best = lrl.chooseBest(null);
+						while (!(best instanceof ClassStatement)) {
+							if (best instanceof AliasStatement) {
+								best = DeduceLookupUtils._resolveAlias2((AliasStatement) best, this);
+							} else if (OS_Type.isConcreteType(best)) {
+								throw new NotImplementedException();
+							} else
+								throw new NotImplementedException();
+						}
+						if (best == null) {
+							throw new ResolveError(IdentExpression.forString(typeName), lrl);
+						}
+						R.setResolved(new OS_UserClassType((ClassStatement) best));
+						break;
+					}
+					case SystemCharacter: {
+						@NotNull final String typeName = type.getBType().name();
+						assert typeName.equals("SystemCharacter");
+						OS_Module prelude = module.prelude;
+						if (prelude == null) { // README Assume `module' IS prelude
+							prelude = module;
+							assert module != null;
+							assert prelude.getContext() != null;
+						}
+						final LookupResultList lrl  = prelude.getContext().lookup("SystemCharacter");
+						@Nullable OS_Element   best = lrl.chooseBest(null);
+						while (!(best instanceof ClassStatement)) {
+							if (best instanceof AliasStatement) {
+								best = DeduceLookupUtils._resolveAlias2((AliasStatement) best, this);
+							} else if (OS_Type.isConcreteType(best)) {
+								throw new NotImplementedException();
+							} else
+								throw new NotImplementedException();
+						}
+						if (best == null) {
+							throw new ResolveError(IdentExpression.forString(typeName), lrl);
+						}
+						R.setResolved(new OS_UserClassType((ClassStatement) best));
+						break;
+					}
+					case Boolean: {
+						OS_Module prelude = module.prelude;
+						if (prelude == null) // README Assume `module' IS prelude
+							prelude = module;
+						final LookupResultList     lrl  = prelude.getContext().lookup("Boolean");
+						final @Nullable OS_Element best = lrl.chooseBest(null);
+						R.setResolved(new OS_UserClassType((ClassStatement) best)); // TODO might change to Type
+						break;
+					}
+					default:
+						throw new IllegalStateException("531 Unexpected value: " + type.getBType());
+				}
+				break;
+			}
+			case USER: {
+				final TypeName tn1 = type.getTypeName();
+				switch (tn1.kindOfType()) {
+					case NORMAL: {
+						final Qualident tn = ((NormalTypeName) tn1).getRealName();
+						LOG.info("799 [resolving USER type named] " + tn);
+						final LookupResultList lrl  = DeduceLookupUtils.lookupExpression(tn, tn1.getContext(), this);
+						@Nullable OS_Element   best = lrl.chooseBest(null);
+						while (best instanceof AliasStatement) {
+							best = DeduceLookupUtils._resolveAlias2((AliasStatement) best, this);
+						}
+						if (best == null) {
+							if (tn.asSimpleString().equals("Any"))
+								/*return*/ R.setResolved(new OS_AnyType()); // TODO not a class
+							throw new ResolveError(tn1, lrl);
+						}
 
-		assert deduceType.typePromise.isResolved();
+						if (best instanceof ClassContext.OS_TypeNameElement) {
+							/*return*/
+							R.setResolved(new OS_GenericTypeNameType((ClassContext.OS_TypeNameElement) best)); // TODO not a class
+						} else
+							R.setResolved(new OS_UserClassType((ClassStatement) best));
+						break;
+					}
+					case FUNCTION:
+					case GENERIC:
+				case TYPE_OF:
+					throw new NotImplementedException();
+				default:
+					throw new IllegalStateException("414 Unexpected value: " + tn1.kindOfType());
+				}
+			}
+		case USER_CLASS:
+			break;
+		case FUNCTION:
+			break;
+		case FUNC_EXPR:
+			final int y = 2;
+			break;
+		default:
+			throw new IllegalStateException("565 Unexpected value: " + type.getType());
+		}
 
-		return R[0];
+		return R;
 	}
 
 	/*static*/

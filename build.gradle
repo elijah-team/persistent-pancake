@@ -4,7 +4,7 @@ plugins {
     id 'maven-publish'
     id 'idea'
 
-    id('groovy')
+//    id('groovy')
 }
 
 //// Spock works with Java 1.8 and above
@@ -139,9 +139,9 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 //}
 //
 
-test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-}
+//test {
+//    useJUnitPlatform()
+//    testLogging {
+//        events "passed", "skipped", "failed"
+//    }
+//}
