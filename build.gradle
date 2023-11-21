@@ -63,43 +63,43 @@ dependencies {
     api("com.squareup.okhttp3:okhttp:4.10.0")
     api("com.codahale.metrics:metrics-healthchecks:3.0.2")
     api("com.codahale.metrics:metrics-core:3.0.2")
-    api("org.jooq:jool:0.9.14")
+    api('org.jooq:jool:0.9.15')
     api("org.hashids:hashids:1.0.3")
     api("com.typesafe:config:1.4.2")
-    api("com.fasterxml.jackson.core:jackson-databind:2.14.2")
-    api("io.undertow:undertow-servlet:2.3.4.Final")
+    api('com.fasterxml.jackson.core:jackson-databind:2.15.1')
+    api('io.undertow:undertow-servlet:2.3.6.Final')
 
-    api("org.apache.commons:commons-lang3:3.3")
-    api("net.java.dev.jna:jna:4.0.0")
+    api('org.apache.commons:commons-lang3:3.12.0')
+    api('net.java.dev.jna:jna:5.12.1')
 
-    api("io.undertow:undertow-core:2.2.22.Final")
+    api('io.undertow:undertow-core:2.3.4.Final')
 
-    api("me.friwi:jcefmaven:105.3.36")
+    api('me.friwi:jcefmaven:110.0.25')
 
-    api("org.reactivestreams:reactive-streams:1.0.3")
-    api("io.reactivex.rxjava3:rxjava:3.1.0")
+    api('org.reactivestreams:reactive-streams:1.0.4')
+    api('io.reactivex.rxjava3:rxjava:3.1.6')
 
     api("commons-codec:commons-codec:1.15")
 
-    api("org.slf4j:slf4j-simple:1.7.25")
+    api('org.slf4j:slf4j-simple:2.0.5')
 
     api("org.jdeferred.v2:jdeferred-core:2.0.0")
 
-    api("org.eclipse.jdt:org.eclipse.jdt.annotation:2.2.200")
-    api("org.jetbrains:annotations:16.0.2")
-    api("com.github.spotbugs:spotbugs-annotations:4.0.1")
+    api('org.eclipse.jdt:org.eclipse.jdt.annotation:2.2.600')
+    api('org.jetbrains:annotations:24.0.1')
+    api('com.github.spotbugs:spotbugs-annotations:4.7.3')
 
     api("antlr:antlr:2.7.7")
 
     api("commons-cli:commons-cli:1.4")
 
-    api("com.google.guava:guava:30.0-jre")
+    api('com.google.guava:guava:31.1-jre')
 
     api("tripleo.buffers:buffers-v1:0.0.3")
     api("tripleo.util.range:range-v1:0.0.3b")
 
     testImplementation("org.easymock:easymock:5.1.0")
-    testImplementation("junit:junit:4.13.1")
+    testImplementation('junit:junit:4.13.2')
 }
 
 sourceSets {
@@ -128,7 +128,7 @@ sourceSets {
 group = "tripleo.elijah"
 version = "2023.10.0-wont-stop"
 //description = "eljc-v1-fluffy-umbrella"
-description = "eljc-v1-fluffy-umbrella"
+description = "elijah-persistent-pancake"
 //java.sourceCompatibility = JavaVersion.VERSION_16
 java.sourceCompatibility = JavaVersion.VERSION_17
 
@@ -139,9 +139,9 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 //}
 //
 
-//test {
-//    useJUnitPlatform()
-//    testLogging {
-//        events "passed", "skipped", "failed"
-//    }
-//}
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
