@@ -127,7 +127,7 @@ public class ElSystem {
 		assert gr != null;
 
 		for (final GenerateResultItem ab : gr.results()) {
-			sink.addGenerateResultItem(ab, ()->generateOutputs_Internal2(ab.node, ab.ty, outputStrategyC);
+			sink.addGenerateResultItem(ab, ()->generateOutputs_Internal2(ab.node, ab.ty, outputStrategyC));
 		}
 
 		if (verbose) {

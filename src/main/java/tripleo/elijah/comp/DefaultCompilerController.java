@@ -18,7 +18,7 @@ public class DefaultCompilerController implements CompilerController {
 	@Override
 	public void processOptions() {
 		final OptionsProcessor             op  = new ApacheOptionsProcessor();
-		final CompilerInstructionsObserver cio = new CompilerInstructionsObserver(c, op, c._cis);
+		final CompilerInstructionsObserver cio = new CompilerInstructionsObserver(c, op, c.get_cis());
 		cb = new CompilationBus(c);
 
 		try {
@@ -32,8 +32,8 @@ public class DefaultCompilerController implements CompilerController {
 	@Override
 	public void runner() {
 		try {
-			c.__cr = new CompilationRunner(c, c._cis, cb);
-			c.__cr.doFindCIs(args2, cb);
+			c.setRunner(new CompilationRunner(c, c.get_cis(), cb));
+			c.getRunner().doFindCIs(args2, cb);
 		} catch (final Exception e) {
 			c.getErrSink().exception(e);
 			throw new RuntimeException(e);

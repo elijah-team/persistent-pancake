@@ -45,6 +45,7 @@ import tripleo.elijah.testing.comp.IFunctionMapHook;
 import tripleo.elijah.ut.UT_Controller;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.Operation;
+import tripleo.elijah.world.i.LivingRepo;
 import tripleo.elijah.world.impl.DefaultLivingRepo;
 
 import java.io.File;
@@ -61,9 +62,9 @@ import java.util.stream.Stream;
 
 public class CompilationImpl implements Compilation, ElSystemSink {
 
-	public final List<ElLog>       elLogs = new LinkedList<ElLog>();
-	public final CompilationConfig cfg    = new CompilationConfig();
-	public final CIS               _cis   = new CIS();
+	public final  List<ElLog>          elLogs = new LinkedList<ElLog>();
+	public final  CompilationConfig    cfg    = new CompilationConfig();
+	public final  CIS                  _cis   = new CIS();
 	private final Pipeline             pipelines;
 	private final int                  _compilationNumber;
 	private final ErrSink              errSink;
@@ -292,9 +293,7 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 	}
 
 	@Override
-	public void addCodeOutput(final EOT_FileNameProvider aFileNameProvider,
-	                          final Supplier<EOT_OutputFile> aOutputFileSupplier,
-	                          final boolean addFlag) {
+	public void addCodeOutput(final EOT_FileNameProvider aFileNameProvider, final Supplier<EOT_OutputFile> aOutputFileSupplier, final boolean addFlag) {
 		final EOT_OutputFile eof = aOutputFileSupplier.get();
 		final Finally.Output e   = reports().addCodeOutput(aFileNameProvider, eof);
 		if (addFlag) {
@@ -362,7 +361,7 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 		io                 = aIo;
 		_compilationNumber = new Random().nextInt(Integer.MAX_VALUE);
 		pipelines          = new Pipeline(aErrSink);
-		_fluffyComp = new FluffyCompImpl(this);
+		_fluffyComp        = new FluffyCompImpl(this);
 	}
 
 	public void testMapHooks(final List<IFunctionMapHook> aMapHooks) {
@@ -431,29 +430,29 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 	//
 	public static class CompilationConfig {
 		public boolean do_out;
-		public Stages  stage  = Stages.O; // Output
-		public boolean silent = false;
-		boolean showTree = false;
+		public Stages  stage    = Stages.O; // Output
+		public boolean silent   = false;
+		public boolean showTree = false;
 	}
 
 	public static class CIS implements Observer<CompilerInstructions> {
 
 		private final Subject<CompilerInstructions> compilerInstructionsSubject = ReplaySubject.create();
-		CompilerInstructionsObserver _cio;
+		private       CompilerInstructionsObserver  _cio;
 
 		@Override
 		public void onSubscribe(@NonNull final Disposable d) {
-			compilerInstructionsSubject.onSubscribe(d);
+			getCompilerInstructionsSubject().onSubscribe(d);
 		}
 
 		@Override
 		public void onNext(@NonNull final CompilerInstructions aCompilerInstructions) {
-			compilerInstructionsSubject.onNext(aCompilerInstructions);
+			getCompilerInstructionsSubject().onNext(aCompilerInstructions);
 		}
 
 		@Override
 		public void onError(@NonNull final Throwable e) {
-			compilerInstructionsSubject.onError(e);
+			getCompilerInstructionsSubject().onError(e);
 		}
 
 		@Override
@@ -463,13 +462,51 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 		}
 
 		public void almostComplete() {
-			_cio.almostComplete();
+			get_cio().almostComplete();
 		}
 
 		public void subscribe(final Observer<CompilerInstructions> aCio) {
-			compilerInstructionsSubject.subscribe(aCio);
+			getCompilerInstructionsSubject().subscribe(aCio);
+		}
+
+		public Subject<CompilerInstructions> getCompilerInstructionsSubject() {
+			return compilerInstructionsSubject;
+		}
+
+		public CompilerInstructionsObserver get_cio() {
+			return _cio;
+		}
+
+		public void set_cio(CompilerInstructionsObserver a_cio) {
+			_cio = a_cio;
 		}
 	}
+
+	@Override
+	public List<ElLog> _elLogs() {
+		return elLogs;
+	}
+
+	@Override
+	public CIS get_cis() {
+		return _cis;
+	}
+
+	@Override
+	public void setRunner(final CompilationRunner aCompilationRunner) {
+		__cr = aCompilationRunner;
+	}
+
+	@Override
+	public CompilationRunner getRunner() {
+		return __cr;
+	}
+
+	@Override
+	public LivingRepo _repo() {
+		return _repo;
+	}
+
 }
 
 //

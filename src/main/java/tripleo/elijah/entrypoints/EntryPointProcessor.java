@@ -56,17 +56,17 @@ public interface EntryPointProcessor {
 
 				@Override
 				public void registerNamespace(final GeneratedNamespace aNamespace) {
-					compilation._repo.addNamespace(aNamespace, LivingRepo.Add.NONE);
+					compilation._repo().addNamespace(aNamespace, LivingRepo.Add.NONE);
 				}
 
 				@Override
 				public void registerClass(final GeneratedClass aClass) {
-					compilation._repo.addClass(aClass, LivingRepo.Add.MAIN_CLASS);
+					compilation._repo().addClass(aClass, LivingRepo.Add.MAIN_CLASS);
 				}
 
 				@Override
 				public void registerFunction(final BaseGeneratedFunction aFunction) {
-					compilation._repo.addFunction(aFunction, LivingRepo.Add.MAIN_FUNCTION);
+					compilation._repo().addFunction(aFunction, LivingRepo.Add.MAIN_FUNCTION);
 				}
 			};
 

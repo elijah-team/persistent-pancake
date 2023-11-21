@@ -20,7 +20,7 @@ public class CompilerInstructionsObserver implements Observer<CompilerInstructio
 
 	public CompilerInstructionsObserver(final Compilation aCompilation, final OptionsProcessor ignoredAOp, final CompilationImpl.CIS cis) {
 		compilation = aCompilation;
-		cis._cio    = this;
+		cis.set_cio(this);
 
 		cis.subscribe(this);
 	}

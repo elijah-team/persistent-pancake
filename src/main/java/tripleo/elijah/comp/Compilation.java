@@ -18,6 +18,7 @@ import tripleo.elijah.stages.generate.ElSystem;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.testing.comp.IFunctionMapHook;
 import tripleo.elijah.util.Operation;
+import tripleo.elijah.world.i.LivingRepo;
 
 import java.io.File;
 import java.util.List;
@@ -112,6 +113,14 @@ public interface Compilation {
 	Stream<OS_Module> modulesStream();
 
 	void acceptElLog(ElLog aLog);
+
+	CompilationImpl.CIS get_cis();
+
+	void setRunner(CompilationRunner aCompilationRunner);
+
+	CompilationRunner getRunner();
+
+	LivingRepo _repo();
 
 	class CompilationAlways {
 

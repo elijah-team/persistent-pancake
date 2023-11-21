@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.functionality.f203.F203;
 import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.modeltransition.ElSystemSink;
 import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
@@ -82,7 +83,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 	@Override
 	public void run() throws Exception {
-		sys.generateOutputs(gr, c);
+		sys.generateOutputs(gr, (ElSystemSink) c);
 
 		write_files();
 		// TODO flag?

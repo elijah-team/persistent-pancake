@@ -5,6 +5,13 @@ plugins {
     id 'idea'
 
 //    id('groovy')
+
+
+    id("org.openrewrite.rewrite") version("6.5.4")
+}
+
+rewrite {
+    activeRecipe("org.openrewrite.java.testing.junit5.JUnit4to5Migration")
 }
 
 //// Spock works with Java 1.8 and above
@@ -29,6 +36,8 @@ repositories {
 }
 
 dependencies {
+    rewrite("org.openrewrite.recipe:rewrite-testing-frameworks:2.1.0")
+
     // Spock Groovy Junit5
 
     // mandatory dependencies for using Spock
