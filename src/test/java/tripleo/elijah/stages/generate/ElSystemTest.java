@@ -18,6 +18,9 @@ import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.util.Helpers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class ElSystemTest {
 
 	ElSystem     sys;
@@ -25,7 +28,7 @@ public class ElSystemTest {
 	private AccessBus ab;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		c  = new CompilationImpl(new StdErrSink(), new IO());
 		ab = new AccessBus(c);
 
@@ -46,6 +49,18 @@ public class ElSystemTest {
 		sys.__gr_slot(ab.gr);
 
 		sys.generateOutputs(ab.gr);
+
+
+		// NOTE 11/24 this looks right...
+		assertEquals(4, c.reports().codeOutputSize());
+		assertTrue(c.reports().containsCodeOutput("backlink3/Foo.h"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Foo.c"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.c"));
+
+		assertEquals(2, c.reports().codeInputSize());
+		assertTrue(c.reports().containsCodeInput("test/basic1/backlink3/backlink3.ez"));
+		assertTrue(c.reports().containsCodeInput("lib_elijjah/lib-c/stdlib.ez"));
 	}
 }
 
