@@ -238,6 +238,14 @@ public class CompilationRunner {
 	                                                       final InputStream s,
 	                                                       final @NotNull File file,
 	                                                       final Compilation c) {
+		c.reports().addInput(() -> f, Finally.Out2.EZ);
+		return __realParseEzFile2(f, s, file, c);
+	}
+
+	Operation<CompilerInstructions> __realParseEzFile2(final String f,
+	                                                   final InputStream s,
+	                                                   final @NotNull File file,
+	                                                   final Compilation c) {
 		final String absolutePath;
 		try {
 			absolutePath = file.getCanonicalFile().toString();
