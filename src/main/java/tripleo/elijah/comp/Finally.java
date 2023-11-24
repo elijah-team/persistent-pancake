@@ -38,6 +38,14 @@ public class Finally {
 		return outputs.size();
 	}
 
+	public boolean containsCodeInput(final String aS) {
+		return this.containsInput(aS);
+	}
+
+	public int codeInputSize() {
+		return inputs.size();
+	}
+
 	public static class Input {
 		private final @NotNull Nameable nameable;
 		private final Out2 ty;
