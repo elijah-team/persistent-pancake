@@ -204,7 +204,7 @@ public class CompilationRunner {
 		final File local_stdlib = new File("lib_elijjah/lib-" + prelude_name + "/stdlib.ez");
 		if (local_stdlib.exists()) {
 			try {
-				final Operation<CompilerInstructions> oci = realParseEzFile(local_stdlib.getName(), io.readFile(local_stdlib), local_stdlib, c);
+				final Operation<CompilerInstructions> oci = realParseEzFile(local_stdlib.toString(), io.readFile(local_stdlib), local_stdlib, c);
 				if (oci.mode() == Mode.SUCCESS) {
 					c.pushItem(oci.success());
 					return oci;
