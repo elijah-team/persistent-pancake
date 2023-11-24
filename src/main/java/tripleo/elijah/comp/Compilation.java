@@ -3,6 +3,7 @@ package tripleo.elijah.comp;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah.comp.i.LCM_CompilerAccess;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
@@ -121,6 +122,8 @@ public interface Compilation {
 	CompilationRunner getRunner();
 
 	LivingRepo _repo();
+
+	LCM_CompilerAccess getLCMAccess();
 
 	class CompilationAlways {
 
