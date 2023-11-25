@@ -7,7 +7,6 @@ import tripleo.elijah.comp.queries.QuerySourceFileToModuleParams;
 import tripleo.elijah.factory.comp.CompilationFactory;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.persistent_pancake.javaparser.ast.CompilationUnit;
-import tripleo.elijah.persistent_pancake.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
 
@@ -15,14 +14,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collections;
 
 public class JavaParser {
 	@Contract("_ -> new")
 	public static CompilationUnit ___parse(final File aFile) throws ParseException, IOException {
 //		ElijahSpec elijahSpec = new ES
 		final Compilation                   c  = CompilationFactory.mkCompilationDefault();
-		final QuerySourceFileToModuleParams p  = new QuerySourceFileToModuleParams(new FileInputStream(aFile), aFile.getAbsolutePath(), false);
+		final QuerySourceFileToModuleParams p  = new QuerySourceFileToModuleParams(new FileInputStream(aFile), aFile.getAbsolutePath());
 		final QuerySourceFileToModule       q  = new QuerySourceFileToModule(p, c);
 		final Operation<OS_Module>          om = q.calculate();
 		if (om.mode() == Mode.SUCCESS) {

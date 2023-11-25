@@ -21,7 +21,7 @@ public class LCM_Event_RootCI implements LCM_Event {
 
 		try {
 //			c.c().setRootCI(rootCI);
-			c.cr().start(rootCI, cfg.do_out);
+			c.cr().start(rootCI);
 		} catch (Exception aE) {
 			aHandleEvent.lcm().exception(aHandleEvent, aE);
 		}

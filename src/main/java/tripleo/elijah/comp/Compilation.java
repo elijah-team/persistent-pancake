@@ -34,15 +34,13 @@ public interface Compilation {
 
 	String getProjectName();
 
-	OS_Module realParseElijjahFile(String f, @NotNull File file, boolean do_out) throws Exception;
-
 	Operation<CompilerInstructions> parseEzFile(@NotNull File aFile);
 
 	void pushItem(CompilerInstructions aci);
 
 	List<ClassStatement> findClass(String string);
 
-	void use(@NotNull CompilerInstructions compilerInstructions, boolean do_out) throws Exception;
+	void use(@NotNull CompilerInstructions compilerInstructions) throws Exception;
 
 	int errorCount();
 

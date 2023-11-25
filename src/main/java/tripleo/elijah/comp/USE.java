@@ -47,7 +47,7 @@ public class USE {
 		errSink = c.getErrSink();
 	}
 
-	public void use(final @NotNull CompilerInstructions compilerInstructions, final boolean do_out) throws Exception {
+	public void use(final @NotNull CompilerInstructions compilerInstructions) throws Exception {
 		// TODO
 
 		if (compilerInstructions.getFilename() == null) {
@@ -63,7 +63,7 @@ public class USE {
 				dir = instruction_dir/*.getAbsoluteFile()*/.getParentFile();
 			else
 				dir = new File(instruction_dir, dir_name);
-			use_internal(dir, do_out, lsp);
+			use_internal(dir, lsp);
 			if (lsp.getInstructions() == null) {
 				lsp.setInstructions(compilerInstructions);
 			}
@@ -72,10 +72,10 @@ public class USE {
 		lsp.setName(Helpers.makeToken("default")); // TODO: make sure this doesn't conflict
 		lsp.setDirName(Helpers.makeToken(String.format("\"%s\"", instruction_dir)));
 		lsp.setInstructions(compilerInstructions);
-		use_internal(instruction_dir, do_out, lsp);
+		use_internal(instruction_dir, lsp);
 	}
 
-	private void use_internal(final @NotNull File dir, final boolean do_out, final LibraryStatementPart lsp) throws Exception {
+	private void use_internal(final @NotNull File dir, final LibraryStatementPart lsp) {
 		if (!dir.isDirectory()) {
 			errSink.reportError("9997 Not a directory " + dir);
 			return;
@@ -97,7 +97,7 @@ public class USE {
 		}
 
 		try {
-			final Operation2<OS_Module> om = realParseElijjahFile2(local_prelude.getName(), local_prelude, false);
+			final Operation2<OS_Module> om = realParseElijjahFile2(local_prelude.getName(), local_prelude);
 
 			assert om.mode() == Mode.SUCCESS;
 
@@ -122,12 +122,11 @@ public class USE {
 
 	private Operation2<OS_Module> parseElijjahFile(final @NotNull File f,
 	                                               final @NotNull String file_name,
-	                                               final boolean do_out,
 	                                               final @NotNull LibraryStatementPart lsp) {
 		System.out.printf("   %s%n", f.getAbsolutePath());
 
 		if (f.exists()) {
-			final Operation2<OS_Module> om = realParseElijjahFile2(file_name, f, do_out);
+			final Operation2<OS_Module> om = realParseElijjahFile2(file_name, f);
 
 			if (om.mode() == Mode.SUCCESS) {
 				final OS_Module mm = om.success();
@@ -158,11 +157,11 @@ public class USE {
 		}
 	}
 
-	public Operation2<OS_Module> realParseElijjahFile2(final String f, final @NotNull File file, final boolean do_out) {
+	public Operation2<OS_Module> realParseElijjahFile2(final String f, final @NotNull File file) {
 		final Operation<OS_Module> om;
 
 		try {
-			om = realParseElijjahFile(f, file, do_out);
+			om = realParseElijjahFile(f, file);
 		} catch (final Exception aE) {
 			return Operation2.failure(new ExceptionDiagnostic(aE));
 		}
@@ -179,12 +178,12 @@ public class USE {
 		}
 	}
 
-	private Operation<OS_Module> parseFile_(final String f, final InputStream s, final boolean do_out) throws RecognitionException, TokenStreamException {
-		final QuerySourceFileToModuleParams qp = new QuerySourceFileToModuleParams(s, f, do_out);
+	private Operation<OS_Module> parseFile_(final String f, final InputStream s) throws RecognitionException, TokenStreamException {
+		final QuerySourceFileToModuleParams qp = new QuerySourceFileToModuleParams(s, f);
 		return new QuerySourceFileToModule(qp, c).calculate();
 	}
 
-	public Operation<OS_Module> realParseElijjahFile(final String f, final @NotNull File file, final boolean do_out) throws Exception {
+	public Operation<OS_Module> realParseElijjahFile(final String f, final @NotNull File file) throws Exception {
 		final String absolutePath = file.getCanonicalFile().toString();
 		if (fn2m.containsKey(absolutePath)) { // don't parse twice
 			final OS_Module m = fn2m.get(absolutePath);
@@ -197,7 +196,7 @@ public class USE {
 
 		final InputStream s = io.readFile(file);
 		try {
-			final Operation<OS_Module> om = parseFile_(f, s, do_out);
+			final Operation<OS_Module> om = parseFile_(f, s);
 			if (om.mode() != Mode.SUCCESS) {
 				final Throwable e = om.failure();
 				assert e != null;

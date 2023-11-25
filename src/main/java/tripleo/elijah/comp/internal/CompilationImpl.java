@@ -107,11 +107,6 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 	}
 
 	@Override
-	public OS_Module realParseElijjahFile(final String f, final @NotNull File file, final boolean do_out) throws Exception {
-		return use.realParseElijjahFile(f, file, do_out).success();
-	}
-
-	@Override
 	public Operation<CompilerInstructions> parseEzFile(final @NotNull File aFile) {
 		try {
 			final QueryEzFileToModuleParams       params = new QueryEzFileToModuleParams(aFile.getAbsolutePath(), io.readFile(aFile));
@@ -143,8 +138,8 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 	}
 
 	@Override
-	public void use(final @NotNull CompilerInstructions compilerInstructions, final boolean do_out) throws Exception {
-		use.use(compilerInstructions, do_out);    // NOTE Rust
+	public void use(final @NotNull CompilerInstructions compilerInstructions) throws Exception {
+		use.use(compilerInstructions);    // NOTE Rust
 	}
 
 	@Override
@@ -433,7 +428,6 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 	//
 	//
 	public static class CompilationConfig {
-		public boolean do_out;
 		public Stages  stage    = Stages.O; // Output
 		public boolean silent   = false;
 		public boolean showTree = false;

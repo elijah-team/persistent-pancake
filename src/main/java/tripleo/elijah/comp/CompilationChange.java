@@ -34,19 +34,6 @@ class CC_SetShowTree implements CompilationChange {
 	}
 }
 
-class CC_SetDoOut implements CompilationChange {
-	private final boolean flag;
-
-	public CC_SetDoOut(final boolean aB) {
-		flag = aB;
-	}
-
-	@Override
-	public void apply(final Compilation c) {
-		c._cfg().do_out = flag;
-	}
-}
-
 class CC_SetSilent implements CompilationChange {
 	private final boolean flag;
 

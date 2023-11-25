@@ -58,7 +58,7 @@ public class CompilationRunner {
 		cb  = aCb;
 	}
 
-	public void start(final CompilerInstructions ci, final boolean do_out) throws Exception {
+	public void start(final CompilerInstructions ci) {
 		final CR_State st1 = new CR_State();
 
 		cb.add(new ICompilationBus.CB_Process() {
@@ -87,7 +87,7 @@ public class CompilationRunner {
 				};
 				// 2. process the initial
 				final ICompilationBus.CB_Action b = new ICompilationBus.CB_Action() {
-					private final CR_ProcessInitialAction aa = new CR_ProcessInitialAction(ci, do_out);
+					private final CR_ProcessInitialAction aa = new CR_ProcessInitialAction(ci);
 
 					@Override
 					public String name() {
@@ -470,11 +470,9 @@ public class CompilationRunner {
 
 	private class CR_ProcessInitialAction implements CR_Action {
 		private final CompilerInstructions ci;
-		private final boolean              do_out;
 
-		public CR_ProcessInitialAction(final CompilerInstructions aCi, final boolean aDo_out) {
+		public CR_ProcessInitialAction(final CompilerInstructions aCi) {
 			ci     = aCi;
-			do_out = aDo_out;
 		}
 
 		@Override
@@ -485,7 +483,7 @@ public class CompilationRunner {
 		@Override
 		public void execute(final CR_State st) {
 			try {
-				compilation.use(ci, do_out);
+				compilation.use(ci);
 			} catch (final Exception aE) {
 				throw new RuntimeException(aE); // FIXME
 			}
