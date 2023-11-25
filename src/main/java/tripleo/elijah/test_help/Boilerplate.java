@@ -18,7 +18,7 @@ import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
 
 public class Boilerplate {
-	public Compilation        comp;
+	public Compilation       comp;
 	public ICompilationAccess aca;
 	public ProcessRecord      pr;
 	public PipelineLogic      pipelineLogic;
@@ -68,7 +68,7 @@ public class Boilerplate {
 	}
 
 	public DeduceTypes2 simpleDeduceModule3(final OS_Module aMod) {
-		final ElLog.Verbosity verbosity = Compilation.gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity = Compilation.CompilationAlways.gitlabCIVerbosity();
 		@NotNull final String s         = Compilation.CompilationAlways.defaultPrelude();
 		return simpleDeduceModule2(aMod, s, verbosity);
 	}

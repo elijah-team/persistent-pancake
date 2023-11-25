@@ -12,6 +12,7 @@
  */
 package tripleo.elijah.lang;
 
+import antlr.CommonToken;
 import antlr.Token;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,7 @@ import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.File;
 
@@ -26,11 +28,9 @@ import java.io.File;
  * @author Tripleo(sb)
  *
  */
-public class IdentExpression implements IExpression, OS_Element, Resolvable, Locatable {
-
+public class IdentExpression implements IExpression, OS_Element, Locatable {
 	public final  Attached   _a;
 	private final Token      text;
-	private       OS_Element _resolvedElement;
 
 	public IdentExpression(final Token r1) {
 		this.text = r1;
@@ -41,6 +41,10 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 		this.text = r1;
 		this._a   = new Attached();
 		setContext(cur);
+	}
+
+	public IdentExpression(final Token aT, final String aS) {
+		this(aT);
 	}
 
 	@Override
@@ -59,7 +63,7 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 	@Override
 	public void setKind(final ExpressionKind aIncrement) {
 		// log and ignore
-		tripleo.elijah.util.Stupidity.println_err2("Trying to set ExpressionType of IdentExpression to " + aIncrement.toString());
+		SimplePrintLoggerToRemoveSoon.println_err2("Trying to set ExpressionType of IdentExpression to " + aIncrement.toString());
 	}
 
 	@Override
@@ -122,21 +126,6 @@ public class IdentExpression implements IExpression, OS_Element, Resolvable, Loc
 
 	public void setContext(final Context cur) {
 		_a.setContext(cur);
-	}
-
-	@Override
-	public boolean hasResolvedElement() {
-		return _resolvedElement != null;
-	}
-
-	@Override
-	public OS_Element getResolvedElement() {
-		return _resolvedElement;
-	}
-
-	@Override
-	public void setResolvedElement(final OS_Element element) {
-		_resolvedElement = element;
 	}
 
 	@Contract("_ -> new")

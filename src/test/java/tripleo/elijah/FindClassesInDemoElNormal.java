@@ -8,8 +8,8 @@
  */
 package tripleo.elijah;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.comp.IO;
@@ -28,7 +28,7 @@ import java.util.List;
 public class FindClassesInDemoElNormal {
 
 	@Test
-	public final void testParseFile() throws Exception {
+	final void testParseFile() throws Exception {
 		final List<String> args = tripleo.elijah.util.Helpers.List_of("test/demo-el-normal", "test/demo-el-normal/main2", "-sE");
 		final ErrSink      eee  = new StdErrSink();
 		final Compilation  c    = new CompilationImpl(eee, new IO());
@@ -39,12 +39,12 @@ public class FindClassesInDemoElNormal {
 		for (final ClassStatement classStatement : aClassList) {
 			System.out.println(classStatement.getPackageName().getName());
 		}
-		Assert.assertEquals(3, aClassList.size());  // NOTE this may change. be aware
+		Assertions.assertEquals(3, aClassList.size());  // NOTE this may change. be aware
 	}
 
 
 	@Test
-	public final void testListFolders() throws Exception {
+	final void testListFolders() throws Exception {
 		final List<String> args = Helpers.List_of("test/demo-el-normal/listfolders/", "-sE");
 		final ErrSink      eee  = new StdErrSink();
 		final Compilation  c    = new CompilationImpl(eee, new IO());
@@ -52,9 +52,9 @@ public class FindClassesInDemoElNormal {
 		c.feedCmdLine(args);
 
 		final List<ClassStatement> aClassList = c.findClass("Main");
-		Assert.assertEquals(1, aClassList.size());
+		Assertions.assertEquals(1, aClassList.size());
 
-		Assert.assertFalse("isMainClass", MainClassEntryPoint.isMainClass(aClassList.get(0)));
+		Assertions.assertFalse(MainClassEntryPoint.isMainClass(aClassList.get(0)), "isMainClass");
 	}
 
 }

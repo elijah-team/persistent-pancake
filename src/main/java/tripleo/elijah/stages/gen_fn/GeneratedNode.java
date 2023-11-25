@@ -17,6 +17,10 @@ import tripleo.elijah.lang.OS_Module;
 public interface GeneratedNode {
     String identityString();
     OS_Module module();
+
+	default String asString() {
+		return toString();
+	}
 }
 
 //

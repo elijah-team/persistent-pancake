@@ -8,8 +8,8 @@
  */
 package tripleo.elijah;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.comp.IO;
@@ -35,7 +35,7 @@ public class FindBothSourceFiles {
 	 * @throws Exception
 	 */
 	@Test
-	public final void compilerShouldFindBothParseFiles() throws Exception {
+	final void compilerShouldFindBothParseFiles() throws Exception {
 		final List<String> args = List_of("test/demo-el-normal", "test/demo-el-normal/main2", "-sE");
 //		ErrSink eee = JMock.of(ErrSink.class);
 		final ErrSink     eee = new StdErrSink();
@@ -44,8 +44,8 @@ public class FindBothSourceFiles {
 		c.feedCmdLine(args);
 
 		//fail("Not yet implemented"); // TODO
-		Assert.assertTrue(c.getIO().recordedRead(new File(new File("test", "demo-el-normal"), "fact1.elijah")));
-		Assert.assertTrue(c.getIO().recordedRead(new File(new File(new File("test", "demo-el-normal"), "main2"), "main2.elijah")));
+		Assertions.assertTrue(c.getIO().recordedRead(new File(new File("test", "demo-el-normal"), "fact1.elijah")));
+		Assertions.assertTrue(c.getIO().recordedRead(new File(new File(new File("test", "demo-el-normal"), "main2"), "main2.elijah")));
 	}
 
 /*

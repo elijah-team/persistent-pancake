@@ -16,6 +16,7 @@ import tripleo.elijah.contexts.CaseContext;
 import tripleo.elijah.contexts.SingleIdentContext;
 import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -69,7 +70,7 @@ public class CaseConditional implements OS_Element, StatementItem, FunctionItem 
 
 	private void addScopeFor(final IExpression expression, final CaseScope caseScope) {
 		if (scopes.containsKey(expression))
-			tripleo.elijah.util.Stupidity.println_err2("already has an expression" + expression); // TODO put in some verify step
+			SimplePrintLoggerToRemoveSoon.println_err2("already has an expression" + expression); // TODO put in some verify step
 		scopes.put(expression, caseScope);
 	}
 

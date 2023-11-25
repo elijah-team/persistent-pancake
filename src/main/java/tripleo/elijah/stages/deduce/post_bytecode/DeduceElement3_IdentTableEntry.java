@@ -4,6 +4,7 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.LookupResultList;
@@ -15,6 +16,7 @@ import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.FoundElement;
 import tripleo.elijah.stages.deduce.ResolveError;
+import tripleo.elijah.stages.deduce.percy.DeduceElement3_LookingUpCtx;
 import tripleo.elijah.stages.deduce.post_bytecode.DED.DED_ITE;
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
@@ -24,6 +26,9 @@ import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
+
+import java.util.function.Consumer;
 
 public class DeduceElement3_IdentTableEntry extends DefaultStateful implements IDeduceElement3 {
 
@@ -48,7 +53,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 	public Operation2<GenType> resolve1(final IdentTableEntry ite, final @NotNull Context aContext) {
 		// FoundElement is the "disease"
 		try {
-			return Operation2.success(deduceTypes2.resolve_type(ite.type.getAttached(), aContext));
+			return Operation2.success(deduceTypes2.newPFluffyType().resolve_type(ite.getType().getAttached(), aContext));
 		} catch (final ResolveError aE) {
 			return Operation2.failure(aE);
 		}
@@ -86,7 +91,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 	@Override
 	public @NotNull GenType genType() {
 		if (genType == null) {
-			genType = new GenType();
+			genType = new GenType(deduceTypes2().resolver());
 		}
 		return genType;
 		//return principal.type.genType;
@@ -100,6 +105,37 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 	public void _ctxts(final Context aFdCtx, final Context aContext) {
 		fdCtx   = aFdCtx;
 		context = aContext;
+	}
+
+	public <P> DeduceElement3_LookingUpCtx lookingUp(final Context aEctx, final DeduceTypes2 aDeduceTypes2) {
+		var register  = this;
+		return new DeduceElement3_LookingUpCtx() {
+			private Eventual<Void> prom = new Eventual<>();
+
+			{
+//				prom.register(register);
+			}
+
+			private OS_Element _el;
+
+			@Override
+			public void force(final OS_Element aElement) {
+				assert _el == null;
+				_el = aElement;
+				prom.resolve(null);
+			}
+
+			@Override
+			public void onSuccess(final Consumer<Void> cb) {
+//				prom.resolve(null);
+				prom.then(cb::accept);
+			}
+
+			@Override
+			public OS_Element getElement() {
+				return _el;
+			}
+		};
 	}
 
 	public static class ST {
@@ -142,38 +178,38 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 						public void foundElement(final OS_Element x) {
 							if (ite.getResolvedElement() != x)
 								ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(x));
-							if (ite.type != null && ite.type.getAttached() != null) {
-								switch (ite.type.getAttached().getType()) {
+							if (ite.getType() != null && ite.getType().getAttached() != null) {
+								switch (ite.getType().getAttached().getType()) {
 								case USER:
 									try {
-										@NotNull final GenType xx = dt2.resolve_type(ite.type.getAttached(), aFunctionContext);
-										ite.type.setAttached(xx);
+										@NotNull final GenType xx = dt2.resolve_type(ite.getType().getAttached(), aFunctionContext);
+										ite.getType().setAttached(xx);
 									} catch (final ResolveError resolveError) {
 										dt2._LOG().info("192 Can't attach type to " + path);
 										dt2._errSink().reportDiagnostic(resolveError);
 									}
-									if (ite.type.getAttached().getType() == OS_Type.Type.USER_CLASS) {
-										use_user_class(ite.type.getAttached(), ite);
+									if (ite.getType().getAttached().getType() == OS_Type.Type.USER_CLASS) {
+										use_user_class(ite.getType().getAttached(), ite);
 									}
 									break;
 								case USER_CLASS:
-									use_user_class(ite.type.getAttached(), ite);
+									use_user_class(ite.getType().getAttached(), ite);
 									break;
 								case FUNCTION: {
 									// TODO All this for nothing
 									//  the ite points to a function, not a function call,
 									//  so there is no point in resolving it
-									if (ite.type.tableEntry instanceof ProcTableEntry) {
-										final @NotNull ProcTableEntry pte = (ProcTableEntry) ite.type.tableEntry;
+									if (ite.getType().getTableEntry() instanceof ProcTableEntry) {
+										final @NotNull ProcTableEntry pte = (ProcTableEntry) ite.getType().getTableEntry();
 
-									} else if (ite.type.tableEntry instanceof IdentTableEntry) {
-										final @NotNull IdentTableEntry identTableEntry = (IdentTableEntry) ite.type.tableEntry;
+									} else if (ite.getType().getTableEntry() instanceof IdentTableEntry) {
+										final @NotNull IdentTableEntry identTableEntry = (IdentTableEntry) ite.getType().getTableEntry();
 										if (identTableEntry.getCallablePTE() != null) {
 											@Nullable final ProcTableEntry cpte = identTableEntry.getCallablePTE();
 											cpte.typePromise().then(new DoneCallback<GenType>() {
 												@Override
 												public void onDone(@NotNull final GenType result) {
-													tripleo.elijah.util.Stupidity.println2("1483 " + result.resolved + " " + result.node);
+													SimplePrintLoggerToRemoveSoon.println2("1483 " + result.getResolved() + " " + result.getNode());
 												}
 											});
 										}
@@ -181,7 +217,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 								}
 								break;
 								default:
-									throw new IllegalStateException("Unexpected value: " + ite.type.getAttached().getType());
+									throw new IllegalStateException("Unexpected value: " + ite.getType().getAttached().getType());
 								}
 							} else {
 								final int yy = 2;
@@ -192,11 +228,11 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 										@Nullable final OS_Element best = lrl.chooseBest(null);
 										if (best != null) {
 											ite.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(x));
-											if (ite.type != null && ite.type.getAttached() != null) {
-												if (ite.type.getAttached().getType() == OS_Type.Type.USER) {
+											if (ite.getType() != null && ite.getType().getAttached() != null) {
+												if (ite.getType().getAttached().getType() == OS_Type.Type.USER) {
 													try {
-														@NotNull final GenType xx = dt2.resolve_type(ite.type.getAttached(), aFunctionContext);
-														ite.type.setAttached(xx);
+														@NotNull final GenType xx = dt2.resolve_type(ite.getType().getAttached(), aFunctionContext);
+														ite.getType().setAttached(xx);
 													} catch (final ResolveError resolveError) { // TODO double catch
 														dt2._LOG().info("210 Can't attach type to " + ite.getIdent());
 														dt2._errSink().reportDiagnostic(resolveError);
@@ -211,8 +247,8 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 										dt2._LOG().err("184-506 Couldn't resolve " + ite.getIdent());
 										aResolveError.printStackTrace();
 									}
-									if (ite.type.getAttached().getType() == OS_Type.Type.USER_CLASS) {
-										use_user_class(ite.type.getAttached(), ite);
+									if (ite.getType().getAttached().getType() == OS_Type.Type.USER_CLASS) {
+										use_user_class(ite.getType().getAttached(), ite);
 									}
 								}
 							}
@@ -220,9 +256,9 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 
 						private void use_user_class(@NotNull final OS_Type aType, @NotNull final IdentTableEntry aEntry) {
 							final ClassStatement cs = aType.getClassOf();
-							if (aEntry.constructable_pte != null) {
+							if (aEntry.getConstructable_pte() != null) {
 								final int yyy = 3;
-								tripleo.elijah.util.Stupidity.println2("use_user_class: " + cs);
+								SimplePrintLoggerToRemoveSoon.println2("use_user_class: " + cs);
 							}
 						}
 

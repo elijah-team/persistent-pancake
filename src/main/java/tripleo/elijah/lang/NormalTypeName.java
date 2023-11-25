@@ -13,7 +13,7 @@ package tripleo.elijah.lang;
 
 import java.util.Collection;
 
-public interface NormalTypeName extends TypeName, Resolvable {
+public interface NormalTypeName extends TypeName/* , Resolvable */ {
 
 //	@Override
 //	boolean isNull();

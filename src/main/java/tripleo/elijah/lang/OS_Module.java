@@ -17,9 +17,11 @@ package tripleo.elijah.lang;
 import antlr.Token;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jdt.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.LibraryStatementPart;
+import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.entrypoints.EntryPointList;
@@ -40,7 +42,7 @@ public class OS_Module implements OS_Element, OS_Container {
 	public final @NotNull                      EntryPointList       entryPoints    = new EntryPointList();
 	private final                              Stack<Qualident>     packageNames_q = new Stack<Qualident>();
 	public @org.jetbrains.annotations.Nullable OS_Module            prelude;
-	public                                     Compilation          parent;
+	public                                     Compilation         parent;
 	private                                    LibraryStatementPart lsp;
 	private                                    String               _fileName;
 	private                                    IndexingStatement    indexingStatement;
@@ -222,11 +224,26 @@ public class OS_Module implements OS_Element, OS_Container {
 
 	public void setLsp(final @NotNull LibraryStatementPart aLsp) {
 		lsp = aLsp;
+
+//		if (lsp.getInstructions() == null) {
+//			throw new AssertionError();
+//		}
 	}
 
 	public Compilation getCompilation() {
 		return parent;
 	}
+
+	public List<Pair<TypeName, ClassStatement>> get__typeNames() {
+		return __typeNames;
+	}
+
+	private final List<Pair<TypeName, ClassStatement>> __typeNames = new ArrayList<>();
+
+	public void addTypeName(final TypeName aTypeName, final ClassStatement aClassStatement) {
+		__typeNames.add(Pair.of(aTypeName, aClassStatement));
+	}
+
 }
 
 //

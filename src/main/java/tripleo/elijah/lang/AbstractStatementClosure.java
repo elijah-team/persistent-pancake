@@ -101,7 +101,7 @@ public final class AbstractStatementClosure implements StatementClosure, Stateme
 		return (VariableSequence) add(vsq);
 	}
 
-	private OS_Element getParent() {
+	public OS_Element getParent() {
 		return _parent;
 	}
 

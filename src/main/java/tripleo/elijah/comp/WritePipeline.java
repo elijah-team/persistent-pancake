@@ -4,7 +4,6 @@
  * The contents of this library are released under the LGPL licence v3,
  * the GNU Lesser General Public License text was downloaded from
  * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- *
  */
 package tripleo.elijah.comp;
 
@@ -14,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.functionality.f203.F203;
 import tripleo.elijah.lang.OS_Module;
+import tripleo.elijah.modeltransition.ElSystemSink;
 import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
@@ -26,11 +26,13 @@ import tripleo.elijah.stages.gen_generic.GenerateResultItem;
 import tripleo.elijah.stages.generate.ElSystem;
 import tripleo.elijah.stages.generate.OutputStrategy;
 import tripleo.elijah.util.Helpers;
+//import tripleo.elijah.util.io.CharSink;
+//import tripleo.elijah.util.io.FileCharSink;
+import tripleo.elijah.util.io.CharSink;
+import tripleo.elijah.util.io.FileCharSink;
 import tripleo.util.buffer.Buffer;
 import tripleo.util.buffer.DefaultBuffer;
 import tripleo.util.buffer.TextBuffer;
-import tripleo.util.io.CharSink;
-import tripleo.util.io.FileCharSink;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -81,7 +83,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 	@Override
 	public void run() throws Exception {
-		sys.generateOutputs(gr);
+		sys.generateOutputs(gr, (ElSystemSink) c);
 
 		write_files();
 		// TODO flag?
@@ -89,31 +91,41 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	}
 
 	public void write_files() throws IOException {
-		final Multimap<String, Buffer> mb = ArrayListMultimap.create();
+		final MB mb2 = new MB();
 
 		for (final GenerateResultItem ab : gr.results()) {
-			mb.put(ab.output, ab.buffer);
-		}
+			final String fileName = ab.output;
 
-		final Map<String, OS_Module> modmap = new HashMap<String, OS_Module>();
-		for (final GenerateResultItem ab : gr.results()) {
-			modmap.put(ab.output, ab.node.module());
+			mb2.put(fileName, ab.buffer);
+			mb2.modmap_put(fileName, ab.node.module());
 		}
 
 		final List<EOT_OutputFile> leof = new ArrayList<>();
 
-		for (final String s : mb.keySet()) {
-			final Collection<Buffer> vs = mb.get(s);
+		for (final MBB entry : mb2.bz()) {
+			final String             fileName = entry.getFileName();
 
-			final EOT_OutputFile eof = EOT_OutputFile.bufferSetToOutputFile(s, vs, c, modmap.get(s));
-			leof.add(eof);
+			c.addCodeOutput(() -> remove_initial_slash(fileName), () -> {
+				final Collection<Buffer> vs       = entry.getBuffers();
+
+				final EOT_OutputFile eof = EOT_OutputFile.bufferSetToOutputFile(fileName, vs, c, entry.getModule());
+				return eof;
+			}, true);
 		}
 
 		c.getOutputTree().set(leof);
 
 		final File fn1 = choose_dir_name();
 
-		__rest(mb, fn1, leof);
+		__rest(mb2.entries(), fn1, leof);
+	}
+
+	@NotNull
+	private static String remove_initial_slash(final String s) {
+		if (s.length() > 1 && s.charAt(0) == '/') {
+			return s.substring(1);
+		}
+		return s;
 	}
 
 	private @NotNull File choose_dir_name() {
@@ -123,14 +135,16 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 		return fn01;
 	}
 
-	private void __rest(final @NotNull Multimap<String, Buffer> mb, final @NotNull File aFile_prefix, final List<EOT_OutputFile> leof) throws IOException {
+	private void __rest(final @NotNull Iterable<Map.Entry<String, Collection<Buffer>>> mb,
+	                    final @NotNull File aFile_prefix,
+	                    final List<EOT_OutputFile> leof) throws IOException {
 		aFile_prefix.mkdirs();
 		final String prefix = aFile_prefix.toString();
 
 		// TODO flag?
 		write_inputs(aFile_prefix);
 
-		for (final Map.Entry<String, Collection<Buffer>> entry : mb.asMap().entrySet()) {
+		for (final Map.Entry<String, Collection<Buffer>> entry : mb) {
 			final String key  = entry.getKey();
 			final Path   path = FileSystems.getDefault().getPath(prefix, key);
 //			BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
@@ -178,9 +192,9 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 //				append_hash(buf, fn);
 //			}
 
-		final List<File> recordedreads = c.getIO().recordedreads;
+		final List<File> recordedreads = c.getIO().recordedreads();
 		final List<String> recordedread_filenames = recordedreads.stream()
-				.map(file -> file.toString())
+				.map(File::toString)
 				.collect(Collectors.toList());
 
 		for (final @NotNull File file : recordedreads) {
@@ -197,7 +211,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	}
 
 	private void append_hash(final TextBuffer aBuf, final String aFilename, final ErrSink errSink) throws IOException {
-		@Nullable final String hh = Helpers.getHashForFilename(aFilename, errSink);
+		@Nullable final String hh = Helpers.getHashForFilename(aFilename).success();
 		if (hh != null) {
 			aBuf.append(hh);
 			aBuf.append(" ");
@@ -215,6 +229,8 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	@Override
 	public void gr_slot(final GenerateResult gr) {
 		this.gr = gr;
+
+		sys.__gr_slot(gr);
 	}
 
 	public Consumer<Supplier<GenerateResult>> consumer() {
@@ -232,6 +248,74 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 				final int y = 2;
 			}
 		};
+	}
+
+	static class MBB {
+		private final String fileName;
+		private final Buffer buffer;
+		private MB _up;
+
+		public MBB(final String aFileName, final Buffer aBuffer) {
+			fileName = aFileName;
+			buffer   = aBuffer;
+		}
+
+		public String getFileName() {
+			return fileName;
+		}
+
+		public Buffer getBuffer() {
+			return buffer;
+		}
+
+		public Collection<Buffer> getBuffers() {
+			return _up.getBuffers(this);
+		}
+
+		public void set_up(final MB a_up) {
+			_up = a_up;
+		}
+
+		public OS_Module getModule() {
+			return _up.getModule(this);
+		}
+	}
+
+	static class MB {
+		final Multimap<String, Buffer> mb = ArrayListMultimap.create();
+		final         Map<String, OS_Module> modmap = new HashMap<String, OS_Module>();
+		private final List<MBB>              bz     = new ArrayList<>();
+
+		public void add(final MBB aMBB) {
+			bz.add(aMBB);
+			mb.put(aMBB.getFileName(), aMBB.getBuffer());
+		}
+
+		public void put(final String aFileName, final Buffer aBuffer) {
+			final MBB mbb = new MBB(aFileName, aBuffer);
+			mbb.set_up(this);
+			add(mbb);
+		}
+
+		public void modmap_put(final String aFileName, final OS_Module aModule) {
+			modmap.put(aFileName, aModule);
+		}
+
+		public @NotNull Iterable<Map.Entry<String, Collection<Buffer>>> entries() {
+			return mb.asMap().entrySet();
+		}
+
+		public Iterable<? extends MBB> bz() {
+			return this.bz;
+		}
+
+		public Collection<Buffer> getBuffers(final MBB aMBB) {
+			return mb.asMap().get(aMBB.getFileName());
+		}
+
+		public OS_Module getModule(final MBB aMBB) {
+			return modmap.get(aMBB.getFileName());
+		}
 	}
 
 }

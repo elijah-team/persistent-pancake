@@ -16,6 +16,7 @@ import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.NamespaceInvocation;
+import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 
 /**
  * Created 6/27/21 9:40 AM

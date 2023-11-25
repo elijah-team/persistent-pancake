@@ -9,14 +9,30 @@
  */
 package tripleo.elijah.stages.deduce;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Multimap;
+import static tripleo.elijah.util.Helpers.List_of;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
+
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.diagnostic.Diagnostic;
@@ -48,21 +64,9 @@ import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.stages.gen_fn.WlGenerateClass;
 import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.testing.comp.IFunctionMapHook;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkList;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import static tripleo.elijah.util.Helpers.List_of;
 
 /**
  * Created 12/24/20 3:59 AM
@@ -79,7 +83,7 @@ public class DeducePhase {
 
 	private final @NotNull ElLog LOG;
 
-	private final List<State> registeredStates = new ArrayList<>();
+	private final List<State>  registeredStates = new ArrayList<>();
 	private final Compilation _compilation;
 
 	public void addFunction(final GeneratedFunction generatedFunction, final FunctionDef fd) {
@@ -155,9 +159,9 @@ public class DeducePhase {
 	}
 
 	@NotNull
-	public List<FunctionMapHook> functionMapHooks = new ArrayList<FunctionMapHook>();
+	public List<IFunctionMapHook> functionMapHooks = new ArrayList<IFunctionMapHook>();
 
-	public void addFunctionMapHook(final FunctionMapHook aFunctionMapHook) {
+	public void addFunctionMapHook(final IFunctionMapHook aFunctionMapHook) {
 		functionMapHooks.add(aFunctionMapHook);
 	}
 
@@ -335,6 +339,23 @@ public class DeducePhase {
 		return _compilation;
 	}
 
+	public interface RCI2 {
+		RCI2 andThen(Consumer<ClassInvocation> cb);
+	}
+
+	public RCI2 registerClassInvocation2(final ClassInvocation aClsinv) {
+		@Nullable final ClassInvocation c = registerClassInvocation(aClsinv);
+		return new RCI2() {
+			@Override
+			public RCI2 andThen(final Consumer<@NotNull ClassInvocation> cb) {
+				if (c != null) {
+					cb.accept(c);
+				}
+				return this;
+			}
+		};
+	}
+
 	static class ResolvedVariables {
 		final IdentTableEntry identTableEntry;
 		final OS_Element      parent; // README tripleo.elijah.lang._CommonNC, but that's package-private
@@ -464,9 +485,9 @@ public class DeducePhase {
 		}
 		for (final Map.@NotNull Entry<IdentTableEntry, OnType> entry : idte_type_callbacks.entrySet()) {
 			final IdentTableEntry idte = entry.getKey();
-			if (idte.type !=null && // TODO make a stage where this gets set (resolvePotentialTypes)
-					idte.type.getAttached() != null)
-				entry.getValue().typeDeduced(idte.type.getAttached());
+			if (idte.getType() !=null && // TODO make a stage where this gets set (resolvePotentialTypes)
+					idte.getType().getAttached() != null)
+				entry.getValue().typeDeduced(idte.getType().getAttached());
 			else
 				entry.getValue().noTypeFound();
 		}
@@ -505,7 +526,7 @@ public class DeducePhase {
 				for (@NotNull final ResolvedVariables resolvedVariables : x) {
 					final GeneratedContainer.VarTableEntry variable = generatedContainer.getVariable(resolvedVariables.varName);
 					assert variable != null;
-					final TypeTableEntry type = resolvedVariables.identTableEntry.type;
+					final TypeTableEntry type = resolvedVariables.identTableEntry.getType();
 					if (type != null)
 						variable.addPotentialTypes(List_of(type));
 					variable.addPotentialTypes(resolvedVariables.identTableEntry.potentialTypes());
@@ -533,7 +554,7 @@ public class DeducePhase {
 								assert v != null;
 								// TODO varType, potentialTypes and _resolved: which?
 								final OS_Type          varType = v.varType;
-								final @NotNull GenType genType = new GenType();
+								final @NotNull GenType genType = new GenType(deferredMember.getResolver());
 								genType.set(varType);
 
 //								if (deferredMember.getInvocation() instanceof NamespaceInvocation) {
@@ -577,9 +598,9 @@ public class DeducePhase {
 								// call typePromises and externalRefPromisess
 
 								// TODO just getting first element here (without processing of any kind); HACK
-								final GenType ty = gc_vte.connectionPairs.get(0).vte.type.genType;
-								assert ty.resolved != null;
-								gc_vte.varType = ty.resolved; // TODO make sure this is right in all cases
+								final GenType ty = gc_vte.connectionPairs.get(0).vte.type.getGenType(null);
+								assert ty.getResolved() != null;
+								gc_vte.varType = ty.getResolved(); // TODO make sure this is right in all cases
 								if (deferredMember.typeResolved().isPending())
 									deferredMember.typeResolved().resolve(ty);
 								break;
@@ -592,7 +613,7 @@ public class DeducePhase {
 		}
 		sanityChecks();
 		for (final Map.@NotNull Entry<FunctionDef, Collection<GeneratedFunction>> entry : functionMap.asMap().entrySet()) {
-			for (@NotNull final FunctionMapHook functionMapHook : functionMapHooks) {
+			for (@NotNull final IFunctionMapHook functionMapHook : functionMapHooks) {
 				if (functionMapHook.matches(entry.getKey())) {
 					functionMapHook.apply(entry.getValue());
 				}
@@ -622,7 +643,7 @@ public class DeducePhase {
 						break;
 					case KNOWN:
 						assert identTableEntry.getResolvedElement() != null;
-						if (identTableEntry.type == null) {
+						if (identTableEntry.getType() == null) {
 							LOG.err(String.format("258 null type in KNOWN idte %s in %s", identTableEntry, generatedFunction));
 						}
 						break;

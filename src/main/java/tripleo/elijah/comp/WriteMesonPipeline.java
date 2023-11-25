@@ -14,8 +14,11 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.stages.gen_generic.DoubleLatch;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
-import tripleo.util.io.CharSink;
-import tripleo.util.io.FileCharSink;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
+import tripleo.elijah.util.io.CharSink;
+import tripleo.elijah.util.io.FileCharSink;
+//import tripleo.elijah.util.io.CharSink;
+//import tripleo.elijah.util.io.FileCharSink;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -236,7 +239,7 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 			@Override
 			public void accept(final Supplier<GenerateResult> aGenerateResultSupplier) {
 				if (grs != null) {
-					tripleo.elijah.util.Stupidity.println_err2("234 grs not null " + grs.getClass().getName());
+					SimplePrintLoggerToRemoveSoon.println_err2("234 grs not null " + grs.getClass().getName());
 					return;
 				}
 

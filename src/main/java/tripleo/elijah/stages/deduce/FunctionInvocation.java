@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import com.google.common.base.MoreObjects;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
@@ -160,6 +161,23 @@ public class FunctionInvocation {
 
 	public WlGenerateFunction generateFunction(final @NotNull DeduceTypes2 deduceTypes2, final @NotNull OS_Module aModule) {
 		return new WlGenerateFunction(deduceTypes2.getGenerateFunctions(aModule), this, deduceTypes2._phase().codeRegistrar);
+	}
+
+
+	public String asString() {
+		return MoreObjects.toStringHelper(this)
+		                  .add("pte", pte.asString())
+		                  .add("fd", fd.asString())
+		                  .add("generateDeferred", generateDeferred.state())
+		                  .add("classInvocation", classInvocation.asString())
+		                  .add("namespaceInvocation", namespaceInvocation.asString())
+		                  .add("_generated", _generated.asString())
+		                  .toString();
+	}
+
+	public static boolean sameAs(FunctionInvocation functionInvocation, final FunctionInvocation fi) {
+		return functionInvocation.getClassInvocation() == fi.getClassInvocation()
+				&& functionInvocation.getFunction() == fi.getFunction() && functionInvocation.pte == fi.pte;
 	}
 }
 

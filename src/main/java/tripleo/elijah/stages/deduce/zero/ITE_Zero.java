@@ -29,8 +29,8 @@ public class ITE_Zero {
         ite = aIdentTableEntry;
     }
 
-    public void fp_onChange__001(@NotNull final TypeTableEntry vte, final IdentTableEntry ite, @NotNull final DeduceTypes2 deduceTypes2, final ErrSink errSink) {
-        final OS_Type ty = vte.getAttached();
+    public void fp_onChange__001(@NotNull final TypeTableEntry tte_vte, final IdentTableEntry ite, @NotNull final DeduceTypes2 deduceTypes2, final ErrSink errSink) {
+        final OS_Type ty = tte_vte.getAttached();
 
         @Nullable OS_Element ele2 = null;
 
@@ -46,14 +46,14 @@ public class ITE_Zero {
                     ty2 = zero_type.genType();
                 }
 
-//				ty2 = aFoundParent.deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
+//				ty2 = aFoundParent.deduceTypes2.newPFluffyType().resolve_type(ty, ty.getTypeName().getContext());
                 final OS_Element ele;
-                if (vte.genType.resolved == null) {
-                    if (ty2.resolved.getType() == OS_Type.Type.USER_CLASS) {
-                        vte.genType.copy(ty2);
+                if (tte_vte.getGenType(deduceTypes2).getResolved() == null) {
+                    if (ty2.getResolved().getType() == OS_Type.Type.USER_CLASS) {
+                        tte_vte.getGenType(deduceTypes2).copy(ty2);
                     }
                 }
-                ele = ty2.resolved.getElement();
+                ele = ty2.getResolved().getElement();
                 final LookupResultList lrl = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), deduceTypes2);
                 ele2 = lrl.chooseBest(null);
             } else {
@@ -85,7 +85,7 @@ public class ITE_Zero {
 //			y.preUpdateStatusListenerAdded = true;
 
 //			assert el2 != eh.getElement();
-            ite.resolveExpectation.satisfy(normal_path);
+            ite.getResolveExpectation().satisfy(normal_path);
 //			dc.found_element_for_ite(generatedFunction, y, eh.getElement(), null); // No context
 //			LOG.info("1424 Found for " + normal_path);
             foundElement.doFoundElement(eh.getElement());

@@ -12,7 +12,7 @@ import tripleo.elijah.diagnostic.Diagnostic;
 
 public interface ErrSink {
 	
-	void exception(Exception exception);
+	void exception(Throwable exception);
 
     /*@ ensures errorCount() == \old errorCount + 1*/
     void reportError(String s);

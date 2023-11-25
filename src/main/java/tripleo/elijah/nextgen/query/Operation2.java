@@ -1,6 +1,7 @@
 package tripleo.elijah.nextgen.query;
 
 import tripleo.elijah.diagnostic.Diagnostic;
+import tripleo.elijah.util.Mode;
 
 /**
  * An emulation of Rust's Result type

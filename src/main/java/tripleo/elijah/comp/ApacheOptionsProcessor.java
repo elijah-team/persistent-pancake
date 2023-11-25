@@ -39,7 +39,7 @@ public class ApacheOptionsProcessor implements OptionsProcessor {
 			cb.option(new CC_SetDoOut(true));
 		}
 
-		if (Compilation.isGitlab_ci() || cmd.hasOption("silent")) {
+		if (Compilation.CompilationAlways.isGitlab_ci() || cmd.hasOption("silent")) {
 			cb.option(new CC_SetSilent(true));
 		}
 

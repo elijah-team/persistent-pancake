@@ -1,6 +1,6 @@
 package tripleo.elijah.nextgen.expansion;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation.CompilationAlways;
 import tripleo.elijah.comp.IO;
@@ -22,8 +22,9 @@ import java.util.List;
 
 import static tripleo.elijah.util.Helpers.List_of;
 
-public class SX_NodeTest extends TestCase {
+public class SX_NodeTest {
 
+	@Test
 	public void testFullText() {
 		final StdErrSink      errSink       = new StdErrSink();
 		final IO              io            = new IO();

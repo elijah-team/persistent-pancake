@@ -25,26 +25,23 @@ import tripleo.elijah.stages.logging.ElLog;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created 12/30/20 2:14 AM
  */
 public class PipelineLogic implements AccessBus.AB_ModuleListListener {
-	public final GeneratePhase generatePhase;
-	public final DeducePhase   dp;
-	final        AccessBus     __ab;
-
+	public final  GeneratePhase   generatePhase;
+	public final  DeducePhase     dp;
+	final         AccessBus       __ab;
 	private final ElLog.Verbosity verbosity;
-
 	private final List<OS_Module> __mods_BACKING = new ArrayList<OS_Module>();
 	final         EIT_ModuleList  mods           = new EIT_ModuleList(__mods_BACKING);
 
 	public PipelineLogic(final AccessBus iab) {
 		__ab = iab; // we're watching you
 
-		final boolean sil = __ab.getCompilation().getSilence(); // ca.testSilence
-
-		verbosity     = sil ? ElLog.Verbosity.SILENT : ElLog.Verbosity.VERBOSE;
+		verbosity     = __ab.getCompilation().testSilence(); // ca.testSilence
 		generatePhase = new GeneratePhase(verbosity, this, __ab.getCompilation());
 		dp            = new DeducePhase(generatePhase, this, verbosity, __ab.getCompilation());
 
@@ -130,7 +127,8 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	}
 
 	public void addLog(final ElLog aLog) {
-		__ab.getCompilation().elLogs.add(aLog);
+		final Compilation     compilation   = __ab.getCompilation();
+		compilation.acceptElLog(aLog);
 	}
 
 	@Override
@@ -143,10 +141,6 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 
 		dp.finish(dp.generatedClasses);
 //		dp.generatedClasses.addAll(lgc);
-	}
-
-	public GenerateResult getGR() {
-		return __ab.gr;
 	}
 
 	public List<GeneratedNode> generatedClassesCopy() {
