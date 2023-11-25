@@ -26,9 +26,15 @@ public class ProcIA implements InstructionArgument {
 
 	@Override
 	public String toString() {
+		String procTableEntryString = "<<??>>";
+		try {
+			final ProcTableEntry procTableEntry;
+			procTableEntry = gf.getProcTableEntry(index);
+			procTableEntryString = procTableEntry.asString();
+		} catch (NullPointerException npe) {}
 		return "ProcIA{" +
 				"index=" + index + ", " +
-				"func=" + gf.getProcTableEntry(index) +
+				"func=" + procTableEntryString +
 				'}';
 	}
 

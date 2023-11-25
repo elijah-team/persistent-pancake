@@ -18,6 +18,13 @@ import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.OS_Element;
+import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.lang.TypeName;
+import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
+import tripleo.elijah.stages.deduce.percy.PercyMakeType;
+import tripleo.elijah.stages.deduce.percy.PercyWantConstructor;
+import tripleo.elijah.stages.deduce.percy.PercyWantType;
 import tripleo.elijah.stages.gen_fn.BaseTableEntry;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.GenericElementHolder;
@@ -29,6 +36,7 @@ import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
+import tripleo.elijah.util.NotImplementedException;
 
 import java.util.List;
 
@@ -42,8 +50,12 @@ public class DeducePath {
 	private final GenType @NotNull []                 types;
 	private final MemberContext @NotNull []           contexts;
 
+	private final DeduceTypeResolve2 resolver;
+
 	@Contract(pure = true)
-	public DeducePath(final IdentTableEntry aIdentTableEntry, @NotNull final List<InstructionArgument> aX) {
+	public DeducePath(final IdentTableEntry aIdentTableEntry, @NotNull final List<InstructionArgument> aX, final DeduceTypeResolve2 aResolver) {
+		resolver = aResolver;
+
 		final int size = aX.size();
 		assert size > 0;
 
@@ -95,9 +107,12 @@ public class DeducePath {
 					final int y = 2; // TODO feb 20
 //					throw new AssertionError();
 				}
-			} else
+			} else {
 				el = null; // README shouldn't be calling for other subclasses
-			elements[aIndex] = el;
+			}
+			if (el != null) {
+				elements[aIndex] = el;
+			}
 			return el;
 		} else {
 			return elements[aIndex];
@@ -122,7 +137,7 @@ public class DeducePath {
 
 	public @Nullable Context getContext(final int aIndex) {
 		if (contexts[aIndex] == null) {
-			final @Nullable MemberContext memberContext = new MemberContext(this, aIndex, getElement(aIndex));
+			final @Nullable MemberContext memberContext = new MemberContext(this, aIndex, getElement(aIndex), this.resolver);
 			contexts[aIndex] = memberContext;
 			return memberContext;
 		} else
@@ -134,14 +149,17 @@ public class DeducePath {
 		getEntry(aIndex).elementPromise(aOS_elementDoneCallback, aDiagnosticFailCallback);
 	}
 
-	static class MemberContext extends Context {
+	/*static*/ class MemberContext extends Context {
 
 		private final DeducePath deducePath;
 		private final int index;
 		private final OS_Element element;
 		private final @Nullable GenType type;
+		private final DeduceTypeResolve2   resolver;
+		private       PercyWantConstructor pwc;
 
-		public MemberContext(final DeducePath aDeducePath, final int aIndex, final OS_Element aElement) {
+		public MemberContext(final DeducePath aDeducePath, final int aIndex, final OS_Element aElement, final DeduceTypeResolve2 aResolver) {
+			resolver = aResolver;
 			assert aIndex >= 0;
 
 			deducePath = aDeducePath;
@@ -154,16 +172,66 @@ public class DeducePath {
 		@Override
 		public LookupResultList lookup(final String name, final int level, final LookupResultList Result, final List<Context> alreadySearched, final boolean one) {
 //			if (index == 0)
-				return type.resolved.getElement().getContext().lookup(name, level, Result, alreadySearched, one);
-//			else
-//				return null;
+			@Nullable OS_Type resolved = type.getResolved();
+			if (resolved != null) {
+				return resolved.getElement().getContext().lookup(name, level, Result, alreadySearched, one);
+			} else {
+				assert type.getNonGenericTypeName() != null;
+				resolved = new OS_UserType(type.getNonGenericTypeName());
+
+				final TypeName tn1  = resolved.getTypeName();
+				final Context  ctx1 = type.getNonGenericTypeName().getContext();
+
+				final DeduceTypes2 dt2 = base.__getDeduceTypes2();
+				PercyMakeType mt11 = new PercyMakeType();
+				mt11.resolved = resolved;
+				mt11.onResolveError(re -> {
+					throw new NotImplementedException();
+				});
+				resolver.makeGenType(new PercyWantType(){
+					@Override public void onFinalSuccess(GenType gt11) {
+					}
+
+					@Override
+					public void provide(final PercyMakeType aMt) {
+						@NotNull final GenType resolved2;
+						try {
+							resolved2 = dt2.resolve_type(aMt.resolved, ctx1);
+//							System.out.println("177 "+resolved2.asString());
+
+							type.copy(resolved2);
+
+							pwc.setEnclosingGenType(type);
+
+							pwc.provide(resolver);
+						} catch (ResolveError aE) {
+							aMt.resolveError(aE);
+						}
+					}
+				}, mt11);
+
+
+				NotImplementedException.raise_stop();
+
+//				return resolved.getElement().getContext().lookup(name, level, Result, alreadySearched, one);
+				System.err.println("FAIL 162");
+				return new LookupResultList();
+			}
 		}
 
 		@Override
 		public @Nullable Context getParent() {
-			if (index == 0)
-				return element.getContext().getParent();
-			return deducePath.getContext(index - 1);
+			@Nullable Context result;
+			if (index == 0) {
+				result = element.getContext().getParent();
+			} else {
+				result = deducePath.getContext(index - 1);
+			}
+			return result;
+		}
+
+		public void setPwc(final PercyWantConstructor aPwc) {
+			pwc = aPwc;
 		}
 	}
 
@@ -173,12 +241,12 @@ public class DeducePath {
 			@Nullable final GenType gt;
 			if (ia2 instanceof IntegerIA) {
 				@NotNull final VariableTableEntry vte = ((IntegerIA) ia2).getEntry();
-				gt = vte.type.genType;
+				gt = vte.type.getGenType(null);
 				assert gt != null;
 			} else if (ia2 instanceof IdentIA) {
 				@NotNull final IdentTableEntry identTableEntry = ((IdentIA) ia2).getEntry();
-				if (identTableEntry.type != null) {
-					gt = identTableEntry.type.genType;
+				if (identTableEntry.getType() != null) {
+					gt = identTableEntry.getType().getGenType(null);
 					assert gt != null;
 				} else {
 					gt = null;

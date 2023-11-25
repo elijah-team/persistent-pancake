@@ -1802,6 +1802,7 @@ import com.google.common.collect.Collections2;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.comp.CentralController;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.entrypoints.EntryPointList;
@@ -1816,6 +1817,7 @@ import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceConstructStatement;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.instructions.ConstTableIA;
 import tripleo.elijah.stages.instructions.FnCallArgs;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -1851,6 +1853,17 @@ public class GenerateFunctions {
 	private final        GeneratePhase phase;
 	private final        ElLog         LOG;
 
+	public GenerateFunctions(final CentralController c2, final OS_Module aModule) {
+		assert c2.hasGeneratePhase();
+		assert c2.hasPipelineLogic();
+
+		phase  = c2.getGeneratePhase();
+		module = aModule;
+		LOG    = new ElLog(module.getFileName(), phase.getVerbosity(), PHASE);
+
+		c2.getPipelineLogic().addLog(LOG);
+	}
+
 	public GenerateFunctions(final GeneratePhase aPhase, final OS_Module aModule, final PipelineLogic aPipelineLogic) {
 		phase  = aPhase;
 		module = aModule;
@@ -1875,7 +1888,9 @@ public class GenerateFunctions {
 	public @NotNull GeneratedConstructor generateConstructor(final ConstructorDef aConstructorDef,
 	                                                         final ClassStatement parent, // TODO Namespace constructors
 	                                                         final FunctionInvocation aFunctionInvocation) {
-		final S1_Constructor s1c = new S1_Constructor(aConstructorDef, parent, aFunctionInvocation);
+		final DeduceTypeResolve2 aResolver = null; // TODO this will fail
+
+		final S1_Constructor s1c = new S1_Constructor(aConstructorDef, parent, aFunctionInvocation, aResolver);
 
 		s1c.process(new S1toG_GC_Processor(this), true);
 
@@ -1886,7 +1901,9 @@ public class GenerateFunctions {
 	public @NotNull GeneratedConstructor generateConstructor_000(final ConstructorDef aConstructorDef,
 	                                                             final ClassStatement parent, // TODO Namespace constructors
 	                                                             final FunctionInvocation aFunctionInvocation) {
-		final GeneratedConstructor gf = new GeneratedConstructor(aConstructorDef);
+		final DeduceTypeResolve2 aResolver = null ; // TODO this will fail later (use provided/fix_tables)
+
+		final GeneratedConstructor gf = new GeneratedConstructor(aConstructorDef, aResolver);
 		gf.setFunctionInvocation(aFunctionInvocation);
 		if (parent instanceof ClassStatement) {
 			final OS_Type         parentType = parent.getOS_Type();
@@ -1906,15 +1923,15 @@ public class GenerateFunctions {
 				final OS_Type        attached = tte1.getAttached();
 
 				// TODO for reference now...
-				final GenType  genType  = new GenType();
+				final GenType  genType  = new GenType(aResolver);
 				final TypeName typeName = fali.typeName();
 				if (typeName != null)
-					genType.typeName = new OS_UserType(typeName);
-				genType.resolved = attached;
+					genType.setTypeName(new OS_UserType(typeName));
+				genType.setResolved(attached);
 
 				final OS_Type attached1;
 				if (attached == null && typeName != null)
-					attached1 = genType.typeName;
+					attached1 = genType.getTypeName();
 				else
 					attached1 = attached;
 
@@ -2071,6 +2088,8 @@ public class GenerateFunctions {
 	@NotNull GeneratedFunction generateFunction(@NotNull final FunctionDef fd,
 	                                            final OS_Element parent,
 	                                            @NotNull final FunctionInvocation aFunctionInvocation) {
+		final DeduceTypeResolve2 aResolver = null ; // TODO this will fail later (use provided/fix_tables)
+
 //		LOG.err("601.1 fn "+fd.name() + " " + parent);
 		final GeneratedFunction gf = new GeneratedFunction(fd);
 		if (parent instanceof ClassStatement)
@@ -2101,15 +2120,15 @@ public class GenerateFunctions {
 					final OS_Type        attached = tte1.getAttached();
 
 					// TODO for reference now...
-					final GenType  genType  = new GenType();
+					final GenType  genType  = new GenType(aResolver);
 					final TypeName typeName = fali.typeName();
 					if (typeName != null)
-						genType.typeName = new OS_UserType(typeName);
-					genType.resolved = attached;
+						genType.setTypeName(new OS_UserType(typeName));
+					genType.setResolved(attached);
 
 					final OS_Type attached1;
 					if (attached == null && typeName != null)
-						attached1 = genType.typeName;
+						attached1 = genType.getTypeName();
 					else
 						attached1 = attached;
 
@@ -2583,45 +2602,48 @@ public class GenerateFunctions {
 			final FnCallArgs fnCallArgs = new FnCallArgs(expression_to_call(pce, gf, cctx), gf);
 			final int ii2 = add_i(gf, InstructionName.AGN, List_of(new IntegerIA(vte, gf), fnCallArgs), cctx);
 			final VariableTableEntry vte_proccall = gf.getVarTableEntry(vte);
-			final InstructionArgument gg = fnCallArgs.expression_to_call.getArg(0);
 
-			@NotNull final TableEntryIV g;
-			if (gg instanceof IntegerIA) {
-				g = gf.getVarTableEntry(((IntegerIA) gg).getIndex());
-			} else if (gg instanceof IdentIA) {
-				g = gf.getIdentTableEntry(((IdentIA) gg).getIndex());
-			} else if (gg instanceof ProcIA) {
-				g = gf.getProcTableEntry(((ProcIA) gg).getIndex());
-			} else
-				throw new NotImplementedException();
+			if (!fnCallArgs.expression_to_call.isEmpty()) {
+				final InstructionArgument gg = fnCallArgs.expression_to_call.getArg(0);
 
-			final TypeTableEntry tte_proccall = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, value, g);
+				@NotNull final TableEntryIV g;
+				if (gg instanceof IntegerIA) {
+					g = gf.getVarTableEntry(((IntegerIA) gg).getIndex());
+				} else if (gg instanceof IdentIA) {
+					g = gf.getIdentTableEntry(((IdentIA) gg).getIndex());
+				} else if (gg instanceof ProcIA) {
+					g = gf.getProcTableEntry(((ProcIA) gg).getIndex());
+				} else
+					throw new NotImplementedException();
+
+				final TypeTableEntry tte_proccall = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, value, g);
 				fnCallArgs.setType(tte_proccall);
 				vte_proccall.addPotentialType(ii2, tte_proccall);
-				break;
-			case NUMERIC:
-				final int ci = addConstantTableEntry(null, value, value.getType(), gf);
-				final int ii = add_i(gf, InstructionName.AGNK, List_of(new IntegerIA(vte, gf), new ConstTableIA(ci, gf)), cctx);
-				final VariableTableEntry vte_numeric = gf.getVarTableEntry(vte);
-				vte_numeric.addPotentialType(ii, gf.getConstTableEntry(ci).type);
-				break;
-			case IDENT:
-				final InstructionArgument ia1 = simplify_expression(value, gf, cctx);
-				final int ii3 = add_i(gf, InstructionName.AGN, List_of(new IntegerIA(vte, gf), ia1), cctx);
-				final VariableTableEntry vte3_ident = gf.getVarTableEntry(vte);
-				final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, value);
-				vte3_ident.addPotentialType(ii3, tte);
-				break;
-			case FUNC_EXPR:
-				final FuncExpr fe = (FuncExpr) value;
-				final int pte_index = addProcTableEntry(fe, null, get_args_types(fe.getArgs(), gf), gf);
-				final int ii4 = add_i(gf, InstructionName.AGNF, List_of(new IntegerIA(vte, gf), new IntegerIA(pte_index, gf)), cctx);
-				final VariableTableEntry vte3_func = gf.getVarTableEntry(vte);
-				final TypeTableEntry tte_func = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, new OS_FuncExprType(fe), value);
-				vte3_func.addPotentialType(ii4, tte_func);
-				break;
-			default:
-				throw new IllegalStateException("Unexpected value: " + value.getKind());
+			}
+			break;
+		case NUMERIC:
+			final int ci = addConstantTableEntry(null, value, value.getType(), gf);
+			final int ii = add_i(gf, InstructionName.AGNK, List_of(new IntegerIA(vte, gf), new ConstTableIA(ci, gf)), cctx);
+			final VariableTableEntry vte_numeric = gf.getVarTableEntry(vte);
+			vte_numeric.addPotentialType(ii, gf.getConstTableEntry(ci).type);
+			break;
+		case IDENT:
+			final InstructionArgument ia1 = simplify_expression(value, gf, cctx);
+			final int ii3 = add_i(gf, InstructionName.AGN, List_of(new IntegerIA(vte, gf), ia1), cctx);
+			final VariableTableEntry vte3_ident = gf.getVarTableEntry(vte);
+			final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, null, value);
+			vte3_ident.addPotentialType(ii3, tte);
+			break;
+		case FUNC_EXPR:
+			final FuncExpr fe = (FuncExpr) value;
+			final int pte_index = addProcTableEntry(fe, null, get_args_types(fe.getArgs(), gf), gf);
+			final int ii4 = add_i(gf, InstructionName.AGNF, List_of(new IntegerIA(vte, gf), new IntegerIA(pte_index, gf)), cctx);
+			final VariableTableEntry vte3_func = gf.getVarTableEntry(vte);
+			final TypeTableEntry tte_func = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, new OS_FuncExprType(fe), value);
+			vte3_func.addPotentialType(ii4, tte_func);
+			break;
+		default:
+			throw new IllegalStateException("Unexpected value: " + value.getKind());
 		}
 	}
 
@@ -2657,8 +2679,8 @@ public class GenerateFunctions {
 				pte.typePromise().then(new DoneCallback<GenType>() { // TODO should this be done here?
 					@Override
 					public void onDone(final GenType result) {
-						@NotNull final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.resolved);
-						tte.genType.copy(result);
+						@NotNull final TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved());
+						tte.getGenType(null).copy(result);
 						idte.addPotentialType(instructionIndex, tte);
 					}
 				});
@@ -2773,7 +2795,7 @@ public class GenerateFunctions {
 					//
 					final int idte_index = gf.addIdentTableEntry((IdentExpression) arg, aContext);
 					tte                                    = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, type, arg);
-					gf.getIdentTableEntry(idte_index).type = tte;
+					gf.getIdentTableEntry(idte_index).setType(tte);
 				}
 				R.add(tte);
 			} else
@@ -3275,7 +3297,7 @@ public class GenerateFunctions {
 				final DeduceConstructStatement dcs = new DeduceConstructStatement(gf, aConstructStatement);
 
 				dcs.target = expression_num;
-				if (expression_num instanceof IntegerIA || expression_num instanceof IdentIA && ((IdentIA) expression_num).getEntry().backlink == null) {
+				if (expression_num instanceof IntegerIA || expression_num instanceof IdentIA && ((IdentIA) expression_num).getEntry().getBacklink() == null) {
 				} else {
 					dcs.toEvaluateTarget = true;
 				}

@@ -1,16 +1,16 @@
 package tripleo.elijah;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tripleo.elijah.util.Helpers.List_of;
 
 public class Tfact1_main2Test {
 
 	@Test
-	public void z100_main_fn_hdr() {
+	void z100_main_fn_hdr() {
 		final EL_Hdr eh = new EL_Hdr();
 
 		eh.rt(new el_type_NoneType());
@@ -33,7 +33,7 @@ public class Tfact1_main2Test {
 	}
 
 	@Test
-	public void z100_main_fn_hdr2() {
+	void z100_main_fn_hdr2() {
 		final EL_Hdr eh = new EL_Hdr();
 
 		eh.rt(new el_type_NoneType());

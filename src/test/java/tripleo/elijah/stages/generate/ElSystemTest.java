@@ -9,8 +9,8 @@
 
 package tripleo.elijah.stages.generate;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.IO;
@@ -20,11 +20,11 @@ import tripleo.elijah.util.Helpers;
 
 public class ElSystemTest {
 
-	ElSystem    sys;
+	ElSystem     sys;
 	Compilation c;
 	private AccessBus ab;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		c  = new CompilationImpl(new StdErrSink(), new IO());
 		ab = new AccessBus(c);
@@ -38,7 +38,7 @@ public class ElSystemTest {
 	}
 
 	@Test
-	public void generateOutputs() {
+	void generateOutputs() {
 		final OutputStrategy os = new OutputStrategy();
 		os.per(OutputStrategy.Per.PER_CLASS);
 		sys.setOutputStrategy(os);

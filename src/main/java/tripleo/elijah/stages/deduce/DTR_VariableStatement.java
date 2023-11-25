@@ -65,10 +65,10 @@ class DTR_VariableStatement {
 			final DeduceTypes2                 dt2  = eh1.getDeduceTypes2();
 			final OS_Type                      type = eh1.getType();
 
-			genType.typeName = new OS_UserType(normalTypeName);
+			genType.setTypeName(new OS_UserType(normalTypeName));
 			try {
-				final @NotNull GenType resolved = dt2.resolve_type(genType.typeName, variableStatement.getContext());
-				if (resolved.resolved.getType() == OS_Type.Type.GENERIC_TYPENAME) {
+				final @NotNull GenType resolved = dt2.resolve_type(genType.getTypeName(), variableStatement.getContext());
+				if (resolved.getResolved().getType() == OS_Type.Type.GENERIC_TYPENAME) {
 					final BaseTableEntry backlink = deduceTypeResolve.backlink;
 
 					normalTypeName_generic_butNotNull_resolveToGeneric(genType, resolved, backlink);
@@ -81,18 +81,18 @@ class DTR_VariableStatement {
 			}
 		} else if (eh instanceof DeduceElement3Holder) {
 		} else
-			genType.typeName = new OS_UserType(normalTypeName);
+			genType.setTypeName(new OS_UserType(normalTypeName));
 	}
 
 	private void normalTypeName_notGeneric_typeProvided(final @NotNull GenType genType, final NormalTypeName normalTypeName, final @NotNull DeduceTypes2 dt2, final @NotNull OS_Type type) {
-		genType.nonGenericTypeName = normalTypeName;
+		genType.setNonGenericTypeName(normalTypeName);
 
 		assert normalTypeName == type.getTypeName();
 
 		final OS_Type typeName = new OS_UserType(normalTypeName);
 		try {
 			final @NotNull GenType resolved = dt2.resolve_type(typeName, variableStatement.getContext());
-			genType.resolved = resolved.resolved;
+			genType.setResolved(resolved.getResolved());
 		} catch (final ResolveError aResolveError) {
 			aResolveError.printStackTrace();
 			assert false;
@@ -100,7 +100,7 @@ class DTR_VariableStatement {
 	}
 
 	private /*static*/ void normalTypeName_notGeneric_typeNotProvided(final @NotNull GenType genType, final NormalTypeName normalTypeName) {
-		genType.nonGenericTypeName = normalTypeName;
+		genType.setNonGenericTypeName(normalTypeName);
 	}
 
 	private /*static*/ void normalTypeName_generic_butNotNull_resolveToGeneric(final GenType genType, final @NotNull GenType resolved, final @NotNull BaseTableEntry backlink) {
@@ -113,11 +113,11 @@ class DTR_VariableStatement {
 						final ClassInvocation ci = result_pte.getClassInvocation();
 						assert ci != null;
 						final @Nullable Map<TypeName, OS_Type> gp  = ci.genericPart;
-						final TypeName                         sch = resolved.typeName.getTypeName();
+						final TypeName                         sch = resolved.getTypeName().getTypeName();
 						assert gp != null;
 						for (final Map.Entry<TypeName, OS_Type> entrySet : gp.entrySet()) {
 							if (entrySet.getKey().equals(sch)) {
-								genType.resolved = entrySet.getValue();
+								genType.setResolved(entrySet.getValue());
 								break;
 							}
 						}
@@ -128,6 +128,6 @@ class DTR_VariableStatement {
 	}
 
 	private /*static*/ void normalTypeName_generic_butNotNull_resolveToNonGeneric(final @NotNull GenType genType, final @NotNull GenType resolved) {
-		genType.resolved = resolved.resolved;
+		genType.setResolved(resolved.getResolved());
 	}
 }

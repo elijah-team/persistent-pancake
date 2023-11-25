@@ -40,13 +40,13 @@ public class OS_UserClassType extends __Abstract_OS_Type {
 
 		@NotNull final List<TypeName> gp = best.getGenericPart();
 		@Nullable ClassInvocation     clsinv;
-		if (genType.ci == null) {
+		if (genType.getCi() == null) {
 			clsinv = DeduceTypes2.ClassInvocationMake.withGenericPart(best, constructorName, (NormalTypeName) aGenericTypeName, deduceTypes2, errSink);
 			if (clsinv == null) return null;
 			clsinv     = phase.registerClassInvocation(clsinv);
-			genType.ci = clsinv;
+			genType.setCi(clsinv);
 		} else
-			clsinv = (ClassInvocation) genType.ci;
+			clsinv = (ClassInvocation) genType.getCi();
 		return clsinv;
 	}
 
@@ -58,6 +58,14 @@ public class OS_UserClassType extends __Abstract_OS_Type {
 	@Override
 	public String asString() {
 		return MessageFormat.format("<OS_UserClassType {0}>", _classStatement);
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("{ User_Class ");
+		sb.append(_classStatement);
+		sb.append('}');
+		return sb.toString();
 	}
 
 	protected boolean _isEqual(final OS_Type aType) {

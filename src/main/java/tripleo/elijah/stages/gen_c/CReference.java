@@ -76,9 +76,9 @@ public class CReference {
 				final VariableTableEntry vte = generatedFunction.getVarTableEntry(to_int(ia));
 
 				if (vte.getName().equals("a1")) {
-					final GenType        gt1 = vte.genType;
-					final GenType        gt2 = vte.type.genType;
-					final GeneratedClass gc1 = (GeneratedClass) vte.genType.node;
+					final GenType        gt1 = vte.getGenType(null);
+					final GenType        gt2 = vte.type.getGenType(null);
+					final GeneratedClass gc1 = (GeneratedClass) vte.getGenType(null).getNode();
 
 					_cheat = gc1;
 
@@ -89,18 +89,18 @@ public class CReference {
 
 					// gt2
 
-					assert gt2.resolvedn == null;
-					assert gt2.typeName instanceof OS_UserType;
-					assert gt2.nonGenericTypeName instanceof RegularTypeName;
-					assert gt2.resolved instanceof OS_FuncType; // wrong: should be usertype: GeneratedClass
-					assert ((ClassInvocation) gt2.ci).resolvePromise().isResolved();
+					assert gt2.getResolvedn() == null;
+					assert gt2.getTypeName() instanceof OS_UserType;
+					assert gt2.getNonGenericTypeName() instanceof RegularTypeName;
+					assert gt2.getResolved() instanceof OS_FuncType; // wrong: should be usertype: GeneratedClass
+					assert ((ClassInvocation) gt2.getCi()).resolvePromise().isResolved();
 
-					((ClassInvocation) gt2.ci).resolvePromise().then(gc -> { // wrong: should be ConstString
+					((ClassInvocation) gt2.getCi()).resolvePromise().then(gc -> { // wrong: should be ConstString
 						assert gc.getCode() == 102;
 						assert gc.getKlass().getName().equals("Arguments");
 					});
 
-					assert gt2.functionInvocation == null;
+					assert gt2.getFunctionInvocation() == null;
 
 					final int y = 2;
 				}

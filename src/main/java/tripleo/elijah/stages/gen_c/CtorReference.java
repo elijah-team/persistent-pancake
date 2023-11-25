@@ -22,6 +22,7 @@ import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,7 +165,7 @@ public class CtorReference {
 				code = aClsinv.getKlass()._a.getCode(); // TODO this will either always be 0 or irrelevant
 			}
 			if (code == 0) {
-				tripleo.elijah.util.Stupidity.println_err2("** 32135 ClassStatement with 0 code " + aClsinv.getKlass());
+				SimplePrintLoggerToRemoveSoon.println_err2("** 32135 ClassStatement with 0 code " + aClsinv.getKlass());
 			}
 			final String text2 = String.format("ZC%d%s", code, ctorName); // TODO what about named constructors
 			sb.append(" = ");

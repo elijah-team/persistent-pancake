@@ -9,6 +9,13 @@
     <inspection_tool class="CheckValidXmlInScriptTagBody" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="Convert2Diamond" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="EqualsCalledOnEnumConstant" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GradlePackageUpdate" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="excludeList">
+        <list>
+          <option value="antlr:antlr" />
+        </list>
+      </option>
+    </inspection_tool>
     <inspection_tool class="HtmlExtraClosingTag" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HtmlMissingClosingTag" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="HtmlUnknownAnchorTarget" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -48,9 +55,11 @@
       <option name="onlyReportStaticMethods" value="false" />
     </inspection_tool>
     <inspection_tool class="NonAsciiCharacters" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PatternVariableCanBeUsed" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="RequiredAttributes" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="myAdditionalRequiredHtmlAttributes" value="" />
     </inspection_tool>
+    <inspection_tool class="SimplifyStreamApiCallChains" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SingleStatementInBlock" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
       <option name="processCode" value="true" />
@@ -63,6 +72,11 @@
       <option name="useParameterizedTypeForCollectionMethods" value="true" />
       <option name="doNotWeakenToJavaLangObject" value="true" />
       <option name="onlyWeakentoInterface" value="true" />
+      <stopClasses>java.util.List</stopClasses>
+    </inspection_tool>
+    <inspection_tool class="UnnecessaryLocalVariable" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="m_ignoreImmediatelyReturnedVariables" value="false" />
+      <option name="m_ignoreAnnotatedVariables" value="false" />
     </inspection_tool>
     <inspection_tool class="UnnecessaryParentheses" enabled="true" level="INFORMATION" enabled_by_default="true">
       <option name="ignoreClarifyingParentheses" value="false" />

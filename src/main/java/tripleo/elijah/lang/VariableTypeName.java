@@ -14,17 +14,16 @@
  */
 package tripleo.elijah.lang;
 
-import org.jetbrains.annotations.NotNull;
+import static tripleo.elijah.util.Helpers.List_of;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
-import static tripleo.elijah.util.Helpers.List_of;
+import org.jetbrains.annotations.NotNull;
 
 public class VariableTypeName extends AbstractTypeName implements NormalTypeName {
-
 	private TypeNameList genericPart;
 	private Context _ctx;
 	//private OS_Type _resolved;
@@ -83,21 +82,6 @@ public class VariableTypeName extends AbstractTypeName implements NormalTypeName
 	@Override
 	public Context getContext() {
 		return _ctx;
-	}
-
-	@Override
-	public boolean hasResolvedElement() {
-		return _resolvedElement != null;
-	}
-
-	@Override
-	public OS_Element getResolvedElement() {
-		return _resolvedElement;
-	}
-
-	@Override
-	public void setResolvedElement(final OS_Element element) {
-		_resolvedElement = element;
 	}
 
 	@Override

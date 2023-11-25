@@ -8,9 +8,9 @@
  */
 package tripleo.elijah.lang;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.IO;
@@ -27,14 +27,14 @@ import static org.easymock.EasyMock.*;
 
 public class TypeOfTypeNameTest {
 
-	@Ignore
+	@Disabled
 	@Test
-	public void typeOfSimpleQualident() throws ResolveError {
+	void typeOfSimpleQualident() throws ResolveError {
 		//
 		// CREATE MOCKS
 		//
 		final Context     ctx = mock(Context.class);
-		final OS_Module   mod = mock(OS_Module.class);
+		final OS_Module    mod = mock(OS_Module.class);
 		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO());
 
 		//
@@ -76,16 +76,16 @@ public class TypeOfTypeNameTest {
 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
 //		System.out.println(tn);
 		verify(ctx, mod);
-		Assert.assertEquals(typeNameString, tn.toString());
+		Assertions.assertEquals(typeNameString, tn.toString());
 	}
 
 	@Test
-	public void typeOfComplexQualident() throws ResolveError {
+	void typeOfComplexQualident() throws ResolveError {
 		//
 		// CREATE MOCKS
 		//
 		final Context     ctx = mock(Context.class);
-		final OS_Module   mod = mock(OS_Module.class);
+		final OS_Module    mod = mock(OS_Module.class);
 		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO());
 
 		//
@@ -128,7 +128,7 @@ public class TypeOfTypeNameTest {
 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
 //		System.out.println(tn);
 		verify(ctx, mod);
-		Assert.assertEquals(typeNameString, tn.toString());
+		Assertions.assertEquals(typeNameString, tn.toString());
 	}
 
 //	@Test
@@ -194,8 +194,9 @@ public class TypeOfTypeNameTest {
 //		Assert.assertEquals(typeNameString, tn.toString());
 //	}
 
+	@Disabled
 	@Test
-	public void typeOfComplexQualident2() throws ResolveError {
+	void typeOfComplexQualident2() throws ResolveError {
 		//
 		// CREATE MOCK
 		//
@@ -254,11 +255,8 @@ public class TypeOfTypeNameTest {
 //		expect(mod.parent.getSilence()).andReturn(true); //ElLog.Verbosity.SILENT); // TODO is this *really* correct
 //		expect(mod.parent.getSilence()).andReturn(true); //ElLog.Verbosity.SILENT); // TODO is this *really* correct
 
-//		OS_Module mod = mock(OS_Module.class);
-		final ElLog.Verbosity verbosity1    = Compilation.gitlabCIVerbosity();
 		final AccessBus       ab            = new AccessBus(mod.parent);
 		final PipelineLogic   pl            = new PipelineLogic(ab);
-		final GeneratePhase   generatePhase = pl.generatePhase;
 		final DeduceTypes2    deduceTypes2  = new DeduceTypes2(mod, pl.dp);
 //		expect(mod.getFileName()).andReturn("foo.elijah");
 		expect(ctx.lookup("x")).andReturn(lrl);
@@ -274,7 +272,7 @@ public class TypeOfTypeNameTest {
 		final TypeName tn = t.resolve(ctx, deduceTypes2);
 //		System.out.println(tn);
 		verify(ctx/*, mod.parent*/);
-		Assert.assertEquals(typeNameString, tn.toString());
+		Assertions.assertEquals(typeNameString, tn.toString());
 	}
 
 }

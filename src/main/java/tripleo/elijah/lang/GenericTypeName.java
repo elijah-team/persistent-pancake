@@ -11,6 +11,8 @@
  */
 package tripleo.elijah.lang;
 
+import tripleo.elijah.lang.nextgen.names2.EN_Name;
+import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.io.File;
@@ -18,11 +20,12 @@ import java.io.File;
 /**
  * Created 8/16/20 7:42 AM
  */
-public class GenericTypeName implements TypeName {
+public class GenericTypeName  extends _AbstractNameable2 implements TypeName {
 	private final Context _ctx;
 	private Qualident _typeName;
 	private TypeModifiers modifiers;
 	private TypeName constraint;
+	private EN_Name_Q en_name;
 
 	public GenericTypeName(final Context cur) {
 		_ctx=cur;
@@ -30,6 +33,7 @@ public class GenericTypeName implements TypeName {
 
 	public void typeName(final Qualident xy) {
 		_typeName = xy;
+		en_name = new EN_Name_Q(xy, this);
 	}
 
 	public void set(final TypeModifiers modifiers_) {
@@ -49,6 +53,11 @@ public class GenericTypeName implements TypeName {
 	@Override
 	public Context getContext() {
 		return _ctx;
+	}
+
+	@Override
+	public EN_Name getEnName() {
+		return en_name;
 	}
 
 	@Override

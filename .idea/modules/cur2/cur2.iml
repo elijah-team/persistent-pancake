@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur" dumb="true">
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/elijah-ek/src/main" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/elijah-ek/src/test" isTestSource="true" />
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/elijah-good-api/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/elijah-util/src" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/src-cef/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/src-mal/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/src-undertow/main/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/src/test/groovy" isTestSource="true" />
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$USER_HOME$/code/gh/elijah-team/persistent-pancake/cur/tripleo-small/src/main/java" isTestSource="false" />
+    </content>
+  </component>
+</module>

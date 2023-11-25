@@ -27,4 +27,11 @@ public class CompilationFactory {
 	public static @NotNull CompilationImpl mkCompilation(final ErrSink eee, final IO io) {
 		return new CompilationImpl(eee, io);
 	}
+
+	public static @NotNull CompilationImpl mkCompilationDefault() {
+		var eee1 = new StdErrSink();
+		var io1  = new IO();
+
+		return mkCompilation(eee1, io1);
+	}
 }

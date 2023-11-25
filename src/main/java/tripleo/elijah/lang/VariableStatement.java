@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.lang;
 
+import com.google.common.base.MoreObjects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.diagnostic.Locatable;
@@ -143,6 +144,16 @@ public class VariableStatement implements OS_Element, @NotNull Locatable {
 	@Override
 	public File getFile() {
 		return name.getFile();
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+		                  .add("_parent", _parent)
+		                  .add("typeName", typeName)
+		                  .add("initialValue", initialValue)
+		                  .add("name", name)
+		                  .toString();
 	}
 
 	// endregion

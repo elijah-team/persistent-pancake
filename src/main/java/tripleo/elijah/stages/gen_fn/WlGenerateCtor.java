@@ -49,7 +49,8 @@ public class WlGenerateCtor implements WorkJob {
 	@Contract(pure = true)
 	public WlGenerateCtor(@NotNull final GenerateFunctions aGenerateFunctions,
 	                      @NotNull final FunctionInvocation aFunctionInvocation,
-	                      @Nullable final IdentExpression aConstructorName, final ICodeRegistrar aCodeRegistrar) {
+	                      @Nullable final IdentExpression aConstructorName,
+	                      final ICodeRegistrar aCodeRegistrar) {
 		generateFunctions  = aGenerateFunctions;
 		functionInvocation = aFunctionInvocation;
 		constructorName    = aConstructorName;

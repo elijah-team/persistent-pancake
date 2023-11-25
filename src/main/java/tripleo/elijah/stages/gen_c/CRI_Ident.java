@@ -20,7 +20,7 @@ import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.Stupidity;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -66,13 +66,13 @@ class CRI_Ident {
 			}
 			if (!skip[0]) {
 				short state = 1;
-				if (ite.externalRef != null) {
+				if (ite.getExternalRef() != null) {
 					state = 2;
 				}
 				switch (state) {
 				case 1:
 					if (resolved == null) {
-						Stupidity.println_err("***88*** resolved is null for " + ite);
+						SimplePrintLoggerToRemoveSoon.println_err("***88*** resolved is null for " + ite);
 					}
 					if (sSize >= i + 1) {
 						_getIdentIAPath_IdentIAHelper(null, sl, i, sSize, resolved_element, generatedFunction, resolved, aValue, aCReference);
@@ -86,7 +86,7 @@ class CRI_Ident {
 					if ((resolved_element instanceof VariableStatement)) {
 						final String text2 = ((VariableStatement) resolved_element).getName();
 
-						final GeneratedNode externalRef = ite.externalRef;
+						final GeneratedNode externalRef = ite.getExternalRef();
 						if (externalRef instanceof GeneratedNamespace) {
 							final String text3 = String.format("zN%d_instance", ((GeneratedNamespace) externalRef).getCode());
 							addRef.accept(new CReference.Reference(text3, CReference.Ref.LITERAL, null));
@@ -123,7 +123,7 @@ class CRI_Ident {
 				} else {
 					text[0] = Emit.emit("/*152*/") + "vm" + text1;
 				}
-				tripleo.elijah.util.Stupidity.println_err("119 " + ite.getIdent() + " " + ite.getStatus());
+				SimplePrintLoggerToRemoveSoon.println_err("119 " + ite.getIdent() + " " + ite.getStatus());
 				final String text2 = (Emit.emit("/*114*/") + String.format("%s is UNKNOWN", text1));
 				addRef.accept(new CReference.Reference(text2, CReference.Ref.MEMBER));
 				break;
@@ -137,8 +137,8 @@ class CRI_Ident {
 
 	private GeneratedNode _re_is_ClassStatement() {
 		GeneratedNode resolved = null;
-		if (ite.type != null)
-			resolved = ite.type.resolved();
+		if (ite.getType() != null)
+			resolved = ite.getType().resolved();
 		if (resolved == null)
 			resolved = ite.resolvedType();
 		return resolved;
@@ -183,7 +183,7 @@ class CRI_Ident {
 	                                               final Consumer<Void> skip,
 	                                               final Consumer<String> text) {
 		NotImplementedException.raise();
-		final GeneratedNode resolved1 = ite.type.resolved();
+		final GeneratedNode resolved1 = ite.getType().resolved();
 		final int           code;
 		if (resolved1 != null)
 			code = ((GeneratedContainerNC) resolved1).getCode();

@@ -51,5 +51,18 @@
     <orderEntry type="library" name="org.slf4j:slf4j-simple:1.7.25" level="project" />
     <orderEntry type="library" name="commons-codec:commons-codec:1.151" level="project" />
     <orderEntry type="library" name="org.reactivestreams:reactive-streams:1.0.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.jdeferred.v2:jdeferred-core:2.0.0" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Gradle: com.google.guava:guava:30.0-jre" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.3" level="project" />
+    <orderEntry type="library" name="Gradle: antlr:antlr:2.7.7" level="project" />
   </component>
 </module>
