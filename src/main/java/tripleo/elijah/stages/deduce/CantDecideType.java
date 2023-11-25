@@ -10,12 +10,15 @@ package tripleo.elijah.stages.deduce;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.diagnostic.Locatable;
+
 import tripleo.elijah.lang.VariableStatement;
+
 import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 

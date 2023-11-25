@@ -21,6 +21,8 @@ import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.*;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.functionality.f202.F202;
+import tripleo.elijah.comp.i.LCM_CompilerAccess;
+import tripleo.elijah.comp.impl.LCM_Event_RootCI;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.lang.ClassStatement;
@@ -82,13 +84,16 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 	private       CompilerInstructions rootCI;
 	private       ElSystem             saveSystem;
 
+	private final LCM lcm;
+
 	@Override
-	public void hasInstructions(final @NotNull List<CompilerInstructions> cis) throws Exception {
+	public void hasInstructions(final @NotNull List<CompilerInstructions> cis) {
 		assert cis.size() > 0;
 
+		// don't inline yet b/c getProjectName
 		rootCI = cis.get(0);
 
-		__cr.start(rootCI, cfg.do_out);
+		lcm.asv(rootCI, LCM_Event_RootCI.instance());
 	}
 
 	@Override
@@ -362,6 +367,7 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 		_compilationNumber = new Random().nextInt(Integer.MAX_VALUE);
 		pipelines          = new Pipeline(aErrSink);
 		_fluffyComp        = new FluffyCompImpl(this);
+		lcm                = new LCM(this);
 	}
 
 	public void testMapHooks(final List<IFunctionMapHook> aMapHooks) {
@@ -375,8 +381,6 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 		if (_output_tree == null) {
 			_output_tree = new EOT_OutputTree();
 		}
-
-		assert _output_tree != null;
 
 		return _output_tree;
 	}
@@ -505,6 +509,27 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 	@Override
 	public LivingRepo _repo() {
 		return _repo;
+	}
+
+	@Override
+	public LCM_CompilerAccess getLCMAccess() {
+		final var _c = this;
+		return new LCM_CompilerAccess() {
+			@Override
+			public Compilation c() {
+				return _c;
+			}
+
+			@Override
+			public CompilationRunner cr() {
+				return c().getRunner();
+			}
+
+			@Override
+			public CompilationConfig cfg() {
+				return c()._cfg();
+			}
+		};
 	}
 
 }

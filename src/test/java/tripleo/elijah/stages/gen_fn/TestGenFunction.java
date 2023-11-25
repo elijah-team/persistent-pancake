@@ -1,46 +1,29 @@
-///*
-// * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
-// *
-// * The contents of this library are released under the LGPL licence v3,
-// * the GNU Lesser General Public License text was downloaded from
-// * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
-// *
-// */
-//package tripleo.elijah.stages.gen_fn;
-//
-//import org.jetbrains.annotations.NotNull;
-//import org.junit.Assert;
-//import org.junit.Test;
-//import tripleo.elijah.comp.AccessBus;
-//import tripleo.elijah.comp.Compilation;
-//import tripleo.elijah.comp.IO;
-//import tripleo.elijah.comp.PipelineLogic;
-//import tripleo.elijah.comp.StdErrSink;
-//import tripleo.elijah.comp.internal.CompilationImpl;
-//import tripleo.elijah.entrypoints.MainClassEntryPoint;
-//import tripleo.elijah.lang.ClassStatement;
-//import tripleo.elijah.lang.FunctionDef;
-//import tripleo.elijah.lang.OS_Module;
-//import tripleo.elijah.lang.OS_Type;
-//import tripleo.elijah.stages.deduce.DeducePhase;
-//import tripleo.elijah.stages.instructions.InstructionName;
-//import tripleo.elijah.testing.comp.IFunctionMapHook;
-//import tripleo.elijah.work.WorkManager;
-//
-//import java.io.File;
-//import java.util.ArrayList;
-//import java.util.Collection;
-//import java.util.List;
-//
-//import static org.junit.Assert.*;
-//import static tripleo.elijah.util.Helpers.List_of;
-//
-///**
-// * Created 9/10/20 2:20 PM
-// */
-//public class TestGenFunction {
-//
-//	private boolean __unboundedGate;
+/*
+ * Elijjah compiler, copyright Tripleo <oluoluolu+elijah@gmail.com>
+ *
+ * The contents of this library are released under the LGPL licence v3,
+ * the GNU Lesser General Public License text was downloaded from
+ * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
+ *
+ */
+package tripleo.elijah.stages.gen_fn;
+
+import org.junit.jupiter.api.Test;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.IO;
+import tripleo.elijah.comp.StdErrSink;
+import tripleo.elijah.comp.internal.CompilationImpl;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tripleo.elijah.util.Helpers.List_of;
+
+/**
+ * Created 9/10/20 2:20 PM
+ */
+public class TestGenFunction {
+
+	private boolean __unboundedGate;
 //
 //	@Test
 //	public void testDemoElNormalFact1Elijah() throws Exception {
@@ -305,32 +288,45 @@
 ////			}
 ////		}
 //	}
+
+
+	@Test
+	public void testBasic1Backlink3Elijah() {
+		final StdErrSink  eee = new StdErrSink();
+		final Compilation c   = new CompilationImpl(eee, new IO());
+
+		final String ff = "test/basic1/backlink3/";
+		c.feedCmdLine(List_of(ff));
+
+/*
+		assertEquals(4, c.reports().codeOutputSize());
+
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.c"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Foo.c"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Foo.h"));
+*/
+
+		assertEquals(4, c.reports().codeOutputSize());
+		assertTrue(c.reports().containsCodeOutput("backlink3/Foo.h"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Foo.c"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.h"));
+		assertTrue(c.reports().containsCodeOutput("backlink3/Main.c"));
+
+		assertEquals(2, c.reports().codeInputSize());
+		assertTrue(c.reports().containsCodeInput("test/basic1/backlink3/backlink3.ez"));
+		assertTrue(c.reports().containsCodeInput("lib_elijjah/lib-c/stdlib.ez"));
+
+		if (__unboundedGate) {
+			assertEquals(c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize(), "unboundedCodeOutputSize");
+		}
+	}
+}
+
 //
-//	@Test
-//	public void testBasic1Backlink3Elijah() {
-//		final StdErrSink eee = new StdErrSink();
-//		final Compilation c = new CompilationImpl(eee, new IO());
 //
-//		final String ff = "test/basic1/backlink3/";
-//		c.feedCmdLine(List_of(ff));
 //
-//		assertEquals(4, c.reports().codeOutputSize());
-//
-//		assertTrue(c.reports().containsCodeOutput("backlink3/Main.c"));
-//		assertTrue(c.reports().containsCodeOutput("backlink3/Main.h"));
-//		assertTrue(c.reports().containsCodeOutput("backlink3/Main.c"));
-//		assertTrue(c.reports().containsCodeOutput("backlink3/Main.h"));
-//		assertTrue(c.reports().containsCodeOutput("backlink3/Main.c"));
-//		assertTrue(c.reports().containsCodeOutput("backlink3/Main.h"));
-//		assertTrue(c.reports().containsCodeOutput("backlink3/Foo.c"));
-//		assertTrue(c.reports().containsCodeOutput("backlink3/Foo.h"));
-//
-//		if (__unboundedGate) {
-//			assertEquals("unboundedCodeOutputSize", c.reports().codeOutputSize(), c.reports().unboundedCodeOutputSize());
-//		}
-//	}
-//}
-//
-////
-////
-////
