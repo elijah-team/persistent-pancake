@@ -1,14 +1,18 @@
 package tripleo.elijah.ci_impl;
 
-import org.jetbrains.annotations.*;
-import tripleo.elijah.ci.*;
+import org.jetbrains.annotations.NotNull;
+
+import tripleo.elijah.ci.CiExpression;
+import tripleo.elijah.ci.CiExpressionList;
+import tripleo.elijah.ci.CiProcedureCallExpression;
+
 import tripleo.elijah.lang.ExpressionKind;
-import tripleo.elijah.lang.IExpression;
-import tripleo.elijah.lang.OS_Type;
+
+import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.util.UnintendedUseException;
 
 public class CiProcedureCallExpressionImpl implements CiProcedureCallExpression {
-	private IExpression      _left;
+	private CiExpression      _left;
 	private CiExpressionList expressionList = new CiExpressionListImpl();
 
 	/**
@@ -26,10 +30,6 @@ public class CiProcedureCallExpressionImpl implements CiProcedureCallExpression 
 		return expressionList;
 	}
 
-	// endregion
-
-	// region left-side
-
 	/**
 	 * change then argument list all at once
 	 *
@@ -45,36 +45,25 @@ public class CiProcedureCallExpressionImpl implements CiProcedureCallExpression 
 		return ExpressionKind.PROCEDURE_CALL;
 	}
 
-	//	@Override
 	public void setKind(final ExpressionKind aIncrement) {
-		throw new IllegalArgumentException();
-	}
-
-	@Override
-	public IExpression getLeft() {
-		return _left;
-	}
-
-	@Override
-	public OS_Type getType() {
 		throw new UnintendedUseException();
+	}
+
+	@Override
+	public CiExpression getLeft() {
+		return _left;
 	}
 
 	/**
 	 * @see #identifier()
 	 */
 	@Override
-	public void setLeft(final IExpression iexpression) {
+	public void setLeft(final CiExpression iexpression) {
 		_left = iexpression;
 	}
 
 	public @NotNull String getReturnTypeString() {
 		return "int"; // TODO hardcoded
-	}
-
-	@Override
-	public void setType(OS_Type deducedExpression) {
-		throw new UnintendedUseException();
 	}
 
 	@Override
@@ -88,7 +77,7 @@ public class CiProcedureCallExpressionImpl implements CiProcedureCallExpression 
 	 * @param xyz a method name might come as DotExpression or IdentExpression
 	 */
 	@Override
-	public void identifier(final IExpression xyz) {
+	public void identifier(final CiExpression xyz) {
 		setLeft(xyz);
 	}
 
@@ -113,5 +102,8 @@ public class CiProcedureCallExpressionImpl implements CiProcedureCallExpression 
 		throw new UnintendedUseException();
 	}
 
-	// endregion
+	@Override
+	public void setType(final OS_BuiltinType aOSBuiltinType) {
+		throw new UnintendedUseException();
+	}
 }

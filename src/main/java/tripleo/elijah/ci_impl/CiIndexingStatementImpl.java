@@ -11,6 +11,7 @@ package tripleo.elijah.ci_impl;
 import antlr.*;
 import org.jetbrains.annotations.*;
 import tripleo.elijah.ci.*;
+import tripleo.elijah.xlang.LocatableString;
 
 /**
  * @author Tripleo
@@ -19,8 +20,8 @@ import tripleo.elijah.ci.*;
  */
 public class CiIndexingStatementImpl implements CiIndexingStatement {
 	private final @NotNull CompilerInstructions parent;
-	private CiExpressionList exprs;
-	private Token            name;
+	private                CiExpressionList     exprs;
+	private                LocatableString      name;
 
 	public CiIndexingStatementImpl(final @NotNull CompilerInstructions module) {
 		this.parent = module;
@@ -32,7 +33,7 @@ public class CiIndexingStatementImpl implements CiIndexingStatement {
 	}
 
 	@Override
-	public void setName(final Token aToken) {
+	public void setName(final LocatableString aToken) {
 		name = aToken;
 	}
 }

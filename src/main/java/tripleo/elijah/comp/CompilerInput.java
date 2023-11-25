@@ -4,15 +4,21 @@ import com.google.common.base.Preconditions;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.i.CompilerInputMaster;
 import tripleo.elijah.comp.i.ILazyCompilerInstructions;
+import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.nextgen.query.Operation2;
-import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
+import tripleo.elijah.util.Maybe;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class CompilerInput extends __Extensionable {
+    public CompilerInput(final String aS, final Optional<CompilationImpl> aCompilation) {
+        this(aS);
+    }
+
     public File makeFile() {
 	    return switch (ty) {
 		    case SOURCE_ROOT -> dir_carrier;

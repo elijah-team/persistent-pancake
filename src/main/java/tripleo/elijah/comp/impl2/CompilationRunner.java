@@ -6,9 +6,9 @@ import antlr.TokenStreamException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.QuerySearchEzFiles;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.comp.i.ICompilationAccess;
@@ -24,9 +24,9 @@ import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.diagnostic.TooManyEz_ActuallyNone;
 import tripleo.elijah.diagnostic.TooManyEz_BeSpecific;
+import tripleo.elijah.util.Maybe;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
-import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
@@ -404,23 +404,27 @@ public class CompilationRunner {
 			return "find cis";
 		}
 
-		protected void find_cis(final @NotNull String @NotNull [] args2,
+		protected void find_cis(
+//		  final @NotNull List<CompilerInput> args2,
+		  final @NotNull String[] args2,
 		                        final @NotNull Compilation c,
 		                        final @NotNull ErrSink errSink,
 		                        final @NotNull IO io,
 		                        final ICompilationBus cb,
 		                        final IProgressSink ps) {
 			CompilerInstructions ez_file;
-			for (final String file_name : args2) {
-				final File    f        = new File(file_name);
-				final boolean matches2 = Pattern.matches(".+\\.ez$", file_name);
+//			for (final CompilerInput input : args2) {
+//				final File    f        = input.makeFile();
+			for (final String input : args2) {
+				final File    f        = new File(input);
+				final boolean matches2 = Pattern.matches(".+\\.ez$", input);
 				if (matches2) {
-					final ILazyCompilerInstructions ilci = ILazyCompilerInstructions.of(f, c);
+					final ILazyCompilerInstructions ilci = ILazyCompilerInstructions.of(new CompilerInput(input), c.getCompilationClosure()); // FIXME 11/24
 					cci.accept(new Maybe<>(ilci, null));
 
 					cb.inst(ilci);
 				} else {
-					//errSink.reportError("9996 Not an .ez file "+file_name);
+					//errSink.reportError("9996 Not an .ez file "+input);
 					if (f.isDirectory()) {
 						final List<CompilerInstructions> ezs = searchEzFiles(f, errSink, io, c);
 

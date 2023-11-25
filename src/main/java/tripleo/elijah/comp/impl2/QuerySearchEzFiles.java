@@ -1,8 +1,9 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.impl2;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.comp.impl2.CompilationRunner;

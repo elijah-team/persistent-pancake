@@ -12,6 +12,8 @@ import tripleo.elijah.comp.i.IProgressSink;
 import tripleo.elijah.comp.i.ProgressSinkComponent;
 */
 
+import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.UnintendedUseException;
 import tripleo.elijah.comp.impl.ApacheOptionsProcessor;
 import tripleo.elijah.comp.i.Compilation;
@@ -44,7 +46,8 @@ public class UT_Controller implements CompilerController {
 		cb = new UT_CompilationBus(c, this);
 
 		try {
-			args2 = op.process(c, args, cb);
+			List inputs = null;//string
+			args2 = op.process(c, (List<CompilerInput>) inputs, cb);
 		} catch (final Exception e) {
 			c.getErrSink().exception(e);
 			throw new RuntimeException(e);
@@ -70,6 +73,11 @@ public class UT_Controller implements CompilerController {
 			c.getErrSink().exception(e);
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public void _setInputs(final List<CompilerInput> aCompilerInputs) {
+		throw new NotImplementedException();
 	}
 
 	public void _set(final Compilation aCompilation, final List<String> aArgs) {

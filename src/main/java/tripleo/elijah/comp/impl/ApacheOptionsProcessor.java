@@ -4,8 +4,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah.comp.i.ICompilationBus;
 import tripleo.elijah.comp.i.OptionsProcessor;
-import tripleo.elijah.comp.internal.CompilationBus;
 import tripleo.vendor.org.apache.commons.cli.CommandLine;
 import tripleo.vendor.org.apache.commons.cli.CommandLineParser;
 import tripleo.vendor.org.apache.commons.cli.DefaultParser;
@@ -26,7 +26,7 @@ public class ApacheOptionsProcessor implements OptionsProcessor {
 	}
 
 	@Override
-	public String[] process(final @NotNull Compilation c, final @NotNull List<CompilerInput> aInputs, final CompilationBus aCb) throws Exception {
+	public String[] process(final @NotNull Compilation c, final @NotNull List<CompilerInput> aInputs, final ICompilationBus aCb) throws Exception {
 		final CommandLine cmd;
 
 		cmd = clp.parse(options, aInputs);

@@ -1,10 +1,10 @@
 package tripleo.elijah.ci;
 
-import antlr.Token;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci_impl.LibraryStatementPartImpl;
 import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.compiler_model.CM_Filename;
+import tripleo.elijah.xlang.LocatableString;
 
 //import java.io.File;
 import java.util.List;
@@ -33,11 +33,9 @@ public interface CompilerInstructions {
 
 	void setName(String name);
 
-	void setName(Token name);
+	void setName(LocatableString name);
 
 	List<LibraryStatementPart> getLibraryStatementParts();
 
 	void advise(CompilerInput aCompilerInput);
-
-	List<LibraryStatementPart> lsps();
 }

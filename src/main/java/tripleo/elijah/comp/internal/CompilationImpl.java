@@ -21,6 +21,7 @@ import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.*;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.functionality.f202.F202;
+import tripleo.elijah.comp.i.CompilationClosure;
 import tripleo.elijah.comp.i.CompilerController;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.comp.i.ICompilationAccess;
@@ -32,6 +33,7 @@ import tripleo.elijah.comp.impl2.CompilerInstructionsObserver;
 import tripleo.elijah.comp.impl2.DefaultCompilationAccess;
 import tripleo.elijah.comp.impl2.DefaultCompilerController;
 import tripleo.elijah.comp.impl2.USE;
+import tripleo.elijah.comp.percy.CN_CompilerInputWatcher;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.lang.ClassStatement;
@@ -39,6 +41,7 @@ import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.lang.Qualident;
 import tripleo.elijah.modeltransition.ElSystemSink;
+import tripleo.elijah.nextgen.comp_model.CM_CompilerInput;
 import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
@@ -56,6 +59,7 @@ import tripleo.elijah.testing.comp.IFunctionMapHook;
 import tripleo.elijah.ut.UT_Controller;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.Operation;
+import tripleo.elijah.util.UnintendedUseException;
 import tripleo.elijah.world.i.LivingRepo;
 import tripleo.elijah.world.impl.DefaultLivingRepo;
 
@@ -67,12 +71,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CompilationImpl implements Compilation, ElSystemSink {
-
+	private final Map<CompilerInput, CM_CompilerInput> _ci_models = new HashMap<>();
 	public final  List<ElLog>          elLogs = new LinkedList<ElLog>();
 	public final  CompilationConfig    cfg    = new CompilationConfig();
 	public final  CIS                  _cis   = new CIS();
@@ -297,8 +303,38 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 			uctl._set(this, args);
 		}
 
+
+		ctl._setInputs(stringListToInputList(args));
+
 		ctl.processOptions();
 		ctl.runner();
+	}
+
+	@NotNull
+	public List<CompilerInput> stringListToInputList(final @NotNull List<String> args) {
+		final List<CompilerInput> inputs = args.stream()
+		                                       .map(s -> {
+			                                       final CompilerInput    input = new CompilerInput(s, Optional.of(this));
+			                                       final CM_CompilerInput cm    = this.get(input);
+			                                       if (cm.inpSameAs(s)) {
+				                                       input.setSourceRoot();
+			                                       } else {
+				                                       assert false;
+			                                       }
+			                                       return input;
+		                                       })
+		                                       .collect(Collectors.toList());
+		return inputs;
+	}
+
+	@Override
+	public CM_CompilerInput get(final CompilerInput aCompilerInput) {
+		if (_ci_models.containsKey(aCompilerInput))
+			return _ci_models.get(aCompilerInput);
+
+		CM_CompilerInput result = new CM_CompilerInput(aCompilerInput, this);
+		_ci_models.put(aCompilerInput, result);
+		return result;
 	}
 
 	@Override
@@ -531,6 +567,31 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 			@Override
 			public CompilationConfig cfg() {
 				return c()._cfg();
+			}
+		};
+	}
+
+	@Override
+	public CompilationClosure getCompilationClosure() {
+		return new CompilationClosure() {
+			@Override
+			public void compilerInputWatcher_Event(final CN_CompilerInputWatcher.e aE, final CompilerInput aInput, final Object aO) {
+				throw new UnintendedUseException();
+			}
+
+			@Override
+			public ErrSink errSink() {
+				return errSink;
+			}
+
+			@Override
+			public Compilation getCompilation() {
+				return CompilationImpl.this;
+			}
+
+			@Override
+			public IO io() {
+				return io;
 			}
 		};
 	}

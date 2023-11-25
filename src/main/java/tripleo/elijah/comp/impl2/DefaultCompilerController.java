@@ -47,6 +47,11 @@ public class DefaultCompilerController implements CompilerController {
 		}
 	}
 
+	@Override
+	public void _setInputs(final List<CompilerInput> aCompilerInputs) {
+		inputs = aCompilerInputs;
+	}
+
 	public void _set(final Compilation aCompilation, final List<String> aArgs) {
 		c    = aCompilation;
 		args = aArgs;

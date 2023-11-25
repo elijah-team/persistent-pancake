@@ -9,7 +9,7 @@ import tripleo.elijah.nextgen.query.Operation2;
 import java.io.PrintStream;
 import java.util.List;
 
-class UnknownExceptionDiagnostic implements Diagnostic {
+public class UnknownExceptionDiagnostic implements Diagnostic {
 	private final Operation2<OS_Module> m;
 
 	public UnknownExceptionDiagnostic(final Operation2<OS_Module> aM) {

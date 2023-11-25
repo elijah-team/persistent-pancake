@@ -1,5 +1,4 @@
-/*
- *   -*- Mode: Java; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
+/* -*- Mode: Java; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
  *Elijjah compiler,copyright Tripleo<oluoluolu+elijah@gmail.com>
  *
@@ -9,9 +8,9 @@
  */
 package tripleo.elijah.ci;
 
-import antlr.Token;
-import tripleo.elijah.lang.IExpression;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.xlang.LocatableString;
 
 public interface GenerateStatement {
-	void addDirective(Token token, IExpression expression);
+	void addDirective(@NotNull LocatableString token, CiExpression expression);
 }

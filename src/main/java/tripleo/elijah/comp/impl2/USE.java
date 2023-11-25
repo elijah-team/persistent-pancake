@@ -5,30 +5,32 @@ import antlr.RecognitionException;
 import antlr.TokenStreamException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.ci_impl.CiStringExpression;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.GenerateStatement;
 import tripleo.elijah.ci.LibraryStatementPart;
+import tripleo.elijah.ci_impl.CiStringExpression_;
 import tripleo.elijah.ci_impl.CompilerInstructionsImpl;
 import tripleo.elijah.ci_impl.GenerateStatementImpl;
 import tripleo.elijah.ci_impl.LibraryStatementPartImpl;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.UnknownExceptionDiagnostic;
-import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
-import tripleo.elijah.comp.diagnostic.FileNotFoundDiagnostic;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.comp.queries.QuerySourceFileToModule;
 import tripleo.elijah.comp.queries.QuerySourceFileToModuleParams;
 import tripleo.elijah.compiler_model.CM_Filename;
 import tripleo.elijah.diagnostic.Diagnostic;
+import tripleo.elijah.diagnostic.ExceptionDiagnostic;
+import tripleo.elijah.diagnostic.FileNotFoundDiagnostic;
+import tripleo.elijah.diagnostic.UnknownExceptionDiagnostic;
 import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.lang.StringExpression;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
+import tripleo.elijah.xlang.LocatableString;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -78,8 +80,8 @@ public class USE {
 			}
 		}
 		final LibraryStatementPart lsp = new LibraryStatementPartImpl();
-		lsp.setName(Helpers.makeToken("default")); // TODO: make sure this doesn't conflict
-		lsp.setDirName(Helpers.makeToken(String.format("\"%s\"", instruction_dir)));
+		lsp.setName(LocatableString.of("default")); // TODO: make sure this doesn't conflict
+		lsp.setDirName(LocatableString.of(String.format("\"%s\"", instruction_dir)));
 		lsp.setInstructions(compilerInstructions);
 		use_internal(instruction_dir, lsp);
 	}
@@ -127,9 +129,9 @@ public class USE {
 
 			final CompilerInstructions instructions = new CompilerInstructionsImpl();
 			instructions.setName("prelude");
-			final GenerateStatement generateStatement = new GenerateStatementImpl();
-			final StringExpression  expression        = new StringExpression(Helpers.makeToken("\"c\"")); // TODO
-			generateStatement.addDirective(Helpers.makeToken("gen"), expression);
+			final GenerateStatement  generateStatement = new GenerateStatementImpl();
+			final CiStringExpression expression        = CiStringExpression_.of(Compilation.CompilationAlways.defaultPrelude()); // TODO
+			generateStatement.addDirective(LocatableString.of("gen"), expression);
 			instructions.add(generateStatement);
 			final LibraryStatementPart lsp = new LibraryStatementPartImpl();
 			lsp.setInstructions(instructions);

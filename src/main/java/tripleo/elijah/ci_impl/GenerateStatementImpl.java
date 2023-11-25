@@ -8,11 +8,10 @@
  */
 package tripleo.elijah.ci_impl;
 
-import antlr.*;
-import org.jetbrains.annotations.*;
-import tripleo.elijah.ci.*;
-import tripleo.elijah.lang.IExpression;
-
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.ci.CiExpression;
+import tripleo.elijah.ci.GenerateStatement;
+import tripleo.elijah.xlang.LocatableString;
 
 import java.util.*;
 
@@ -20,17 +19,16 @@ import java.util.*;
  * Created 9/6/20 12:04 PM
  */
 public class GenerateStatementImpl implements GenerateStatement {
-	public class Directive {
-
-		private final IExpression expression;
+	public static class Directive {
+		private final CiExpression expression;
 		private final String name;
 
-		public Directive(final @NotNull Token token_, final IExpression expression_) {
-			name = token_.getText();
+		public Directive(final @NotNull LocatableString token_, final CiExpression expression_) {
+			name = token_.getString();
 			expression = expression_;
 		}
 
-		public IExpression getExpression() {
+		public CiExpression getExpression() {
 			return expression;
 		}
 
@@ -39,14 +37,10 @@ public class GenerateStatementImpl implements GenerateStatement {
 		}
 	}
 
-	public final List<Directive> dirs = new ArrayList<Directive>();
+	public final List<Directive> dirs = new ArrayList<>();
 
 	@Override
-	public void addDirective(final @NotNull Token token, final IExpression expression) {
+	public void addDirective(final @NotNull LocatableString token, final CiExpression expression) {
 		dirs.add(new Directive(token, expression));
 	}
 }
-
-//
-//
-//

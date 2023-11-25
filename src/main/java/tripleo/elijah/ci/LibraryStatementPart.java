@@ -1,5 +1,4 @@
-/*
- *   -*- Mode: Java; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
+/* -*- Mode: Java; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
  *Elijjah compiler,copyright Tripleo<oluoluolu+elijah@gmail.com>
  *
@@ -9,11 +8,11 @@
  */
 package tripleo.elijah.ci;
 
-import antlr.*;
-import tripleo.elijah.lang.IExpression;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.xlang.LocatableString;
 
 public interface LibraryStatementPart {
-	void addDirective(Token token, IExpression iExpression);
+	void addDirective(@NotNull LocatableString aName, CiExpression aExpression);
 
 	// TODO PossiblyQuotedString + getFileName + filenamepolicy.apply...
 	String getDirName();
@@ -22,9 +21,9 @@ public interface LibraryStatementPart {
 
 	String getName();
 
-	void setDirName(Token dirName);
+	void setDirName(LocatableString dirName);
 
 	void setInstructions(CompilerInstructions instructions);
 
-	void setName(Token i1);
+	void setName(LocatableString i1);
 }

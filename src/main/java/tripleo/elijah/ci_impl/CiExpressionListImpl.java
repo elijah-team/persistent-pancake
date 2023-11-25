@@ -1,33 +1,35 @@
 package tripleo.elijah.ci_impl;
 
-import com.google.common.base.*;
-import org.jetbrains.annotations.*;
-import tripleo.elijah.ci.*;
-import tripleo.elijah.lang.IExpression;
+import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.ci.CiExpression;
+import tripleo.elijah.ci.CiExpressionList;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public class CiExpressionListImpl implements CiExpressionList {
-	private final List<IExpression> exprs = new ArrayList<>();
+	private final List<CiExpression> exprs = new ArrayList<>();
 
 	@Override
-	public void add(final IExpression aExpr) {
+	public void add(final CiExpression aExpr) {
 		exprs.add(aExpr);
 	}
 
 	@Override
-	public @NotNull Collection<IExpression> expressions() {
+	public @NotNull Collection<CiExpression> expressions() {
 		return exprs;
 	}
 
 	@Override
-	public @NotNull Iterator<IExpression> iterator() {
+	public @NotNull Iterator<CiExpression> iterator() {
 		return exprs.iterator();
 	}
 
 	@Override
-	public @NotNull IExpression next(final IExpression aExpr) {
+	public @NotNull CiExpression next(final CiExpression aExpr) {
 		Preconditions.checkNotNull(aExpr);
 
 		if (aExpr != null) {

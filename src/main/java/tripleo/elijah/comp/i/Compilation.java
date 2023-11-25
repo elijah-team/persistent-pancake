@@ -2,6 +2,7 @@ package tripleo.elijah.comp.i;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.impl2.CompilationRunner;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.IO;
@@ -12,6 +13,7 @@ import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.lang.Qualident;
+import tripleo.elijah.nextgen.comp_model.CM_CompilerInput;
 import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
@@ -91,6 +93,8 @@ public interface Compilation {
 
 	void feedCmdLine(List<String> args, CompilerController ctl);
 
+	CM_CompilerInput get(CompilerInput aCompilerInput);
+
 	void addCodeOutput(EOT_FileNameProvider aFileNameProvider,
 	                   Supplier<EOT_OutputFile> aOutputFileSupplier,
 	                   boolean addFlag);
@@ -126,6 +130,8 @@ public interface Compilation {
 	LivingRepo _repo();
 
 	LCM_CompilerAccess getLCMAccess();
+
+	CompilationClosure getCompilationClosure();
 
 	class CompilationAlways {
 

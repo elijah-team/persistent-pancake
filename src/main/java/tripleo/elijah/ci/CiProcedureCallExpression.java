@@ -2,26 +2,22 @@ package tripleo.elijah.ci;
 
 import org.jetbrains.annotations.*;
 import tripleo.elijah.lang.ExpressionKind;
-import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.OS_Type;
 
-// FIXME wrap IExpression and ExpressionList and ExpressionKind too
-public interface CiProcedureCallExpression extends IExpression {
+// FIXME wrap CiExpression and ExpressionList and ExpressionKind too
+public interface CiProcedureCallExpression extends CiExpression {
 	CiExpressionList exprList();
 
 	CiExpressionList getExpressionList();
 
 	@NotNull ExpressionKind getKind();
 
-	IExpression getLeft();
-
-	@Override
-	OS_Type getType();
+	CiExpression getLeft();
 
 	@Override
 	boolean is_simple();
 
-	void identifier(IExpression ee);
+	void identifier(CiExpression ee);
 
 	String printableString();
 
@@ -32,10 +28,7 @@ public interface CiProcedureCallExpression extends IExpression {
 
 	void setExpressionList(CiExpressionList ael);
 
-	void setLeft(IExpression iexpression);
-
-	@Override
-	void setType(OS_Type deducedExpression);
+	void setLeft(CiExpression iexpression);
 
 	@Override
 	String toString();

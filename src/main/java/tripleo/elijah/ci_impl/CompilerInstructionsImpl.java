@@ -8,18 +8,17 @@
  */
 package tripleo.elijah.ci_impl;
 
-import antlr.Token;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.ci.CiExpression;
 import tripleo.elijah.ci.CiIndexingStatement;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.GenerateStatement;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.compiler_model.CM_Filename;
-import tripleo.elijah.lang.IExpression;
-import tripleo.elijah.lang.StringExpression;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah.xlang.LocatableString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,17 +33,17 @@ public class CompilerInstructionsImpl implements CompilerInstructions {
 	private CiIndexingStatement        _idx;
 	private CM_Filename                filename;
 	private GenerateStatement          gen;
-	private String                     name;
+	private @NotNull LocatableString name;
 	private CompilerInput              advised;
 
 	private static Optional<String> __genLangHelper(final GenerateStatementImpl.Directive gin) {
-		final IExpression lang_raw = gin.getExpression();
-		if (lang_raw instanceof StringExpression) {
-			final StringExpression langRaw = (StringExpression) lang_raw;
+		final CiExpression lang_raw = gin.getExpression();
+		if (lang_raw instanceof CiStringExpression) {
+			final CiStringExpression langRaw = (CiStringExpression) lang_raw;
 			final String           s       = Helpers.remove_single_quotes_from_string(langRaw.getText());
 			return Optional.of(s);
 		} else {
-			return Optional.<String>empty();
+			return Optional.empty();
 		}
 	}
 
@@ -112,17 +111,17 @@ public class CompilerInstructionsImpl implements CompilerInstructions {
 
 	@Override
 	public String getName() {
-		return name;
+		return name.getString();
 	}
 
 	@Override
 	public void setName(String name) {
-		this.name = name;
+		this.name = LocatableString.of(name);
 	}
 
 	@Override
-	public void setName(@NotNull Token name) {
-		this.name = name.getText();
+	public void setName(@NotNull LocatableString name) {
+		this.name = name;
 	}
 
 	@Override
@@ -136,16 +135,7 @@ public class CompilerInstructionsImpl implements CompilerInstructions {
 	}
 
 	@Override
-	public List<LibraryStatementPart> lsps() {
-		return lsps;
-	}
-
-	@Override
 	public String toString() {
 		return String.format("CompilerInstructionsImpl{name='%s', filename='%s'}", name, filename);
 	}
 }
-
-//
-//
-//

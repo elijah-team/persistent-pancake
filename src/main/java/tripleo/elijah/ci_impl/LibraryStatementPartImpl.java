@@ -11,7 +11,7 @@ package tripleo.elijah.ci_impl;
 import antlr.*;
 import org.jetbrains.annotations.*;
 import tripleo.elijah.ci.*;
-import tripleo.elijah.lang.IExpression;
+import tripleo.elijah.xlang.LocatableString;
 
 import java.util.*;
 
@@ -27,7 +27,7 @@ public class LibraryStatementPartImpl implements LibraryStatementPart {
 	private @Nullable List<Directive> dirs = null;
 
 	@Override
-	public void addDirective(final @NotNull Token token, final IExpression iExpression) {
+	public void addDirective(final @NotNull LocatableString token, final CiExpression iExpression) {
 		if (dirs == null) {
 			dirs = new ArrayList<>();
 		}
@@ -50,8 +50,8 @@ public class LibraryStatementPartImpl implements LibraryStatementPart {
 	}
 
 	@Override
-	public void setDirName(final @NotNull Token dirName) {
-		this.dirName = dirName.getText();
+	public void setDirName(final @NotNull LocatableString dirName) {
+		this.dirName = dirName.getString();
 	}
 
 	@Override
@@ -60,16 +60,16 @@ public class LibraryStatementPartImpl implements LibraryStatementPart {
 	}
 
 	@Override
-	public void setName(final @NotNull Token i1) {
-		name = i1.getText();
+	public void setName(final @NotNull LocatableString i1) {
+		name = i1.getString();
 	}
 
 	public static class Directive {
-		private final IExpression expression;
+		private final CiExpression expression;
 		private final String name;
 
-		public Directive(final @NotNull Token token_, final IExpression expression_) {
-			name = token_.getText();
+		public Directive(final @NotNull LocatableString token_, final CiExpression expression_) {
+			name = token_.getString();
 			expression = expression_;
 		}
 	}

@@ -10,26 +10,31 @@ import antlr.TokenBuffer;
 import antlr.TokenStream;
 import antlr.TokenStreamException;
 import antlr.collections.impl.BitSet;
+import tripleo.elijah.ci.CiExpression;
 import tripleo.elijah.ci.CiExpressionList;
 import tripleo.elijah.ci.CiIndexingStatement;
 import tripleo.elijah.ci.CiProcedureCallExpression;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.GenerateStatement;
-import tripleo.elijah.ci_impl.CiExpressionListImpl;
-import tripleo.elijah.ci_impl.CiProcedureCallExpressionImpl;
-import tripleo.elijah.ci_impl.CompilerInstructionsImpl;
-import tripleo.elijah.ci_impl.GenerateStatementImpl;
-import tripleo.elijah.ci_impl.LibraryStatementPartImpl;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.ci_impl.*;
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.Documentable;
+import tripleo.elijah.lang.ExpressionKind;
+import tripleo.elijah.lang.ExpressionList;
+import tripleo.elijah.lang.FuncExpr;
+import tripleo.elijah.lang.ListExpression;
+import tripleo.elijah.lang.TypeCastExpression;
+import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.lang2.BuiltInTypes;
+import tripleo.elijah.xlang.LocatableString;
 
 public class EzParser extends antlr.LLkParser       implements EzTokenTypes
  {
 
 	 public CompilerInstructions ci = new CompilerInstructionsImpl();
-	 IExpression expr;
-	 Context     cur = null;
+	 CiExpression expr;
+	 Context      cur = null;
 
 protected EzParser(final TokenBuffer tokenBuf, final int k) {
   super(tokenBuf,k);
@@ -56,8 +61,8 @@ public EzParser(final ParserSharedInputState state) {
 
 	public final void program() throws RecognitionException, TokenStreamException {
 		
-		Token  i1 = null;
-		GenerateStatement gen=null;
+		Token             i1  = null;
+		GenerateStatement gen =null;
 		
 		try {      // for error handling
 			{
@@ -105,7 +110,7 @@ public EzParser(final ParserSharedInputState state) {
 			i1 = LT(1);
 			match(IDENT);
 			if ( inputState.guessing==0 ) {
-				ci.setName(i1);
+				ci.setName(LocatableString.of(i1));
 			}
 			library_statement();
 			gen=generate_statement();
@@ -140,7 +145,7 @@ public EzParser(final ParserSharedInputState state) {
 						i1 = LT(1);
 						match(IDENT);
 						if (inputState.guessing == 0) {
-							idx.setName(i1);
+							idx.setName(LocatableString.of(i1));
 						}
 						match(TOK_COLON);
 						el = expressionList2();
@@ -228,7 +233,7 @@ public EzParser(final ParserSharedInputState state) {
 				match(IDENT);
 				match(TOK_COLON);
 				if ( inputState.guessing==0 ) {
-					lsp.setName(i1);
+					lsp.setName(LocatableString.of(i1));
 				}
 				break;
 			}
@@ -245,7 +250,7 @@ public EzParser(final ParserSharedInputState state) {
 			dirname = LT(1);
 			match(STRING_LITERAL);
 			if ( inputState.guessing==0 ) {
-				lsp.setDirName(dirname);
+				lsp.setDirName(LocatableString.of(dirname));
 			}
 			{
 			switch ( LA(1)) {
@@ -266,7 +271,7 @@ public EzParser(final ParserSharedInputState state) {
 					} while (true);
 				}
 				if ( inputState.guessing==0 ) {
-					lsp.addDirective(i2, expr);
+					lsp.addDirective(LocatableString.of(i2), expr);
 				}
 				match(RBRACK);
 				break;
@@ -311,7 +316,7 @@ public EzParser(final ParserSharedInputState state) {
 						match(TOK_COLON);
 						expr = expression();
 						if (inputState.guessing == 0) {
-							gen.addDirective(i1, expr);
+							gen.addDirective(LocatableString.of(i1), expr);
 						}
 					} else {
 						break;
@@ -331,8 +336,8 @@ public EzParser(final ParserSharedInputState state) {
 		return gen;
 	}
 	
-	public final IExpression  expression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression expression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
 		
@@ -386,8 +391,8 @@ public EzParser(final ParserSharedInputState state) {
 		return el;
 	}
 	
-	public final IExpression  constantValue() throws RecognitionException, TokenStreamException {
-		IExpression e;
+	public final CiExpression  constantValue() throws RecognitionException, TokenStreamException {
+		CiExpression e;
 		
 		Token  s = null;
 		Token  c = null;
@@ -402,7 +407,7 @@ public EzParser(final ParserSharedInputState state) {
 				s = LT(1);
 				match(STRING_LITERAL);
 				if ( inputState.guessing==0 ) {
-					e=new StringExpression(s);
+					e=CiStringExpression_.of(s);
 				}
 				break;
 			}
@@ -411,7 +416,7 @@ public EzParser(final ParserSharedInputState state) {
 				c = LT(1);
 				match(CHAR_LITERAL);
 				if ( inputState.guessing==0 ) {
-					e=new CharLitExpression(c);
+					e=new CiCharLitExpression(c);
 				}
 				break;
 			}
@@ -420,7 +425,7 @@ public EzParser(final ParserSharedInputState state) {
 				n = LT(1);
 				match(NUM_INT);
 				if ( inputState.guessing==0 ) {
-					e=new NumericExpression(n);
+					e=new CiNumericExpression(LocatableString.of(n));
 				}
 				break;
 			}
@@ -429,7 +434,7 @@ public EzParser(final ParserSharedInputState state) {
 				f = LT(1);
 				match(NUM_FLOAT);
 				if ( inputState.guessing==0 ) {
-					e=new FloatExpression(f);
+					e=new CiFloatExpression(f);
 				}
 				break;
 			}
@@ -450,11 +455,12 @@ public EzParser(final ParserSharedInputState state) {
 		return e;
 	}
 	
-	public final Qualident  qualident() throws RecognitionException, TokenStreamException {
-		final Qualident q;
+	public final CiQualident CiQualident() throws RecognitionException, TokenStreamException {
+		final CiQualident q;
 		
 		Token  d1 = null;
-		q=new Qualident();IdentExpression r1=null, r2=null;
+		q=new CiQualident();
+		CiIdentExpression r1 =null, r2 =null;
 		
 		try {      // for error handling
 			r1=ident();
@@ -468,7 +474,7 @@ public EzParser(final ParserSharedInputState state) {
 						match(DOT);
 						r2 = ident();
 						if (inputState.guessing == 0) {
-							q.appendDot(d1);
+							q.appendDot(LocatableString.of(d1));
 							q.append(r2);
 						}
 					} else {
@@ -489,8 +495,8 @@ public EzParser(final ParserSharedInputState state) {
 		return q;
 	}
 	
-	public final IdentExpression  ident() throws RecognitionException, TokenStreamException {
-		IdentExpression id;
+	public final CiIdentExpression ident() throws RecognitionException, TokenStreamException {
+		CiIdentExpression id;
 		
 		Token  r1 = null;
 		id=null;
@@ -499,7 +505,7 @@ public EzParser(final ParserSharedInputState state) {
 			r1 = LT(1);
 			match(IDENT);
 			if ( inputState.guessing==0 ) {
-				id=new IdentExpression(r1, cur);
+				id=new CiIdentExpression(LocatableString.of(r1)/*, cur*/);
 			}
 		}
 		catch (final RecognitionException ex) {
@@ -599,11 +605,11 @@ public EzParser(final ParserSharedInputState state) {
 		}
 	}
 	
-	public final void identList(
+	/*public final void identList(
             final IdentList ail
 	) throws RecognitionException, TokenStreamException {
 		
-		IdentExpression s=null;
+		CiIdentExpression s=null;
 		
 		try {      // for error handling
 			s=ident();
@@ -633,14 +639,14 @@ public EzParser(final ParserSharedInputState state) {
 			  throw ex;
 			}
 		}
-	}
+	}*/
 	
-	public final IExpression  assignmentExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  assignmentExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
-        final IExpression e=null;
-        final IExpression e2;ExpressionKind ek=null;
+        final CiExpression e=null;
+        final CiExpression e2;ExpressionKind ek=null;
 		
 		try {      // for error handling
 			ee=conditionalExpression();
@@ -752,7 +758,7 @@ public EzParser(final ParserSharedInputState state) {
 				}
 				e2=assignmentExpression();
 				if ( inputState.guessing==0 ) {
-					ee = ExpressionBuilder.build(ee, ek, e2);
+					ee = CiExpressionBuilder.build(ee, ek, e2);
 				}
 			}
 			else if ((_tokenSet_5.member(LA(1))) && (_tokenSet_10.member(LA(2)))) {
@@ -775,13 +781,13 @@ public EzParser(final ParserSharedInputState state) {
 	}
 	
 	public final void qualidentList(
-            final QualidentList qal
+            final CiQualidentList qal
 	) throws RecognitionException, TokenStreamException {
 		
-		Qualident qid;
+		CiQualident qid;
 		
 		try {      // for error handling
-			qid=qualident();
+			qid=CiQualident();
 			if ( inputState.guessing==0 ) {
 				qal.add(qid);
 			}
@@ -789,7 +795,7 @@ public EzParser(final ParserSharedInputState state) {
 				do {
 					if ((LA(1) == COMMA)) {
 						match(COMMA);
-						qid = qualident();
+						qid = CiQualident();
 						if (inputState.guessing == 0) {
 							qal.add(qid);
 						}
@@ -810,104 +816,104 @@ public EzParser(final ParserSharedInputState state) {
 		}
 	}
 	
-	public final IExpression  variableReference() throws RecognitionException, TokenStreamException {
-		IExpression ee;
-		
-		Token  lp = null;
-		ProcedureCallExpression pcx;CiExpressionList el=null;ee=null;IdentExpression r1=null, r2=null;
-		
-		try {      // for error handling
-			r1=ident();
-			if ( inputState.guessing==0 ) {
-				ee=r1;
-			}
-			{
-			switch ( LA(1)) {
-			case DOT:
-			{
-				match(DOT);
-				r2=ident();
-				if ( inputState.guessing==0 ) {
-					ee=new DotExpression(ee, r2);
-				}
-				break;
-			}
-			case LBRACK:
-			{
-				match(LBRACK);
-				expr=expression();
-				match(RBRACK);
-				if ( inputState.guessing==0 ) {
-					ee=new GetItemExpression(ee, expr);
-				}
-				break;
-			}
-			case LPAREN:
-			{
-				lp = LT(1);
-				match(LPAREN);
-				{
-				switch ( LA(1)) {
-				case IDENT:
-				case STRING_LITERAL:
-				case LBRACK:
-				case CHAR_LITERAL:
-				case NUM_INT:
-				case NUM_FLOAT:
-				case LPAREN:
-				case PLUS:
-				case MINUS:
-				case INC:
-				case DEC:
-				case BNOT:
-				case LNOT:
-				case LITERAL_true:
-				case LITERAL_false:
-				case LITERAL_this:
-				case LITERAL_null:
-				{
-					el=expressionList2();
-					break;
-				}
-				case RPAREN:
-				{
-					break;
-				}
-				default:
-				{
-					throw new NoViableAltException(LT(1), getFilename());
-				}
-				}
-				}
-				if ( inputState.guessing==0 ) {
-					final CiProcedureCallExpression pce=new CiProcedureCallExpressionImpl();
-					pce.identifier(ee);
-					pce.setArgs(el);
-					ee=pce;
-				}
-				match(RPAREN);
-				break;
-			}
-			default:
-			{
-				throw new NoViableAltException(LT(1), getFilename());
-			}
-			}
-			}
-		}
-		catch (final RecognitionException ex) {
-			if (inputState.guessing==0) {
-				reportError(ex);
-				recover(ex,_tokenSet_0);
-			} else {
-			  throw ex;
-			}
-		}
-		return ee;
-	}
+//	public final CiExpression  variableReference() throws RecognitionException, TokenStreamException {
+//		CiExpression ee;
+//		
+//		Token                     lp                      = null;
+//		CiProcedureCallExpression pcx;CiExpressionList el =null;ee =null;CiIdentExpression r1 =null, r2 =null;
+//		
+//		try {      // for error handling
+//			r1=ident();
+//			if ( inputState.guessing==0 ) {
+//				ee=r1;
+//			}
+//			{
+//			switch ( LA(1)) {
+//			case DOT:
+//			{
+//				match(DOT);
+//				r2=ident();
+//				if ( inputState.guessing==0 ) {
+//					ee=new DotExpression(ee, r2);
+//				}
+//				break;
+//			}
+//			case LBRACK:
+//			{
+//				match(LBRACK);
+//				expr=expression();
+//				match(RBRACK);
+//				if ( inputState.guessing==0 ) {
+//					ee=new GetItemExpression(ee, expr);
+//				}
+//				break;
+//			}
+//			case LPAREN:
+//			{
+//				lp = LT(1);
+//				match(LPAREN);
+//				{
+//				switch ( LA(1)) {
+//				case IDENT:
+//				case STRING_LITERAL:
+//				case LBRACK:
+//				case CHAR_LITERAL:
+//				case NUM_INT:
+//				case NUM_FLOAT:
+//				case LPAREN:
+//				case PLUS:
+//				case MINUS:
+//				case INC:
+//				case DEC:
+//				case BNOT:
+//				case LNOT:
+//				case LITERAL_true:
+//				case LITERAL_false:
+//				case LITERAL_this:
+//				case LITERAL_null:
+//				{
+//					el=expressionList2();
+//					break;
+//				}
+//				case RPAREN:
+//				{
+//					break;
+//				}
+//				default:
+//				{
+//					throw new NoViableAltException(LT(1), getFilename());
+//				}
+//				}
+//				}
+//				if ( inputState.guessing==0 ) {
+//					final CiCiProcedureCallExpression pce =new CiCiProcedureCallExpressionImpl();
+//					pce.identifier(ee);
+//					pce.setArgs(el);
+//					ee=pce;
+//				}
+//				match(RPAREN);
+//				break;
+//			}
+//			default:
+//			{
+//				throw new NoViableAltException(LT(1), getFilename());
+//			}
+//			}
+//			}
+//		}
+//		catch (final RecognitionException ex) {
+//			if (inputState.guessing==0) {
+//				reportError(ex);
+//				recover(ex,_tokenSet_0);
+//			} else {
+//			  throw ex;
+//			}
+//		}
+//		return ee;
+//	}
 	
-	public final IExpression  conditionalExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  conditionalExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
 		
@@ -925,11 +931,11 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  logicalOrExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  logicalOrExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
-				IExpression e3=null;
+				CiExpression e3=null;
 		
 		try {      // for error handling
 			ee=logicalAndExpression();
@@ -939,7 +945,7 @@ public EzParser(final ParserSharedInputState state) {
 						match(LOR);
 						e3 = logicalAndExpression();
 						if (inputState.guessing == 0) {
-							ee = ExpressionBuilder.build(ee, ExpressionKind.LOR, e3);
+							ee = CiExpressionBuilder.build(ee, ExpressionKind.LOR, e3);
 						}
 					} else {
 						break;
@@ -959,10 +965,10 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  logicalAndExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  logicalAndExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
-		ee=null;IExpression e3=null;
+		ee=null;CiExpression e3=null;
 		
 		try {      // for error handling
 			ee=inclusiveOrExpression();
@@ -972,7 +978,7 @@ public EzParser(final ParserSharedInputState state) {
 						match(LAND);
 						e3 = inclusiveOrExpression();
 						if (inputState.guessing == 0) {
-							ee = ExpressionBuilder.build(ee, ExpressionKind.LAND, e3);
+							ee = CiExpressionBuilder.build(ee, ExpressionKind.LAND, e3);
 						}
 					} else {
 						break;
@@ -992,10 +998,10 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  inclusiveOrExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  inclusiveOrExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
-		ee=null;IExpression e3=null;
+		ee=null;CiExpression e3=null;
 		
 		try {      // for error handling
 			ee=exclusiveOrExpression();
@@ -1005,7 +1011,7 @@ public EzParser(final ParserSharedInputState state) {
 						match(BOR);
 						e3 = exclusiveOrExpression();
 						if (inputState.guessing == 0) {
-							ee = ExpressionBuilder.build(ee, ExpressionKind.BOR, e3);
+							ee = CiExpressionBuilder.build(ee, ExpressionKind.BOR, e3);
 						}
 					} else {
 						break;
@@ -1025,11 +1031,11 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  exclusiveOrExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  exclusiveOrExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
-				IExpression e3=null;
+				CiExpression e3=null;
 		
 		try {      // for error handling
 			ee=andExpression();
@@ -1039,7 +1045,7 @@ public EzParser(final ParserSharedInputState state) {
 						match(BXOR);
 						e3 = andExpression();
 						if (inputState.guessing == 0) {
-							ee = ExpressionBuilder.build(ee, ExpressionKind.BXOR, e3);
+							ee = CiExpressionBuilder.build(ee, ExpressionKind.BXOR, e3);
 						}
 					} else {
 						break;
@@ -1059,11 +1065,11 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  andExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  andExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
-				IExpression e3=null;
+				CiExpression e3=null;
 		
 		try {      // for error handling
 			ee=equalityExpression();
@@ -1073,7 +1079,7 @@ public EzParser(final ParserSharedInputState state) {
 						match(BAND);
 						e3 = equalityExpression();
 						if (inputState.guessing == 0) {
-							ee = ExpressionBuilder.build(ee, ExpressionKind.BAND, e3);
+							ee = CiExpressionBuilder.build(ee, ExpressionKind.BAND, e3);
 						}
 					} else {
 						break;
@@ -1093,12 +1099,12 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  equalityExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  equalityExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
 				ExpressionKind e2=null;
-				IExpression e3=null;
+				CiExpression e3=null;
 		
 		try {      // for error handling
 			ee=relationalExpression();
@@ -1128,7 +1134,7 @@ public EzParser(final ParserSharedInputState state) {
 						}
 						e3 = relationalExpression();
 						if (inputState.guessing == 0) {
-							ee = ExpressionBuilder.build(ee, e2, e3);
+							ee = CiExpressionBuilder.build(ee, e2, e3);
 						}
 					} else {
 						break;
@@ -1148,12 +1154,12 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  relationalExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  relationalExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
 				ExpressionKind e2=null; // should never be null (below)
-				IExpression e3=null;
+				CiExpression e3=null;
 				final TypeName tn=null;
 		
 		try {      // for error handling
@@ -1199,7 +1205,7 @@ public EzParser(final ParserSharedInputState state) {
 						}
 						e3 = shiftExpression();
 						if (inputState.guessing == 0) {
-							ee = ExpressionBuilder.build(ee, e2, e3);
+							ee = CiExpressionBuilder.build(ee, e2, e3);
 							ee.setType(new OS_BuiltinType(BuiltInTypes.Boolean));
 						}
 					} else {
@@ -1221,11 +1227,11 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  shiftExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  shiftExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;ExpressionKind e2=null;
-				IExpression e3=null;
+				CiExpression e3=null;
 		
 		try {      // for error handling
 			ee=additiveExpression();
@@ -1262,7 +1268,7 @@ public EzParser(final ParserSharedInputState state) {
 						}
 						e3 = additiveExpression();
 						if (inputState.guessing == 0) {
-							ee = ExpressionBuilder.build(ee, e2, e3);
+							ee = CiExpressionBuilder.build(ee, e2, e3);
 						}
 					} else {
 						break;
@@ -1282,11 +1288,11 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  additiveExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  additiveExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;ExpressionKind e2=null;
-				IExpression e3=null;
+				CiExpression e3=null;
 		
 		try {      // for error handling
 			ee=multiplicativeExpression();
@@ -1316,7 +1322,7 @@ public EzParser(final ParserSharedInputState state) {
 						}
 						e3 = multiplicativeExpression();
 						if (inputState.guessing == 0) {
-							ee = ExpressionBuilder.build(ee, e2, e3);
+							ee = CiExpressionBuilder.build(ee, e2, e3);
 						}
 					} else {
 						break;
@@ -1336,11 +1342,11 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  multiplicativeExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  multiplicativeExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
-				IExpression e3=null;ExpressionKind e2=null;
+				CiExpression e3=null;ExpressionKind e2=null;
 		
 		try {      // for error handling
 			ee=unaryExpression();
@@ -1377,7 +1383,7 @@ public EzParser(final ParserSharedInputState state) {
 						}
 						e3 = unaryExpression();
 						if (inputState.guessing == 0) {
-							ee = ExpressionBuilder.build(ee, e2, e3);
+							ee = CiExpressionBuilder.build(ee, e2, e3);
 						}
 					} else {
 						break;
@@ -1397,11 +1403,11 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  unaryExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  unaryExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
-				final IExpression e3=null;
+				final CiExpression e3=null;
 		
 		try {      // for error handling
 			switch ( LA(1)) {
@@ -1475,11 +1481,11 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  unaryExpressionNotPlusMinus() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  unaryExpressionNotPlusMinus() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
-				final IExpression e3=null;
+				final CiExpression e3=null;
 		
 		try {      // for error handling
 			switch ( LA(1)) {
@@ -1533,8 +1539,8 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  postfixExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  postfixExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		Token  lb = null;
 		Token  rb = null;
@@ -1544,7 +1550,7 @@ public EzParser(final ParserSharedInputState state) {
 		ee=null;
         final TypeCastExpression tc=null;
         final TypeName tn=null;
-				final IExpression e3=null;CiExpressionList el=null;
+				final CiExpression e3=null;CiExpressionList el=null;
 		
 		try {      // for error handling
 			ee=primaryExpression();
@@ -1562,15 +1568,15 @@ public EzParser(final ParserSharedInputState state) {
 						rb   = LT(1);
 						match(RBRACK);
 						if (inputState.guessing == 0) {
-							ee = new GetItemExpression(ee, expr);
-							((GetItemExpression) ee).parens(lb, rb);
+							ee = new CiGetItemExpression(ee, expr);
+							((CiGetItemExpression) ee).parens(lb, rb);
 						}
 						{
 							if ((LA(1) == BECOMES) && (_tokenSet_9.member(LA(2)))) {
 								match(BECOMES);
 								expr = expression();
 								if (inputState.guessing == 0) {
-									ee = new SetItemExpression((GetItemExpression) ee, expr);
+									ee = new CiSetItemExpression((CiGetItemExpression) ee, expr);
 								}
 							} else if ((_tokenSet_5.member(LA(1))) && (_tokenSet_10.member(LA(2)))) {
 							} else {
@@ -1658,11 +1664,11 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  primaryExpression() throws RecognitionException, TokenStreamException {
-		IExpression ee;
+	public final CiExpression  primaryExpression() throws RecognitionException, TokenStreamException {
+		CiExpression ee;
 		
 		ee=null;
-        final FuncExpr ppc=null;IdentExpression e=null;CiExpressionList el=null;
+        final FuncExpr ppc=null;CiIdentExpression e=null;CiExpressionList el=null;
 		
 		try {      // for error handling
 			switch ( LA(1)) {
@@ -1708,7 +1714,7 @@ public EzParser(final ParserSharedInputState state) {
 				ee=assignmentExpression();
 				match(RPAREN);
 				if ( inputState.guessing==0 ) {
-					ee=new SubExpression(ee);
+					ee=new CiSubExpression(ee);
 				}
 				break;
 			}
@@ -1716,7 +1722,7 @@ public EzParser(final ParserSharedInputState state) {
 			{
 				match(LBRACK);
 				if ( inputState.guessing==0 ) {
-					ee=new ListExpression();
+					ee=new CiListExpression();
 				}
 				el=expressionList2();
 				if ( inputState.guessing==0 ) {
@@ -1742,18 +1748,18 @@ public EzParser(final ParserSharedInputState state) {
 		return ee;
 	}
 	
-	public final IExpression  dot_expression_or_procedure_call(
-            final IExpression e1
+	public final CiExpression  dot_expression_or_procedure_call(
+            final CiExpression e1
 	) throws RecognitionException, TokenStreamException {
-		IExpression ee;
+		CiExpression ee;
 		
 		Token  lp2 = null;
-		ee=null;CiExpressionList el=null;IdentExpression e=null;
+		ee=null;CiExpressionList el=null;CiIdentExpression e=null;
 		
 		try {      // for error handling
 			e=ident();
 			if ( inputState.guessing==0 ) {
-				ee=new DotExpression(e1, e);
+				ee=new CiDotExpression(e1, e);
 			}
 			{
 			if ((LA(1)==LPAREN) && (_tokenSet_11.member(LA(2)))) {
