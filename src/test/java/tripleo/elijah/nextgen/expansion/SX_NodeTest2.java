@@ -3,7 +3,7 @@ package tripleo.elijah.nextgen.expansion;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.StdErrSink;
+import tripleo.elijah.comp.impl.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.nextgen.model.SM_ClassBody;
 import tripleo.elijah.nextgen.model.SM_ClassDeclaration;

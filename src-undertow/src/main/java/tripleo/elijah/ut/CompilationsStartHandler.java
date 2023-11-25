@@ -8,7 +8,7 @@ import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.CompilerController;
 import tripleo.elijah.comp.i.ICompilationBus;
 import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.StdErrSink;
+import tripleo.elijah.comp.impl.StdErrSink;
 import tripleo.elijah.factory.comp.CompilationFactory;
 
 import java.io.IOException;

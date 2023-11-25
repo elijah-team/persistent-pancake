@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.comp.i.PipelineMember;
+import tripleo.elijah.comp.impl2.AccessBus;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
@@ -28,10 +29,10 @@ import java.util.stream.Collectors;
  * Created 8/21/21 10:16 PM
  */
 public class GeneratePipeline implements PipelineMember/*, AccessBus.AB_LgcListener*/ {
-	private final ErrSink             errSink;
-	private final AccessBus           __ab;
+	private final ErrSink       errSink;
+	private final AccessBus     __ab;
 	//	private final DeducePipeline dpl;
-	private       PipelineLogic       pipelineLogic;
+	private       PipelineLogic pipelineLogic;
 	private       List<GeneratedNode> lgc;
 
 	public GeneratePipeline(@NotNull final AccessBus ab0) {

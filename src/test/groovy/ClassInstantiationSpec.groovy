@@ -2,7 +2,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tripleo.elijah.comp.i.Compilation
 import tripleo.elijah.comp.IO
-import tripleo.elijah.comp.StdErrSink
+import tripleo.elijah.comp.impl.StdErrSink
 import tripleo.elijah.factory.comp.CompilationFactory
 
 class ClassInstantiationSpec extends Specification {

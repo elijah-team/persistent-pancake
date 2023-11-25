@@ -1,7 +1,7 @@
 package tripleo.elijah.comp.internal;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.AccessBus;
+import tripleo.elijah.comp.impl2.AccessBus;
 import tripleo.elijah.comp.DeducePipeline;
 import tripleo.elijah.comp.GeneratePipeline;
 import tripleo.elijah.comp.i.ICompilationAccess;

@@ -1,8 +1,9 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.impl2;
 
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.Compilation.CompilationAlways;
 import tripleo.elijah.comp.i.ErrSink;
@@ -30,9 +31,9 @@ import java.util.stream.Collectors;
 
 public class AccessBus {
 	public final  GenerateResult                            gr                    = new GenerateResult();
-	private final Compilation                              _c;
-	private final DeferredObject<PipelineLogic, Void, Void> pipeLineLogicPromise  = new DeferredObject<>();
-	private final DeferredObject<List<GeneratedNode>, Void, Void> lgcPromise            = new DeferredObject<>();
+	private final Compilation                                     _c;
+	private final DeferredObject<PipelineLogic, Void, Void>       pipeLineLogicPromise = new DeferredObject<>();
+	private final DeferredObject<List<GeneratedNode>, Void, Void> lgcPromise           = new DeferredObject<>();
 	private final DeferredObject<EIT_ModuleList, Void, Void>      moduleListPromise     = new DeferredObject<>();
 	final         DeferredObject<GenerateResult, Void, Void>      generateResultPromise = new DeferredObject<>();
 	private final Map<String, ProcessRecord.PipelinePlugin>       pipelinePlugins       = new HashMap<>();

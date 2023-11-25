@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.PipelineMember;
+import tripleo.elijah.comp.impl2.AccessBus;
 import tripleo.elijah.stages.gen_generic.DoubleLatch;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;

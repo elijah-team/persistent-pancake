@@ -1,5 +1,6 @@
 package tripleo.elijah.comp.i;
 
+import tripleo.elijah.comp.impl2.Stages;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.testing.comp.IFunctionMapHook;
 

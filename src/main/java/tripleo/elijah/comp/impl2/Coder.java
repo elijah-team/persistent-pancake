@@ -1,4 +1,4 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.impl2;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.ClassStatement;

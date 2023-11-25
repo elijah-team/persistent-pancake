@@ -32,14 +32,14 @@ public class ApacheOptionsProcessor implements OptionsProcessor {
 		cmd = clp.parse(options, aInputs);
 
 		if (cmd.hasOption("s")) {
-			new CC_SetStage(cmd.getOptionValue('s')).apply(c);
+			new CompilationChange.CC_SetStage(cmd.getOptionValue('s')).apply(c);
 		}
 		if (cmd.hasOption("showtree")) {
-			new CC_SetShowTree(true).apply(c);
+			new CompilationChange.CC_SetShowTree(true).apply(c);
 		}
 
 		if (Compilation.CompilationAlways.isGitlab_ci() || cmd.hasOption("silent")) {
-			new CC_SetSilent(true).apply(c);
+			new CompilationChange.CC_SetSilent(true).apply(c);
 		}
 
 		return cmd.getArgs();

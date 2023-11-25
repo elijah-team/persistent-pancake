@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.AccessBus;
+import tripleo.elijah.comp.impl2.AccessBus;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.lang.ClassStatement;

@@ -1,9 +1,9 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.impl2;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.CA_writeLogs;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.ICompilationAccess;
-import tripleo.elijah.comp.i.Stages;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.testing.comp.IFunctionMapHook;
 

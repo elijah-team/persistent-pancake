@@ -2,7 +2,7 @@ package tripleo.elijah.nextgen.inputtree;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Coder;
+import tripleo.elijah.comp.impl2.Coder;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.lang.OS_Module;

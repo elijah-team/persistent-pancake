@@ -2,7 +2,7 @@ package tripleo.elijah.comp.i;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.CompilationRunner;
+import tripleo.elijah.comp.impl2.CompilationRunner;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.ModuleBuilder;

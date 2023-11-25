@@ -1,4 +1,4 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.impl2;
 
 import antlr.ANTLRException;
 import antlr.RecognitionException;
@@ -11,6 +11,9 @@ import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.ci_impl.CompilerInstructionsImpl;
 import tripleo.elijah.ci_impl.GenerateStatementImpl;
 import tripleo.elijah.ci_impl.LibraryStatementPartImpl;
+import tripleo.elijah.comp.Finally;
+import tripleo.elijah.comp.IO;
+import tripleo.elijah.comp.UnknownExceptionDiagnostic;
 import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
 import tripleo.elijah.comp.diagnostic.FileNotFoundDiagnostic;
 import tripleo.elijah.comp.i.Compilation;

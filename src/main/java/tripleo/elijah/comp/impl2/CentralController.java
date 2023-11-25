@@ -1,6 +1,7 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.impl2;
 
 import tripleo.elijah.Eventual;
+import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
 import tripleo.elijah.util.EventualExtract;
 

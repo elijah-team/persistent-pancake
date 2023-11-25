@@ -2,10 +2,10 @@ package tripleo.elijah.stages.deduce;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.AccessBus;
+import tripleo.elijah.comp.impl2.AccessBus;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
+import tripleo.elijah.comp.impl.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.context_mocks.FunctionContextMock;
 import tripleo.elijah.lang.ClassStatement;

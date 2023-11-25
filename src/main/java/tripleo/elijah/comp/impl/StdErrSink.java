@@ -10,7 +10,7 @@
  * Created Mar 25, 2019 at 3:00:39 PM
  *
  */
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.impl;
 
 import tripleo.elijah.DebugFlags;
 import tripleo.elijah.comp.i.ErrSink;

@@ -1,9 +1,7 @@
 package tripleo.elijah.persistent_pancake;
 
-import tripleo.elijah.ci.CiExpressionList;
-import tripleo.elijah.comp.USE;
+import tripleo.elijah.comp.impl2.USE;
 import tripleo.elijah.persistent_pancake.javaparser.JavaParser;
-import tripleo.elijah.persistent_pancake.javaparser.ParseException;
 import tripleo.elijah.persistent_pancake.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import tripleo.elijah.persistent_pancake.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.google.common.base.Strings;

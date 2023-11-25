@@ -1,5 +1,6 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.impl2;
 
+import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.CompilerController;
 import tripleo.elijah.comp.i.OptionsProcessor;

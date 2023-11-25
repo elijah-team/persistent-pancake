@@ -1,11 +1,8 @@
-package tripleo.elijah.comp.i;
+package tripleo.elijah.comp.impl2;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.DStageProcess;
-import tripleo.elijah.comp.EmptyProcess;
-import tripleo.elijah.comp.OStageProcess;
-import tripleo.elijah.comp.RuntimeProcess;
+import tripleo.elijah.comp.i.ICompilationAccess;
 import tripleo.elijah.comp.internal.ProcessRecord;
 import tripleo.elijah.util.NotImplementedException;
 
