@@ -1,11 +1,11 @@
 package tripleo.elijah.comp;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.vendor.org.apache.commons.cli.CommandLine;
+import tripleo.vendor.org.apache.commons.cli.CommandLineParser;
+import tripleo.vendor.org.apache.commons.cli.DefaultParser;
+import tripleo.vendor.org.apache.commons.cli.Options;
 
 import java.util.List;
 
