@@ -379,7 +379,7 @@ tryAgain:
 			}
 		}
 		catch (final CharStreamException cse) {
-			if ( cse instanceof CharStreamIOException ) {
+			if ( cse instanceof CharStreamIOException) {
 				throw new TokenStreamIOException(((CharStreamIOException)cse).io);
 			}
 			else {

@@ -6,8 +6,6 @@ import antlr.TokenStreamException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.diagnostic.TooManyEz_ActuallyNone;
-import tripleo.elijah.comp.diagnostic.TooManyEz_BeSpecific;
 import tripleo.elijah.comp.i.IProgressSink;
 import tripleo.elijah.comp.i.ProgressSinkComponent;
 import tripleo.elijah.comp.internal.CompilationImpl;
@@ -16,6 +14,8 @@ import tripleo.elijah.comp.internal.ProcessRecord;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.diagnostic.Diagnostic;
+import tripleo.elijah.diagnostic.TooManyEz_ActuallyNone;
+import tripleo.elijah.diagnostic.TooManyEz_BeSpecific;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
@@ -204,7 +204,7 @@ public class CompilationRunner {
 		final File local_stdlib = new File("lib_elijjah/lib-" + prelude_name + "/stdlib.ez");
 		if (local_stdlib.exists()) {
 			try {
-				final Operation<CompilerInstructions> oci = realParseEzFile(local_stdlib.getName(), io.readFile(local_stdlib), local_stdlib, c);
+				final Operation<CompilerInstructions> oci = realParseEzFile(local_stdlib.toString(), io.readFile(local_stdlib), local_stdlib, c);
 				if (oci.mode() == Mode.SUCCESS) {
 					c.pushItem(oci.success());
 					return oci;
@@ -238,6 +238,14 @@ public class CompilationRunner {
 	                                                       final InputStream s,
 	                                                       final @NotNull File file,
 	                                                       final Compilation c) {
+		c.reports().addInput(() -> f, Finally.Out2.EZ);
+		return __realParseEzFile2(f, s, file, c);
+	}
+
+	Operation<CompilerInstructions> __realParseEzFile2(final String f,
+	                                                   final InputStream s,
+	                                                   final @NotNull File file,
+	                                                   final Compilation c) {
 		final String absolutePath;
 		try {
 			absolutePath = file.getCanonicalFile().toString();

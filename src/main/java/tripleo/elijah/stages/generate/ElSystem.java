@@ -62,8 +62,7 @@ public class ElSystem {
 
 				@Override
 				public OutputStrategyC strategy(final OutputStrategy aOutputStrategy) {
-//					return new OutputStrategyC(aOutputStrategy);
-					throw new UnintendedUseException();
+					return new OutputStrategyC(aOutputStrategy);
 				}
 
 				@Override
