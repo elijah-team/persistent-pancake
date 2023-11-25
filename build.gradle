@@ -45,7 +45,10 @@ dependencies {
 
 	testImplementation "org.junit.jupiter:junit-jupiter:5.10.1"
 
-	testImplementation "com.tngtech.archunit:archunit-junit4:1.2.0"
+//	testImplementation "com.tngtech.archunit:archunit-junit4:1.2.0"
+	// https://mvnrepository.com/artifact/com.tngtech.archunit/archunit-junit5
+	testImplementation 'com.tngtech.archunit:archunit-junit5:1.2.0'
+
 	// undertow
 	api("com.squareup.okhttp3:okhttp:4.10.0")
 	api("com.codahale.metrics:metrics-healthchecks:3.0.2")
