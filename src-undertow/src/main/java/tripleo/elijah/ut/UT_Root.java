@@ -1,6 +1,6 @@
 package tripleo.elijah.ut;
 
-import tripleo.elijah.comp.ICompilationBus;
+import tripleo.elijah.comp.i.ICompilationBus;
 
 import java.io.IOException;
 import java.nio.file.Files;

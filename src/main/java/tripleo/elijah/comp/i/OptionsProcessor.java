@@ -1,5 +1,6 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.i;
 
+import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.internal.CompilationBus;
 
 import java.util.List;

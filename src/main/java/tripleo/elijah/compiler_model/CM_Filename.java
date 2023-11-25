@@ -1,6 +1,6 @@
 package tripleo.elijah.compiler_model;
 
-//import tripleo.elijah.comp.CompFactory;
+//import tripleo.elijah.comp.i.CompFactory;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.InputRequest;
 import tripleo.elijah.util.Mode;

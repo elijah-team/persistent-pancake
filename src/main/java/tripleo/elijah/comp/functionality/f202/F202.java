@@ -8,8 +8,8 @@
  */
 package tripleo.elijah.comp.functionality.f202;
 
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.ErrSink;
+import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.stages.logging.LogEntry;
 

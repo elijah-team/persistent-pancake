@@ -4,6 +4,8 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.OptionsProcessor;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.util.NotImplementedException;
 

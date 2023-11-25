@@ -9,7 +9,7 @@
 package tripleo.elijah;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.ParserClosure;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;

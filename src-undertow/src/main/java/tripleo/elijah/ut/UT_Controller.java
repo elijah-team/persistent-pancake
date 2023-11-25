@@ -2,22 +2,22 @@ package tripleo.elijah.ut;
 
 /*
 import tripleo.elijah.comp.impl.ApacheOptionsProcessor;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.CompilationRunner;
-import tripleo.elijah.comp.CompilerController;
+import tripleo.elijah.comp.i.CompilerController;
 import tripleo.elijah.comp.CompilerInstructionsObserver;
-import tripleo.elijah.comp.ICompilationBus;
-import tripleo.elijah.comp.OptionsProcessor;
+import tripleo.elijah.comp.i.ICompilationBus;
+import tripleo.elijah.comp.i.OptionsProcessor;
 import tripleo.elijah.comp.i.IProgressSink;
 import tripleo.elijah.comp.i.ProgressSinkComponent;
 */
 
 import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.comp.impl.ApacheOptionsProcessor;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.CompilerController;
-import tripleo.elijah.comp.ICompilationBus;
-import tripleo.elijah.comp.OptionsProcessor;
+import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.CompilerController;
+import tripleo.elijah.comp.i.ICompilationBus;
+import tripleo.elijah.comp.i.OptionsProcessor;
 
 import java.util.List;
 

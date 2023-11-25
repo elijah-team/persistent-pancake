@@ -10,8 +10,8 @@ package tripleo.elijah;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.ErrSink;
+import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;

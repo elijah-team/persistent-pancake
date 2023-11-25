@@ -4,9 +4,9 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.DeducePipeline;
 import tripleo.elijah.comp.GeneratePipeline;
-import tripleo.elijah.comp.ICompilationAccess;
+import tripleo.elijah.comp.i.ICompilationAccess;
 import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.PipelineMember;
+import tripleo.elijah.comp.i.PipelineMember;
 import tripleo.elijah.comp.WriteMesonPipeline;
 import tripleo.elijah.comp.WritePipeline;
 

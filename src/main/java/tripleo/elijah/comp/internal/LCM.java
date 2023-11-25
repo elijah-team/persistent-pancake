@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 
 import tripleo.elijah.comp.i.LCM_Event;
 import tripleo.elijah.comp.i.LCM_HandleEvent;

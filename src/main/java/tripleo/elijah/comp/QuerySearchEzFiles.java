@@ -3,6 +3,8 @@ package tripleo.elijah.comp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.util.Operation;

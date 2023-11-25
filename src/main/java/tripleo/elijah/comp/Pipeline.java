@@ -8,6 +8,9 @@
  */
 package tripleo.elijah.comp;
 
+import tripleo.elijah.comp.i.ErrSink;
+import tripleo.elijah.comp.i.PipelineMember;
+
 import java.util.ArrayList;
 import java.util.List;
 

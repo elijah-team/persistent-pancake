@@ -1,7 +1,7 @@
 package tripleo.elijah.nextgen.outputtree;
 
 import org.jetbrains.annotations.*;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.*;
 import tripleo.elijah.nextgen.outputstatement.*;

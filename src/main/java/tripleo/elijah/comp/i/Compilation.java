@@ -1,9 +1,13 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.i;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.CompilationRunner;
+import tripleo.elijah.comp.Finally;
+import tripleo.elijah.comp.IO;
+import tripleo.elijah.comp.ModuleBuilder;
+import tripleo.elijah.comp.Pipeline;
 import tripleo.elijah.comp.internal.CompilationImpl;
-import tripleo.elijah.comp.i.LCM_CompilerAccess;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;

@@ -1,7 +1,7 @@
 package tripleo.elijah.persistent_pancake.javaparser;
 
 import org.jetbrains.annotations.Contract;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.queries.QuerySourceFileToModule;
 import tripleo.elijah.comp.queries.QuerySourceFileToModuleParams;
 import tripleo.elijah.factory.comp.CompilationFactory;

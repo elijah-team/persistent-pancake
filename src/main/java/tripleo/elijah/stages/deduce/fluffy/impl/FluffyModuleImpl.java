@@ -1,6 +1,6 @@
 package tripleo.elijah.stages.deduce.fluffy.impl;
 
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.entrypoints.MainClassEntryPoint;
 import tripleo.elijah.lang.ClassItem;
 import tripleo.elijah.lang.ClassStatement;

@@ -10,6 +10,7 @@
 package tripleo.elijah.comp;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.i.PipelineMember;
 import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;

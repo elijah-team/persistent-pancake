@@ -8,7 +8,7 @@
  */
 package tripleo.elijah.contexts;
 
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.ImportStatement;

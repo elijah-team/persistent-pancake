@@ -1,7 +1,7 @@
 package tripleo.elijah.entrypoints;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.stages.deduce.ClassInvocation;

@@ -1,4 +1,4 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.i;
 
 public interface CompilerController {
 	void printUsage();

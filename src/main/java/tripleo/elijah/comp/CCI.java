@@ -3,6 +3,8 @@ package tripleo.elijah.comp;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.ILazyCompilerInstructions;
 import tripleo.elijah.comp.i.IProgressSink;
 import tripleo.elijah.comp.i.ProgressSinkComponent;
 import tripleo.elijah.comp.internal.CompilationImpl;

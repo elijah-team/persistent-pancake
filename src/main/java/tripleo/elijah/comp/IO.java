@@ -9,6 +9,7 @@
 package tripleo.elijah.comp;
 
 import org.jetbrains.annotations.*;
+import tripleo.elijah.comp.i.FileOption;
 import tripleo.elijah.nextgen.inputtree.*;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Operation;

@@ -2,7 +2,7 @@ package tripleo.elijah.lang.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.comp.ErrSink;
+import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.NormalTypeName;
 import tripleo.elijah.lang.OS_Element;

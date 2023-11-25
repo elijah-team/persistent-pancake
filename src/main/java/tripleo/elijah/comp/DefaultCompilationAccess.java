@@ -1,13 +1,16 @@
 package tripleo.elijah.comp;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.ICompilationAccess;
+import tripleo.elijah.comp.i.Stages;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.testing.comp.IFunctionMapHook;
 
 import java.util.List;
 
 public class DefaultCompilationAccess implements ICompilationAccess {
-	protected final Compilation                               compilation;
+	protected final Compilation compilation;
 
 	public DefaultCompilationAccess(final Compilation aCompilation) {
 		compilation = aCompilation;

@@ -2,9 +2,9 @@ package tripleo.elijah.comp.impl;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.CompilerInput;
-import tripleo.elijah.comp.OptionsProcessor;
+import tripleo.elijah.comp.i.OptionsProcessor;
 import tripleo.elijah.comp.internal.CompilationBus;
 import tripleo.vendor.org.apache.commons.cli.CommandLine;
 import tripleo.vendor.org.apache.commons.cli.CommandLineParser;

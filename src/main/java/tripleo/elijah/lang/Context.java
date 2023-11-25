@@ -11,7 +11,7 @@ package tripleo.elijah.lang;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.contexts.ModuleContext;
 
 import java.util.ArrayList;

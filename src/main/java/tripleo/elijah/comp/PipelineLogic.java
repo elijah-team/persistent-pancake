@@ -9,6 +9,7 @@
 package tripleo.elijah.comp;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.stages.deduce.DeducePhase;
@@ -25,7 +26,6 @@ import tripleo.elijah.stages.logging.ElLog;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Created 12/30/20 2:14 AM
@@ -127,7 +127,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	}
 
 	public void addLog(final ElLog aLog) {
-		final Compilation     compilation   = __ab.getCompilation();
+		final Compilation compilation = __ab.getCompilation();
 		compilation.acceptElLog(aLog);
 	}
 

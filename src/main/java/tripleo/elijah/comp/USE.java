@@ -13,6 +13,8 @@ import tripleo.elijah.ci_impl.GenerateStatementImpl;
 import tripleo.elijah.ci_impl.LibraryStatementPartImpl;
 import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
 import tripleo.elijah.comp.diagnostic.FileNotFoundDiagnostic;
+import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.comp.queries.QuerySourceFileToModule;
 import tripleo.elijah.comp.queries.QuerySourceFileToModuleParams;
 import tripleo.elijah.compiler_model.CM_Filename;
@@ -38,7 +40,7 @@ public class USE {
 		  || Pattern.matches(".+\\.elijjah$", file_name);
 		return matches;
 	};
-	private final       Compilation                 c;
+	private final Compilation                 c;
 	private final ErrSink                     errSink;
 //	private final       Map<String, OS_Module> fn2m                = new HashMap<String, OS_Module>();
 	private final Map<CM_Filename, OS_Module> fn2m = new HashMap<>();

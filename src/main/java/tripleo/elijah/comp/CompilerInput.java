@@ -2,6 +2,8 @@ package tripleo.elijah.comp;
 
 import com.google.common.base.Preconditions;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.i.CompilerInputMaster;
+import tripleo.elijah.comp.i.ILazyCompilerInstructions;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
 

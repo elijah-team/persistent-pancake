@@ -3,6 +3,7 @@ package tripleo.elijah.comp;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import tripleo.elijah.comp.functionality.f202.F202;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.stages.logging.ElLog;
 
 import java.util.Collection;

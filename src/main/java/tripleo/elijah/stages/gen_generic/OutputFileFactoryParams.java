@@ -1,7 +1,7 @@
 package tripleo.elijah.stages.gen_generic;
 
 import org.jetbrains.annotations.Contract;
-import tripleo.elijah.comp.ErrSink;
+import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.logging.ElLog;

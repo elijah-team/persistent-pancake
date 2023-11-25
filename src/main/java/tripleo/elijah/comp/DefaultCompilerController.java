@@ -1,5 +1,8 @@
 package tripleo.elijah.comp;
 
+import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.CompilerController;
+import tripleo.elijah.comp.i.OptionsProcessor;
 import tripleo.elijah.comp.impl.ApacheOptionsProcessor;
 import tripleo.elijah.comp.internal.CompilationBus;
 

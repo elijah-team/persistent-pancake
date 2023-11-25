@@ -13,6 +13,7 @@
 package tripleo.elijah.comp;
 
 import tripleo.elijah.DebugFlags;
+import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 

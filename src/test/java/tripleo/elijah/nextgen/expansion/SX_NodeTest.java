@@ -2,7 +2,7 @@ package tripleo.elijah.nextgen.expansion;
 
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
-import tripleo.elijah.comp.Compilation.CompilationAlways;
+import tripleo.elijah.comp.i.Compilation.CompilationAlways;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;

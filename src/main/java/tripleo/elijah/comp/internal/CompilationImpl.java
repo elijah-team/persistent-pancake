@@ -19,9 +19,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.*;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.functionality.f202.F202;
+import tripleo.elijah.comp.i.CompilerController;
+import tripleo.elijah.comp.i.ErrSink;
+import tripleo.elijah.comp.i.ICompilationAccess;
 import tripleo.elijah.comp.i.LCM_CompilerAccess;
+import tripleo.elijah.comp.i.Stages;
 import tripleo.elijah.comp.impl.LCM_Event_RootCI;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
@@ -428,8 +432,8 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 	//
 	//
 	public static class CompilationConfig {
-		public Stages  stage    = Stages.O; // Output
-		public boolean silent   = false;
+		public Stages  stage  = Stages.O; // Output
+		public boolean silent = false;
 		public boolean showTree = false;
 	}
 

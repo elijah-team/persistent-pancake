@@ -1,5 +1,6 @@
 package tripleo.elijah.comp;
 
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.util.Mode;

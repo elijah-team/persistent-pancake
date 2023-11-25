@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.Collections2;
 
 import tripleo.elijah.Eventual;
-import tripleo.elijah.comp.ErrSink;
+import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.lang.AliasStatement;
