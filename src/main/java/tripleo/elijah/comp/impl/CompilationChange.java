@@ -1,13 +1,15 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.impl;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.Stages;
 
 public interface CompilationChange {
 	void apply(final Compilation c);
 }
 
-class CC_SetStage implements CompilationChange {
+public class CC_SetStage implements CompilationChange {
 	private final String s;
 
 	@Contract(pure = true)
@@ -21,7 +23,7 @@ class CC_SetStage implements CompilationChange {
 	}
 }
 
-class CC_SetShowTree implements CompilationChange {
+public class CC_SetShowTree implements CompilationChange {
 	private final boolean flag;
 
 	public CC_SetShowTree(final boolean aB) {
@@ -34,7 +36,7 @@ class CC_SetShowTree implements CompilationChange {
 	}
 }
 
-class CC_SetSilent implements CompilationChange {
+public class CC_SetSilent implements CompilationChange {
 	private final boolean flag;
 
 	public CC_SetSilent(final boolean aB) {

@@ -1,7 +1,7 @@
 package tripleo.elijah.ut;
 
 /*
-import tripleo.elijah.comp.ApacheOptionsProcessor;
+import tripleo.elijah.comp.impl.ApacheOptionsProcessor;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.CompilationRunner;
 import tripleo.elijah.comp.CompilerController;
@@ -13,7 +13,7 @@ import tripleo.elijah.comp.i.ProgressSinkComponent;
 */
 
 import tripleo.elijah.UnintendedUseException;
-import tripleo.elijah.comp.ApacheOptionsProcessor;
+import tripleo.elijah.comp.impl.ApacheOptionsProcessor;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.CompilerController;
 import tripleo.elijah.comp.ICompilationBus;

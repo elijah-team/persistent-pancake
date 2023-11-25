@@ -1,7 +1,11 @@
-package tripleo.elijah.comp;
+package tripleo.elijah.comp.impl;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah.comp.OptionsProcessor;
+import tripleo.elijah.comp.internal.CompilationBus;
 import tripleo.vendor.org.apache.commons.cli.CommandLine;
 import tripleo.vendor.org.apache.commons.cli.CommandLineParser;
 import tripleo.vendor.org.apache.commons.cli.DefaultParser;
@@ -22,22 +26,20 @@ public class ApacheOptionsProcessor implements OptionsProcessor {
 	}
 
 	@Override
-	public String[] process(final @NotNull Compilation c,
-	                        final @NotNull List<String> args,
-	                        final @NotNull ICompilationBus cb) throws Exception {
+	public String[] process(final @NotNull Compilation c, final @NotNull List<CompilerInput> aInputs, final CompilationBus aCb) throws Exception {
 		final CommandLine cmd;
 
-		cmd = clp.parse(options, args.toArray(new String[args.size()]));
+		cmd = clp.parse(options, aInputs);
 
 		if (cmd.hasOption("s")) {
-			cb.option(new CC_SetStage(cmd.getOptionValue('s')));
+			new CC_SetStage(cmd.getOptionValue('s')).apply(c);
 		}
 		if (cmd.hasOption("showtree")) {
-			cb.option(new CC_SetShowTree(true));
+			new CC_SetShowTree(true).apply(c);
 		}
 
 		if (Compilation.CompilationAlways.isGitlab_ci() || cmd.hasOption("silent")) {
-			cb.option(new CC_SetSilent(true));
+			new CC_SetSilent(true).apply(c);
 		}
 
 		return cmd.getArgs();

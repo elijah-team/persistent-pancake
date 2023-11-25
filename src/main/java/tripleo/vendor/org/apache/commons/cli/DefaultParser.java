@@ -718,27 +718,6 @@ public class DefaultParser implements CommandLineParser {
 	public CommandLine parse(final Options options, final String[] arguments, final Properties properties, final boolean stopAtNonOption)
 	throws ParseException {
 		throw new NotImplementedException();
-		/*
-		 * if (false) { this.options = options; this.stopAtNonOption = stopAtNonOption;
-		 * skipParsing = false; currentOption = null; expectedOpts = new
-		 * ArrayList<>(options.getRequiredOptions());
-		 *
-		 * // clear the data from the groups for (final OptionGroup group :
-		 * options.getOptionGroups()) { group.setSelected(null); }
-		 *
-		 * cmd = new CommandLine();
-		 *
-		 * if (arguments != null) { for (final String argument : arguments) { //FIXME
-		 * handleToken(argument); } }
-		 *
-		 * // check the arguments of the last option checkRequiredArgs();
-		 *
-		 * // add the default options handleProperties(properties);
-		 *
-		 * checkRequiredOptions();
-		 *
-		 * return cmd; }
-		 */
 	}
 
 	/**

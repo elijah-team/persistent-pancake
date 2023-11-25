@@ -1,5 +1,6 @@
 package tripleo.elijah.comp;
 
+import tripleo.elijah.comp.impl.ApacheOptionsProcessor;
 import tripleo.elijah.comp.internal.CompilationBus;
 
 import java.util.List;
@@ -9,6 +10,7 @@ public class DefaultCompilerController implements CompilerController {
 	String[]       args2;
 	CompilationBus cb;
 	private Compilation c;
+	List<CompilerInput> inputs;
 
 	@Override
 	public void printUsage() {
@@ -22,7 +24,8 @@ public class DefaultCompilerController implements CompilerController {
 		cb = new CompilationBus(c);
 
 		try {
-			args2 = op.process(c, args, cb);
+//			args2 = op.process(c, args, cb);
+			args2 = op.process(c, inputs, cb);
 		} catch (final Exception e) {
 			c.getErrSink().exception(e);
 			throw new RuntimeException(e);
