@@ -15,7 +15,7 @@ import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.Eventual;
+import tripleo.elijah.util.Eventual;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.IExpression;

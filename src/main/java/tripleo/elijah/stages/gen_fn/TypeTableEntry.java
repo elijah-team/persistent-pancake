@@ -11,7 +11,7 @@ package tripleo.elijah.stages.gen_fn;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.Eventual;
+import tripleo.elijah.util.Eventual;
 import tripleo.elijah.lang.GenericTypeName;
 import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.OS_Type;

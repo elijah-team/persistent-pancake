@@ -1,7 +1,7 @@
 package tripleo.elijah.stages.deduce.percy;
 
 import org.jdeferred2.DoneCallback;
-import tripleo.elijah.Eventual;
+import tripleo.elijah.util.Eventual;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.gen_fn.GenType;

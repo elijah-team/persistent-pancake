@@ -20,7 +20,7 @@
  */
 package tripleo.elijah.persistent_pancake.javaparser;
 
-import tripleo.elijah.UnintendedUseException;
+import tripleo.elijah.util.UnintendedUseException;
 import tripleo.elijah.persistent_pancake.javaparser.utils.Utils;
 
 //import java.util.Comparator; // !! 11/21

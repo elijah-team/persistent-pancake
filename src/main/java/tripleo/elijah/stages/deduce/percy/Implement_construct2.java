@@ -2,7 +2,7 @@ package tripleo.elijah.stages.deduce.percy;
 
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.Eventual;
+import tripleo.elijah.util.Eventual;
 import tripleo.elijah.lang.ConstructorDef;
 import tripleo.elijah.modeltransition.EventualProvider;
 import tripleo.elijah.stages.deduce.ClassInvocation;

@@ -1,7 +1,5 @@
 package tripleo.elijah.util;
 
-import tripleo.elijah.Eventual;
-
 public class EventualExtract {
 	public static <T> T of(final Eventual<T> aEventual) {
 		final Object[] t = new Object[1];

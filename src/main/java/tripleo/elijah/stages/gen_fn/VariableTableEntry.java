@@ -12,7 +12,7 @@ import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.Eventual;
+import tripleo.elijah.util.Eventual;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;

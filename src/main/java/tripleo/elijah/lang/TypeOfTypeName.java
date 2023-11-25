@@ -1,7 +1,6 @@
 package tripleo.elijah.lang;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.lang.nextgen.names2.EN_Name;
 import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;

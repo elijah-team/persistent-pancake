@@ -1,6 +1,6 @@
 package tripleo.elijah.lang;
 
-import tripleo.elijah.UnintendedUseException;
+import tripleo.elijah.util.UnintendedUseException;
 import tripleo.elijah.lang.nextgen.names2.EN_Name;
 import tripleo.elijah.util.NotImplementedException;
 

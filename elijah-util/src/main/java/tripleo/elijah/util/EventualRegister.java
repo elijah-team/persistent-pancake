@@ -1,4 +1,4 @@
-package tripleo.elijah;
+package tripleo.elijah.util;
 
 public interface EventualRegister {
 	void checkFinishEventuals(); // TODO signature

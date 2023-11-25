@@ -1,4 +1,4 @@
-package tripleo.elijah;
+package tripleo.elijah.util;
 
 import com.google.common.base.MoreObjects;
 import org.jdeferred2.DoneCallback;

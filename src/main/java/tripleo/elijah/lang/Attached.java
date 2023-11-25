@@ -8,7 +8,7 @@
  */
 package tripleo.elijah.lang;
 
-import tripleo.elijah.UnintendedUseException;
+import tripleo.elijah.util.UnintendedUseException;
 
 /*
  * Created on 5/19/2019 at 02:09

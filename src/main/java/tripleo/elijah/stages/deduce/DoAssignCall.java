@@ -15,7 +15,7 @@
 //import org.jetbrains.annotations.NotNull;
 //import org.jetbrains.annotations.Nullable;
 //
-//import tripleo.elijah.Eventual;
+//import tripleo.elijah.util.Eventual;
 //import tripleo.elijah.comp.i.ErrSink;
 //import tripleo.elijah.lang.*;
 //import tripleo.elijah.lang.types.OS_BuiltinType;

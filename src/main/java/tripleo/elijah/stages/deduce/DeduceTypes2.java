@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import tripleo.elijah.Eventual;
+import tripleo.elijah.util.Eventual;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.diagnostic.Diagnostic;

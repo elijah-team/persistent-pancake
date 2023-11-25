@@ -1,6 +1,5 @@
 package tripleo.elijah.persistent_pancake.javaparser.ast;
 
-import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.persistent_pancake.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 import java.util.ArrayList;

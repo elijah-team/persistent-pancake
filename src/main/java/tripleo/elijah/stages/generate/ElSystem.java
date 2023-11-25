@@ -9,7 +9,7 @@
 package tripleo.elijah.stages.generate;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.UnintendedUseException;
+import tripleo.elijah.util.UnintendedUseException;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.modeltransition.ElSystemSink;
 import tripleo.elijah.modeltransition.EventualProvider;

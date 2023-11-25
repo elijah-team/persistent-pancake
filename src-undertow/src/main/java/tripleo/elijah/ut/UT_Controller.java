@@ -12,7 +12,7 @@ import tripleo.elijah.comp.i.IProgressSink;
 import tripleo.elijah.comp.i.ProgressSinkComponent;
 */
 
-import tripleo.elijah.UnintendedUseException;
+import tripleo.elijah.util.UnintendedUseException;
 import tripleo.elijah.comp.impl.ApacheOptionsProcessor;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.CompilerController;

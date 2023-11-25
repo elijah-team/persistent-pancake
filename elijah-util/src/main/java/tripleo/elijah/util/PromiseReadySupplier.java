@@ -1,4 +1,4 @@
-package tripleo.elijah;
+package tripleo.elijah.util;
 
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
