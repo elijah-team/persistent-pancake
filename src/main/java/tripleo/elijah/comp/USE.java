@@ -33,13 +33,13 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class USE {
-	public static final FilenameFilter         accept_source_files = (directory, file_name) -> {
+	public static final FilenameFilter              accept_source_files = (directory, file_name) -> {
 		final boolean matches = Pattern.matches(".+\\.elijah$", file_name)
 		  || Pattern.matches(".+\\.elijjah$", file_name);
 		return matches;
 	};
-	private final       Compilation            c;
-	private final       ErrSink                 errSink;
+	private final       Compilation                 c;
+	private final ErrSink                     errSink;
 //	private final       Map<String, OS_Module> fn2m                = new HashMap<String, OS_Module>();
 	private final Map<CM_Filename, OS_Module> fn2m = new HashMap<>();
 
@@ -57,8 +57,8 @@ public class USE {
 		}
 
 		final CM_Filename filename1 = compilerInstructions.getFilename();
-		final String filename = filename1.getString();
-		final File instruction_dir = new File(filename).getParentFile();
+		final String filename        = filename1.getString();
+		final File   instruction_dir = new File(filename).getParentFile();
 
 		for (final LibraryStatementPart lsp : compilerInstructions.getLibraryStatementParts()) {
 			final String dir_name = Helpers.remove_single_quotes_from_string(lsp.getDirName());

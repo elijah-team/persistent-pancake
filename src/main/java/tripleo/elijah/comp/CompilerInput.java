@@ -1,13 +1,14 @@
 package tripleo.elijah.comp;
 
-import com.google.common.base.*;
-import tripleo.elijah.ci.*;
-import tripleo.elijah.comp.i.*;
-import tripleo.elijah.util.*;
+import com.google.common.base.Preconditions;
+import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.nextgen.query.Operation2;
+import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class CompilerInput extends __Extensionable {
     public File makeFile() {
@@ -16,6 +17,10 @@ public class CompilerInput extends __Extensionable {
 		    case ROOT -> new File(new File(inp).getParent());
 		    default -> null;
 	    };
+    }
+
+    public String getInp() {
+        return inp;
     }
 
     public enum CompilerInputField {
@@ -47,45 +52,45 @@ public class CompilerInput extends __Extensionable {
         ty  = Ty.NULL;
     }
 
-//    public void accept_ci(final Maybe<ILazyCompilerInstructions> compilerInstructionsMaybe) {
-//        accept_ci = compilerInstructionsMaybe;
-//
-//        if (master != null)
-//            master.notifyChange(this, CompilerInputField.ACCEPT_CI);
-//    }
+    public void accept_ci(final Maybe<ILazyCompilerInstructions> compilerInstructionsMaybe) {
+        accept_ci = compilerInstructionsMaybe;
 
-//    public void accept_hash(final String hash) {
-//        this.hash = hash;
-//
-//        if (master != null)
-//            master.notifyChange(this, CompilerInputField.HASH);
-//    }
+        if (master != null)
+            master.notifyChange(this, CompilerInputField.ACCEPT_CI);
+    }
 
-//    public Maybe<ILazyCompilerInstructions> acceptance_ci() {
-//        return accept_ci;
-//    }
+    public void accept_hash(final String hash) {
+        this.hash = hash;
 
-//    public void certifyRoot() {
-//        ty = Ty.ROOT;
-//
-//        if (master != null)
-//            master.notifyChange(this, CompilerInputField.TY);
-//    }
+        if (master != null)
+            master.notifyChange(this, CompilerInputField.HASH);
+    }
 
-//    public File getDirectory() {
-//        Preconditions.checkNotNull(dir_carrier);
-//
-//        return dir_carrier;
-//    }
+    public Maybe<ILazyCompilerInstructions> acceptance_ci() {
+        return accept_ci;
+    }
 
-//    public boolean isElijjahFile() {
-//        return Pattern.matches(".+\\.elijjah$", inp) || Pattern.matches(".+\\.elijah$", inp);
-//    }
+    public void certifyRoot() {
+        ty = Ty.ROOT;
 
-//    public boolean isEzFile() {
-//        // new QuerySearchEzFiles.EzFilesFilter().accept()
-//        return Pattern.matches(".+\\.ez$", inp);
-//    }
+        if (master != null)
+            master.notifyChange(this, CompilerInputField.TY);
+    }
+
+    public File getDirectory() {
+        Preconditions.checkNotNull(dir_carrier);
+
+        return dir_carrier;
+    }
+
+    public boolean isElijjahFile() {
+        return Pattern.matches(".+\\.elijjah$", inp) || Pattern.matches(".+\\.elijah$", inp);
+    }
+
+    public boolean isEzFile() {
+        // new QuerySearchEzFiles.EzFilesFilter().accept()
+        return Pattern.matches(".+\\.ez$", inp);
+    }
 
     public boolean isNull() {
         return ty == Ty.NULL;
