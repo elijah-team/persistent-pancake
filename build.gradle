@@ -79,8 +79,6 @@ dependencies {
 
 	api("antlr:antlr:2.7.7")
 
-	api("commons-cli:commons-cli:1.4")
-
 	api('com.google.guava:guava:31.1-jre')
 
 	api("tripleo.buffers:buffers-v1:0.0.3")
