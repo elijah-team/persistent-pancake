@@ -4,13 +4,14 @@ import antlr.Token;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci_impl.LibraryStatementPartImpl;
 import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah.compiler_model.CM_Filename;
 
-import java.io.File;
+//import java.io.File;
 import java.util.List;
 
 public interface CompilerInstructions {
 
-	File makeFile();
+//	File makeFile();
 
 	CiIndexingStatement indexingStatement();
 
@@ -18,9 +19,11 @@ public interface CompilerInstructions {
 
 	void add(LibraryStatementPartImpl libraryStatementPart);
 
-	String getFilename();
+	CM_Filename getFilename();
 
 	void setFilename(String filename);
+
+	void setFilename(CM_Filename filename);
 
 	void add(@NotNull LibraryStatementPart libraryStatementPart);
 

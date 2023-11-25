@@ -35,9 +35,6 @@ public class ApacheOptionsProcessor implements OptionsProcessor {
 		if (cmd.hasOption("showtree")) {
 			cb.option(new CC_SetShowTree(true));
 		}
-		if (cmd.hasOption("out")) {
-			cb.option(new CC_SetDoOut(true));
-		}
 
 		if (Compilation.CompilationAlways.isGitlab_ci() || cmd.hasOption("silent")) {
 			cb.option(new CC_SetSilent(true));

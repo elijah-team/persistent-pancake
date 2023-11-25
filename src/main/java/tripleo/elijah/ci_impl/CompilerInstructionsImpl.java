@@ -16,11 +16,11 @@ import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.GenerateStatement;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah.compiler_model.CM_Filename;
 import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.StringExpression;
 import tripleo.elijah.util.Helpers;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,18 +32,30 @@ public class CompilerInstructionsImpl implements CompilerInstructions {
 	@NotNull
 	private List<LibraryStatementPart> lsps = new ArrayList<>();
 	private CiIndexingStatement        _idx;
-	private String                     filename;
+	private CM_Filename                filename;
 	private GenerateStatement          gen;
 	private String                     name;
 	private CompilerInput              advised;
 
-	@Override
-	public File makeFile() {
-		if (advised != null) {
-			return new File(advised.makeFile(), getFilename());
-		} else
-			return new File(getFilename());
+	private static Optional<String> __genLangHelper(final GenerateStatementImpl.Directive gin) {
+		final IExpression lang_raw = gin.getExpression();
+		if (lang_raw instanceof StringExpression) {
+			final StringExpression langRaw = (StringExpression) lang_raw;
+			final String           s       = Helpers.remove_single_quotes_from_string(langRaw.getText());
+			return Optional.of(s);
+		} else {
+			return Optional.<String>empty();
+		}
 	}
+
+//	@Override
+//	public File makeFile() {
+//		if (advised != null) {
+//			return new File(advised.makeFile(), getFilename().getString());
+//		} else {
+//			return getFilename().fileOf();
+//		}
+//	}
 
 	@Override
 	public @NotNull CiIndexingStatement indexingStatement() {
@@ -65,12 +77,17 @@ public class CompilerInstructionsImpl implements CompilerInstructions {
 	}
 
 	@Override
-	public String getFilename() {
+	public CM_Filename getFilename() {
 		return filename;
 	}
 
 	@Override
 	public void setFilename(final String filename) {
+		this.filename = CM_Filename.of(filename);
+	}
+
+	@Override
+	public void setFilename(final CM_Filename filename) {
 		this.filename = filename;
 	}
 
@@ -85,15 +102,7 @@ public class CompilerInstructionsImpl implements CompilerInstructions {
 		final Optional<String> genLang = ((GenerateStatementImpl) gen).dirs.stream()
 		                                                                   .filter(input -> input.getName().equals("gen"))
 		                                                                   .findAny() // README if you need more than one, comment this out
-		                                                                   .stream().map((GenerateStatementImpl.Directive gin) -> {
-			  final IExpression lang_raw = gin.getExpression();
-			  if (lang_raw instanceof final StringExpression langRaw) {
-				  final String s = Helpers.remove_single_quotes_from_string(langRaw.getText());
-				  return Optional.of(s);
-			  } else {
-				  return Optional.<String>empty();
-			  }
-		  })
+		                                                                   .stream().map(CompilerInstructionsImpl::__genLangHelper)
 		                                                                   .findFirst() // README here too
 		                                                                   .orElse(null);
 
@@ -133,15 +142,7 @@ public class CompilerInstructionsImpl implements CompilerInstructions {
 
 	@Override
 	public String toString() {
-		return "CompilerInstructionsImpl{name='%s', filename='%s'}".formatted(name, filename);
-	}
-
-	public List<LibraryStatementPart> getLsps() {
-		return lsps;
-	}
-
-	public void setLsps(List<LibraryStatementPart> aLsps) {
-		lsps = aLsps;
+		return String.format("CompilerInstructionsImpl{name='%s', filename='%s'}", name, filename);
 	}
 }
 

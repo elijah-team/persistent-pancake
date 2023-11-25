@@ -138,8 +138,8 @@ public class Finally {
 		return e;
 	}
 
-	public void addInput(final Nameable aNameable, final Out2 ty) {
-		inputs.add(new Input(aNameable, ty));
+	public void addInput(final Input input) {
+		inputs.add(input);
 	}
 
 	public boolean containsCodeOutput(@NotNull final String s) {

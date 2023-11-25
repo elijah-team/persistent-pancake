@@ -15,6 +15,7 @@ import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
 import tripleo.elijah.comp.diagnostic.FileNotFoundDiagnostic;
 import tripleo.elijah.comp.queries.QuerySourceFileToModule;
 import tripleo.elijah.comp.queries.QuerySourceFileToModuleParams;
+import tripleo.elijah.compiler_model.CM_Filename;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.StringExpression;
@@ -32,14 +33,15 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class USE {
-	public static final FilenameFilter accept_source_files = (directory, file_name) -> {
+	public static final FilenameFilter         accept_source_files = (directory, file_name) -> {
 		final boolean matches = Pattern.matches(".+\\.elijah$", file_name)
 		  || Pattern.matches(".+\\.elijjah$", file_name);
 		return matches;
 	};
-	private final       Compilation    c;
-	private final        ErrSink                errSink;
-	private final        Map<String, OS_Module> fn2m                = new HashMap<String, OS_Module>();
+	private final       Compilation            c;
+	private final       ErrSink                 errSink;
+//	private final       Map<String, OS_Module> fn2m                = new HashMap<String, OS_Module>();
+	private final Map<CM_Filename, OS_Module> fn2m = new HashMap<>();
 
 	@Contract(pure = true)
 	public USE(final Compilation aCompilation) {
@@ -54,11 +56,13 @@ public class USE {
 			return;
 		}
 
+		final CM_Filename filename1 = compilerInstructions.getFilename();
+		final String filename = filename1.getString();
+		final File instruction_dir = new File(filename).getParentFile();
 
-		final File instruction_dir = new File(compilerInstructions.getFilename()).getParentFile();
 		for (final LibraryStatementPart lsp : compilerInstructions.getLibraryStatementParts()) {
 			final String dir_name = Helpers.remove_single_quotes_from_string(lsp.getDirName());
-			final File   dir;// = new File(dir_name);
+			final File   dir;
 			if (dir_name.equals(".."))
 				dir = instruction_dir/*.getAbsoluteFile()*/.getParentFile();
 			else
@@ -84,7 +88,22 @@ public class USE {
 		final File[] files = dir.listFiles(accept_source_files);
 		if (files != null) {
 			for (final File file : files) {
-				parseElijjahFile(file, file.toString(), do_out, lsp);
+				parseElijjahFile(file, file.toString(), lsp);
+
+//				final CompFactory.InputRequest inp = c.con().createInputRequest(file, false, lsp);
+//				parseElijjahFile(inp);
+
+				// TODO 11/24 supplier<calculated<>>
+				var nameable = new Finally.Nameable() {
+					@Override
+					public String getNameableString()  {
+//						return file.toString();
+						return file.toString();
+					}
+				};
+
+				final Finally.Input input2 = new Finally.Input(nameable, Finally.Out2.ELIJAH);
+				c.reports().addInput(input2);
 			}
 		}
 	}
@@ -207,7 +226,7 @@ public class USE {
 				return Operation.failure(e);
 			}
 			final OS_Module R = om.success();
-			fn2m.put(absolutePath, R);
+			fn2m.put(CM_Filename.of(absolutePath), R);
 			s.close();
 			return Operation.success(R);
 		} catch (final ANTLRException e) {

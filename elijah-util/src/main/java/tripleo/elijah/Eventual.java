@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class Eventual<P> {
-	private final DiagnosticVoidDeferredObject<P>/*<P, Diagnostic, Void>*/ prom = new DiagnosticVoidDeferredObject();
+	private final DiagnosticVoidDeferredObject<P>/*<P, Diagnostic, Void>*/ prom = new DiagnosticVoidDeferredObject<>();
 
 	public void resolve(final P p) {
 		for (final DoneCallback<? super P> doneCallback : prom.__doneCallbacks()) {

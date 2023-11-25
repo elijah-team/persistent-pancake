@@ -238,7 +238,8 @@ public class CompilationRunner {
 	                                                       final InputStream s,
 	                                                       final @NotNull File file,
 	                                                       final Compilation c) {
-		c.reports().addInput(() -> f, Finally.Out2.EZ);
+		final Finally.Input input2 = new Finally.Input(() -> f, Finally.Out2.EZ);
+		c.reports().addInput(input2);
 		return __realParseEzFile2(f, s, file, c);
 	}
 

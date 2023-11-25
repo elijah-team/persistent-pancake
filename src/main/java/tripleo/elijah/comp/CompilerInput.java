@@ -39,7 +39,7 @@ public class CompilerInput extends __Extensionable {
 
     private CompilerInputMaster master;
 
-    @SuppressWarnings("unchecked") // README squiggly line in idea
+    @SuppressWarnings({"unchecked", "FieldCanBeLocal", "unused"}) // README squiggly line in idea
     private List<Operation2<CompilerInstructions>> directoryResults = Collections.EMPTY_LIST;
 
     public CompilerInput(final String aS) {
@@ -47,45 +47,45 @@ public class CompilerInput extends __Extensionable {
         ty  = Ty.NULL;
     }
 
-    public void accept_ci(final Maybe<ILazyCompilerInstructions> compilerInstructionsMaybe) {
-        accept_ci = compilerInstructionsMaybe;
+//    public void accept_ci(final Maybe<ILazyCompilerInstructions> compilerInstructionsMaybe) {
+//        accept_ci = compilerInstructionsMaybe;
+//
+//        if (master != null)
+//            master.notifyChange(this, CompilerInputField.ACCEPT_CI);
+//    }
 
-        if (master != null)
-            master.notifyChange(this, CompilerInputField.ACCEPT_CI);
-    }
+//    public void accept_hash(final String hash) {
+//        this.hash = hash;
+//
+//        if (master != null)
+//            master.notifyChange(this, CompilerInputField.HASH);
+//    }
 
-    public void accept_hash(final String hash) {
-        this.hash = hash;
+//    public Maybe<ILazyCompilerInstructions> acceptance_ci() {
+//        return accept_ci;
+//    }
 
-        if (master != null)
-            master.notifyChange(this, CompilerInputField.HASH);
-    }
+//    public void certifyRoot() {
+//        ty = Ty.ROOT;
+//
+//        if (master != null)
+//            master.notifyChange(this, CompilerInputField.TY);
+//    }
 
-    public Maybe<ILazyCompilerInstructions> acceptance_ci() {
-        return accept_ci;
-    }
+//    public File getDirectory() {
+//        Preconditions.checkNotNull(dir_carrier);
+//
+//        return dir_carrier;
+//    }
 
-    public void certifyRoot() {
-        ty = Ty.ROOT;
+//    public boolean isElijjahFile() {
+//        return Pattern.matches(".+\\.elijjah$", inp) || Pattern.matches(".+\\.elijah$", inp);
+//    }
 
-        if (master != null)
-            master.notifyChange(this, CompilerInputField.TY);
-    }
-
-    public File getDirectory() {
-        Preconditions.checkNotNull(dir_carrier);
-
-        return dir_carrier;
-    }
-
-    public boolean isElijjahFile() {
-        return Pattern.matches(".+\\.elijjah$", inp) || Pattern.matches(".+\\.elijah$", inp);
-    }
-
-    public boolean isEzFile() {
-        // new QuerySearchEzFiles.EzFilesFilter().accept()
-        return Pattern.matches(".+\\.ez$", inp);
-    }
+//    public boolean isEzFile() {
+//        // new QuerySearchEzFiles.EzFilesFilter().accept()
+//        return Pattern.matches(".+\\.ez$", inp);
+//    }
 
     public boolean isNull() {
         return ty == Ty.NULL;
@@ -135,7 +135,8 @@ public class CompilerInput extends __Extensionable {
 
     @Override
     public String toString() {
-        return "CompilerInput{ty=%s, inp='%s'}".formatted(ty, inp);
+        final String formatted = String.format("CompilerInput{ty=%s, inp='%s'}", ty, inp);
+        return formatted;
     }
 
     public Ty ty() {

@@ -17,24 +17,23 @@ import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah.context_mocks.FunctionContextMock;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
-import tripleo.elijah.stages.gen_fn.GeneratePhase;
-import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 
 import static org.easymock.EasyMock.*;
 
 public class TypeOfTypeNameTest {
 
-	@Disabled
+//	@Disabled
 	@Test
 	void typeOfSimpleQualident() throws ResolveError {
 		//
 		// CREATE MOCKS
 		//
-		final Context     ctx = mock(Context.class);
-		final OS_Module    mod = mock(OS_Module.class);
+		final var         ctx = new FunctionContextMock();
+		final OS_Module   mod = mock(OS_Module.class);
 		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO());
 
 		//
@@ -51,6 +50,8 @@ public class TypeOfTypeNameTest {
 		final LookupResultList lrl = new LookupResultList();
 		lrl.add("x", 1, var_x, ctx);
 
+		ctx.expect("x", var_x).andContributeResolve(null);
+
 		//
 		// CREATE VARIABLE UNDER TEST
 		//
@@ -64,8 +65,11 @@ public class TypeOfTypeNameTest {
 //		expect(c.getErrSink()).andReturn(e);
 //		expect(c.getSilence()).andReturn(true);
 		expect(mod.getCompilation()).andReturn(c);
-		expect(ctx.lookup(var_x.getName())).andReturn(lrl);
-		replay(ctx, mod);
+
+//		expect(ctx.lookup(var_x.getName())).andReturn(lrl);
+		ctx.expect(var_x.getName(), var_x).andContributeResolve(ctx); // ??
+
+		replay(/*ctx,*/ mod);
 
 		//
 		// VERIFY EXPECTATIONS
@@ -74,8 +78,8 @@ public class TypeOfTypeNameTest {
 		final PipelineLogic pl           = new PipelineLogic(ab);
 		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
-//		System.out.println(tn);
-		verify(ctx, mod);
+		System.out.println(tn);
+		verify(/*ctx,*/ mod);
 		Assertions.assertEquals(typeNameString, tn.toString());
 	}
 

@@ -507,7 +507,7 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 
 	@Override
 	public LCM_CompilerAccess getLCMAccess() {
-		final var _c = this;
+		final CompilationImpl _c = this;
 		return new LCM_CompilerAccess() {
 			@Override
 			public Compilation c() {
@@ -525,7 +525,6 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 			}
 		};
 	}
-
 }
 
 //

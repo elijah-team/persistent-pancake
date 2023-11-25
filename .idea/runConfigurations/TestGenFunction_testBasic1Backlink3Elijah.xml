@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ClassInstantiationTest.classInstantiation2" type="GradleRunConfiguration" factoryName="Gradle" singleton="false">
+  <configuration default="false" name="TestGenFunction.testBasic1Backlink3Elijah" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -12,7 +12,7 @@
         <list>
           <option value=":test" />
           <option value="--tests" />
-          <option value="&quot;tripleo.elijah.stages.deduce.ClassInstantiationTest.classInstantiation2&quot;" />
+          <option value="&quot;tripleo.elijah.stages.gen_fn.TestGenFunction.testBasic1Backlink3Elijah&quot;" />
         </list>
       </option>
       <option name="vmOptions" />

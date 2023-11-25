@@ -57,8 +57,8 @@ public abstract class Context {
 
 	@SuppressWarnings("InnerClassMayBeStatic")
 	public class Expectation {
-		private final String     name;
-		private final OS_Element element;
+		private final String                     name;
+		private final OS_Element                 element;
 		private final Eventual<LookupResultList> prom = new Eventual<>();
 
 		public Expectation(final String aName, final OS_Element aElement) {
@@ -67,8 +67,11 @@ public abstract class Context {
 		}
 
 		public void andContributeResolve(final Context aContext) {
-			prom.then((final LookupResultList lrl_b1) -> {
-				lrl_b1.add(name, 1, element, aContext);
+			prom.then(new Eventual.EventualDoneCallback<LookupResultList>() {
+				@Override
+				public void onDone(final LookupResultList lrl_b1) {
+					lrl_b1.add(name, 1, element, aContext);
+				}
 			});
 		}
 
