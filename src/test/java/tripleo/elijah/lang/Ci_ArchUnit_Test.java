@@ -19,16 +19,20 @@ public class Ci_ArchUnit_Test {
 		                           .resideInAPackage("tripleo.elijah.ci")
 		                           .should()
 		                           .dependOnClassesThat()
-		                           .resideInAPackage("tripleo.lang.*")
+		                           .resideInAPackage("tripleo.elijah.lang.*");
+		ArchRule rule2 = noClasses().that()
+		                           .resideInAPackage("tripleo.elijah.ci_impl")
+		                           .should()
+		                           .dependOnClassesThat()
+		                           .resideInAPackage("tripleo.elijah.lang.*")
 		  ;
 
-//		if (false)
+		if (false)
 		{
 			final JavaClasses importedClasses1 = importedClasses;
-			//var importedClasses2 = importedClasses1.stream().filter(jc -> !jc.getSimpleName().contains("Test"));
-			//final JavaClasses importedClasses3 = new JavaClasses();
 
 			rule.check(importedClasses1);
+			rule2.check(importedClasses1);
 		}
 	}
 }
