@@ -17,11 +17,10 @@ public class LCM_Event_RootCI implements LCM_Event {
 	public void handle(final LCM_HandleEvent aHandleEvent) {
 		final LCM_CompilerAccess                c      = aHandleEvent.compilation();
 		final CompilerInstructions              rootCI = (CompilerInstructions) aHandleEvent.obj();
-		final CompilationImpl.CompilationConfig cfg    = c.cfg();
 
 		try {
 //			c.c().setRootCI(rootCI);
-			c.cr().start(rootCI, cfg.do_out);
+			c.cr().start(rootCI, false);
 		} catch (Exception aE) {
 			aHandleEvent.lcm().exception(aHandleEvent, aE);
 		}

@@ -433,7 +433,6 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 	//
 	//
 	public static class CompilationConfig {
-		public boolean do_out;
 		public Stages  stage    = Stages.O; // Output
 		public boolean silent   = false;
 		public boolean showTree = false;
