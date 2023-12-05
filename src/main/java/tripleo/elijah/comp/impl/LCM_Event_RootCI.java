@@ -7,10 +7,15 @@ import tripleo.elijah.comp.i.LCM_HandleEvent;
 import tripleo.elijah.comp.internal.CompilationImpl;
 
 public class LCM_Event_RootCI implements LCM_Event {
-	private static final LCM_Event_RootCI INSTANCE = new LCM_Event_RootCI();
+	private static class LCM_Event_RootCI$ {
+		private static final LCM_Event_RootCI INSTANCE = new LCM_Event_RootCI();
+	}
+
+	private LCM_Event_RootCI() {
+	}
 
 	public static LCM_Event_RootCI instance() {
-		return INSTANCE;
+		return LCM_Event_RootCI$.INSTANCE;
 	}
 
 	@Override
