@@ -68,7 +68,10 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	public WritePipeline(@NotNull final AccessBus ab) {
 		c = ab.getCompilation();
 
-		file_prefix = new File("COMP", c.getCompilationNumberString());
+		final F203   f203 = new F203(c.getErrSink(), c);
+		final String s    = f203.chooseDirectory().toString();
+
+		file_prefix = new File(s);
 
 		os = new OutputStrategy();
 		os.per(OutputStrategy.Per.PER_CLASS); // TODO this needs to be configured per lsp
