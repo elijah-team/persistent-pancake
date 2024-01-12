@@ -31,21 +31,16 @@ import java.util.regex.Pattern;
 
 import static tripleo.elijah.util.Helpers.List_of;
 
+/**
+ * NOTE 24/01/12 I like how all CR_ stuff is here
+ * - Fix @ 58 next
+ */
 public class CompilationRunner {
 	final         Map<String, CompilerInstructions> fn2ci = new HashMap<>();
 	private final Compilation                       compilation;
 	private final CompilationImpl.CIS               cis;
 	private final CCI                               cci;
 	private final ICompilationBus                   cb;
-
-	@Contract(pure = true)
-	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb, final IProgressSink ps1) {
-		compilation = aCompilation;
-		cis         = a_cis;
-		cci         = new CCI(compilation, a_cis, ps1);
-		cb          = aCb;
-//		ps = ps1;
-	}
 
 	@Contract(pure = true)
 	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb) {
