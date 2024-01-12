@@ -10,7 +10,7 @@ import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
-import tripleo.elijah.nextgen.query.Operation2;
+import tripleo.elijah.util.Operation2;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;

@@ -34,7 +34,7 @@ import tripleo.elijah.lang.OS_Type;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.types.OS_UserType;
-import tripleo.elijah.nextgen.query.Operation2;
+import tripleo.elijah.util.Operation2;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeducePhase;

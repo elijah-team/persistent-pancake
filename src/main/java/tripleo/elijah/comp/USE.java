@@ -19,7 +19,7 @@ import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.StringExpression;
 import tripleo.elijah.util.Mode;
-import tripleo.elijah.nextgen.query.Operation2;
+import tripleo.elijah.util.Operation2;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
