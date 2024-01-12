@@ -16,6 +16,7 @@ import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.diagnostic.TooManyEz_ActuallyNone;
 import tripleo.elijah.diagnostic.TooManyEz_BeSpecific;
+import tripleo.elijah.nextgen.inputtree.EIT_InputType;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
@@ -238,7 +239,7 @@ public class CompilationRunner {
 	                                                       final InputStream s,
 	                                                       final @NotNull File file,
 	                                                       final Compilation c) {
-		c.reports().addInput(() -> f, Finally.Out2.EZ);
+		c.reports().addInput(() -> f, EIT_InputType.EZ_FILE);
 		return __realParseEzFile2(f, s, file, c);
 	}
 
@@ -364,7 +365,6 @@ public class CompilationRunner {
 //		}
 
 	class CR_FindCIs implements CR_Action {
-
 		private final String[] args2;
 
 		CR_FindCIs(final String[] aArgs2) {
