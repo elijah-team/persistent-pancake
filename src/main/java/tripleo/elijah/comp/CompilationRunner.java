@@ -58,7 +58,7 @@ public class CompilationRunner {
 		cb  = aCb;
 	}
 
-	public void start(final CompilerInstructions ci, final boolean do_out) throws Exception {
+	public void start(final CompilerInstructions ci) throws Exception {
 		final CR_State st1 = new CR_State();
 
 		cb.add(new ICompilationBus.CB_Process() {
@@ -87,7 +87,7 @@ public class CompilationRunner {
 				};
 				// 2. process the initial
 				final ICompilationBus.CB_Action b = new ICompilationBus.CB_Action() {
-					private final CR_ProcessInitialAction aa = new CR_ProcessInitialAction(ci, do_out);
+					private final CR_ProcessInitialAction aa = new CR_ProcessInitialAction(ci);
 
 					@Override
 					public String name() {
@@ -469,12 +469,24 @@ public class CompilationRunner {
 	}
 
 	private class CR_ProcessInitialAction implements CR_Action {
-		private final CompilerInstructions ci;
-		private final boolean              do_out;
+		private final CompilerInstructions pia_RootCI;
+		private final CK_Monitor monitor;
 
-		public CR_ProcessInitialAction(final CompilerInstructions aCi, final boolean aDo_out) {
-			ci     = aCi;
-			do_out = aDo_out;
+		interface CK_Monitor {
+			int PLACEHOLDER_CODE = 9999;
+
+			void reportFailure(int code, String message);
+		}
+
+		public CR_ProcessInitialAction(final CompilerInstructions aCi) {
+			pia_RootCI = aCi;
+			monitor = new CK_Monitor() {
+				@Override
+				public void reportFailure(final int code, final String message) {
+					final String s = "CR_ProcessInitialAction >> "+code+" "+message;
+					compilation.getErrSink().reportError(s);
+				}
+			};
 		}
 
 		@Override
@@ -485,9 +497,9 @@ public class CompilationRunner {
 		@Override
 		public void execute(final CR_State st) {
 			try {
-				compilation.use(ci, do_out);
+				compilation.use(pia_RootCI, false);
 			} catch (final Exception aE) {
-				throw new RuntimeException(aE); // FIXME
+				monitor.reportFailure(CK_Monitor.PLACEHOLDER_CODE, ""+ aE);
 			}
 		}
 
