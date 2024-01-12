@@ -4,9 +4,9 @@
  */
 package tripleo.elijah.nextgen.outputstatement;
 
-import tripleo.elijah.nextgen.small.ES_Item;
-import tripleo.elijah.nextgen.small.ES_String;
-import tripleo.elijah.nextgen.small.ES_Symbol;
+import tripleo.small.ES_Item;
+import tripleo.small.ES_String;
+import tripleo.small.ES_Symbol;
 
 /**
  * @author Tripleo Nova

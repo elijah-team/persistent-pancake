@@ -11,72 +11,65 @@ package tripleo.elijah.lang;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-/*
- * Created on 5/4/2019 at 12:25
- *
- * $$Id$
- *
- */
-public abstract class AbstractTypeName2 implements NormalTypeName {
+import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
 
-	protected final Collection<TypeModifiers> _ltm = new LinkedHashSet<TypeModifiers>();
-	protected       TypeModifiers             tm;
-	protected       Qualident                 typeName;
+/**
+ * Created on 5/4/2019 at 12:25
+ */
+public abstract class AbstractTypeName2 extends _AbstractNameable2 implements NormalTypeName {
+	private final Collection<TypeModifiers> _ltm = new LinkedHashSet<>();
+	private       Qualident                 text;
+//	private EN_Name_Q en_name;
 
 	@Override
 	public boolean isNull() {
-		//return tm == null && (typeName == null /*|| typeName.isNull()*/);
-		if (typeName == null) return false;
-		return _ltm.isEmpty() && typeName == null; // TODO check for correctness
+		boolean res;
+		if (text == null) {
+			//		if (text == null) return false;
+			res = true;
+		} else {
+			res    = _ltm.isEmpty();
+		}
+		return res;
 	}
 
-	@Override
-	public boolean getConstant() {
+	@Override public boolean getConstant() {
 		return _ltm.contains(TypeModifiers.CONST);
 	}
 
-	@Override
-	public void setConstant(final boolean aFlag) {
+	@Override public void setConstant(final boolean aFlag) {
 		_ltm.add(TypeModifiers.CONST);
 	}
 
-	@Override
-	public boolean getReference() {
+	@Override public boolean getReference() {
 		return _ltm.contains(TypeModifiers.REFPAR);
 	}
 	
-	@Override
-	public void setReference(final boolean aFlag) {
+	@Override public void setReference(final boolean aFlag) {
 		_ltm.add(TypeModifiers.REFPAR);
 	}
 	
-	@Override
-	public boolean getOut() {
+	@Override public boolean getOut() {
 		return _ltm.contains(TypeModifiers.OUTPAR);
 	}
 	
-	@Override
-	public void setOut(final boolean aFlag) {
+	@Override public void setOut(final boolean aFlag) {
 		_ltm.add(TypeModifiers.OUTPAR);
 	}
 	
-	@Override
-	public boolean getIn() {
+	@Override public boolean getIn() {
 		return _ltm.contains(TypeModifiers.INPAR);
 	}
 	
-	@Override
-	public void setIn(final boolean aFlag) {
+	@Override public void setIn(final boolean aFlag) {
 		_ltm.add(TypeModifiers.INPAR);
 	}
 
-	@Override
-	public void setNullable() {
+	@Override public void setNullable() {
 		_ltm.add(TypeModifiers.NULLABLE);
 	}
 
-	@Override
-	public Collection<TypeModifiers> getModifiers() {
+	@Override public Collection<TypeModifiers> getModifiers() {
 		return _ltm;
 	}
 
@@ -92,6 +85,19 @@ public abstract class AbstractTypeName2 implements NormalTypeName {
 //				type == that.type &&
 				getModifiers().containsAll(that.getModifiers()) &&
 				getName().equals(that.getName());
+	}
+
+	public Qualident getText() {
+		return text;
+	}
+
+	public void setText(Qualident aText) {
+		text = aText;
+	}
+
+	protected void _setText(final Qualident aS, final RegularTypeName aRegularTypeName) {
+		this.setText(aS);
+		__nameHook(new EN_Name_Q(aS, aRegularTypeName));
 	}
 }
 

@@ -15,6 +15,7 @@ import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.StringExpression;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.ArrayList;
 
@@ -51,7 +52,7 @@ public class CClassDecl {
 							final String str = ((StringExpression) str0).getText();
 							setDecl(str);
 						} else {
-							tripleo.elijah.util.Stupidity.println2("Illegal C.repr");
+							SimplePrintLoggerToRemoveSoon.println2("Illegal C.repr");
 						}
 					}
 				}

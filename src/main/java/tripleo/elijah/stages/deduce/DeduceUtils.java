@@ -15,6 +15,7 @@ import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Element2;
 import tripleo.elijah.lang.ProcedureCallExpression;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,7 +74,7 @@ public class DeduceUtils {
 
 //				return true; // TODO
 			}
-			tripleo.elijah.util.Stupidity.println2("" + o);
+			SimplePrintLoggerToRemoveSoon.println2("" + o);
 			return false;
 		}
 	}

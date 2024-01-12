@@ -2,6 +2,7 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
@@ -35,6 +36,7 @@ import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.Instruction;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
     private final ProcTableEntry        principal;
@@ -127,7 +129,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                             final VariableTableEntry vte = ((IntegerIA) vrl).getEntry();
 
                             vte.typePromise().then(left_type -> {
-                                final ClassStatement cs = left_type.resolved.getClassOf(); // TODO we want a DeduceClass here. GeneratedClass may suffice
+                                final ClassStatement cs = left_type.getResolved().getClassOf(); // TODO we want a DeduceClass here. GeneratedClass may suffice
 
                                 final ClassInvocation ci = deduceTypes2._phase().registerClassInvocation(cs);
                                 ci.resolvePromise().then(gc2 -> {
@@ -140,7 +142,8 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                                 if (best != null) {
                                     final FunctionDef fun = (FunctionDef) best;
 
-                                    final FunctionInvocation fi2 = new FunctionInvocation(fun, null, ci, deduceTypes2._phase().generatePhase); // TODO pte??
+									final FunctionInvocation fi2 = deduceTypes2.newFunctionInvocation(fun, null, ci,
+											deduceTypes2._phase().generatePhase); // TODO pte??
 
                                     principal.setFunctionInvocation(fi2); // TODO pte above
 
@@ -148,7 +151,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                                     j.run(null);
 
                                     final @NotNull IdentTableEntry ite      = ((IdentIA) principal.expression_num).getEntry();
-                                    final OS_Type                  attached = ite.type.getAttached();
+                                    final OS_Type                  attached = ite.getType().getAttached();
 
                                     fi2.generatePromise().then(gf -> {
                                         final int y4 = 4;
@@ -215,7 +218,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                 // assuming no constructor name or generic parameters based on function syntax
                 ci = new ClassInvocation((ClassStatement) resolvedElement, null);
                 ci = phase.registerClassInvocation(ci);
-                fi = new FunctionInvocation(null, pte, ci, phase.generatePhase);
+				fi = dc.newFunctionInvocation(null, pte, ci);
             } else if (resolvedElement instanceof final FunctionDef functionDef) {
                 final IInvocation invocation  = dc.getInvocation((GeneratedFunction) generatedFunction);
                 fi = new FunctionInvocation(functionDef, pte, invocation, phase.generatePhase);
@@ -232,7 +235,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
                 if (ci != null) {
                     pte.setClassInvocation(ci);
                 } else
-                    tripleo.elijah.util.Stupidity.println_err2("542 Null ClassInvocation");
+                    SimplePrintLoggerToRemoveSoon.println_err2("542 Null ClassInvocation");
             }
 
             pte.setFunctionInvocation(fi);

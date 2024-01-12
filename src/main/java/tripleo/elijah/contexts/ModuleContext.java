@@ -8,6 +8,8 @@
  */
 package tripleo.elijah.contexts;
 
+import java.util.List;
+
 import tripleo.elijah.lang.AliasStatement;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
@@ -17,8 +19,6 @@ import tripleo.elijah.lang.NamespaceStatement;
 import tripleo.elijah.lang.NamespaceTypes;
 import tripleo.elijah.lang.OS_Element2;
 import tripleo.elijah.lang.OS_Module;
-
-import java.util.List;
 
 /**
  * @author Tripleo

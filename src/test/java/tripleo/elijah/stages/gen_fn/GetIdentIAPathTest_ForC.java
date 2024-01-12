@@ -9,9 +9,9 @@
 package tripleo.elijah.stages.gen_fn;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
@@ -46,7 +46,7 @@ public class GetIdentIAPathTest_ForC {
 	GeneratedFunction gf;
 	OS_Module mod;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		mod = mock(OS_Module.class);
 		final FunctionDef fd = mock(FunctionDef.class);
@@ -56,7 +56,7 @@ public class GetIdentIAPathTest_ForC {
 	}
 
 	@Test
-	public void testManualXDotFoo() {
+	void testManualXDotFoo() {
 		@NotNull final IdentExpression x_ident   = IdentExpression.forString("X");
 		@NotNull final IdentExpression foo_ident = IdentExpression.forString("foo");
 		//
@@ -71,14 +71,14 @@ public class GetIdentIAPathTest_ForC {
 		final int             ite_index = gf.addIdentTableEntry(foo_ident, null);
 		final IdentTableEntry ite       = gf.getIdentTableEntry(ite_index);
 		ite.setResolvedElement(foo_vs);
-		ite.backlink = new IntegerIA(int_index, gf);
+		ite.setBacklink(new IntegerIA(int_index, gf));
 		final IdentIA ident_ia = new IdentIA(ite_index, gf);
 		final String  x        = getIdentIAPath(ident_ia, gf);
-		Assert.assertEquals("vvx->vmfoo", x);
+		Assertions.assertEquals("vvx->vmfoo", x);
 	}
 
 	@Test
-	public void testManualXDotFoo2() {
+	void testManualXDotFoo2() {
 		@NotNull final IdentExpression x_ident = IdentExpression.forString("x");
 		@NotNull final IdentExpression foo_ident = IdentExpression.forString("foo");
 		//
@@ -128,11 +128,11 @@ public class GetIdentIAPathTest_ForC {
 		final String x = getIdentIAPath(ident_ia, gf);
 //		Assert.assertEquals("vvx->vmfoo", x);  // TODO real expectation, IOW output below is wrong
 		// TODO actually compiler should comlain that it can't find x
-		Assert.assertEquals("->vmx->vmfoo", x);
+		Assertions.assertEquals("->vmx->vmfoo", x);
 	}
 
 	@Test
-	public void testManualXDotFoo3() {
+	void testManualXDotFoo3() {
 		final IdentExpression          x_ident   = Helpers.string_to_ident("x");
 		@NotNull final IdentExpression foo_ident = Helpers.string_to_ident("foo");
 		//
@@ -170,11 +170,11 @@ public class GetIdentIAPathTest_ForC {
 
 		final String x = getIdentIAPath(ident_ia, gf);
 //		Assert.assertEquals("vvx->vmfoo", x); // TODO real expectation
-		Assert.assertEquals("vvx->vmfoo", x);
+		Assertions.assertEquals("vvx->vmfoo", x);
 	}
 
 	@Test
-	public void testManualXDotFooWithFooBeingFunction() {
+	void testManualXDotFooWithFooBeingFunction() {
 		@NotNull final IdentExpression x_ident = Helpers.string_to_ident("x");
 		@NotNull final IdentExpression foo_ident = Helpers.string_to_ident("foo");
 		//
@@ -252,7 +252,7 @@ public class GetIdentIAPathTest_ForC {
 
 		verify(mod, ctx, mockContext);
 
-		Assert.assertEquals("z-1foo(vvx)", x); // FIXME (??) if foo is a named ctor then make this cap, otherwise, oops
+		Assertions.assertEquals("z-1foo(vvx)", x); // FIXME (??) if foo is a named ctor then make this cap, otherwise, oops
 	}
 
 	String getIdentIAPath(final IdentIA ia2, final GeneratedFunction generatedFunction) {

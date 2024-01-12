@@ -18,6 +18,7 @@ import antlr.Token;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.File;
 
@@ -55,7 +56,7 @@ public class NumericExpression implements IExpression, Locatable {
 	@Override  // IExpression
 	public void setKind(final ExpressionKind aType) {
 		// log and ignore
-		tripleo.elijah.util.Stupidity.println_err2("Trying to set ExpressionType of NumericExpression to " + aType.toString());
+		SimplePrintLoggerToRemoveSoon.println_err2("Trying to set ExpressionType of NumericExpression to " + aType.toString());
 	}
 
 	// endregion

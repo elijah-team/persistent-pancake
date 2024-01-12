@@ -80,6 +80,10 @@ public class FnCallArgs implements InstructionArgument {
 	public void setType(final TypeTableEntry tte2) {
 		_type = tte2;
 	}
+
+	public boolean isEmpty() {
+		return expression_to_call.isEmpty();
+	}
 }
 
 //

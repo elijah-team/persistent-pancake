@@ -14,11 +14,11 @@ import tripleo.elijah.lang.FunctionDef;
 import tripleo.elijah.lang.FunctionItem;
 import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.lang.NamespaceStatement;
-import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Element2;
 import tripleo.elijah.lang.VariableSequence;
 import tripleo.elijah.lang.VariableStatement;
 import tripleo.elijah.lang.WithStatement;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class WithContext extends Context {
 					Result.add(name, level, item, this);
 				}
 			} else if (item instanceof VariableSequence) {
-				tripleo.elijah.util.Stupidity.println2("[FunctionContext#lookup] VariableSequence " + item);
+				SimplePrintLoggerToRemoveSoon.println2("[FunctionContext#lookup] VariableSequence " + item);
 				for (final VariableStatement vs : ((VariableSequence) item).items()) {
 					if (vs.getName().equals(name))
 						Result.add(name, level, vs, this);

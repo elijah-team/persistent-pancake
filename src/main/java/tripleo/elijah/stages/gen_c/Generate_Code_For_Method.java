@@ -29,7 +29,8 @@ import tripleo.elijah.nextgen.outputstatement.EG_DottedStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputstatement.EX_Rule;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.BufferTabbedOutputStream;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
@@ -58,7 +59,7 @@ import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.stages.instructions.SymbolIA;
 import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.stages.logging.ElLog;
-import tripleo.elijah.util.BufferTabbedOutputStream;
+//import tripleo.elijah.util.BufferTabbedOutputStream;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkList;
@@ -598,8 +599,8 @@ public class Generate_Code_For_Method {
 		final List<TypeTableEntry>                pt  = new ArrayList<TypeTableEntry>(pt_);
 		if (pt.size() == 1) {
 			final TypeTableEntry ty = pt.get(0);
-			if (ty.genType.node != null) {
-				final GeneratedNode node = ty.genType.node;
+			if (ty.getGenType(null).getNode() != null) {
+				final GeneratedNode node = ty.getGenType(null).getNode();
 				if (node instanceof GeneratedFunction) {
 					final int y = 2;
 //					((GeneratedFunction)node).typeDeferred()
@@ -694,8 +695,8 @@ public class Generate_Code_For_Method {
 		final List<TypeTableEntry>                pt  = new ArrayList<TypeTableEntry>(pt_);
 		if (pt.size() == 1) {
 			final TypeTableEntry ty = pt.get(0);
-			if (ty.genType.node != null) {
-				final GeneratedNode node = ty.genType.node;
+			if (ty.getGenType(null).getNode() != null) {
+				final GeneratedNode node = ty.getGenType(null).getNode();
 				if (node instanceof GeneratedFunction) {
 					final int y = 2;
 //					((GeneratedFunction)node).typeDeferred()
@@ -724,7 +725,7 @@ public class Generate_Code_For_Method {
 		final String         target_name  = gc.getRealTargetName(gf, vte_num_, AOG.GET);
 		final TypeTableEntry target_type_ = gf.getTypeTableEntry(vte_type_.getIndex());
 //		final String target_type = gc.getTypeName(target_type_.getAttached());
-		final String target_type   = gc.getTypeName(target_type_.genType.node);
+		final String target_type   = gc.getTypeName(target_type_.getGenType(null).getNode());
 		final String source_target = gc.getRealTargetName(gf, vte_targ_, AOG.GET);
 
 		tos.put_string_ln(String.format("%s = (%s)%s;", target_name, target_type, source_target));

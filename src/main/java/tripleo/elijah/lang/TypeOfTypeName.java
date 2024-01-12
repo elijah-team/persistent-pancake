@@ -1,6 +1,9 @@
 package tripleo.elijah.lang;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.UnintendedUseException;
+import tripleo.elijah.lang.nextgen.names2.EN_Name;
+import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
@@ -10,7 +13,7 @@ import java.io.File;
 /**
  * Created 8/16/20 7:42 AM
  */
-public class TypeOfTypeName implements TypeName {
+public class TypeOfTypeName extends _AbstractNameable2 implements TypeName {
 	private Context       _ctx;
 	private Qualident     _typeOf;
 	private TypeModifiers modifiers;
@@ -49,6 +52,11 @@ public class TypeOfTypeName implements TypeName {
 	@Override
 	public Context getContext() {
 		return _ctx;
+	}
+
+	@Override
+	public EN_Name getEnName() {
+		return new EN_Name_Q(this._typeOf, this);
 	}
 
 	public TypeName resolve(final @NotNull Context ctx, final DeduceTypes2 deduceTypes2) throws ResolveError {

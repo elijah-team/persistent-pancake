@@ -6,18 +6,21 @@ import antlr.TokenStreamException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.diagnostic.TooManyEz_ActuallyNone;
-import tripleo.elijah.comp.diagnostic.TooManyEz_BeSpecific;
 import tripleo.elijah.comp.i.IProgressSink;
 import tripleo.elijah.comp.i.ProgressSinkComponent;
+import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.comp.internal.DefaultProgressSink;
 import tripleo.elijah.comp.internal.ProcessRecord;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.diagnostic.TooManyEz_ActuallyNone;
+import tripleo.elijah.diagnostic.TooManyEz_BeSpecific;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
+import tripleo.elijah.util.Operation;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,14 +34,14 @@ import java.util.regex.Pattern;
 import static tripleo.elijah.util.Helpers.List_of;
 
 public class CompilationRunner {
-	final         Map<String, CompilerInstructions> fn2ci = new HashMap<String, CompilerInstructions>();
-	private final Compilation                       compilation;
-	private final Compilation.CIS                   cis;
-	private final CCI                               cci;
+	final         Map<String, CompilerInstructions> fn2ci = new HashMap<>();
+	private final Compilation         compilation;
+	private final CompilationImpl.CIS cis;
+	private final CCI                 cci;
 	private final ICompilationBus                   cb;
 
 	@Contract(pure = true)
-	public CompilationRunner(final Compilation aCompilation, final Compilation.CIS a_cis, final ICompilationBus aCb, final IProgressSink ps1) {
+	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb, final IProgressSink ps1) {
 		compilation = aCompilation;
 		cis         = a_cis;
 		cci         = new CCI(compilation, a_cis, ps1);
@@ -47,7 +50,7 @@ public class CompilationRunner {
 	}
 
 	@Contract(pure = true)
-	public CompilationRunner(final Compilation aCompilation, final Compilation.CIS a_cis, final ICompilationBus aCb) {
+	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb) {
 		compilation = aCompilation;
 		cis         = a_cis;
 		final DefaultProgressSink ps1 = new DefaultProgressSink();
@@ -55,7 +58,7 @@ public class CompilationRunner {
 		cb  = aCb;
 	}
 
-	void start(final CompilerInstructions ci, final boolean do_out) throws Exception {
+	public void start(final CompilerInstructions ci, final boolean do_out) throws Exception {
 		final CR_State st1 = new CR_State();
 
 		cb.add(new ICompilationBus.CB_Process() {
@@ -201,7 +204,7 @@ public class CompilationRunner {
 		final File local_stdlib = new File("lib_elijjah/lib-" + prelude_name + "/stdlib.ez");
 		if (local_stdlib.exists()) {
 			try {
-				final Operation<CompilerInstructions> oci = realParseEzFile(local_stdlib.getName(), io.readFile(local_stdlib), local_stdlib, c);
+				final Operation<CompilerInstructions> oci = realParseEzFile(local_stdlib.toString(), io.readFile(local_stdlib), local_stdlib, c);
 				if (oci.mode() == Mode.SUCCESS) {
 					c.pushItem(oci.success());
 					return oci;
@@ -235,6 +238,14 @@ public class CompilationRunner {
 	                                                       final InputStream s,
 	                                                       final @NotNull File file,
 	                                                       final Compilation c) {
+		c.reports().addInput(() -> f, Finally.Out2.EZ);
+		return __realParseEzFile2(f, s, file, c);
+	}
+
+	Operation<CompilerInstructions> __realParseEzFile2(final String f,
+	                                                   final InputStream s,
+	                                                   final @NotNull File file,
+	                                                   final Compilation c) {
 		final String absolutePath;
 		try {
 			absolutePath = file.getCanonicalFile().toString();
@@ -252,10 +263,10 @@ public class CompilationRunner {
 				final Operation<CompilerInstructions> cio = parseEzFile_(f, s);
 
 				if (cio.mode() == Mode.FAILURE) {
-					final Exception e = cio.failure();
+					final Throwable e = cio.failure();
 					assert e != null;
 
-					tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
+					SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
 					e.printStackTrace(System.err);
 					//s.close();
 					return cio;
@@ -266,7 +277,7 @@ public class CompilationRunner {
 				fn2ci.put(absolutePath, R);
 				return cio;
 			} catch (final ANTLRException e) {
-				tripleo.elijah.util.Stupidity.println_err2(("parser exception: " + e));
+				SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
 				e.printStackTrace(System.err);
 				return Operation.failure(e);
 			}

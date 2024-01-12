@@ -9,55 +9,72 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
-//import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.google.common.base.MoreObjects;
+
+import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.IdentExpression;
 import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.OS_Type;
+import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceElementIdent;
 import tripleo.elijah.stages.deduce.DeducePath;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.OnType;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
-import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.deduce.zero.ITE_Zero;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.util.Holder;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Created 9/12/20 10:27 PM
  */
 public class IdentTableEntry extends BaseTableEntry1 implements Constructable, TableEntryIV, DeduceTypes2.ExpectationBase {
-	public final @NotNull Map<Integer, TypeTableEntry>                    potentialTypes        = new HashMap<Integer, TypeTableEntry>();
-	protected final       DeferredObject<InstructionArgument, Void, Void> backlinkSet           = new DeferredObject<InstructionArgument, Void, Void>();
-	final                 DeferredObject<ProcTableEntry, Void, Void>      constructableDeferred = new DeferredObject<>();
-	private final         int                                             index;
-	private final         IdentExpression                                 ident;
-	private final         Context                                         pc;
-	private final         DeduceElementIdent                              dei                   = new DeduceElementIdent(this);
-	public                boolean                                         preUpdateStatusListenerAdded;
-	public                TypeTableEntry                                  type;
-	public                GeneratedNode                                   externalRef;
-	public                boolean                                         fefi                  = false;
-	public                ProcTableEntry                                  constructable_pte;
-	public                DeduceTypes2.PromiseExpectation<String>         resolveExpectation;
-	InstructionArgument backlink;
-	boolean             insideGetResolvedElement = false;
-	private GeneratedNode                  resolvedType;
+	private final  ITE_PT                    potentialTypes        = new ITE_PT();
+	private final          DeferredObject<InstructionArgument, Void, Void> backlinkSet           = new DeferredObject<InstructionArgument, Void, Void>();
+	private final          DeferredObject<ProcTableEntry, Void, Void>      constructableDeferred = new DeferredObject<>();
+	private final          int                                             index;
+	private final          IdentExpression                                 ident;
+	private final          Context                                         pc;
+	private final          DeduceElementIdent                              dei                   = new DeduceElementIdent(this);
+	private                boolean                                         preUpdateStatusListenerAdded;
+	private                TypeTableEntry                                  type;
+	private                GeneratedNode                                   externalRef;
+	private                boolean                                         fefi                  = false;
+	private                ProcTableEntry                                  constructable_pte;
+
+	//	@Override
+	public String toString2() {
+		return MoreObjects.toStringHelper(this)
+		                  .add("index", index)
+		                  .add("ident", ident)
+		                  .add("pc", pc)
+		                  .add("type", type)
+		                  .toString();
+	}
+
+	private DeduceTypes2.PromiseExpectation<String> resolveExpectation;
+	private InstructionArgument                     backlink;
+	private boolean                                 insideGetResolvedElement = false;
+	private GeneratedNode                           resolvedType;
 	private DeduceElement3_IdentTableEntry _de3;
 	private ITE_Zero                       _zero;
 
@@ -146,7 +163,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	// region constructable
 
-	//	@SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
+	@SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
 	public @NotNull Collection<TypeTableEntry> potentialTypes() {
 		return potentialTypes.values();
 	}
@@ -172,7 +189,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	@Override
 	public void setGenType(final GenType aGenType) {
 		if (type != null) {
-			type.genType.copy(aGenType);
+//			type.provide(this.);
+if(null!=type.getGenType(null)) {
+	type.getGenType(null).copy(aGenType);
+}
 		} else {
 			throw new IllegalStateException("idte-102 Attempting to set a null type");
 //			tripleo.elijah.util.Stupidity.println_err2("idte-102 Attempting to set a null type");
@@ -181,10 +201,13 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 	public void setGenType(final GenType genType, final BaseGeneratedFunction gf) {
 		if (type == null) {
-			makeType(gf, TypeTableEntry.Type.SPECIFIED, genType.resolved);
+			makeType(gf, TypeTableEntry.Type.SPECIFIED, genType.getResolved());
 		}
 
-		type.genType.copy(genType);
+		@Nullable final GenType genType1 = type.getGenType(null);
+		if (genType1 != null) {
+			genType1.copy(genType);
+		}
 	}
 
 	// endregion constructable
@@ -198,9 +221,9 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		return constructableDeferred.promise();
 	}
 
-	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction) {
+	public DeducePath buildDeducePath(final BaseGeneratedFunction generatedFunction, final DeduceTypeResolve2 aResolver) {
 		@NotNull final List<InstructionArgument> x = BaseGeneratedFunction._getIdentIAPathList(new IdentIA(index, generatedFunction));
-		return new DeducePath(this, x);
+		return new DeducePath(this, x, aResolver);
 	}
 
 	public void fefiDone(final GenType aGenType) {
@@ -247,7 +270,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		type = aGeneratedFunction.newTypeTableEntry(aType, null, aExpression, this);
 	}
 
-	public IDeduceElement3 getDeduceElement3(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction) {
+	public DeduceElement3_IdentTableEntry getDeduceElement3(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction) {
 		if (_de3 == null) {
 			_de3                   = new DeduceElement3_IdentTableEntry(this);
 			_de3.deduceTypes2      = aDeduceTypes2;
@@ -263,11 +286,106 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		return _zero;
 	}
 
-//	private final DeferredObject<GenType, Void, Void> typeDeferred = new DeferredObject<GenType, Void, Void>();
-//
-//	public Promise<GenType, Void, Void> typeResolvePromise() {
-//		return typeDeferred.promise();
-//	}
+	public DeduceTypes2 __getDeduceTypes2() {
+		return _de3.deduceTypes2;
+	}
+
+	public DeduceElementIdent getDei() {
+		return dei;
+	}
+
+	public DeferredObject<OS_Element, Diagnostic, Void> getResolvedElementPromise() {
+		return dei.getResolvedElementPromise();
+	}
+
+	public void doConstructable(final ClassInvocation aClsinv) {
+		this.type.genTypeCI(aClsinv);
+		aClsinv.resolvePromise().then(this::resolveTypeToClass);
+	}
+
+	public Map<Integer, TypeTableEntry> getPotentialTypes() {
+		return potentialTypes.asMap();
+	}
+
+	public DeferredObject<InstructionArgument, Void, Void> getBacklinkSet() {
+		return backlinkSet;
+	}
+
+	public DeferredObject<ProcTableEntry, Void, Void> getConstructableDeferred() {
+		return constructableDeferred;
+	}
+
+	public boolean isPreUpdateStatusListenerAdded() {
+		return preUpdateStatusListenerAdded;
+	}
+
+	public void setPreUpdateStatusListenerAdded(boolean aPreUpdateStatusListenerAdded) {
+		preUpdateStatusListenerAdded = aPreUpdateStatusListenerAdded;
+	}
+
+	public TypeTableEntry getType() {
+		return type;
+	}
+
+	public void setType(TypeTableEntry aType) {
+		type = aType;
+	}
+
+	public GeneratedNode getExternalRef() {
+		return externalRef;
+	}
+
+	public void setExternalRef(GeneratedNode aExternalRef) {
+		externalRef = aExternalRef;
+	}
+
+	public boolean isFefi() {
+		return fefi;
+	}
+
+	public void setFefi(boolean aFefi) {
+		fefi = aFefi;
+	}
+
+	public ProcTableEntry getConstructable_pte() {
+		return constructable_pte;
+	}
+
+	public void setConstructable_pte(ProcTableEntry aConstructable_pte) {
+		constructable_pte = aConstructable_pte;
+	}
+
+	public DeduceTypes2.PromiseExpectation<String> getResolveExpectation() {
+		return resolveExpectation;
+	}
+
+	public void setResolveExpectation(DeduceTypes2.PromiseExpectation<String> aResolveExpectation) {
+		resolveExpectation = aResolveExpectation;
+	}
+
+	public boolean isInsideGetResolvedElement() {
+		return insideGetResolvedElement;
+	}
+
+	public void setInsideGetResolvedElement(boolean aInsideGetResolvedElement) {
+		insideGetResolvedElement = aInsideGetResolvedElement;
+	}
+
+	class ITE_PT {
+		private final @NotNull Map<Integer, TypeTableEntry>                    potentialTypes        = new HashMap<Integer, TypeTableEntry>();
+
+		public void put(final int aInstructionIndex, final TypeTableEntry aTte) {
+			potentialTypes.put(aInstructionIndex, aTte);
+		}
+
+		public @NotNull Collection<TypeTableEntry> values() {
+			return potentialTypes.values();
+		}
+
+		public Map<Integer, TypeTableEntry> asMap() {
+			return Collections.unmodifiableMap(potentialTypes);
+		}
+	}
 }
 
 //

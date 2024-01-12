@@ -13,7 +13,7 @@ class ZeroResolver {
 
 	public Zero_Type resolve_type(final OS_Type ty) {
 		try {
-			gt = deduceTypes2.resolve_type(ty, ty.getTypeName().getContext());
+			gt = deduceTypes2.newPFluffyType().resolve_type(ty, ty.getTypeName().getContext());
 			return new Zero_Type(gt);
 		} catch (final ResolveError aE) {
 			NotImplementedException.raise();

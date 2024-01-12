@@ -65,52 +65,52 @@ class Dependencies {
 
 	public void action_type(@NotNull final GenType genType) {
 		// TODO work this out further, maybe like a Deepin flavor
-		if (genType.resolvedn != null) {
-			@NotNull final OS_Module           mod = genType.resolvedn.getContext().module();
-			final @NotNull GenerateFunctions   gf  = deduceTypes2.phase.generatePhase.getGenerateFunctions(mod);
-			final NamespaceInvocation          ni  = deduceTypes2.phase.registerNamespaceInvocation(genType.resolvedn);
-			@NotNull final WlGenerateNamespace gen = new WlGenerateNamespace(gf, ni, deduceTypes2.phase.generatedClasses, deduceTypes2.phase.codeRegistrar);
+		if (genType.getResolvedn() != null) {
+			@NotNull final OS_Module           mod = genType.getResolvedn().getContext().module();
+			final @NotNull GenerateFunctions   gf  = deduceTypes2._phase().generatePhase.getGenerateFunctions(mod);
+			final NamespaceInvocation          ni  = deduceTypes2._phase().registerNamespaceInvocation(genType.getResolvedn());
+			@NotNull final WlGenerateNamespace gen = new WlGenerateNamespace(gf, ni, deduceTypes2._phase().generatedClasses, deduceTypes2._phase().codeRegistrar);
 
-			assert genType.ci == null || genType.ci == ni;
-			genType.ci = ni;
+			assert genType.getCi() == null || genType.getCi() == ni;
+			genType.setCi(ni);
 
 			wl.addJob(gen);
 
 			ni.resolvePromise().then(new DoneCallback<GeneratedNamespace>() {
 				@Override
 				public void onDone(final @NotNull GeneratedNamespace result) {
-					genType.node = result;
+					genType.setNode(result);
 					result.dependentTypes().add(genType);
 				}
 			});
-		} else if (genType.resolved != null) {
-			if (genType.functionInvocation != null) {
-				action_function(genType.functionInvocation);
+		} else if (genType.getResolved() != null) {
+			if (genType.getFunctionInvocation() != null) {
+				action_function(genType.getFunctionInvocation());
 				return;
 			}
 
-			final ClassStatement             c   = genType.resolved.getClassOf();
+			final ClassStatement             c   = genType.getResolved().getClassOf();
 			final @NotNull OS_Module         mod = c.getContext().module();
-			final @NotNull GenerateFunctions gf  = deduceTypes2.phase.generatePhase.getGenerateFunctions(mod);
+			final @NotNull GenerateFunctions gf  = deduceTypes2._phase().generatePhase.getGenerateFunctions(mod);
 			@Nullable ClassInvocation        ci;
-			if (genType.ci == null) {
+			if (genType.getCi() == null) {
 				ci = new ClassInvocation(c, null);
-				ci = deduceTypes2.phase.registerClassInvocation(ci);
+				ci = deduceTypes2._phase().registerClassInvocation(ci);
 
-				genType.ci = ci;
+				genType.setCi(ci);
 			} else {
-				assert genType.ci instanceof ClassInvocation;
-				ci = (ClassInvocation) genType.ci;
+				assert genType.getCi() instanceof ClassInvocation;
+				ci = (ClassInvocation) genType.getCi();
 			}
 
-			final Promise<ClassDefinition, Diagnostic, Void> pcd = deduceTypes2.phase.generateClass(gf, ci);
+			final Promise<ClassDefinition, Diagnostic, Void> pcd = deduceTypes2._phase().generateClass(gf, ci);
 
 			pcd.then(new DoneCallback<ClassDefinition>() {
 				@Override
 				public void onDone(final ClassDefinition result) {
 					final GeneratedClass genclass = result.getNode();
 
-					genType.node = genclass;
+					genType.setNode(genclass);
 					genclass.dependentTypes().add(genType);
 				}
 			});

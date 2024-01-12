@@ -90,7 +90,7 @@ class Implement_Calls_ {
 		//
 		// try to get dunder method from class
 		//
-		final IExpression exp = pte.getArgs().get(0).expression;
+		final IExpression exp = pte.getArgs().get(0).getExpression();
 		if (exp instanceof IdentExpression) {
 			return action_dunder_doIt(pn, (IdentExpression) exp);
 		}
@@ -100,7 +100,7 @@ class Implement_Calls_ {
 	private boolean action_i2_IntegerIA_vteName_is_null(final String pn, @Nullable final String pn2, final Context ctx, final String vteName) {
 		boolean found = false;
 		if (SpecialVariables.contains(vteName)) {
-			deduceTypes2.LOG.err("Skipping special variable " + vteName + " " + pn);
+			deduceTypes2._LOG().err("Skipping special variable " + vteName + " " + pn);
 		} else {
 			final LookupResultList lrl2 = ctx.lookup(vteName);
 //				LOG.info("7003 "+vteName+" "+ctx);
@@ -114,9 +114,10 @@ class Implement_Calls_ {
 					if (found) return true;
 				}
 
-				deduceTypes2.errSink.reportError("Special Function not found " + pn);
+				deduceTypes2._errSink().reportError("Special Function not found " + pn);
 			} else {
-				throw new NotImplementedException(); // Cant find vte, should never happen
+				//throw new NotImplementedException(); // Cant find vte, should never happen
+				System.err.println("FAIL 119");
 			}
 		}
 		return found;
@@ -136,12 +137,12 @@ class Implement_Calls_ {
 		case BUILT_IN:
 			final Context ctx2 = context;//x.getTypeName().getContext();
 			try {
-				@NotNull final GenType ty2 = deduceTypes2.resolve_type(x, ctx2);
-				pot_types_size_is_1_USER_CLASS(pn, pn2, ty2.resolved);
+				@NotNull final GenType ty2 = deduceTypes2.newPFluffyType().resolve_type(x, ctx2);
+				pot_types_size_is_1_USER_CLASS(pn, pn2, ty2.getResolved());
 				return true;
 			} catch (final ResolveError resolveError) {
 				resolveError.printStackTrace();
-				deduceTypes2.errSink.reportDiagnostic(resolveError);
+				deduceTypes2._errSink().reportDiagnostic(resolveError);
 				return false;
 			}
 		default:
@@ -173,7 +174,7 @@ class Implement_Calls_ {
 
 		if (!found) {
 			//throw new NotImplementedException(); // TODO
-			deduceTypes2.errSink.reportError("Special Function not found " + pn);
+			deduceTypes2._errSink().reportError("Special Function not found " + pn);
 		}
 	}
 }

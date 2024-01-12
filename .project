@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>fluffy-umbrella</name>
+	<name>srht-wontstop__gh-persistent_pancake</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -10,14 +10,15 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>org.eclipse.m2e.core.maven2Builder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>spotbugs-annotations-4.7.3</name>
+			<type>2</type>
+			<location>/home/user/dummy/spotbugs-annotations-4.7.3</location>
+		</link>
+	</linkedResources>
 </projectDescription>

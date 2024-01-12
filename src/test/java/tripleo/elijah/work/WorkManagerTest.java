@@ -8,7 +8,7 @@
  */
 package tripleo.elijah.work;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class WorkManagerTest {
 	}
 
 	@Test
-	public void testWorkManager() {
+	void testWorkManager() {
 		final List<String> sink = new ArrayList<>();
 
 		final WorkManager workManager = new WorkManager();

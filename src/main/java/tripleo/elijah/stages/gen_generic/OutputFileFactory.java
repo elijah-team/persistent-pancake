@@ -16,7 +16,9 @@ public final class OutputFileFactory {
 	                                            final @NotNull OutputFileFactoryParams params) {
 		if (Objects.equals(lang, "c")) {
 			return new GenerateC(params);
-		} else
-			throw new NotImplementedException();
+		} else {
+//			throw new NotImplementedException();
+			return new GenerateC(params);
+		}
 	}
 }

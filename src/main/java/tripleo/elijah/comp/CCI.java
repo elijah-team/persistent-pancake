@@ -5,21 +5,22 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.i.IProgressSink;
 import tripleo.elijah.comp.i.ProgressSinkComponent;
+import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.comp.internal.DefaultProgressSink;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
 
 class CCI {
 	//private final @NotNull Compilation compilation;
-	private final Compilation.CIS _cis;
-	private final IProgressSink   _ps;
+	private final CompilationImpl.CIS _cis;
+	private final IProgressSink       _ps;
 
 	@Contract(pure = true)
-	CCI(final @NotNull Compilation aCompilation, final Compilation.CIS aCis) {
+	CCI(final @NotNull Compilation aCompilation, final CompilationImpl.CIS aCis) {
 		this(aCompilation, aCis, new DefaultProgressSink());
 	}
 
 	@Contract(pure = true)
-	CCI(final @NotNull Compilation aCompilation, final Compilation.CIS aCis, final IProgressSink aProgressSink) {
+	CCI(final @NotNull Compilation aCompilation, final CompilationImpl.CIS aCis, final IProgressSink aProgressSink) {
 		//compilation = aCompilation;
 		_cis = aCis;
 		_ps  = aProgressSink;

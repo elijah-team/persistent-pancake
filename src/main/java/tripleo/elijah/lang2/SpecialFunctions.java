@@ -11,7 +11,7 @@ package tripleo.elijah.lang2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.ExpressionKind;
-import tripleo.elijah.util.Stupidity;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 /**
  * Created 10/2/20 10:16 AM
@@ -60,7 +60,7 @@ public class SpecialFunctions {
 			return null;
 //		if (pn.equals("__eq__"))
 //			return "__req__";
-		Stupidity.println_out("reverse_name: " + pn);
+		SimplePrintLoggerToRemoveSoon.println_out("reverse_name: " + pn);
 //		assert false;
 		return null;
 	}

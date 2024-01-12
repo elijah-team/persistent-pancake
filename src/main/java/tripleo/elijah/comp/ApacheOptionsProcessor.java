@@ -6,6 +6,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.UnintendedUseException;
 
 import java.util.List;
 
@@ -36,10 +37,10 @@ public class ApacheOptionsProcessor implements OptionsProcessor {
 			cb.option(new CC_SetShowTree(true));
 		}
 		if (cmd.hasOption("out")) {
-			cb.option(new CC_SetDoOut(true));
+			throw new UnintendedUseException();
 		}
 
-		if (Compilation.isGitlab_ci() || cmd.hasOption("silent")) {
+		if (Compilation.CompilationAlways.isGitlab_ci() || cmd.hasOption("silent")) {
 			cb.option(new CC_SetSilent(true));
 		}
 

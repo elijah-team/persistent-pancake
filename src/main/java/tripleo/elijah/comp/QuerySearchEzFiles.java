@@ -3,8 +3,9 @@ package tripleo.elijah.comp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.query.Operation2;
+import tripleo.elijah.util.Operation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,15 +29,9 @@ class QuerySearchEzFiles {
 	}
 
 	public Operation2<List<CompilerInstructions>> process(final File directory) {
-		final List<CompilerInstructions> R = new ArrayList<CompilerInstructions>();
-		final FilenameFilter filter = new FilenameFilter() {
-			@Override
-			public boolean accept(final File file, final String s) {
-				final boolean matches2 = Pattern.matches(".+\\.ez$", s);
-				return matches2;
-			}
-		};
-		final String[] list = directory.list(filter);
+		final List<CompilerInstructions> R      = new ArrayList<CompilerInstructions>();
+		final FilenameFilter             filter = new Ez_FilenameFilter();
+		final String[]                   list   = directory.list(filter);
 		if (list != null) {
 			for (final String file_name : list) {
 				try {
@@ -110,5 +105,13 @@ class QuerySearchEzFiles {
 	                                                       final @NotNull File file,
 	                                                       final Compilation c) {
 		return cr.realParseEzFile(f, s, file, c);
+	}
+
+	private static class Ez_FilenameFilter implements FilenameFilter {
+		@Override
+		public boolean accept(final File file, final String s) {
+			final boolean matches2 = Pattern.matches(".+\\.ez$", s);
+			return matches2;
+		}
 	}
 }

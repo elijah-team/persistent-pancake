@@ -4,6 +4,7 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
@@ -17,9 +18,9 @@ public class CompilerInstructionsObserver implements Observer<CompilerInstructio
 		compilation = aCompilation;
 	}
 
-	public CompilerInstructionsObserver(final Compilation aCompilation, final OptionsProcessor ignoredAOp, final Compilation.CIS cis) {
+	public CompilerInstructionsObserver(final Compilation aCompilation, final OptionsProcessor ignoredAOp, final CompilationImpl.CIS cis) {
 		compilation = aCompilation;
-		cis._cio    = this;
+		cis.set_cio(this);
 
 		cis.subscribe(this);
 	}
