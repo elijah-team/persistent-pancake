@@ -14,6 +14,7 @@ public class LCM_Event_RootCI implements LCM_Event {
 	private LCM_Event_RootCI() {
 	}
 
+	// TODO 24/01/12 (https://openjdk.org/jeps/8312611) the function was a good call?
 	public static LCM_Event_RootCI instance() {
 		return LCM_Event_RootCI$.INSTANCE;
 	}
