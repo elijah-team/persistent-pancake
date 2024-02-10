@@ -6,6 +6,7 @@ plugins {
     id 'idea'
 
     id 'groovy'
+	id 'org.jetbrains.kotlin.jvm' version '1.9.21'
 }
 
 repositories {
@@ -86,6 +87,7 @@ dependencies {
     api("tripleo.util.range:range-v1:0.0.3b")
 
     testImplementation("org.easymock:easymock:5.1.0")
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 sourceSets {
@@ -114,7 +116,6 @@ sourceSets {
 group = "tripleo.elijah"
 version = "2023.10.0-wont-stop"
 description = "elijah-persistent-pancake"
-java.sourceCompatibility = JavaVersion.VERSION_16
 //java.sourceCompatibility = JavaVersion.VERSION_17
 
 test {
@@ -122,4 +123,7 @@ test {
     testLogging {
         events "passed", "skipped", "failed"
     }
+}
+kotlin {
+	jvmToolchain(16)
 }
