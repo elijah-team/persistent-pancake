@@ -19,7 +19,7 @@ public class EOT_OutputTree {
 	public void add(final @NotNull EOT_OutputFile aOutputFile) {
 		// 05/18
 		// 11/21: re
-		System.err.printf("-- [EOT_OutputTree::add] %s %s%n", aOutputFile.getFilename(), aOutputFile.getStatementSequence().getText());
+//		System.err.printf("-- [EOT_OutputTree::add] %s %s%n", aOutputFile.getFilename(), aOutputFile.getStatementSequence().getText());
 
 		list.add(aOutputFile);
 	}
