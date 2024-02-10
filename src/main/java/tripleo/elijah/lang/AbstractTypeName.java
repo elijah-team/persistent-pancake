@@ -8,7 +8,8 @@
  */
 package tripleo.elijah.lang;
 
-import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
+import tripleo.elijah_pancake.sep1011.lang.EN_Name_Q;
+import tripleo.elijah_pancake.sep1011.lang._AbstractNameable2;
 
 import java.util.Objects;
 

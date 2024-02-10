@@ -29,7 +29,7 @@ import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.lang.Qualident;
-import tripleo.elijah.modeltransition.ElSystemSink;
+import tripleo.elijah_pancake.sep1011.modeltransition.ElSystemSink;
 import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
@@ -402,8 +402,8 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 	}
 
 	@Override
-	public void addGenerateResultItem(final GenerateResultItem aGenerateResultItem, final Supplier<EOT_FileNameProvider> aSupplier) {
-		getOutputTree().addGenerateResultItem(aGenerateResultItem, aSupplier);
+	public void addGenerateResultItem(final GenerateResultItem aGenerateResultItem, final Supplier<EOT_FileNameProvider> aFileNameProviderSupplier) {
+		getOutputTree().addGenerateResultItem(aGenerateResultItem, aFileNameProviderSupplier);
 	}
 
 	public static class MOD {

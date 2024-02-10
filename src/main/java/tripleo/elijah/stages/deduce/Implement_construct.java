@@ -298,7 +298,7 @@ public class Implement_construct {
 			ss[0] = s;
 
 			PFluffyClassStatement fcs = new PFluffyClassStatementImpl(classStatement);
-			fcs.extracted(aConstructorName, aTyn1, s, deduceTypes2);
+			fcs.resolveClassToXXX(aConstructorName, aTyn1, s, deduceTypes2);
 		});
 
 		int y = 2;
@@ -339,7 +339,7 @@ public class Implement_construct {
 			ss[0] = s;
 
 			PFluffyClassStatement fcs = new PFluffyClassStatementImpl(classStatement);
-			fcs.extracted(constructorName, aTyn1, s, deduceTypes2);
+			fcs.resolveClassToXXX(constructorName, aTyn1, s, deduceTypes2);
 		});
 
 		var b = classStatement.getContext(); // ??

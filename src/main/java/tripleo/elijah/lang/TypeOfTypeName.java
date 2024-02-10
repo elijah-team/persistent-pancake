@@ -1,12 +1,12 @@
 package tripleo.elijah.lang;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.UnintendedUseException;
-import tripleo.elijah.lang.nextgen.names2.EN_Name;
-import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
+import tripleo.elijah_pancake.sep1011.lang.EN_Name;
+import tripleo.elijah_pancake.sep1011.lang.EN_Name_Q;
 import tripleo.elijah.stages.deduce.DeduceLookupUtils;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
+import tripleo.elijah_pancake.sep1011.lang._AbstractNameable2;
 
 import java.io.File;
 

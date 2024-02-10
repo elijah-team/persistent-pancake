@@ -11,7 +11,8 @@ package tripleo.elijah.lang;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
+import tripleo.elijah_pancake.sep1011.lang.EN_Name_Q;
+import tripleo.elijah_pancake.sep1011.lang._AbstractNameable2;
 
 /**
  * Created on 5/4/2019 at 12:25

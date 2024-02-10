@@ -14,10 +14,13 @@ import com.google.common.collect.Collections2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.contexts.ClassContext;
-import tripleo.elijah.lang.nextgen.names2.ENU_ClassStatementGenericTypeNameList;
 import tripleo.elijah.lang.types.OS_UserClassType;
 import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah_pancake.feb24.lang.EN_HasGenericPart;
+import tripleo.elijah_pancake.sep1011.lang.ENU_ClassStatementGenericTypeNameList;
+import tripleo.elijah_pancake.sep1011.lang.EN_Name;
+import tripleo.elijah_pancake.sep1011.lang.EN_Name_CS;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,11 +35,12 @@ import java.util.List;
  */
 public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements ClassItem, ModuleItem, StatementItem, FunctionItem, OS_Element, OS_Element2, Documentable, OS_Container {
 
-	private final OS_Element parent;
+	private final OS_Element       parent;
 	private       ClassInheritance _inh = new ClassInheritance(); // remove final for ClassBuilder
-	private      ClassTypes       _type;
-	private      TypeNameList     genericPart;
-	private      OS_UserClassType osType;
+	private       ClassTypes       _type;
+	private       TypeNameList     genericPart;
+	private       OS_UserClassType osType;
+	private       EN_Name_CS       en_name;
 
 	public ClassStatement(final OS_Element parentElement, final Context parentContext) {
 		parent = parentElement; // setParent
@@ -47,25 +51,34 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 			final OS_Module module = (OS_Module) parentElement;
 			//
 			this.setPackageName(module.pullPackageName());
-				_packageName.addElement(this);
-				module.add(this);
-				break;
-			case FUNCTION:
-				// do nothing
-				break;
-			default:
-				// we kind of fail the switch test here because OS_Container is not an OS_Element,
-				// so we have to test explicitly, messing up the pretty flow we had.
-				// hey sh*t happens.
-				if (parentElement instanceof OS_Container) {
-					((OS_Container) parentElement).add(this);
-				} else {
-					throw new IllegalStateException(String.format("Cant add ClassStatement to %s", parentElement));
-				}
+			_packageName.addElement(this);
+			module.add(this);
+			break;
+		case FUNCTION:
+			// do nothing
+			break;
+		default:
+			// we kind of fail the switch test here because OS_Container is not an OS_Element,
+			// so we have to test explicitly, messing up the pretty flow we had.
+			// hey sh*t happens.
+			if (parentElement instanceof OS_Container) {
+				((OS_Container) parentElement).add(this);
+			} else {
+				throw new IllegalStateException(String.format("Cant add ClassStatement to %s", parentElement));
+			}
 		}
 
 		setContext(new ClassContext(parentContext, this));
+
+		en_name = new EN_Name_CS(this);
 	}
+
+	@Override
+	public void setName(final IdentExpression i1) {
+		nameToken = i1;
+		en_name.nameTrigger();
+	}
+
 
 	@Override
 	public OS_Element getParent() {
@@ -147,7 +160,7 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 			if (item instanceof DestructorDef)
 				destructor_count++;
 		}
-		assert destructor_count == 0 || destructor_count ==1;
+		assert destructor_count == 0 || destructor_count == 1;
 	}
 
 	// region inheritance
@@ -218,19 +231,32 @@ public class ClassStatement extends _CommonNC/*ProgramClosure*/ implements Class
 
 	public void setGenericPart(final TypeNameList aTypeNameList) {
 		this.genericPart = aTypeNameList;
+
+		// vv
 		this.genericPart.addUnderstanding(new ENU_ClassStatementGenericTypeNameList(this));
-		for (TypeName typeName : this.genericPart.p) {
-			if (this.parent instanceof OS_Module m) {
-				m.addTypeName(typeName, this);
-			} else assert false;
+
+		if (!(this.parent instanceof final OS_Module m)) {
+			assert false;
+		} else {
+			this.genericPart.addTypeNamesInto(m, this);
 		}
+
+//		this.nameWaiter(new Entrée(name,scope, meaning??));
+
+		// noticably drunk, but only if it matters ^^
+		//aTypeNameList.getEnName().addUnderstanding(new EN_TypeNameListMember(this));
+		this.getEnName().addUnderstanding(new EN_HasGenericPart(genericPart, this));
+	}
+
+	private EN_Name getEnName() { // yur right. this is bad. no mixins
+		return en_name;
 	}
 
 	public @NotNull List<TypeName> getGenericPart() {
 		if (genericPart == null)
 			return LangGlobals.emptyTypeNameList;
 		else
-			return genericPart.p;
+			return genericPart.__internal_TypeNameList;
 	}
 
 	public Collection<ConstructorDef> getConstructors() {

@@ -11,9 +11,9 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.functionality.f203.F203;
 import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.modeltransition.ElSystemSink;
 import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
@@ -26,10 +26,9 @@ import tripleo.elijah.stages.gen_generic.GenerateResultItem;
 import tripleo.elijah.stages.generate.ElSystem;
 import tripleo.elijah.stages.generate.OutputStrategy;
 import tripleo.elijah.util.Helpers;
-//import tripleo.elijah.util.io.CharSink;
-//import tripleo.elijah.util.io.FileCharSink;
 import tripleo.elijah.util.io.CharSink;
 import tripleo.elijah.util.io.FileCharSink;
+import tripleo.elijah_pancake.sep1011.modeltransition.ElSystemSink;
 import tripleo.util.buffer.Buffer;
 import tripleo.util.buffer.DefaultBuffer;
 import tripleo.util.buffer.TextBuffer;
@@ -64,6 +63,8 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 	final ElSystem sys;
 
 	private final File file_prefix;
+
+	public final Eventual<File> _p_chosen = new Eventual<>();
 
 	public WritePipeline(@NotNull final AccessBus ab) {
 		c = ab.getCompilation();
@@ -160,7 +161,10 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 
 			final EG_SingleStatement beginning = new EG_SingleStatement("", new EX_Explanation() {
 			});
-			final EG_Statement middle = new GE_BuffersStatement(entry);
+
+			var s0 = new tripleo.elijah_pancake.pipelines.write.MB.S0(key, entry.getValue());
+
+			final EG_Statement middle = new GE_BuffersStatement(s0);
 			final EG_SingleStatement ending = new EG_SingleStatement("", new EX_Explanation() {
 			});
 			final EX_Explanation explanation = new EX_Explanation() {
@@ -180,20 +184,8 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 		}
 	}
 
-	private void write_inputs(final File file_prefix) throws IOException {
+	public  void write_inputs(final File file_prefix) throws IOException {
 		final DefaultBuffer buf = new DefaultBuffer("");
-//			FileBackedBuffer buf = new FileBackedBuffer(fn1);
-//			for (OS_Module module : modules) {
-//				final String fn = module.getFileName();
-//
-//				append_hash(buf, fn);
-//			}
-//
-//			for (CompilerInstructions ci : cis) {
-//				final String fn = ci.getFilename();
-//
-//				append_hash(buf, fn);
-//			}
 
 		final List<File> recordedreads = c.getIO().recordedreads();
 		final List<String> recordedread_filenames = recordedreads.stream()

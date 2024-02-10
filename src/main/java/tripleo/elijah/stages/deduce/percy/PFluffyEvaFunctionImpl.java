@@ -1,8 +1,6 @@
 package tripleo.elijah.stages.deduce.percy;
 
-import org.apache.commons.lang3.tuple.Triple;
 import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.LookupResultList;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.ResolveError;
 

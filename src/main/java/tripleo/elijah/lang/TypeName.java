@@ -9,7 +9,8 @@
 package tripleo.elijah.lang;
 
 import tripleo.elijah.diagnostic.Locatable;
-import tripleo.elijah.lang.nextgen.names2.EN_Name;
+import tripleo.elijah_pancake.sep1011.lang.EN_Name;
+import tripleo.elijah_pancake.sep1011.lang.Nameable2;
 
 /**
  * Created 8/16/20 2:16 AM

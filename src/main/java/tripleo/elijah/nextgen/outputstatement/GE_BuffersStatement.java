@@ -1,22 +1,20 @@
 package tripleo.elijah.nextgen.outputstatement;
 
 import tripleo.elijah.util.Helpers;
-import tripleo.util.buffer.Buffer;
+import tripleo.elijah_pancake.pipelines.write.MB;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GE_BuffersStatement implements EG_Statement {
-	private final Map.Entry<String, Collection<Buffer>> entry;
+	private final MB.S0 entry;
 
-	public GE_BuffersStatement(final Map.Entry<String, Collection<Buffer>> aEntry) {
+	public GE_BuffersStatement(final MB.S0 aEntry) {
 		entry = aEntry;
 	}
 
 	@Override
 	public String getText() {
-		return Helpers.String_join("\n\n", entry.getValue()
+		return Helpers.String_join("\n\n", entry.cb()
 		                                        .stream()
 		                                        .map(buffer -> buffer.getText())
 		                                        .collect(Collectors.toList()));

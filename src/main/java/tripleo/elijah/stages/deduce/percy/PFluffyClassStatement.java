@@ -8,8 +8,8 @@ import tripleo.elijah.lang.NormalTypeName;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 
 public interface PFluffyClassStatement {
-	void extracted(@Nullable String constructorName,
-	               @NotNull NormalTypeName aTyn1,
-	               PFInvocation.Setter s,
-	               DeduceTypes2 aDeduceTypes2);
+	void resolveClassToXXX(@Nullable String constructorName,
+	                       @NotNull NormalTypeName aTyn1,
+	                       PFInvocation.Setter s,
+	                       DeduceTypes2 aDeduceTypes2);
 }
