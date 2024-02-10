@@ -2053,7 +2053,7 @@ public class DeduceTypes2 {
 
 	@NotNull
 	public Implement_construct newImplement_construct(final BaseGeneratedFunction generatedFunction, final Instruction instruction) {
-		return new Implement_construct(this, generatedFunction, instruction);
+		return new Implement_construct(this, generatedFunction, instruction, this._phase());
 	}
 
 	void do_assign_call_GET_ITEM(@NotNull final GetItemExpression gie, final TypeTableEntry tte, @NotNull final BaseGeneratedFunction generatedFunction, final Context ctx) {
