@@ -31,6 +31,11 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
+    // https://mvnrepository.com/artifact/com.google.truth.extensions/truth-java8-extension
+    testImplementation 'com.google.truth.extensions:truth-java8-extension:1.4.0'
+    // https://mvnrepository.com/artifact/com.google.truth/truth
+    testImplementation 'com.google.truth:truth:1.4.0'
+
     // Spock Groovy Junit5
     // mandatory dependencies for using Spock
     implementation platform('org.apache.groovy:groovy-bom:4.0.15')
