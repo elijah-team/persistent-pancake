@@ -3,7 +3,7 @@ package tripleo.elijah_pancake.sep1011.lang;
 import java.util.Collections;
 import java.util.List;
 
-public class _AbstractNameable2 implements Nameable2 {
+public class _AbstractTypeNameNameable implements _TypeName__Nameable {
 	private EN_Name      en_name;
 //	private List<ENU_Understanding> us;
 
