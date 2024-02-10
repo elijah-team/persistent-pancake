@@ -85,6 +85,7 @@ public class Implement_construct {
 				throw new NotImplementedException();
 			}
 		});
+		this.eventualregister.register(/*ppwc::registereventualregister*/null);
 	}
 
 	public void action_IdentIA(final PercyWantConstructor aPwc) {
