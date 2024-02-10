@@ -1,12 +1,8 @@
 package tripleo.elijah.stages.deduce.percy;
 
-import java.util.List;
-
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import com.google.common.base.Preconditions;
-
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.NormalTypeName;
 import tripleo.elijah.lang.TypeName;
@@ -16,6 +12,8 @@ import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
+
+import java.util.List;
 
 public class PFluffyClassStatementImpl implements PFluffyClassStatement {
 	private final ClassStatement classStatement;
@@ -46,7 +44,7 @@ public class PFluffyClassStatementImpl implements PFluffyClassStatement {
 		final DeduceTypeResolve2 r = aDeduceTypes2.resolver();
 
 		for (int i = 0; i < gp.size(); i++) {
-			final TypeName                    typeName = gp2.get(i);
+			final TypeName typeName = gp2.get(i);
 			extracted(s, r, typeName, clsinv, i, gp);
 		}
 	}
@@ -57,7 +55,7 @@ public class PFluffyClassStatementImpl implements PFluffyClassStatement {
 	                       final ClassInvocation clsinv,
 	                       final int i,
 	                       final @NotNull List<TypeName> gp) {
-		final @NotNull Operation<GenType> top      = r.of(typeName);
+		final @NotNull Operation<GenType> top = r.of(typeName);
 		final @NotNull GenType            typeName2;
 
 		if (top.mode() == Mode.SUCCESS) {
@@ -67,16 +65,13 @@ public class PFluffyClassStatementImpl implements PFluffyClassStatement {
 
 			r.registerClassInvocation(clsinv)
 			 .andThen(clsinv2 -> {
-						// NOTE 11/18 why doesn't idea do this for me (i bet it would with Kotlin...)
-				             // -- before andThen
-				             //  but it has intention below...
-				             //noinspection DataFlowIssue
-				             Preconditions.checkNotNull(clsinv2);
+				 // NOTE 11/18 why doesn't idea do this for me (i bet it would with Kotlin...)
+				 Preconditions.checkNotNull(clsinv2);
 
-				             typeName2.setCi(clsinv2);
+				 typeName2.setCi(clsinv2);
 
-				             s.classInvocation(clsinv2);
-			             });
+				 s.classInvocation(clsinv2);
+			 });
 		} else {
 			final Throwable failure = top.failure();
 			failure.printStackTrace();
