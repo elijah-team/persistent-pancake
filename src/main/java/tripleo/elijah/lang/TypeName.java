@@ -10,12 +10,12 @@ package tripleo.elijah.lang;
 
 import tripleo.elijah.diagnostic.Locatable;
 import tripleo.elijah_pancake.sep1011.lang.EN_Name;
-import tripleo.elijah_pancake.sep1011.lang.Nameable2;
+import tripleo.elijah_pancake.sep1011.lang._TypeName__Nameable;
 
 /**
  * Created 8/16/20 2:16 AM
  */
-public interface TypeName extends Locatable, Nameable2 {
+public interface TypeName extends Locatable, _TypeName__Nameable {
 	boolean isNull();
 
 	void setContext(Context context);
