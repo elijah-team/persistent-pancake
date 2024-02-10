@@ -1,8 +1,5 @@
 package tripleo.elijah.comp;
 
-import antlr.ANTLRException;
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
@@ -16,9 +13,10 @@ import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.diagnostic.TooManyEz_ActuallyNone;
 import tripleo.elijah.diagnostic.TooManyEz_BeSpecific;
-import tripleo.elijah.util.Mode;
-import tripleo.elijah.nextgen.query.Operation2;
+import tripleo.elijah.nextgen.inputtree.EIT_InputType;
+import tripleo.elijah.util.Operation2;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
@@ -33,21 +31,16 @@ import java.util.regex.Pattern;
 
 import static tripleo.elijah.util.Helpers.List_of;
 
+/**
+ * NOTE 24/01/12 I like how all CR_ stuff is here
+ * - Fix @ 58 next
+ */
 public class CompilationRunner {
 	final         Map<String, CompilerInstructions> fn2ci = new HashMap<>();
-	private final Compilation         compilation;
-	private final CompilationImpl.CIS cis;
-	private final CCI                 cci;
+	private final Compilation                       compilation;
+	private final CompilationImpl.CIS               cis;
+	private final CCI                               cci;
 	private final ICompilationBus                   cb;
-
-	@Contract(pure = true)
-	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb, final IProgressSink ps1) {
-		compilation = aCompilation;
-		cis         = a_cis;
-		cci         = new CCI(compilation, a_cis, ps1);
-		cb          = aCb;
-//		ps = ps1;
-	}
 
 	@Contract(pure = true)
 	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb) {
@@ -58,7 +51,7 @@ public class CompilationRunner {
 		cb  = aCb;
 	}
 
-	public void start(final CompilerInstructions ci, final boolean do_out) throws Exception {
+	public void start(final CompilerInstructions ci) throws Exception {
 		final CR_State st1 = new CR_State();
 
 		cb.add(new ICompilationBus.CB_Process() {
@@ -87,7 +80,7 @@ public class CompilationRunner {
 				};
 				// 2. process the initial
 				final ICompilationBus.CB_Action b = new ICompilationBus.CB_Action() {
-					private final CR_ProcessInitialAction aa = new CR_ProcessInitialAction(ci, do_out);
+					private final CR_ProcessInitialAction aa = new CR_ProcessInitialAction(ci);
 
 					@Override
 					public String name() {
@@ -221,24 +214,11 @@ public class CompilationRunner {
 		});
 	}
 
-
-	private @NotNull List<CompilerInstructions> searchEzFiles(final @NotNull File directory, final ErrSink errSink, final IO io, final Compilation c) {
-		final QuerySearchEzFiles                     q    = new QuerySearchEzFiles(c, errSink, io, this);
-		final Operation2<List<CompilerInstructions>> olci = q.process(directory);
-
-		if (olci.mode() == Mode.SUCCESS) {
-			return olci.success();
-		}
-
-		errSink.reportDiagnostic(olci.failure());
-		return List_of();
-	}
-
 	public Operation<CompilerInstructions> realParseEzFile(final String f,
 	                                                       final InputStream s,
 	                                                       final @NotNull File file,
 	                                                       final Compilation c) {
-		c.reports().addInput(() -> f, Finally.Out2.EZ);
+		c.reports().addInput(() -> f, EIT_InputType.EZ_FILE);
 		return __realParseEzFile2(f, s, file, c);
 	}
 
@@ -259,28 +239,23 @@ public class CompilationRunner {
 		}
 
 		try {
-			try {
-				final Operation<CompilerInstructions> cio = parseEzFile_(f, s);
+			final QueryEzFileToModuleParams       qp  = new QueryEzFileToModuleParams(f, s);
+			final Operation<CompilerInstructions> cio = new QueryEzFileToModule(qp).calculate();
 
-				if (cio.mode() == Mode.FAILURE) {
-					final Throwable e = cio.failure();
-					assert e != null;
+			if (cio.mode() == Mode.FAILURE) {
+				final Throwable e = cio.failure();
+				assert e != null;
 
-					SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
-					e.printStackTrace(System.err);
-					//s.close();
-					return cio;
-				}
-
-				final CompilerInstructions R = cio.success();
-				R.setFilename(file.toString());
-				fn2ci.put(absolutePath, R);
-				return cio;
-			} catch (final ANTLRException e) {
 				SimplePrintLoggerToRemoveSoon.println_err2(("parser exception: " + e));
 				e.printStackTrace(System.err);
-				return Operation.failure(e);
+				//s.close();
+				return cio;
 			}
+
+			final CompilerInstructions R = cio.success();
+			R.setFilename(file.toString());
+			fn2ci.put(absolutePath, R);
+			return cio;
 		} finally {
 			if (s != null) {
 				try {
@@ -293,21 +268,35 @@ public class CompilationRunner {
 		}
 	}
 
-	private Operation<CompilerInstructions> parseEzFile_(final String f, final InputStream s) throws RecognitionException, TokenStreamException {
-		final QueryEzFileToModuleParams qp = new QueryEzFileToModuleParams(f, s);
-		return new QueryEzFileToModule(qp).calculate();
+	private @NotNull List<CompilerInstructions> searchEzFiles(final @NotNull File directory, final ErrSink errSink, final IO io, final Compilation c) {
+		final QuerySearchEzFiles                     q    = new QuerySearchEzFiles(c, errSink, io, this);
+		final Operation2<List<CompilerInstructions>> olci = q.process(directory);
+
+		if (olci.mode() == Mode.SUCCESS) {
+			return olci.success();
+		}
+
+		errSink.reportDiagnostic(olci.failure());
+		return List_of();
 	}
 
-	interface CR_Process {
-		List<ICompilationBus.CB_Action> steps();
-	}
+//	interface CR_Process {
+//		List<ICompilationBus.CB_Action> steps();
+//	}
 
 	public interface CR_Action {
-		void attach(CompilationRunner cr);
+//		void attach(CompilationRunner cr);
 
 		void execute(CR_State st);
 
 		String name();
+	}
+
+	interface CK_Monitor {
+		int PLACEHOLDER_CODE   = 9999;
+		int PLACEHOLDER_CODE_2 = 9998;
+
+		void reportFailure(int code, String message);
 	}
 
 	class CR_State {
@@ -323,24 +312,6 @@ public class CompilationRunner {
 			}
 
 			return ca;
-		}
-	}
-
-	class CR_AlmostComplete implements CR_Action {
-
-		@Override
-		public void attach(final CompilationRunner cr) {
-
-		}
-
-		@Override
-		public void execute(final CR_State st) {
-			cis.almostComplete();
-		}
-
-		@Override
-		public String name() {
-			return "cis almostComplete";
 		}
 	}
 
@@ -363,17 +334,25 @@ public class CompilationRunner {
 //			assert op.mode() == Mode.SUCCESS; // TODO .NOTHING??
 //		}
 
-	class CR_FindCIs implements CR_Action {
+	class CR_AlmostComplete implements CR_Action {
 
+		@Override
+		public void execute(final CR_State st) {
+			cis.almostComplete();
+		}
+
+		@Override
+		public String name() {
+			return "cis almostComplete";
+		}
+	}
+//	}
+
+	class CR_FindCIs implements CR_Action {
 		private final String[] args2;
 
 		CR_FindCIs(final String[] aArgs2) {
 			args2 = aArgs2;
-		}
-
-		@Override
-		public void attach(final CompilationRunner cr) {
-
 		}
 
 		@Override
@@ -443,15 +422,8 @@ public class CompilationRunner {
 			}
 		}
 	}
-//	}
 
 	private class CR_FindStdlibAction implements CR_Action {
-
-		@Override
-		public void attach(final CompilationRunner cr) {
-
-		}
-
 		@Override
 		public void execute(final CR_State st) {
 			final Operation<CompilerInstructions> x = findStdLib(Compilation.CompilationAlways.defaultPrelude(), compilation);
@@ -469,25 +441,20 @@ public class CompilationRunner {
 	}
 
 	private class CR_ProcessInitialAction implements CR_Action {
-		private final CompilerInstructions ci;
-		private final boolean              do_out;
+		private final CompilerInstructions pia_RootCI;
+		private final CK_Monitor           monitor;
 
-		public CR_ProcessInitialAction(final CompilerInstructions aCi, final boolean aDo_out) {
-			ci     = aCi;
-			do_out = aDo_out;
-		}
-
-		@Override
-		public void attach(final CompilationRunner cr) {
-
+		public CR_ProcessInitialAction(final CompilerInstructions aCi) {
+			pia_RootCI = aCi;
+			monitor    = new CR_CK_Monitor();
 		}
 
 		@Override
 		public void execute(final CR_State st) {
 			try {
-				compilation.use(ci, do_out);
+				compilation.use(pia_RootCI, false);
 			} catch (final Exception aE) {
-				throw new RuntimeException(aE); // FIXME
+				monitor.reportFailure(CK_Monitor.PLACEHOLDER_CODE, "" + aE);
 			}
 		}
 
@@ -495,13 +462,19 @@ public class CompilationRunner {
 		public String name() {
 			return "process initial";
 		}
+
+	}
+
+	private class CR_CK_Monitor implements CK_Monitor {
+		@Override
+		public void reportFailure(final int code, final String message) {
+			final String s = "CR_ProcessInitialAction >> " + code + " " + message;
+			compilation.getErrSink().reportError(s);
+		}
 	}
 
 	private class CR_RunBetterAction implements CR_Action {
-		@Override
-		public void attach(final CompilationRunner cr) {
-
-		}
+		private final CK_Monitor monitor = new CR_CK_Monitor();
 
 		@Override
 		public void execute(final CR_State st) {
@@ -510,7 +483,7 @@ public class CompilationRunner {
 			try {
 				st.rt.run_better();
 			} catch (final Exception aE) {
-				throw new RuntimeException(aE); // FIXME
+				monitor.reportFailure(CK_Monitor.PLACEHOLDER_CODE_2, "" + aE);
 			}
 		}
 

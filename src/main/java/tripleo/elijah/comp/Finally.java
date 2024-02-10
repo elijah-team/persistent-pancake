@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
 import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.nextgen.inputtree.EIT_InputType;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 
@@ -47,10 +48,10 @@ public class Finally {
 	}
 
 	public static class Input {
-		private final @NotNull Nameable nameable;
-		private final Out2 ty;
+		private final @NotNull Nameable      nameable;
+		private final          EIT_InputType ty;
 
-		public Input(final @NotNull Nameable aNameable, final Out2 aTy) {
+		public Input(final @NotNull Nameable aNameable, final EIT_InputType aTy) {
 			System.err.println("66 Add Input >> " + aNameable.getNameableString());
 			nameable = aNameable;
 			ty = aTy;
@@ -78,10 +79,6 @@ public class Finally {
 
 	public interface Nameable {
 		String getNameableString();
-	}
-
-	public enum Out2 {
-		EZ, ELIJAH
 	}
 
 	public static class Output {
@@ -138,7 +135,7 @@ public class Finally {
 		return e;
 	}
 
-	public void addInput(final Nameable aNameable, final Out2 ty) {
+	public void addInput(final Nameable aNameable, final EIT_InputType ty) {
 		inputs.add(new Input(aNameable, ty));
 	}
 
