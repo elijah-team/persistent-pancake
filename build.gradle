@@ -6,7 +6,8 @@ plugins {
     id 'idea'
 
     id 'groovy'
-	id 'org.jetbrains.kotlin.jvm' version '1.9.21'
+
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
 }
 
 repositories {
@@ -24,6 +25,12 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.2'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.9.22'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+
     // Spock Groovy Junit5
     // mandatory dependencies for using Spock
     implementation platform('org.apache.groovy:groovy-bom:4.0.15')
