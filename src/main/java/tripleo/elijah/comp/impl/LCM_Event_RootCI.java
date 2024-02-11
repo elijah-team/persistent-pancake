@@ -1,9 +1,11 @@
 package tripleo.elijah.comp.impl;
 
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.i.LCM_CompilerAccess;
 import tripleo.elijah.comp.i.LCM_Event;
 import tripleo.elijah.comp.i.LCM_HandleEvent;
+import tripleo.elijah.comp.internal.CompilationImpl;
 
 public class LCM_Event_RootCI implements LCM_Event {
 	private static class LCM_Event_RootCI$ {
@@ -26,6 +28,9 @@ public class LCM_Event_RootCI implements LCM_Event {
 		try {
 //			c.c().setRootCI(rootCI);
 			c.cr().start(rootCI);
+
+			CompilationImpl cc = (CompilationImpl) c.c();
+			cc.pipelineLogic.dp.checkFinishEventuals();
 		} catch (Exception aE) {
 			aHandleEvent.lcm().exception(aHandleEvent, aE);
 		}

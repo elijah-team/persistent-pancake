@@ -1,15 +1,16 @@
 package tripleo.elijah.lang;
 
 import tripleo.elijah.UnintendedUseException;
-import tripleo.elijah.lang.nextgen.names2.EN_Name;
+import tripleo.elijah_pancake.sep1011.lang.EN_Name;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah_pancake.sep1011.lang._AbstractTypeNameNameable;
 
 import java.io.File;
 
 /**
  * Created 8/16/20 2:16 AM
  */
-public class FuncTypeName extends _AbstractNameable2 implements TypeName {
+public class FuncTypeName extends _AbstractTypeNameNameable implements TypeName {
 	private final Context _ctx;
 	private TypeModifiers _modifiers;
 	private TypeNameList _arglist = null/*new TypeNameList()*/;

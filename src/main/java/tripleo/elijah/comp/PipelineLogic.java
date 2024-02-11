@@ -21,6 +21,7 @@ import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultItem;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah_pancake.feb24.googly.P;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 	}
 
 	public void addModule(final OS_Module m) {
+		P.googly(P.PL_ADD_MODULE, m);
 		mods.add(m);
 	}
 

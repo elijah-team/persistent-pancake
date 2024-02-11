@@ -8,11 +8,12 @@
  */
 package tripleo.elijah.lang;
 
-import tripleo.elijah.lang.nextgen.names2.EN_Name_Q;
+import tripleo.elijah_pancake.sep1011.lang.EN_Name_Q;
+import tripleo.elijah_pancake.sep1011.lang._AbstractTypeNameNameable;
 
 import java.util.Objects;
 
-public abstract class AbstractTypeName extends _AbstractNameable2 implements NormalTypeName {
+public abstract class AbstractTypeName extends _AbstractTypeNameNameable implements NormalTypeName {
 	private boolean isNullable = false;
 
 	@Override

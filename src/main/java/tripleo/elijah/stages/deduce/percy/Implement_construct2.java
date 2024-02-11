@@ -4,7 +4,7 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.lang.ConstructorDef;
-import tripleo.elijah.modeltransition.EventualProvider;
+import tripleo.elijah_pancake.sep1011.modeltransition.EventualProvider;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.Implement_construct;

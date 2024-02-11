@@ -11,40 +11,39 @@ package tripleo.elijah.lang;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import tripleo.elijah.lang.nextgen.names2.ENU_Understanding;
-import tripleo.elijah.lang.nextgen.names2.EN_TypeNameListMember;
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah_pancake.sep1011.lang.ENU_Understanding;
+import tripleo.elijah_pancake.sep1011.lang.EN_TypeNameListMember;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
-
 public class TypeNameList {
 	public TypeNameList() {
-		int y=2;
+		int y = 2;
 	}
 
-	final   List<TypeName>          p = new ArrayList<>();
-	private List<ENU_Understanding> us;
+	final   List<TypeName>          __internal_TypeNameList = new ArrayList<>();
+	private List<ENU_Understanding> us; // monotonic, once, by lazy; reactive guys may or may not be smart abt this
 
 	public void add(final TypeName tn) {
-		p.add(tn);
+		__internal_TypeNameList.add(tn);
 
 		tn.getEnName().addUnderstanding(new EN_TypeNameListMember(this));
 	}
 
 	public TypeName get(final int index) {
-		return p.get(index);
+		return __internal_TypeNameList.get(index);
 	}
 
 	public int size() {
-		return p.size();
+		return __internal_TypeNameList.size();
 	}
 
 	@Override
 	public String toString() {
-		return Helpers.String_join(", ", Collections2.transform(p, new Function<TypeName, String>() {
+		return Helpers.String_join(", ", Collections2.transform(__internal_TypeNameList, new Function<TypeName, String>() {
 			@Nullable
 			@Override
 			public String apply(@Nullable final TypeName input) {
@@ -55,8 +54,14 @@ public class TypeNameList {
 	}
 
 	public void addUnderstanding(final ENU_Understanding aUnderstanding) {
-		if (us==null) us = new ArrayList<>();
+		if (us == null) us = new ArrayList<>();
 		us.add(aUnderstanding);
+	}
+
+	public void addTypeNamesInto(final OS_Module m, final ClassStatement cs) {
+		for (TypeName typeName : __internal_TypeNameList) {
+			m.addTypeName(typeName, cs);
+		}
 	}
 }
 

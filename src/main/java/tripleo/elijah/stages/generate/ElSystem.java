@@ -11,8 +11,8 @@ package tripleo.elijah.stages.generate;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.modeltransition.ElSystemSink;
-import tripleo.elijah.modeltransition.EventualProvider;
+import tripleo.elijah_pancake.sep1011.modeltransition.ElSystemSink;
+import tripleo.elijah_pancake.sep1011.modeltransition.EventualProvider;
 import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.stages.deduce.percy.Provided;
 import tripleo.elijah.stages.gen_fn.GeneratedClass;
@@ -66,7 +66,7 @@ public class ElSystem {
 				}
 
 				@Override
-				public void addGenerateResultItem(final GenerateResultItem ab, final Supplier<EOT_FileNameProvider> aSupplier) {
+				public void addGenerateResultItem(final GenerateResultItem aGenerateResultItem, final Supplier<EOT_FileNameProvider> aFileNameProviderSupplier) {
 					throw new UnintendedUseException();
 				}
 			};

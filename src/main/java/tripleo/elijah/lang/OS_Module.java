@@ -17,11 +17,9 @@ package tripleo.elijah.lang;
 import antlr.Token;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jdt.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.LibraryStatementPart;
-import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.entrypoints.EntryPointList;
@@ -29,6 +27,8 @@ import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyModule;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah_pancake.feb24.lang.EM_ClassConnectedTypename;
+import tripleo.elijah_pancake.feb24.lang.EM_Typename;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -234,16 +234,16 @@ public class OS_Module implements OS_Element, OS_Container {
 		return parent;
 	}
 
-	public List<Pair<TypeName, ClassStatement>> get__typeNames() {
+	public List<EM_Typename> get__typeNames() {
 		return __typeNames;
 	}
 
-	private final List<Pair<TypeName, ClassStatement>> __typeNames = new ArrayList<>();
+	private final List<EM_Typename> __typeNames = new ArrayList<>();
 
 	public void addTypeName(final TypeName aTypeName, final ClassStatement aClassStatement) {
-		__typeNames.add(Pair.of(aTypeName, aClassStatement));
+		final EM_Typename emt = () -> aTypeName;
+		__typeNames.add(new EM_ClassConnectedTypename(emt, aClassStatement));
 	}
-
 }
 
 //

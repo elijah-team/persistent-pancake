@@ -16,7 +16,7 @@ package tripleo.elijah.lang;
 
 import java.io.File;
 
-public class RegularTypeName extends AbstractTypeName2 implements NormalTypeName {
+public class RegularTypeName extends AbstractTypeNameTypeName implements NormalTypeName {
 	private TypeNameList genericPart;
 	private Context _ctx;
 //	private OS_Type _resolved;

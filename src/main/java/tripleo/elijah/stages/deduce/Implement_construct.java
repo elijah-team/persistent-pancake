@@ -1,13 +1,10 @@
 package tripleo.elijah.stages.deduce;
 
-import java.util.Collection;
-import java.util.function.Supplier;
-
-import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import tripleo.elijah.DebugFlags;
+import tripleo.elijah.Eventual;
+import tripleo.elijah.EventualRegister;
 import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.ConstructorDef;
@@ -31,7 +28,6 @@ import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry
 import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.elijah.stages.gen_fn.Constructable;
 import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.gen_fn.GeneratedClass;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.gen_fn.TypeTableEntry;
@@ -45,6 +41,9 @@ import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.util.NotImplementedException;
 
+import java.util.Collection;
+import java.util.function.Supplier;
+
 public class Implement_construct {
 
 	private final DeduceTypes2          deduceTypes2;
@@ -53,12 +52,14 @@ public class Implement_construct {
 	private final InstructionArgument   expression;
 
 	private final @NotNull ProcTableEntry                 pte;
-	private                Provided<PercyWantConstructor> ppwc;
+	private Provided<PercyWantConstructor> ppwc;
+	private final EventualRegister         eventualregister;
 
-	public Implement_construct(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction, final Instruction aInstruction) {
+	public Implement_construct(final DeduceTypes2 aDeduceTypes2, final BaseGeneratedFunction aGeneratedFunction, final Instruction aInstruction, EventualRegister aEventualregister) {
 		deduceTypes2      = aDeduceTypes2;
 		generatedFunction = aGeneratedFunction;
 		instruction       = aInstruction;
+		eventualregister  = aEventualregister;
 
 		// README all these asserts are redundant, I know
 		assert instruction.getName() == InstructionName.CONSTRUCT;
@@ -84,6 +85,7 @@ public class Implement_construct {
 				throw new NotImplementedException();
 			}
 		});
+		this.eventualregister.register(/*ppwc::registereventualregister*/null);
 	}
 
 	public void action_IdentIA(final PercyWantConstructor aPwc) {
@@ -271,7 +273,7 @@ public class Implement_construct {
 		}
 		case TYPE_NAME_ELEMENT -> {
 			final ClassContext.OS_TypeNameElement typeNameElement = (ClassContext.OS_TypeNameElement) best;
-			_ict_TypeNameElement(co, constructorName, aTyn1, typeNameElement, () -> new ClassInvocation((ClassStatement) best, constructorName));
+			_ict_TypeNameElement(co, constructorName, aTyn1, typeNameElement, () -> null);//new ClassInvocation((ClassStatement) best, constructorName));
 		}
 
 		default -> {
@@ -298,7 +300,7 @@ public class Implement_construct {
 			ss[0] = s;
 
 			PFluffyClassStatement fcs = new PFluffyClassStatementImpl(classStatement);
-			fcs.extracted(aConstructorName, aTyn1, s, deduceTypes2);
+			fcs.resolveClassToXXX(aConstructorName, aTyn1, s, deduceTypes2);
 		});
 
 		int y = 2;
@@ -333,21 +335,27 @@ public class Implement_construct {
 	                                 final ClassStatement classStatement) {
 		final PFInvocation.Setter[] ss = {null};
 
+
+		final Eventual<PFInvocation.Setter> ess = new Eventual<>();
+
 		final PFInvocation pinv = deduceTypes2.get(generatedFunction).makeInvocation(classStatement);
 
 		pinv.setter((final PFInvocation.Setter s) -> {
 			ss[0] = s;
+			ess.resolve(s);
 
 			PFluffyClassStatement fcs = new PFluffyClassStatementImpl(classStatement);
-			fcs.extracted(constructorName, aTyn1, s, deduceTypes2);
+			fcs.resolveClassToXXX(constructorName, aTyn1, s, deduceTypes2);
 		});
 
-		var b = classStatement.getContext(); // ??
+		ess.then(sss -> sss.hookClassInvocation(hookedClassInvocation -> {
+			final var b = classStatement.getContext(); // ??
+			assert ch != null;
+			ch.invoke2(hookedClassInvocation, deduceTypes2, b, generatedFunction);
+		}));
 
-		ss[0].hookClassInvocation(clsinv21 -> ch.invoke2(clsinv21, deduceTypes2, b, generatedFunction));
-
-		ss[0].hookClassInvocation(clsinv2 -> {
-			pte.setClassInvocation(clsinv2);
+		ess.then(sss -> sss.hookClassInvocation(hookedClassInvocation -> {
+			pte.setClassInvocation(hookedClassInvocation);
 			pte.setResolvedElement(classStatement);
 
 			// set FunctionInvocation with pte args
@@ -365,11 +373,10 @@ public class Implement_construct {
 				// TODO also check arguments
 				{
 					assert cc != null || pte.getArgs().size() == 0;
-					@NotNull final FunctionInvocation fi = deduceTypes2.newFunctionInvocation(cc, pte, clsinv2, deduceTypes2._phase());
+					@NotNull final FunctionInvocation fi = deduceTypes2.newFunctionInvocation(cc, pte, hookedClassInvocation, deduceTypes2._phase());
 					pte.setFunctionInvocation(fi);
 				}
 			}
-		});
+		}));
 	}
-
 }

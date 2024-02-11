@@ -33,6 +33,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 
+import tripleo.elijah.EventualRegister;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.diagnostic.Diagnostic;
@@ -71,8 +72,7 @@ import tripleo.elijah.work.WorkList;
 /**
  * Created 12/24/20 3:59 AM
  */
-public class DeducePhase {
-
+public class DeducePhase extends DefaultEventualRegister implements EventualRegister {
 	public final    ICodeRegistrar               codeRegistrar;
 	public final    GeneratePhase                generatePhase;
 	private final   List<FoundElement>           foundElements       = new ArrayList<FoundElement>();

@@ -3,6 +3,6 @@
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Groovy-Eclipse" />
     <option name="USE_RELEASE_OPTION" value="false" />
-    <bytecodeTargetLevel target="16" />
+    <bytecodeTargetLevel target="17" />
   </component>
 </project>

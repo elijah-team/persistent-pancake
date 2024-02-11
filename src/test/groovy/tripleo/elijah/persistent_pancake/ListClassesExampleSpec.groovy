@@ -1,6 +1,7 @@
 package tripleo.elijah.persistent_pancake
 
 import spock.lang.Specification
+import tripleo.elijah_pancake.crib.ListClassesExample
 
 import java.util.stream.Collectors
 
