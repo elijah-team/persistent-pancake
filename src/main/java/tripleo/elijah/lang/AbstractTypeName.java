@@ -9,11 +9,11 @@
 package tripleo.elijah.lang;
 
 import tripleo.elijah_pancake.sep1011.lang.EN_Name_Q;
-import tripleo.elijah_pancake.sep1011.lang._AbstractTypeNameNameable;
+import tripleo.elijah_pancake.sep1011.lang.__TypeName__EnName__Mixin;
 
 import java.util.Objects;
 
-public abstract class AbstractTypeName extends _AbstractTypeNameNameable implements NormalTypeName {
+public abstract class AbstractTypeName extends __TypeName__EnName__Mixin implements NormalTypeName {
 	private boolean isNullable = false;
 
 	@Override

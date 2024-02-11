@@ -3,14 +3,14 @@ package tripleo.elijah.lang;
 import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah_pancake.sep1011.lang.EN_Name;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah_pancake.sep1011.lang._AbstractTypeNameNameable;
+import tripleo.elijah_pancake.sep1011.lang.__TypeName__EnName__Mixin;
 
 import java.io.File;
 
 /**
  * Created 8/16/20 2:16 AM
  */
-public class FuncTypeName extends _AbstractTypeNameNameable implements TypeName {
+public class FuncTypeName extends __TypeName__EnName__Mixin implements TypeName {
 	private final Context _ctx;
 	private TypeModifiers _modifiers;
 	private TypeNameList _arglist = null/*new TypeNameList()*/;

@@ -14,14 +14,14 @@ package tripleo.elijah.lang;
 import tripleo.elijah_pancake.sep1011.lang.EN_Name;
 import tripleo.elijah_pancake.sep1011.lang.EN_Name_Q;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah_pancake.sep1011.lang._AbstractTypeNameNameable;
+import tripleo.elijah_pancake.sep1011.lang.__TypeName__EnName__Mixin;
 
 import java.io.File;
 
 /**
  * Created 8/16/20 7:42 AM
  */
-public class GenericTypeName  extends _AbstractTypeNameNameable implements TypeName {
+public class GenericTypeName  extends __TypeName__EnName__Mixin implements TypeName {
 	private final Context _ctx;
 	private Qualident _typeName;
 	private TypeModifiers modifiers;

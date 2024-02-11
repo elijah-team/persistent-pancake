@@ -12,12 +12,12 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 
 import tripleo.elijah_pancake.sep1011.lang.EN_Name_Q;
-import tripleo.elijah_pancake.sep1011.lang._AbstractTypeNameNameable;
+import tripleo.elijah_pancake.sep1011.lang.__TypeName__EnName__Mixin;
 
 /**
  * Created on 5/4/2019 at 12:25
  */
-public abstract class AbstractTypeNameTypeName extends _AbstractTypeNameNameable implements NormalTypeName {
+public abstract class AbstractTypeName2 extends __TypeName__EnName__Mixin implements NormalTypeName {
 	private final Collection<TypeModifiers> _ltm = new LinkedHashSet<>();
 	private       Qualident                 text;
 //	private EN_Name_Q en_name;
