@@ -617,7 +617,22 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 
 	@Override
 	public void waitProviders(final Class[] aClasses, final Consumer<Providing> cb) {
-		throw new UnintendedUseException("implement signals");
+		for (Class<?> aClass : aClasses) {
+			if (!(provided.containsKey(aClass))) throw new UnintendedUseException("lazy ");
+		}
+
+		var p = new Providing() {
+			@Override
+			public Object get(final Class<?> c) {
+				if (provided.containsKey(c)) return provided.get(c);
+				throw new UnintendedUseException("lazy, asked what i don't know");
+				//return null;
+			}
+		};
+
+		cb.accept(p);
+
+//		throw new UnintendedUseException("ok 5");
 	}
 
 	@Override
