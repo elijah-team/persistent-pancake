@@ -52,6 +52,7 @@ public class CompilationRunner {
 		cb  = aCb;
 
 		st1 = new CR_State(this, startup);
+		startup.completeInitial(this);
 	}
 
 	public void start(final CompilerInstructions ci) throws Exception {

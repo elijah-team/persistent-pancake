@@ -32,7 +32,7 @@ public class DefaultCompilerController implements CompilerController {
 
 	@Override
 	public void runner() {
-		var startup = new Startup();
+		var startup = new Startup(c);
 		try {
 			c.setRunner(new CompilationRunner(c, c.get_cis(), cb, startup));
 			c.getRunner().doFindCIs(args2, cb);

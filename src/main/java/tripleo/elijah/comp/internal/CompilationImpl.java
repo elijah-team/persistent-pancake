@@ -555,14 +555,64 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 		};
 	}
 
-	private final Map<Class, Class> provided = new HashMap<>();
+	private final Map<Class<?>, Object> provided = new HashMap<>();
 
 	@Override
 	public <T> void provide(final Class<T> aClass, final Function<Providing, T> cb, final Class<?>[] aClasses) {
+		if (provided.containsKey(aClass)) {
+			var o = provided.get(aClass);
+			var m = new HashMap<>();
+			m.put(aClass, o);
+			var p = new Providing() {
+				@Override
+				public Object get(final Class<?> c) {
+					return m.get(c);
+				}
+			};
+			var o2 = cb.apply(p);
+			System.err.println("9997-573 "+o2.getClass().getName());
+			return;
+		}
+
 		if (Objects.equals(aClass, RuntimeProcesses.class)) {
 			int y=2;
-		} else
+			{
+				var m = new HashMap<>();
+				for (Class<?> aClass1 : aClasses) {
+					System.err.println("9997-581 " + aClass1.getName());
+					for (Map.Entry<Class<?>, Object> classObjectEntry : provided.entrySet()) {
+						if (Objects.equals(aClass1, classObjectEntry.getKey())) {
+							m.put(aClass1, classObjectEntry.getValue());
+						}
+					}
+				}
+				var p = new Providing() {
+					@Override
+					public Object get(final Class<?> c) {
+						return m.get(c);
+					}
+				};
+				T o = cb.apply(p);
+				provided.put(aClass, o);
+				System.err.println("9997-573 Called Provider for "+o.getClass().getName());
+			}
+		} else if (aClasses.length == 0) {
+			if (provided.containsKey(aClass)) {
+				System.err.println("9997-597 Already " + aClass.getName());
+			} else {
+				var p = new Providing() {
+					@Override
+					public Object get(final Class<?> c) {
+						throw new UnintendedUseException("why are you calling this?");//m.get(c);
+					}
+				};
+				var o = cb.apply(p);
+				provided.put(aClass, o);
+				System.err.println("9997-607 Record single "+o.getClass().getName());
+			}
+		} else {
 			throw new UnintendedUseException("implement signals");
+		}
 	}
 
 	@Override
