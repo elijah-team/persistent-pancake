@@ -555,9 +555,14 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 		};
 	}
 
+	private final Map<Class, Class> provided = new HashMap<>();
+
 	@Override
 	public <T> void provide(final Class<T> aClass, final Function<Providing, T> cb, final Class<?>[] aClasses) {
-		throw new UnintendedUseException("implement signals");
+		if (Objects.equals(aClass, RuntimeProcesses.class)) {
+			int y=2;
+		} else
+			throw new UnintendedUseException("implement signals");
 	}
 
 	@Override

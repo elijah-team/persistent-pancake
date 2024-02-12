@@ -1,7 +1,6 @@
 package tripleo.elijah.comp.impl;
 
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.i.LCM_CompilerAccess;
 import tripleo.elijah.comp.i.LCM_Event;
 import tripleo.elijah.comp.i.LCM_HandleEvent;
@@ -22,6 +21,10 @@ public class LCM_Event_RootCI implements LCM_Event {
 
 	@Override
 	public void handle(final LCM_HandleEvent aHandleEvent) {
+		System.err.println("VVVVV " + this.getClass().getName());
+
+
+
 		final LCM_CompilerAccess                c      = aHandleEvent.compilation();
 		final CompilerInstructions              rootCI = (CompilerInstructions) aHandleEvent.obj();
 
