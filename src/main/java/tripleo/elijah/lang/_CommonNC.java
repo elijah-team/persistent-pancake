@@ -42,6 +42,7 @@ abstract class _CommonNC {
 	}
 
 	public String getName() {
+		// FIXME getEnName.getText
 		if (nameToken == null) return "";
 		return nameToken.getText();
 	}
