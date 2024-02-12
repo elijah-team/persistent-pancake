@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.DefaultCompilationAccess;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
@@ -66,7 +67,7 @@ public class TestIdentNormal {
 		final Context     ctx2 = mock(Context.class);
 
 		final ElLog.Verbosity verbosity1    = Compilation.CompilationAlways.gitlabCIVerbosity();
-		final AccessBus       ab            = new AccessBus(comp);
+		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(comp));
 		final PipelineLogic   pl            = new PipelineLogic(ab);
 		final GeneratePhase   generatePhase = pl.generatePhase;
 //		GenerateFunctions generateFunctions = new GenerateFunctions(generatePhase, mod, pl);
@@ -130,7 +131,7 @@ public class TestIdentNormal {
 		final Context ctx2 = mock(Context.class);
 
 		final ElLog.Verbosity verbosity1    = Compilation.CompilationAlways.gitlabCIVerbosity();
-		final AccessBus       ab            = new AccessBus(comp);
+		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(comp));
 		final PipelineLogic   pl            = new PipelineLogic(ab);
 		final GeneratePhase   generatePhase = pl.generatePhase;
 		final DeducePhase     phase         = pl.dp;

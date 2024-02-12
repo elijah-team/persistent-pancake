@@ -1,8 +1,9 @@
-package tripleo.elijah.comp;
+package tripleo.elijah_prepan.compilation_runner;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.internal.ProcessRecord;
+import tripleo.elijah.comp.ICompilationAccess;
+import tripleo.elijah_pancake.feb24.comp.ProcessRecord;
 import tripleo.elijah.util.NotImplementedException;
 
 public enum Stages {
@@ -14,7 +15,7 @@ public enum Stages {
 
 		@Override
 		public RuntimeProcess getProcess(final ICompilationAccess aCa, final ProcessRecord aPr) {
-			return new EmptyProcess(aCa, aPr);
+			return new RuntimeProcess.EmptyProcess(aCa, aPr);
 		}
 	},
 	D("D") {
@@ -25,7 +26,7 @@ public enum Stages {
 
 		@Override
 		public @NotNull RuntimeProcess getProcess(final ICompilationAccess aCa, final ProcessRecord aPr) {
-			return new DStageProcess(aCa, aPr);
+			return new RuntimeProcess.DStageProcess(aCa, aPr);
 		}
 	},
 	S("S") {
@@ -47,7 +48,7 @@ public enum Stages {
 
 		@Override
 		public RuntimeProcess getProcess(final ICompilationAccess aCa, final ProcessRecord aPr) {
-			return new OStageProcess(aCa, aPr);
+			return new RuntimeProcess.OStageProcess(aCa, aPr);
 		}
 	}  // Output
 	;

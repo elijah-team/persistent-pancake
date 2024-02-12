@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.DefaultCompilationAccess;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
@@ -69,7 +70,7 @@ public class DeduceTypesSecondTest {
 		//
 		//
 		final ElLog.Verbosity verbosity1 = Compilation.CompilationAlways.gitlabCIVerbosity();
-		final AccessBus       ab         = new AccessBus(c);
+		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(c));
 		final PipelineLogic   pl         = new PipelineLogic(ab);
 		final DeducePhase     dp         = pl.dp;
 		final DeduceTypes2    d          = dp.deduceModule(mod, verbosity1);

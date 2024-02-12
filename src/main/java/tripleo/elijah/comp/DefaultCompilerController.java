@@ -1,6 +1,7 @@
 package tripleo.elijah.comp;
 
 import tripleo.elijah.comp.internal.CompilationBus;
+import tripleo.elijah_pancake.feb24.comp.Startup;
 
 import java.util.List;
 
@@ -31,8 +32,9 @@ public class DefaultCompilerController implements CompilerController {
 
 	@Override
 	public void runner() {
+		var startup = new Startup();
 		try {
-			c.setRunner(new CompilationRunner(c, c.get_cis(), cb));
+			c.setRunner(new CompilationRunner(c, c.get_cis(), cb, startup));
 			c.getRunner().doFindCIs(args2, cb);
 		} catch (final Exception e) {
 			c.getErrSink().exception(e);

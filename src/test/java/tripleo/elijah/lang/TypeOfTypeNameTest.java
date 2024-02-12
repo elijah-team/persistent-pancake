@@ -13,14 +13,13 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.DefaultCompilationAccess;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
-import tripleo.elijah.stages.gen_fn.GeneratePhase;
-import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 
 import static org.easymock.EasyMock.*;
@@ -34,7 +33,7 @@ public class TypeOfTypeNameTest {
 		// CREATE MOCKS
 		//
 		final Context     ctx = mock(Context.class);
-		final OS_Module    mod = mock(OS_Module.class);
+		final OS_Module   mod = mock(OS_Module.class);
 		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO());
 
 		//
@@ -70,7 +69,7 @@ public class TypeOfTypeNameTest {
 		//
 		// VERIFY EXPECTATIONS
 		//
-		final AccessBus     ab           = new AccessBus(c);
+		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(c));
 		final PipelineLogic pl           = new PipelineLogic(ab);
 		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
@@ -85,7 +84,7 @@ public class TypeOfTypeNameTest {
 		// CREATE MOCKS
 		//
 		final Context     ctx = mock(Context.class);
-		final OS_Module    mod = mock(OS_Module.class);
+		final OS_Module   mod = mock(OS_Module.class);
 		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO());
 
 		//
@@ -122,7 +121,7 @@ public class TypeOfTypeNameTest {
 		//
 		// VERIFY EXPECTATIONS
 		//
-		final AccessBus     ab           = new AccessBus(c);
+		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(c));
 		final PipelineLogic pl           = new PipelineLogic(ab);
 		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
@@ -200,14 +199,14 @@ public class TypeOfTypeNameTest {
 		//
 		// CREATE MOCK
 		//
-		final Context ctx = mock(Context.class);
+		final Context ctx  = mock(Context.class);
 		final Context ctx4 = mock(Context.class);
 
 		//
 		// CREATE VARIABLES
 		//
 		final String typeNameString1 = "AbstractFactory";
-		final String typeNameString = "SystemInteger";
+		final String typeNameString  = "SystemInteger";
 
 		final OS_Module mod = new OS_Module();
 		mod.parent = new CompilationImpl(new StdErrSink(), new IO());
@@ -218,7 +217,7 @@ public class TypeOfTypeNameTest {
 		final ClassStatement sysint = new ClassStatement(mod, mod_ctx);
 		sysint.setName(IdentExpression.forString("SystemInteger"));
 
-		final VariableSequence vs = new VariableSequence(st_af.getContext());
+		final VariableSequence  vs    = new VariableSequence(st_af.getContext());
 		final VariableStatement var_y = vs.next();
 		var_y.setName(IdentExpression.forString("y"));
 		final RegularTypeName rtn_y = new RegularTypeName(ctx);
@@ -255,9 +254,9 @@ public class TypeOfTypeNameTest {
 //		expect(mod.parent.getSilence()).andReturn(true); //ElLog.Verbosity.SILENT); // TODO is this *really* correct
 //		expect(mod.parent.getSilence()).andReturn(true); //ElLog.Verbosity.SILENT); // TODO is this *really* correct
 
-		final AccessBus       ab            = new AccessBus(mod.parent);
-		final PipelineLogic   pl            = new PipelineLogic(ab);
-		final DeduceTypes2    deduceTypes2  = new DeduceTypes2(mod, pl.dp);
+		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(mod.parent));
+		final PipelineLogic pl           = new PipelineLogic(ab);
+		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
 //		expect(mod.getFileName()).andReturn("foo.elijah");
 		expect(ctx.lookup("x")).andReturn(lrl);
 //		expect(ctx.lookup("y")).andReturn(lrl4);

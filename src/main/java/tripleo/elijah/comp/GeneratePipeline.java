@@ -34,7 +34,7 @@ public class GeneratePipeline implements PipelineMember/*, AccessBus.AB_LgcListe
 	public GeneratePipeline(@NotNull final AccessBus ab0) {
 		__ab = ab0;
 
-		errSink = ab0.getCompilation().getErrSink();
+		errSink = __ab.getCompilation().getErrSink();
 
 		ab0.subscribePipelineLogic(aPl -> pipelineLogic = aPl);
 		ab0.subscribe_lgc(aLgc -> lgc = aLgc);
@@ -65,7 +65,8 @@ public class GeneratePipeline implements PipelineMember/*, AccessBus.AB_LgcListe
 			                                     .filter(aGeneratedNode -> aGeneratedNode.module() == mod)
 			                                     .collect(Collectors.toList());
 
-			new EIT_ModuleInput(mod, comp).doGenerate(nodes, aErrSink, verbosity, pipelineLogic, wm, (gr2) -> gr.additional(gr2));
+			final EIT_ModuleInput moduleInput = new EIT_ModuleInput(mod, comp);
+			moduleInput.doGenerate(nodes, aErrSink, verbosity, pipelineLogic, wm, gr::additional);
 		}
 
 		__ab.resolveGenerateResult(gr);

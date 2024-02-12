@@ -2,8 +2,8 @@ package tripleo.elijah.comp;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.comp.i.LCM_CompilerAccess;
+import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
@@ -11,7 +11,6 @@ import tripleo.elijah.lang.Qualident;
 import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
-import tripleo.elijah.util.Operation2;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
@@ -19,10 +18,15 @@ import tripleo.elijah.stages.generate.ElSystem;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.testing.comp.IFunctionMapHook;
 import tripleo.elijah.util.Operation;
+import tripleo.elijah.util.Operation2;
 import tripleo.elijah.world.i.LivingRepo;
+import tripleo.elijah_pancake.feb24.comp.CompilationSignalTarget;
+import tripleo.elijah_pancake.feb24.comp.Providing;
 
 import java.io.File;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -124,6 +128,14 @@ public interface Compilation {
 	LivingRepo _repo();
 
 	LCM_CompilerAccess getLCMAccess();
+
+	<T> void provide(Class<T> aClass, Function<Providing, T> cb, Class<?>[] aClasses);
+
+	void waitProviders(Class[] aClasses, Consumer<Providing> cb);
+
+	void trigger(Class<?/* super CompilationSignal*/> aSignalClass);
+
+	void onTrigger(Class<? /*super CompilationSignal*/> aSignalClass, CompilationSignalTarget aSignalTarget);
 
 	class CompilationAlways {
 

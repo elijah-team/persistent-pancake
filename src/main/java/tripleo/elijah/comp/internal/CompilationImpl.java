@@ -17,9 +17,22 @@ import io.reactivex.rxjava3.subjects.ReplaySubject;
 import io.reactivex.rxjava3.subjects.Subject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.*;
 import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.CompilationRunner;
+import tripleo.elijah.comp.CompilerController;
+import tripleo.elijah.comp.CompilerInstructionsObserver;
+import tripleo.elijah.comp.DefaultCompilationAccess;
+import tripleo.elijah.comp.DefaultCompilerController;
+import tripleo.elijah.comp.ErrSink;
+import tripleo.elijah.comp.Finally;
+import tripleo.elijah.comp.ICompilationAccess;
+import tripleo.elijah.comp.IO;
+import tripleo.elijah.comp.ModuleBuilder;
+import tripleo.elijah.comp.Pipeline;
+import tripleo.elijah.comp.PipelineLogic;
+import tripleo.elijah.comp.USE;
 import tripleo.elijah.comp.functionality.f202.F202;
 import tripleo.elijah.comp.i.LCM_CompilerAccess;
 import tripleo.elijah.comp.impl.LCM_Event_RootCI;
@@ -29,11 +42,9 @@ import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
 import tripleo.elijah.lang.Qualident;
-import tripleo.elijah_pancake.sep1011.modeltransition.ElSystemSink;
 import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
-import tripleo.elijah.util.Operation2;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.fluffy.i.FluffyComp;
 import tripleo.elijah.stages.deduce.fluffy.impl.FluffyCompImpl;
@@ -47,8 +58,18 @@ import tripleo.elijah.testing.comp.IFunctionMapHook;
 import tripleo.elijah.ut.UT_Controller;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.Operation;
+import tripleo.elijah.util.Operation2;
 import tripleo.elijah.world.i.LivingRepo;
 import tripleo.elijah.world.impl.DefaultLivingRepo;
+import tripleo.elijah_pancake.feb24.comp.CR_State;
+import tripleo.elijah_pancake.feb24.comp.CompilationSignalTarget;
+import tripleo.elijah_pancake.feb24.comp.Providing;
+import tripleo.elijah_pancake.sep1011.modeltransition.ElSystemSink;
+import tripleo.elijah_prepan.compilation_runner.CK_Monitor;
+import tripleo.elijah_prepan.compilation_runner.CR_CK_Monitor;
+import tripleo.elijah_prepan.compilation_runner.CS_RunBetter;
+import tripleo.elijah_prepan.compilation_runner.RuntimeProcesses;
+import tripleo.elijah_prepan.compilation_runner.Stages;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -58,7 +79,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -531,6 +555,50 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 		};
 	}
 
+	@Override
+	public <T> void provide(final Class<T> aClass, final Function<Providing, T> cb, final Class<?>[] aClasses) {
+		throw new UnintendedUseException("implement signals");
+	}
+
+	@Override
+	public void waitProviders(final Class[] aClasses, final Consumer<Providing> cb) {
+		throw new UnintendedUseException("implement signals");
+	}
+
+	@Override
+	public void trigger(final Class<?> aSignalClass) {
+		throw new UnintendedUseException("implement signals");
+	}
+
+	@Override
+	public void onTrigger(final Class<?> aSignalClass, final CompilationSignalTarget aSignalTarget) {
+		if (Objects.equals(aSignalClass, CS_RunBetter.class)) {
+			_CS_RunBetter();
+		} else {
+			throw new UnintendedUseException("un-implemented signal");
+		}
+	}
+
+	private void _CS_RunBetter() {
+		CR_State st = null;
+		this.waitProviders(
+		  new Class[]{RuntimeProcesses.class, CompilationRunner.class}
+		  , (o) -> {
+			  final CompilationRunner compilationRunner = (CompilationRunner) o.get(CompilationRunner.class);
+			  final CR_CK_Monitor     monitor           = new CR_CK_Monitor(compilationRunner);
+			  final RuntimeProcesses  rt                = (RuntimeProcesses) o.get(RuntimeProcesses.class);
+
+			  if (st != null)
+				  st.provide(rt);
+
+			  try {
+				  rt.run_better();
+			  } catch (final Exception aE) {
+				  monitor.reportFailure(CK_Monitor.PLACEHOLDER_CODE_2, "" + aE);
+			  }
+		  }
+		);
+	}
 }
 
 //

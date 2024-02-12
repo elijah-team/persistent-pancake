@@ -9,31 +9,16 @@
  */
 package tripleo.elijah.stages.deduce;
 
-import static tripleo.elijah.util.Helpers.List_of;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Multimap;
-
 import tripleo.elijah.EventualRegister;
+import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.diagnostic.Diagnostic;
@@ -69,22 +54,35 @@ import tripleo.elijah.testing.comp.IFunctionMapHook;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkList;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static tripleo.elijah.util.Helpers.List_of;
+
 /**
  * Created 12/24/20 3:59 AM
  */
 public class DeducePhase extends DefaultEventualRegister implements EventualRegister {
-	public final    ICodeRegistrar               codeRegistrar;
-	public final    GeneratePhase                generatePhase;
-	private final   List<FoundElement>           foundElements       = new ArrayList<FoundElement>();
-	private final   Map<IdentTableEntry, OnType> idte_type_callbacks = new HashMap<IdentTableEntry, OnType>();
-	public @NotNull GeneratedClasses             generatedClasses    = new GeneratedClasses();
+	private final String PHASE = "DeducePhase";
 
-	final PipelineLogic pipelineLogic;
-
-	private final @NotNull ElLog LOG;
-
-	private final List<State>  registeredStates = new ArrayList<>();
-	private final Compilation _compilation;
+	private final          List<FoundElement>           foundElements       = new ArrayList<>();
+	private final          Map<IdentTableEntry, OnType> idte_type_callbacks = new HashMap<>();
+	private final          List<State>                  registeredStates    = new ArrayList<>();
+	public @NotNull        GeneratedClasses             generatedClasses    = new GeneratedClasses();
+	private final @NotNull ElLog                        LOG;
+	public final           ICodeRegistrar               codeRegistrar;
+	public final           GeneratePhase                generatePhase;
+	final                  PipelineLogic                pipelineLogic;
+	private final          Compilation                  _compilation;
 
 	public void addFunction(final GeneratedFunction generatedFunction, final FunctionDef fd) {
 		functionMap.put(fd, generatedFunction);
@@ -110,28 +108,28 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 		onclasses.put(aClassStatement, callback);
 	}
 
-//	Multimap<GeneratedClass, ClassInvocation> generatedClasses1 = ArrayListMultimap.create();
-@NotNull Multimap<ClassStatement, ClassInvocation> classInvocationMultimap = ArrayListMultimap.create();
+	//	Multimap<GeneratedClass, ClassInvocation> generatedClasses1 = ArrayListMultimap.create();
+	@NotNull Multimap<ClassStatement, ClassInvocation> classInvocationMultimap = ArrayListMultimap.create();
 
-	public DeducePhase(final GeneratePhase aGeneratePhase,
+	public DeducePhase(final AccessBus ab,
 	                   final PipelineLogic aPipelineLogic,
-	                   final ElLog.Verbosity verbosity,
-	                   final Compilation aCompilation) {
+	                   final GeneratePhase aGeneratePhase) {
 		generatePhase = aGeneratePhase;
 		pipelineLogic = aPipelineLogic;
 		//
-		LOG = new ElLog("(DEDUCE_PHASE)", verbosity, "DeducePhase");
+		final ElLog.Verbosity verbosity = ab.getCompilation().testSilence(); // ca.testSilence
+		LOG = new ElLog("(DEDUCE_PHASE)", verbosity, PHASE);
 		pipelineLogic.addLog(LOG);
 		//
-		codeRegistrar = new DefaultCodeRegistrar(aCompilation);
-		_compilation  = aCompilation;
+		_compilation  = ab.getCompilation();
+		codeRegistrar = new DefaultCodeRegistrar(_compilation);
 		//
 		IStateRunnable.ST.register(this);
 		DeduceElement3_IdentTableEntry.ST.register(this);
 	}
 
 	public boolean equivalentGenericPart(@NotNull final ClassInvocation first, @NotNull final ClassInvocation second) {
-		final Map<TypeName, OS_Type> firstGenericPart = first.genericPart;
+		final Map<TypeName, OS_Type> firstGenericPart  = first.genericPart;
 		final Map<TypeName, OS_Type> secondGenericPart = second.genericPart;
 		if (secondGenericPart == null && (firstGenericPart == null || firstGenericPart.size() == 0)) return true;
 		//
@@ -199,11 +197,11 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 	}
 
 	public @Nullable ClassInvocation registerClassInvocation(@NotNull final ClassInvocation aClassInvocation) {
-		boolean put = false;
+		boolean                   put    = false;
 		@Nullable ClassInvocation Result = null;
 
 		// 1. select which to return
-		final ClassStatement c = aClassInvocation.getKlass();
+		final ClassStatement              c   = aClassInvocation.getKlass();
 		final Collection<ClassInvocation> cis = classInvocationMultimap.get(c);
 		for (@NotNull final ClassInvocation ci : cis) {
 			// don't lose information
@@ -219,7 +217,7 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 		}
 
 		if (Result == null) {
-			put = true;
+			put    = true;
 			Result = aClassInvocation;
 		}
 
@@ -236,7 +234,7 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 		}
 
 		// 3. Generate new GeneratedClass
-		final @NotNull WorkList wl = new WorkList();
+		final @NotNull WorkList  wl  = new WorkList();
 		final @NotNull OS_Module mod = Result.getKlass().getContext().module();
 		wl.addJob(new WlGenerateClass(generatePhase.getGenerateFunctions(mod), Result, generatedClasses, codeRegistrar)); // TODO why add now?
 		generatePhase.wm.addJobs(wl);
@@ -372,9 +370,10 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 
 	/**
 	 * Use this when you have already called generateAllTopLevelClasses
-	 * @param m the module
-	 * @param lgc the result of generateAllTopLevelClasses
-	 * @param _unused is unused
+	 *
+	 * @param m         the module
+	 * @param lgc       the result of generateAllTopLevelClasses
+	 * @param _unused   is unused
 	 * @param verbosity
 	 */
 	public void deduceModule(@NotNull final OS_Module m, @NotNull final Iterable<GeneratedNode> lgc, final boolean _unused, final ElLog.Verbosity verbosity) {
@@ -485,8 +484,8 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 		}
 		for (final Map.@NotNull Entry<IdentTableEntry, OnType> entry : idte_type_callbacks.entrySet()) {
 			final IdentTableEntry idte = entry.getKey();
-			if (idte.getType() !=null && // TODO make a stage where this gets set (resolvePotentialTypes)
-					idte.getType().getAttached() != null)
+			if (idte.getType() != null && // TODO make a stage where this gets set (resolvePotentialTypes)
+			  idte.getType().getAttached() != null)
 				entry.getValue().typeDeduced(idte.getType().getAttached());
 			else
 				entry.getValue().noTypeFound();
@@ -533,8 +532,8 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 				}
 			}
 		}
-		@NotNull final List<GeneratedClass> gcs = new ArrayList<GeneratedClass>();
-		boolean all_resolve_var_table_entries = false;
+		@NotNull final List<GeneratedClass> gcs                           = new ArrayList<GeneratedClass>();
+		boolean                             all_resolve_var_table_entries = false;
 		while (!all_resolve_var_table_entries) {
 			if (lgc22.size() == 0) break;
 			for (final GeneratedNode generatedNode : lgc22.copy()) {
@@ -547,15 +546,15 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 			if (deferredMember.getParent() instanceof final @NotNull NamespaceStatement parent) {
 				final NamespaceInvocation nsi = registerNamespaceInvocation(parent);
 				nsi.resolveDeferred()
-						.done(new DoneCallback<GeneratedNamespace>() {
-							@Override
-							public void onDone(@NotNull final GeneratedNamespace result) {
-								final GeneratedContainer.@Nullable VarTableEntry v = result.getVariable(deferredMember.getVariableStatement().getName());
-								assert v != null;
-								// TODO varType, potentialTypes and _resolved: which?
-								final OS_Type          varType = v.varType;
-								final @NotNull GenType genType = new GenType(deferredMember.getResolver());
-								genType.set(varType);
+				   .done(new DoneCallback<GeneratedNamespace>() {
+					   @Override
+					   public void onDone(@NotNull final GeneratedNamespace result) {
+						   final GeneratedContainer.@Nullable VarTableEntry v = result.getVariable(deferredMember.getVariableStatement().getName());
+						   assert v != null;
+						   // TODO varType, potentialTypes and _resolved: which?
+						   final OS_Type          varType = v.varType;
+						   final @NotNull GenType genType = new GenType(deferredMember.getResolver());
+						   genType.set(varType);
 
 //								if (deferredMember.getInvocation() instanceof NamespaceInvocation) {
 //									((NamespaceInvocation) deferredMember.getInvocation()).resolveDeferred().done(new DoneCallback<GeneratedNamespace>() {
@@ -566,7 +565,7 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 //									});
 //								}
 
-								deferredMember.externalRefDeferred().resolve(result);
+						   deferredMember.externalRefDeferred().resolve(result);
 /*
 								if (genType.resolved == null) {
 									// HACK need to resolve, but this shouldn't be here
@@ -579,8 +578,8 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 								}
 								deferredMember.typeResolved().resolve(genType);
 */
-							}
-						});
+					   }
+				   });
 			} else if (deferredMember.getParent() instanceof final ClassStatement parent) {
 				// TODO do something
 				final String name = deferredMember.getVariableStatement().getName();
@@ -637,19 +636,19 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 		for (@NotNull final GeneratedFunction generatedFunction : aGeneratedFunctions) {
 			for (@NotNull final IdentTableEntry identTableEntry : generatedFunction.idte_list) {
 				switch (identTableEntry.getStatus()) {
-					case UNKNOWN:
-						assert identTableEntry.getResolvedElement() == null;
-						LOG.err(String.format("250 UNKNOWN idte %s in %s", identTableEntry, generatedFunction));
-						break;
-					case KNOWN:
-						assert identTableEntry.getResolvedElement() != null;
-						if (identTableEntry.getType() == null) {
-							LOG.err(String.format("258 null type in KNOWN idte %s in %s", identTableEntry, generatedFunction));
-						}
-						break;
-					case UNCHECKED:
-						LOG.err(String.format("255 UNCHECKED idte %s in %s", identTableEntry, generatedFunction));
-						break;
+				case UNKNOWN:
+					assert identTableEntry.getResolvedElement() == null;
+					LOG.err(String.format("250 UNKNOWN idte %s in %s", identTableEntry, generatedFunction));
+					break;
+				case KNOWN:
+					assert identTableEntry.getResolvedElement() != null;
+					if (identTableEntry.getType() == null) {
+						LOG.err(String.format("258 null type in KNOWN idte %s in %s", identTableEntry, generatedFunction));
+					}
+					break;
+				case UNCHECKED:
+					LOG.err(String.format("255 UNCHECKED idte %s in %s", identTableEntry, generatedFunction));
+					break;
 				}
 				for (@NotNull final TypeTableEntry pot_tte : identTableEntry.potentialTypes()) {
 					if (pot_tte.getAttached() == null) {
@@ -688,16 +687,16 @@ public class DeducePhase extends DefaultEventualRegister implements EventualRegi
 
 		public List<GeneratedClass> filterClasses(final Predicate<GeneratedClass> pgc) {
 			return generatedClasses
-					.stream()
-					.filter(x -> {
-						if (x instanceof GeneratedClass) {
-							return pgc.test((GeneratedClass) x);
-						} else {
-							return false;
-						}
-					})
-					.map(x -> (GeneratedClass) x)
-					.collect(Collectors.toList());
+			  .stream()
+			  .filter(x -> {
+				  if (x instanceof GeneratedClass) {
+					  return pgc.test((GeneratedClass) x);
+				  } else {
+					  return false;
+				  }
+			  })
+			  .map(x -> (GeneratedClass) x)
+			  .collect(Collectors.toList());
 		}
 
 		public List<GeneratedClass> filterClassesByModule(final OS_Module aModule) {

@@ -2,6 +2,7 @@ package tripleo.elijah.comp;
 
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.testing.comp.IFunctionMapHook;
+import tripleo.elijah_prepan.compilation_runner.Stages;
 
 import java.util.List;
 

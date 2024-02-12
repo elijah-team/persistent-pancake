@@ -27,13 +27,11 @@ import tripleo.elijah.stages.gen_fn.ProcTableEntry;
 import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.stages.instructions.VariableTableType;
-import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 
 import java.util.ArrayList;
 
 import static org.easymock.EasyMock.*;
-import static tripleo.elijah.stages.logging.ElLog.Verbosity.VERBOSE;
 
 public class DoAssignCall_ArgsIdent1_Test {
 	/*
@@ -46,9 +44,10 @@ public class DoAssignCall_ArgsIdent1_Test {
 	void f1_eq_factorial_b1() {
 		final CompilationImpl c             = new CompilationImpl(new StdErrSink(), new IO());
 		final OS_Module       mod           = mock(OS_Module.class);
-		final PipelineLogic   pipelineLogic = new PipelineLogic(new AccessBus(c));
-		final GeneratePhase   generatePhase = new GeneratePhase(VERBOSE, pipelineLogic, c);
-		final DeducePhase     phase         = new DeducePhase(generatePhase, pipelineLogic, ElLog.Verbosity.VERBOSE, c);
+		final AccessBus       accessBus           = new AccessBus(c._access());
+		final PipelineLogic   pipelineLogic = new PipelineLogic(accessBus);
+		final GeneratePhase   generatePhase = new GeneratePhase(accessBus, pipelineLogic);
+		final DeducePhase     phase         = new DeducePhase(accessBus, pipelineLogic, generatePhase);
 
 		expect(mod.getCompilation()).andReturn(c);
 		expect(mod.getFileName()).andReturn("foo.elijah");

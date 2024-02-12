@@ -4,7 +4,7 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.Compilation.CompilationAlways;
-import tripleo.elijah.comp.internal.ProcessRecord;
+import tripleo.elijah.comp.internal.PipelinePlugin;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
@@ -31,13 +31,13 @@ public class AccessBus {
 	private final DeferredObject<PipelineLogic, Void, Void> pipeLineLogicPromise  = new DeferredObject<>();
 	private final DeferredObject<List<GeneratedNode>, Void, Void> lgcPromise            = new DeferredObject<>();
 	private final DeferredObject<EIT_ModuleList, Void, Void>      moduleListPromise     = new DeferredObject<>();
-	final         DeferredObject<GenerateResult, Void, Void>      generateResultPromise = new DeferredObject<>();
-	private final Map<String, ProcessRecord.PipelinePlugin>       pipelinePlugins       = new HashMap<>();
-	private       PipelineLogic                                   ____pl;
+	final         DeferredObject<GenerateResult, Void, Void> generateResultPromise = new DeferredObject<>();
+	private final Map<String, PipelinePlugin>                pipelinePlugins       = new HashMap<>();
+	private       PipelineLogic                              ____pl;
 
 
-	public AccessBus(final Compilation aC) {
-		_c = aC;
+	public AccessBus(final @NotNull ICompilationAccess aC) {
+		_c = aC.getCompilation();
 	}
 
 	public @NotNull Compilation getCompilation() {
@@ -136,20 +136,18 @@ public class AccessBus {
 	}
 
 	public void writeLogs() {
-		@NotNull final Compilation comp = getCompilation(); // this._c
-
-		comp.writeLogs();
+		getCompilation().writeLogs();
 	}
 
 	public PipelineLogic __getPL() {
 		return ____pl; // TODO hack. remove soon
 	}
 
-	public void addPipelinePlugin(final ProcessRecord.PipelinePlugin aPlugin) {
+	public void addPipelinePlugin(final PipelinePlugin aPlugin) {
 		pipelinePlugins.put(aPlugin.name(), aPlugin);
 	}
 
-	public ProcessRecord.PipelinePlugin getPipelinePlugin(final String aPipelineName) {
+	public PipelinePlugin getPipelinePlugin(final String aPipelineName) {
 		if (!(pipelinePlugins.containsKey(aPipelineName))) return null;
 
 		return pipelinePlugins.get(aPipelineName);

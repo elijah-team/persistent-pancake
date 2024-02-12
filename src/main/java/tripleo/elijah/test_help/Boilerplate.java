@@ -7,7 +7,7 @@ import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
-import tripleo.elijah.comp.internal.ProcessRecord;
+import tripleo.elijah_pancake.feb24.comp.ProcessRecord;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.deduce.DeducePhase;

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.DefaultCompilationAccess;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
@@ -30,7 +31,7 @@ public class ElSystemTest {
 	@BeforeEach
 	public void setUp() {
 		c  = new CompilationImpl(new StdErrSink(), new IO());
-		ab = new AccessBus(c);
+		ab           = new AccessBus(new DefaultCompilationAccess(c));
 
 		final String f = "test/basic1/backlink3";
 

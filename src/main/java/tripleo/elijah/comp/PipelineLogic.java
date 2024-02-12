@@ -26,7 +26,6 @@ import tripleo.elijah_pancake.feb24.googly.P;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Created 12/30/20 2:14 AM
@@ -43,8 +42,9 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		__ab = iab; // we're watching you
 
 		verbosity     = __ab.getCompilation().testSilence(); // ca.testSilence
-		generatePhase = new GeneratePhase(verbosity, this, __ab.getCompilation());
-		dp            = new DeducePhase(generatePhase, this, verbosity, __ab.getCompilation());
+
+		generatePhase = new GeneratePhase(__ab, this);
+		dp            = new DeducePhase(__ab, this, generatePhase);
 
 		// FIXME examine if this is necessary and possibly or actually elsewhere
 		//  and/or just another section

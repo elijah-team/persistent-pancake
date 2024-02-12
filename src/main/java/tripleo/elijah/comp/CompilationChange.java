@@ -2,6 +2,7 @@ package tripleo.elijah.comp;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah_prepan.compilation_runner.Stages;
 
 public interface CompilationChange {
 	void apply(final Compilation c);

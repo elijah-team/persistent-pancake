@@ -3,6 +3,7 @@ package tripleo.elijah.nextgen.expansion;
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation.CompilationAlways;
+import tripleo.elijah.comp.DefaultCompilationAccess;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
@@ -29,7 +30,7 @@ public class SX_NodeTest {
 		final StdErrSink      errSink       = new StdErrSink();
 		final IO              io            = new IO();
 		final CompilationImpl comp          = new CompilationImpl(errSink, io);
-		final AccessBus       ab            = new AccessBus(comp);
+		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(comp));
 		final PipelineLogic   pipelineLogic = new PipelineLogic(ab);
 		final OS_Module mod = comp.moduleBuilder()
 		                          .withFileName("filename.elijah")

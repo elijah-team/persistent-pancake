@@ -3,22 +3,22 @@ package tripleo.elijah.comp;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.i.IProgressSink;
-import tripleo.elijah.comp.i.ProgressSinkComponent;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.comp.internal.DefaultProgressSink;
-import tripleo.elijah.comp.internal.ProcessRecord;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
-import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.diagnostic.TooManyEz_ActuallyNone;
-import tripleo.elijah.diagnostic.TooManyEz_BeSpecific;
 import tripleo.elijah.nextgen.inputtree.EIT_InputType;
-import tripleo.elijah.util.Operation2;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
+import tripleo.elijah.util.Operation2;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
+import tripleo.elijah_pancake.feb24.comp.CR_State;
+import tripleo.elijah_pancake.feb24.comp.Startup;
+import tripleo.elijah_prepan.compilation_runner.CR_Action;
+import tripleo.elijah_prepan.compilation_runner.CR_AlmostComplete;
+import tripleo.elijah_prepan.compilation_runner.CR_FindCIs;
+import tripleo.elijah_prepan.compilation_runner.CompilationRunnerProcess;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,6 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static tripleo.elijah.util.Helpers.List_of;
 
@@ -42,87 +41,24 @@ public class CompilationRunner {
 	private final CCI                               cci;
 	private final ICompilationBus                   cb;
 
+	private final CR_State st1;
+
 	@Contract(pure = true)
-	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb) {
+	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb, final Startup startup) {
 		compilation = aCompilation;
 		cis         = a_cis;
 		final DefaultProgressSink ps1 = new DefaultProgressSink();
 		cci = new CCI(compilation, a_cis, ps1);
 		cb  = aCb;
+
+		st1 = new CR_State(this, startup);
 	}
 
 	public void start(final CompilerInstructions ci) throws Exception {
-		final CR_State st1 = new CR_State();
-
-		cb.add(new ICompilationBus.CB_Process() {
-			@Override
-			public List<ICompilationBus.CB_Action> steps() {
-				// 1. find stdlib
-				//   -- question placement
-				//   -- ...
-				final ICompilationBus.CB_Action a = new ICompilationBus.CB_Action() {
-					private final CR_FindStdlibAction aa = new CR_FindStdlibAction();
-
-					@Override
-					public String name() {
-						return "find stdlib";
-					}
-
-					@Override
-					public void execute() {
-						aa.execute(st1);
-					}
-
-					@Override
-					public ICompilationBus.OutputString[] outputStrings() {
-						return new ICompilationBus.OutputString[0];
-					}
-				};
-				// 2. process the initial
-				final ICompilationBus.CB_Action b = new ICompilationBus.CB_Action() {
-					private final CR_ProcessInitialAction aa = new CR_ProcessInitialAction(ci);
-
-					@Override
-					public String name() {
-						return "process initial action";
-					}
-
-					@Override
-					public void execute() {
-						aa.execute(st1);
-					}
-
-					@Override
-					public ICompilationBus.OutputString[] outputStrings() {
-						return new ICompilationBus.OutputString[0];
-					}
-				};
-				// 3. do rest
-				final ICompilationBus.CB_Action c = new ICompilationBus.CB_Action() {
-					private final CR_RunBetterAction aa = new CR_RunBetterAction();
-
-					@Override
-					public String name() {
-						return "run better";
-					}
-
-					@Override
-					public void execute() {
-						aa.execute(st1);
-					}
-
-					@Override
-					public ICompilationBus.OutputString[] outputStrings() {
-						return new ICompilationBus.OutputString[0];
-					}
-				};
-
-				return List_of(a, b, c);
-			}
-		});
+		cb.add(new CompilationRunnerProcess(this, st1, ci));
 	}
 
-	private void logProgress(final int number, final String text) {
+	public void logProgress(final int number, final String text) {
 		if (number == 130) return;
 
 		System.err.println(MessageFormat.format("{0} {1}", number, text));
@@ -130,56 +66,8 @@ public class CompilationRunner {
 
 	public void doFindCIs(final String[] args2, final ICompilationBus cb) {
 		// TODO map + "extract"
-
-		final CR_State st1 = new CR_State();
-
-		cb.add(new ICompilationBus.CB_Process() {
-			@Override
-			public List<ICompilationBus.CB_Action> steps() {
-				final ICompilationBus.CB_Action a = new ICompilationBus.CB_Action() {
-					private final CR_Action a = new CR_FindCIs(args2);
-
-					@Override
-					public String name() {
-						return a.name();
-					}
-
-					@Override
-					public void execute() {
-						st1.cur = this;
-						a.execute(st1);
-						st1.cur = null;
-					}
-
-					@Override
-					public ICompilationBus.OutputString[] outputStrings() {
-						return new ICompilationBus.OutputString[0];
-					}
-				};
-
-				final ICompilationBus.CB_Action b = new ICompilationBus.CB_Action() {
-					private final CR_Action a = new CR_AlmostComplete();
-
-					@Override
-					public String name() {
-						return a.name();
-					}
-
-					@Override
-					public void execute() {
-						a.execute(st1);
-					}
-
-					@Override
-					public ICompilationBus.OutputString[] outputStrings() {
-						return new ICompilationBus.OutputString[0];
-					}
-				};
-
-				return List_of(a, b);
-			}
-		});
-
+//		final CR_State st1 = new CR_State();
+		cb.add(new CA_doFindCIs(args2));
 	}
 
 	/*
@@ -189,7 +77,8 @@ public class CompilationRunner {
 	 *     utilize exceptions --> only one usage
 	 *     or inline (esp use of Compilation)
 	 */
-	private @NotNull Operation<CompilerInstructions> findStdLib(final String prelude_name, final @NotNull Compilation c) {
+	@NotNull
+	public Operation<CompilerInstructions> findStdLib(final String prelude_name, final @NotNull Compilation c) {
 		final ErrSink errSink = c.getErrSink();
 		final IO      io      = c.getIO();
 
@@ -268,7 +157,8 @@ public class CompilationRunner {
 		}
 	}
 
-	private @NotNull List<CompilerInstructions> searchEzFiles(final @NotNull File directory, final ErrSink errSink, final IO io, final Compilation c) {
+	@NotNull
+	public List<CompilerInstructions> searchEzFiles(final @NotNull File directory, final ErrSink errSink, final IO io, final Compilation c) {
 		final QuerySearchEzFiles                     q    = new QuerySearchEzFiles(c, errSink, io, this);
 		final Operation2<List<CompilerInstructions>> olci = q.process(directory);
 
@@ -280,216 +170,79 @@ public class CompilationRunner {
 		return List_of();
 	}
 
-//	interface CR_Process {
-//		List<ICompilationBus.CB_Action> steps();
-//	}
-
-	public interface CR_Action {
-//		void attach(CompilationRunner cr);
-
-		void execute(CR_State st);
-
-		String name();
+	public Compilation _accessCompilation() {
+		return compilation;
 	}
 
-	interface CK_Monitor {
-		int PLACEHOLDER_CODE   = 9999;
-		int PLACEHOLDER_CODE_2 = 9998;
-
-		void reportFailure(int code, String message);
+	public void _almostComplete() {
+		cis.almostComplete();
 	}
 
-	class CR_State {
-		public ICompilationBus.CB_Action cur;
-		ICompilationAccess ca;
-		ProcessRecord      pr;
-		RuntimeProcesses   rt;
+	public ICompilationBus _access_cb() {
+		return cb;
+	}
 
-		public ICompilationAccess ca() {
-			if (ca == null) {
-				ca = new DefaultCompilationAccess(compilation);
-				pr = new ProcessRecord(ca);
-			}
+	public void cci_accept(final Maybe<ILazyCompilerInstructions> aM2) {
+		cci.accept(aM2);
+	}
 
-			return ca;
+	private class CA_AlmostComplete implements ICompilationBus.CB_Action {
+		private final CR_Action a = new CR_AlmostComplete(CompilationRunner.this);
+
+		@Override
+		public String name() {
+			return a.name();
+		}
+
+		@Override
+		public void execute() {
+			a.execute(st1);
+		}
+
+		@Override
+		public ICompilationBus.OutputString[] outputStrings() {
+			return new ICompilationBus.OutputString[0];
 		}
 	}
 
-//	class CR_FindStdlib implements CR_Action {
-//
-//		private String prelude_name;
-//
-//		CR_FindStdlib(final String aPreludeName) {
-//			prelude_name = aPreludeName;
-//		}
-//
-//		@Override
-//		public void attach(final CompilationRunner cr) {
-//
-//		}
-//
-//		@Override
-//		public void execute(final CR_State st) {
-//			@NotNull final Operation<CompilerInstructions> op = findStdLib(prelude_name, compilation);
-//			assert op.mode() == Mode.SUCCESS; // TODO .NOTHING??
-//		}
+	private class CA_FindCIs implements ICompilationBus.CB_Action {
+		private final CR_Action a;
 
-	class CR_AlmostComplete implements CR_Action {
-
-		@Override
-		public void execute(final CR_State st) {
-			cis.almostComplete();
+		public CA_FindCIs(final String[] aArgs2) {
+			a = new CR_FindCIs(CompilationRunner.this, aArgs2);
 		}
 
 		@Override
 		public String name() {
-			return "cis almostComplete";
-		}
-	}
-//	}
-
-	class CR_FindCIs implements CR_Action {
-		private final String[] args2;
-
-		CR_FindCIs(final String[] aArgs2) {
-			args2 = aArgs2;
+			return a.name();
 		}
 
 		@Override
-		public void execute(final CR_State st) {
-			final Compilation c = st.ca().getCompilation();
-
-			final IProgressSink ps = new IProgressSink() {
-				@Override
-				public void note(final int aCode, final ProgressSinkComponent aCci, final int aType, final Object[] aParams) {
-
-				}
-			};
-
-			find_cis(args2, c, c.getErrSink(), c.getIO(), cb, ps);
+		public void execute() {
+			st1.cur = this;
+			a.execute(st1);
+			st1.cur = null;
 		}
 
 		@Override
-		public String name() {
-			return "find cis";
-		}
-
-		protected void find_cis(final @NotNull String @NotNull [] args2,
-		                        final @NotNull Compilation c,
-		                        final @NotNull ErrSink errSink,
-		                        final @NotNull IO io,
-		                        final ICompilationBus cb,
-		                        final IProgressSink ps) {
-			CompilerInstructions ez_file;
-			for (final String file_name : args2) {
-				final File    f        = new File(file_name);
-				final boolean matches2 = Pattern.matches(".+\\.ez$", file_name);
-				if (matches2) {
-					final ILazyCompilerInstructions ilci = ILazyCompilerInstructions.of(f, c);
-					cci.accept(new Maybe<>(ilci, null));
-
-					cb.inst(ilci);
-				} else {
-					//errSink.reportError("9996 Not an .ez file "+file_name);
-					if (f.isDirectory()) {
-						final List<CompilerInstructions> ezs = searchEzFiles(f, errSink, io, c);
-
-						switch (ezs.size()) {
-						case 0:
-							final Diagnostic d_toomany = new TooManyEz_ActuallyNone();
-							final Maybe<ILazyCompilerInstructions> m = new Maybe<>(null, d_toomany);
-							cci.accept(m);
-							break;
-						case 1:
-							ez_file = ezs.get(0);
-							final ILazyCompilerInstructions ilci = ILazyCompilerInstructions.of(ez_file);
-							cci.accept(new Maybe<>(ilci, null));
-							cb.inst(ilci);
-							break;
-						default:
-							//final Diagnostic d_toomany = new TooManyEz_UseFirst();
-							//add_ci(ezs.get(0));
-
-							// more than 1 (negative is not possible)
-							final Diagnostic d_toomany2 = new TooManyEz_BeSpecific();
-							final Maybe<ILazyCompilerInstructions> m2 = new Maybe<>(null, d_toomany2);
-							cci.accept(m2);
-							break;
-						}
-					} else
-						errSink.reportError("9995 Not a directory " + f.getAbsolutePath());
-				}
-			}
+		public ICompilationBus.OutputString[] outputStrings() {
+			return new ICompilationBus.OutputString[0];
 		}
 	}
 
-	private class CR_FindStdlibAction implements CR_Action {
-		@Override
-		public void execute(final CR_State st) {
-			final Operation<CompilerInstructions> x = findStdLib(Compilation.CompilationAlways.defaultPrelude(), compilation);
-			if (x.mode() == Mode.FAILURE) {
-				compilation.getErrSink().exception(x.failure());
-				return;
-			}
-			logProgress(130, "GEN_LANG: " + x.success().genLang());
+	private class CA_doFindCIs implements ICompilationBus.CB_Process {
+		final ICompilationBus.CB_Action a;
+
+		final ICompilationBus.CB_Action b;
+
+		public CA_doFindCIs(final String[] aArgs2) {
+			a = new CA_FindCIs(aArgs2);
+			b = new CA_AlmostComplete();
 		}
 
 		@Override
-		public String name() {
-			return "find stdlib";
-		}
-	}
-
-	private class CR_ProcessInitialAction implements CR_Action {
-		private final CompilerInstructions pia_RootCI;
-		private final CK_Monitor           monitor;
-
-		public CR_ProcessInitialAction(final CompilerInstructions aCi) {
-			pia_RootCI = aCi;
-			monitor    = new CR_CK_Monitor();
-		}
-
-		@Override
-		public void execute(final CR_State st) {
-			try {
-				compilation.use(pia_RootCI, false);
-			} catch (final Exception aE) {
-				monitor.reportFailure(CK_Monitor.PLACEHOLDER_CODE, "" + aE);
-			}
-		}
-
-		@Override
-		public String name() {
-			return "process initial";
-		}
-
-	}
-
-	private class CR_CK_Monitor implements CK_Monitor {
-		@Override
-		public void reportFailure(final int code, final String message) {
-			final String s = "CR_ProcessInitialAction >> " + code + " " + message;
-			compilation.getErrSink().reportError(s);
-		}
-	}
-
-	private class CR_RunBetterAction implements CR_Action {
-		private final CK_Monitor monitor = new CR_CK_Monitor();
-
-		@Override
-		public void execute(final CR_State st) {
-			st.rt = StageToRuntime.get(st.ca().getStage(), st.ca(), st.pr);
-
-			try {
-				st.rt.run_better();
-			} catch (final Exception aE) {
-				monitor.reportFailure(CK_Monitor.PLACEHOLDER_CODE_2, "" + aE);
-			}
-		}
-
-		@Override
-		public String name() {
-			return "run better";
+		public List<ICompilationBus.CB_Action> steps() {
+			return List_of(a, b);
 		}
 	}
 }
