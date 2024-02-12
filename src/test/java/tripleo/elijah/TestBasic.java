@@ -19,6 +19,7 @@ import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah.factory.comp.CompilationFactory;
 import tripleo.elijah.nextgen.outputstatement.EG_SequenceStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
@@ -110,11 +111,12 @@ public class TestBasic {
 
 	@Test
 	final void testBasic_fact1() {
-		final String s = "test/basic/fact1/main2";
+		final String        s  = "test/basic/fact1/main2";
+		final Compilation   c  = CompilationFactory.mkCompilation(new StdErrSink(), new IO());
 
-		final ErrSink     eee = new StdErrSink();
-		final Compilation c   = new CompilationImpl(eee, new IO());
-
+//		final CompilerInput i1 = new CompilerInput_(s);
+//		final CompilerInput i2 = new CompilerInput_("-sO");
+//		c.feedInputs(List_of(i1, i2), new DefaultCompilerController(((CompilationImpl) c).getCompilationAccess3()));
 		c.feedCmdLine(List_of(s, "-sO"));
 
 		if (c.errorCount() != 0) {
