@@ -27,24 +27,22 @@ public class QuerySourceFileToModule {
 	}
 
 	public Operation<OS_Module> calculate() {
-		final String      f      = params.sourceFilename;
-		final InputStream s      = params.inputStream;
-		final boolean     do_out = params.do_out;
+		final String      f      = params.sourceFilename();
+		final InputStream s      = params.inputStream();
+		final boolean     do_out = false;
 
 		final ElijjahLexer lexer = new ElijjahLexer(s);
 		lexer.setFilename(f);
 		final ElijjahParser parser = new ElijjahParser(lexer);
 		parser.out = new Out(f, compilation, do_out);
 		parser.setFilename(f);
+
 		try {
 			parser.program();
-		} catch (final AssertionError aE) {
-			return Operation.failure(aE);
-		} catch (final RecognitionException aE) {
-			return Operation.failure(aE);
-		} catch (final TokenStreamException aE) {
+		} catch (final AssertionError | TokenStreamException | RecognitionException aE) {
 			return Operation.failure(aE);
 		}
+
 		final OS_Module module = parser.out.module();
 		parser.out = null;
 		return Operation.success(module);

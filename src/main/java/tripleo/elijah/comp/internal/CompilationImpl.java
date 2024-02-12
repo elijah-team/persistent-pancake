@@ -108,7 +108,7 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 
 	@Override
 	public OS_Module realParseElijjahFile(final String f, final @NotNull File file, final boolean do_out) throws Exception {
-		return use.realParseElijjahFile(f, file, do_out).success();
+		return use.realParseElijjahFile(f, file).success();
 	}
 
 	@Override
@@ -144,7 +144,7 @@ public class CompilationImpl implements Compilation, ElSystemSink {
 
 	@Override
 	public void use(final @NotNull CompilerInstructions compilerInstructions, final boolean do_out) throws Exception {
-		use.use(compilerInstructions, do_out);    // NOTE Rust
+		use.use(compilerInstructions);    // NOTE Rust
 	}
 
 	@Override

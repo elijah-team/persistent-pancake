@@ -8,6 +8,5 @@ public record QuerySourceFileToModuleParams(
   /**
    * @param aSourceFilename pass this to elijjah parser and lexer
    */
-  String sourceFilename,
-  boolean do_out
+  String sourceFilename
 ) { }
