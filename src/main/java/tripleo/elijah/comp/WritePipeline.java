@@ -104,8 +104,6 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 			mb2.modmap_put(fileName, ab.node.module());
 		}
 
-		final List<EOT_OutputFile> leof = new ArrayList<>();
-
 		for (final MBB entry : mb2.bz()) {
 			final String             fileName = entry.getFileName();
 
@@ -117,10 +115,8 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 			}, true);
 		}
 
-		c.getOutputTree().set(leof);
-
-		final File fn1 = choose_dir_name();
-
+		final File                 fn1  = choose_dir_name();
+		final List<EOT_OutputFile> leof = new ArrayList<>();
 		__rest(mb2.entries(), fn1, leof);
 	}
 
