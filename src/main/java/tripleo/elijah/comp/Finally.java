@@ -1,17 +1,17 @@
 package tripleo.elijah.comp;
 
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.nextgen.inputtree.EIT_InputType;
+import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
+import tripleo.elijah.nextgen.outputtree.EOT_Nameable;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.jetbrains.annotations.NotNull;
-
-import tripleo.elijah.lang.LookupResultList;
-import tripleo.elijah.nextgen.inputtree.EIT_InputType;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
-import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 
 public class Finally {
 	public int codeOutputSize() {
@@ -48,10 +48,10 @@ public class Finally {
 	}
 
 	public static class Input {
-		private final @NotNull Nameable      nameable;
+		private final @NotNull EOT_Nameable  nameable;
 		private final          EIT_InputType ty;
 
-		public Input(final @NotNull Nameable aNameable, final EIT_InputType aTy) {
+		public Input(final @NotNull EOT_Nameable aNameable, final EIT_InputType aTy) {
 			System.err.println("66 Add Input >> " + aNameable.getNameableString());
 			nameable = aNameable;
 			ty = aTy;
@@ -75,10 +75,6 @@ public class Finally {
 		public String toString() {
 			return "Input{" + "name=" + nameable.getNameableString() + ", ty=" + ty + '}';
 		}
-	}
-
-	public interface Nameable {
-		String getNameableString();
 	}
 
 	public static class Output {
@@ -135,7 +131,7 @@ public class Finally {
 		return e;
 	}
 
-	public void addInput(final Nameable aNameable, final EIT_InputType ty) {
+	public void addInput(final EOT_Nameable aNameable, final EIT_InputType ty) {
 		inputs.add(new Input(aNameable, ty));
 	}
 
