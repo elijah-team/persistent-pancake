@@ -28,7 +28,7 @@ public class JavaParser {
 
 		final FileInputStream               inputStream  = new FileInputStream(aFile);
 		final String                        absolutePath = aFile.getAbsolutePath();
-		final QuerySourceFileToModuleParams p            = new QuerySourceFileToModuleParams(inputStream, absolutePath, false);
+		final QuerySourceFileToModuleParams p            = new QuerySourceFileToModuleParams(inputStream, absolutePath);
 
 		final QuerySourceFileToModule       q            = new QuerySourceFileToModule(p, c);
 		final Operation<OS_Module>          om           = q.calculate();
