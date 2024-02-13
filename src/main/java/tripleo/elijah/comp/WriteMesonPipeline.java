@@ -17,8 +17,9 @@ import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.util.io.CharSink;
 import tripleo.elijah.util.io.FileCharSink;
-//import tripleo.elijah.util.io.CharSink;
-//import tripleo.elijah.util.io.FileCharSink;
+import tripleo.elijah_durable_pancake.comp.AccessBus;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
+import tripleo.elijah_durable_pancake.comp.PipelineMember;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -44,8 +45,8 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 //	private final GenerateResult gr;
 
 	final         Pattern       pullPat = Pattern.compile("/[^/]+/(.+)");
-	private final WritePipeline writePipeline;
-	private final Compilation   c;
+	private final WritePipeline   writePipeline;
+	private final Compilation c;
 	DoubleLatch<Multimap<CompilerInstructions, String>> write_makefiles_latch = new DoubleLatch<>(this::write_makefiles_action);
 	private Supplier<GenerateResult>                         grs;
 	private Consumer<Multimap<CompilerInstructions, String>> _wmc;
@@ -251,7 +252,7 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 	}
 
 	private void pl_slot(final PipelineLogic pll) {
-		grs = () -> pll.__ab.gr;
+		grs = () -> pll.getGeneratedResults();
 	}
 }
 

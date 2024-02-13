@@ -1,11 +1,11 @@
 package tripleo.elijah.comp.i;
 
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.CompilationRunner;
-import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.CompilationRunner;
+import tripleo.elijah_durable_pancake.comp.Compilation0101;
+import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 public interface LCM_CompilerAccess {
-	Compilation c();
+	Compilation0101 c();
 
 	CompilationRunner cr();
 

@@ -16,6 +16,10 @@ import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
+import tripleo.elijah_durable_pancake.comp.AccessBus;
+import tripleo.elijah_durable_pancake.comp.Coder;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
+import tripleo.elijah_durable_pancake.comp.PipelineMember;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +30,9 @@ import java.util.stream.Collectors;
  * Created 8/21/21 10:10 PM
  */
 public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListListener {
-	private final AccessBus __ab;
-	private PipelineLogic pipelineLogic;
-	private List<OS_Module> ms;
+	private final AccessBus       __ab;
+	private       PipelineLogic   pipelineLogic;
+	private       List<OS_Module> ms;
 
 	public DeducePipeline(final @NotNull AccessBus ab) {
 		__ab = ab;
@@ -52,7 +56,7 @@ public class DeducePipeline implements PipelineMember, AccessBus.AB_ModuleListLi
 
 		resolveMods();
 
-		final List<PL_Run2> run2_work = pipelineLogic.mods.stream()
+		final List<PL_Run2> run2_work = pipelineLogic._mods().stream()
 		                                                  .map(mod -> new PL_Run2(mod,
 		                                                    mod.entryPoints._getMods(),
 		                                                    pipelineLogic::getGenerateFunctions,

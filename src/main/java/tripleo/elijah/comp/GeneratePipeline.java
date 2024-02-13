@@ -17,6 +17,9 @@ import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.work.WorkManager;
+import tripleo.elijah_durable_pancake.comp.AccessBus;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
+import tripleo.elijah_durable_pancake.comp.PipelineMember;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +49,7 @@ public class GeneratePipeline implements PipelineMember/*, AccessBus.AB_LgcListe
 		Preconditions.checkNotNull(lgc);
 
 		if (!lgc.isEmpty()) {
-			generate(lgc, errSink, pipelineLogic.mods, pipelineLogic.getVerbosity());
+			generate(lgc, errSink, pipelineLogic._mods(), pipelineLogic.getVerbosity());
 		} else {
 			throw new AssertionError();
 		}
@@ -57,8 +60,8 @@ public class GeneratePipeline implements PipelineMember/*, AccessBus.AB_LgcListe
 	                        final @NotNull EIT_ModuleList mods,
 	                        final @NotNull ElLog.Verbosity verbosity) {
 		final WorkManager    wm   = new WorkManager();
-		final GenerateResult gr   = __ab.gr;
-		final Compilation    comp = __ab.getCompilation();
+		final GenerateResult  gr   = __ab.gr;
+		final Compilation comp = __ab.getCompilation();
 
 		for (final @NotNull OS_Module mod : mods.getMods()) {
 			final List<GeneratedNode> nodes = lgc.stream()

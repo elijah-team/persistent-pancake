@@ -12,7 +12,6 @@ import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
-import tripleo.elijah.comp.functionality.f203.F203;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
@@ -28,6 +27,10 @@ import tripleo.elijah.stages.generate.OutputStrategy;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.io.CharSink;
 import tripleo.elijah.util.io.FileCharSink;
+import tripleo.elijah_durable_pancake.comp.AccessBus;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
+import tripleo.elijah_durable_pancake.comp.PipelineMember;
+import tripleo.elijah_durable_pancake.comp.functionality.f203.F203;
 import tripleo.elijah_pancake.sep1011.modeltransition.ElSystemSink;
 import tripleo.util.buffer.Buffer;
 import tripleo.util.buffer.DefaultBuffer;
@@ -57,7 +60,7 @@ import java.util.stream.Collectors;
  */
 public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResultListener {
 	private final Compilation c;
-	private GenerateResult gr;
+	private       GenerateResult  gr;
 
 	final OutputStrategy os;
 	final ElSystem sys;

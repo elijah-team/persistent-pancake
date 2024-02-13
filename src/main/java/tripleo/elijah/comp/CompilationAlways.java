@@ -4,8 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.stages.logging.ElLog;
 
 public class CompilationAlways {
-	@NotNull
-	public static String defaultPrelude() {
+	public static @NotNull String defaultPrelude() {
 		return "c";
 	}
 
