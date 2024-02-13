@@ -2,12 +2,8 @@ package tripleo.elijah.test_help;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.ICompilationAccess;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
-import tripleo.elijah_pancake.feb24.comp.ProcessRecord;
+import tripleo.elijah.comp.CompilationAlways;
+import tripleo.elijah.comp.i.ICompilationAccess;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.deduce.DeducePhase;
@@ -16,6 +12,11 @@ import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.OutputFileFactory;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
+import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_pancake.feb24.comp.ProcessRecord;
 
 public class Boilerplate {
 	public Compilation       comp;
@@ -26,7 +27,7 @@ public class Boilerplate {
 	OS_Module module;
 
 	public void get() {
-		comp = new CompilationImpl(new StdErrSink(), new IO());
+		comp = new CompilationImpl(new StdErrSink(), new IO_());
 		aca  = ((CompilationImpl) comp)._access();
 		pr   = new ProcessRecord(aca);
 
@@ -41,7 +42,7 @@ public class Boilerplate {
 	}
 
 	public void getGenerateFiles(final @NotNull OS_Module mod) {
-		generateFiles = OutputFileFactory.create(Compilation.CompilationAlways.defaultPrelude(),
+		generateFiles = OutputFileFactory.create(CompilationAlways.defaultPrelude(),
 		  new OutputFileFactoryParams(mod,
 			comp.getErrSink(),
 			aca.testSilence(),
@@ -68,8 +69,8 @@ public class Boilerplate {
 	}
 
 	public DeduceTypes2 simpleDeduceModule3(final OS_Module aMod) {
-		final ElLog.Verbosity verbosity = Compilation.CompilationAlways.gitlabCIVerbosity();
-		@NotNull final String s         = Compilation.CompilationAlways.defaultPrelude();
+		final ElLog.Verbosity verbosity = CompilationAlways.gitlabCIVerbosity();
+		@NotNull final String s         = CompilationAlways.defaultPrelude();
 		return simpleDeduceModule2(aMod, s, verbosity);
 	}
 

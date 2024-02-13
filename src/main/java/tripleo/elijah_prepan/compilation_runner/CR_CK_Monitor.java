@@ -1,6 +1,6 @@
 package tripleo.elijah_prepan.compilation_runner;
 
-import tripleo.elijah.comp.CompilationRunner;
+import tripleo.elijah_durable_pancake.comp.CompilationRunner;
 
 public class CR_CK_Monitor implements CK_Monitor {
 	private final CompilationRunner compilationRunner;

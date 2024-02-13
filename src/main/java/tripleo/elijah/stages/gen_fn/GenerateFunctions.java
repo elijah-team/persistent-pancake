@@ -13,7 +13,7 @@
 //import org.checkerframework.checker.nullness.qual.Nullable;
 //import org.jdeferred2.DoneCallback;
 //import org.jetbrains.annotations.NotNull;
-//import tripleo.elijah.comp.PipelineLogic;
+//import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 //import tripleo.elijah.entrypoints.EntryPoint;
 //import tripleo.elijah.entrypoints.EntryPointList;
 //import tripleo.elijah.lang.*;
@@ -1802,8 +1802,6 @@ import com.google.common.collect.Collections2;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.comp.CentralController;
-import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.entrypoints.EntryPoint;
 import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.lang.*;
@@ -1835,6 +1833,8 @@ import tripleo.elijah.stages.stage1.S1_Constructor;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkManager;
+import tripleo.elijah.comp.CentralController;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 import tripleo.util.range.Range;
 
 import java.util.ArrayList;

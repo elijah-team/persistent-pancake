@@ -2,9 +2,9 @@ package tripleo.elijah_prepan.compilation_runner;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.ICompilationAccess;
-import tripleo.elijah_pancake.feb24.comp.ProcessRecord;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.comp.i.ICompilationAccess;
+import tripleo.elijah_pancake.feb24.comp.ProcessRecord;
 
 public enum Stages {
 	E("E") {

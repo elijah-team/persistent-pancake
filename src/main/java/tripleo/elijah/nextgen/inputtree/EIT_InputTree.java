@@ -1,8 +1,7 @@
 package tripleo.elijah.nextgen.inputtree;
 
 import org.jetbrains.annotations.*;
-import tripleo.elijah.comp.*;
-import tripleo.elijah.util.*;
+import tripleo.elijah_durable_pancake.comp.*;
 import tripleo.elijah.util.Operation;
 
 public class EIT_InputTree {

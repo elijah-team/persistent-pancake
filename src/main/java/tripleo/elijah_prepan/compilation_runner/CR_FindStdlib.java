@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah_pancake.feb24.comp.CR_State;
-import tripleo.elijah.comp.CompilationRunner;
+import tripleo.elijah_durable_pancake.comp.CompilationRunner;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
 

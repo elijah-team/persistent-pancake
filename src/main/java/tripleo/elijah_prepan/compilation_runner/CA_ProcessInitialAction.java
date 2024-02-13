@@ -1,11 +1,12 @@
 package tripleo.elijah_prepan.compilation_runner;
 
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.bus.CB_Action;
+import tripleo.elijah.comp.bus.CB_OutputString;
+import tripleo.elijah_durable_pancake.comp.CompilationRunner;
 import tripleo.elijah_pancake.feb24.comp.CR_State;
-import tripleo.elijah.comp.CompilationRunner;
-import tripleo.elijah.comp.ICompilationBus;
 
-public class CA_ProcessInitialAction implements ICompilationBus.CB_Action {
+public class CA_ProcessInitialAction implements CB_Action {
 	private final CompilationRunner       compilationRunner;
 	private final CR_ProcessInitialAction aa;
 	private final CR_State                st1;
@@ -27,7 +28,7 @@ public class CA_ProcessInitialAction implements ICompilationBus.CB_Action {
 	}
 
 	@Override
-	public ICompilationBus.OutputString[] outputStrings() {
-		return new ICompilationBus.OutputString[0];
+	public CB_OutputString[] outputStrings() {
+		return new CB_OutputString[0];
 	}
 }

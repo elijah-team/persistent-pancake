@@ -9,12 +9,12 @@
 package tripleo.elijah.stages.gen_fn;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.work.WorkManager;
+import tripleo.elijah_durable_pancake.comp.AccessBus;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 
 import java.util.HashMap;
 import java.util.Map;

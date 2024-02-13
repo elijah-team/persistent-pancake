@@ -2,11 +2,12 @@ package tripleo.elijah_prepan.compilation_runner;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Contract;
-import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.ICompilationAccess;
-import tripleo.elijah.comp.Pipeline;
-import tripleo.elijah.comp.internal.PipelinePlugin;
+import tripleo.elijah_durable_pancake.comp.AccessBus;
+import tripleo.elijah_durable_pancake.comp.Compilation0101;
+import tripleo.elijah.comp.i.ICompilationAccess;
+import tripleo.elijah_durable_pancake.comp.Pipeline;
+import tripleo.elijah_durable_pancake.comp.internal.PipelinePlugin;
 import tripleo.elijah_pancake.feb24.comp.ProcessRecord;
 import tripleo.vendor.mal.stepA_mal;
 import tripleo.vendor.mal.types;
@@ -117,7 +118,7 @@ public interface RuntimeProcess {
 			env.re("(add-pipeline 'WriteMesonPipeline)");
 
 			ab.subscribePipelineLogic(pl -> {
-				final Compilation comp = ca.getCompilation();
+				final Compilation0101 comp = ca.getCompilation();
 
 				comp.modulesStream().forEach(pl::addModule);
 			});

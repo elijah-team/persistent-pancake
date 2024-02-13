@@ -1,9 +1,9 @@
 package tripleo.elijah_prepan.compilation_runner;
 
-import tripleo.elijah.comp.ICompilationBus;
+import tripleo.elijah.comp.bus.CB_Action;
 
 import java.util.List;
 
 public interface CR_Process {
-	List<ICompilationBus.CB_Action> steps();
+	List<CB_Action> steps();
 }

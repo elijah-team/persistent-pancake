@@ -1,8 +1,8 @@
 package tripleo.elijah_pancake.feb24.comp;
 
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.CompilationRunner;
-import tripleo.elijah.comp.ICompilationAccess;
+import tripleo.elijah_durable_pancake.comp.CompilationRunner;
+import tripleo.elijah.comp.i.ICompilationAccess;
 
 public class Startup {
 	private final Compilation c;

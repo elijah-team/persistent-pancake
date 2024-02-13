@@ -1,18 +1,18 @@
 package tripleo.elijah_pancake.feb24.comp;
 
-import tripleo.elijah.comp.CompilationRunner;
-import tripleo.elijah.comp.DefaultCompilationAccess;
-import tripleo.elijah.comp.ICompilationAccess;
-import tripleo.elijah.comp.ICompilationBus;
+import tripleo.elijah.comp.bus.CB_Action;
+import tripleo.elijah_durable_pancake.comp.CompilationRunner;
+import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
+import tripleo.elijah.comp.i.ICompilationAccess;
 import tripleo.elijah_prepan.compilation_runner.RuntimeProcesses;
 
 public class CR_State {
-	private final CompilationRunner         compilationRunner;
-	private final Startup                   startup;
-	public        ICompilationBus.CB_Action cur;
-	public        ICompilationAccess        ca;
-	public        ProcessRecord             pr;
-	public        RuntimeProcesses          rt;
+	private final CompilationRunner  compilationRunner;
+	private final Startup            startup;
+	public        CB_Action          cur;
+	public        ICompilationAccess ca;
+	public        ProcessRecord      pr;
+	public        RuntimeProcesses   rt;
 
 	public CR_State(final CompilationRunner aCompilationRunner, final Startup aStartup) {
 		compilationRunner = aCompilationRunner;

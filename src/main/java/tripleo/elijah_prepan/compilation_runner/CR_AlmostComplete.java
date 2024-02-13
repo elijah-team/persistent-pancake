@@ -1,7 +1,7 @@
 package tripleo.elijah_prepan.compilation_runner;
 
 import tripleo.elijah_pancake.feb24.comp.CR_State;
-import tripleo.elijah.comp.CompilationRunner;
+import tripleo.elijah_durable_pancake.comp.CompilationRunner;
 
 public class CR_AlmostComplete implements CR_Action {
 

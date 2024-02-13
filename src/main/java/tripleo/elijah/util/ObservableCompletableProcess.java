@@ -6,7 +6,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import io.reactivex.rxjava3.subjects.Subject;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
+import tripleo.elijah_durable_pancake.comp.diagnostic.ExceptionDiagnostic;
 
 public class ObservableCompletableProcess<T> implements Observer<T> {
 	// private CompletableProcess<T> cpt;

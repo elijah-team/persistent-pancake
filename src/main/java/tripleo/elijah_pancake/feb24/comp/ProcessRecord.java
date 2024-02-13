@@ -1,9 +1,9 @@
 package tripleo.elijah_pancake.feb24.comp;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.AccessBus;
-import tripleo.elijah.comp.ICompilationAccess;
-import tripleo.elijah.comp.PipelineLogic;
+import tripleo.elijah_durable_pancake.comp.AccessBus;
+import tripleo.elijah.comp.i.ICompilationAccess;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 
 public class ProcessRecord {
 	public final AccessBus ab;

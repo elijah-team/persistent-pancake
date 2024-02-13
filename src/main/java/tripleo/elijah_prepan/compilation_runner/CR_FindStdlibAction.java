@@ -1,11 +1,11 @@
 package tripleo.elijah_prepan.compilation_runner;
 
 import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah_pancake.feb24.comp.CR_State;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.CompilationRunner;
+import tripleo.elijah.comp.CompilationAlways;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
+import tripleo.elijah_durable_pancake.comp.CompilationRunner;
+import tripleo.elijah_pancake.feb24.comp.CR_State;
 
 public class CR_FindStdlibAction implements CR_Action {
 	private final CompilationRunner compilationRunner;
@@ -16,7 +16,7 @@ public class CR_FindStdlibAction implements CR_Action {
 
 	@Override
 	public void execute(final CR_State st) {
-		final Operation<CompilerInstructions> x = compilationRunner.findStdLib(Compilation.CompilationAlways.defaultPrelude(), compilationRunner._accessCompilation());
+		final Operation<CompilerInstructions> x = compilationRunner.findStdLib(CompilationAlways.defaultPrelude(), compilationRunner._accessCompilation());
 		if (x.mode() == Mode.FAILURE) {
 			compilationRunner._accessCompilation().getErrSink().exception(x.failure());
 			return;

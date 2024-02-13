@@ -5,9 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.CompilationAlways;
 import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.comp.PipelineLogic;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.stages.gen_fn.GeneratedNode;
 import tripleo.elijah.stages.gen_generic.GenerateFiles;
@@ -62,7 +62,7 @@ public class EIT_ModuleInput implements EIT_Input {
 		if (ci == null) return "'c'";
 
 		final String               lang0    = ci.genLang();
-		final String               lang = lang0 == null ? Compilation.CompilationAlways.defaultPrelude() : lang0;
+		final String               lang = lang0 == null ? CompilationAlways.defaultPrelude() : lang0;
 		// DEFAULT(compiler-default), SPECIFIED(gen-clause: codePoint), INHERITED(cp) //
 		// CodePoint??
 		return lang;

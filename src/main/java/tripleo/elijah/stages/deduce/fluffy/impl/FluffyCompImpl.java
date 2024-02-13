@@ -1,7 +1,7 @@
 package tripleo.elijah.stages.deduce.fluffy.impl;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 import tripleo.elijah.entrypoints.MainClassEntryPoint;
 import tripleo.elijah.lang.ClassItem;
 import tripleo.elijah.lang.FunctionDef;
