@@ -1,11 +1,6 @@
 package tripleo.elijah.compiler_model;
 
-//import tripleo.elijah.comp.CompFactory;
-import tripleo.elijah.util.Mode;
-import tripleo.elijah.util.Operation;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 public interface CM_Filename {
