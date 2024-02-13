@@ -110,6 +110,7 @@ sourceSets {
                 ,'elijah-ek/src/main/java'
                 ,'src-mal/src/main/java'
                 ,'src/main/java'
+                ,'src-hard/main/java'
                 ,'src-undertow/src/main/java'
 //              ,'src-cef/src/main/java'
             ]
