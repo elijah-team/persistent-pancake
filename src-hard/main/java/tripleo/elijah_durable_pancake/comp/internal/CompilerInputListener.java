@@ -1,4 +1,4 @@
-package tripleo.elijah.comp.internal;
+package tripleo.elijah_durable_pancake.comp.internal;
 
 import tripleo.elijah_durable_pancake.comp.*;
 
