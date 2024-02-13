@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 public class AccessBus {
 	public final  GenerateResult                            gr                    = new GenerateResult();
 	private final Compilation                               _c;
-	private final DeferredObject<PipelineLogic, Void, Void> pipeLineLogicPromise  = new DeferredObject<>();
 	private final DeferredObject<List<GeneratedNode>, Void, Void> lgcPromise            = new DeferredObject<>();
 	private final DeferredObject<EIT_ModuleList, Void, Void>      moduleListPromise     = new DeferredObject<>();
 	final         DeferredObject<GenerateResult, Void, Void>      generateResultPromise = new DeferredObject<>();
@@ -47,12 +46,12 @@ public class AccessBus {
 		return _c;
 	}
 
-	public void subscribePipelineLogic(final DoneCallback<PipelineLogic> aPipelineLogicDoneCallback) {
-		pipeLineLogicPromise.then(aPipelineLogicDoneCallback);
+	public void subscribePipelineLogic(final DoneCallback<PipelineLogic> cb) {
+		getCompilation().central().waitPipelineLogic(cb);
 	}
 
 	private void resolvePipelineLogic(final PipelineLogic pl) {
-		pipeLineLogicPromise.resolve(pl);
+		getCompilation().central().providePipelineLogic(pl);
 	}
 
 	@Deprecated
