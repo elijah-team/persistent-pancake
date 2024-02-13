@@ -49,6 +49,11 @@ public class PipelineLogic implements AccessBus.AB_ModuleListListener {
 		// FIXME examine if this is necessary and possibly or actually elsewhere
 		//  and/or just another section
 		subscribeMods(this);
+
+
+		var c = __ab.getCompilation();
+		c.central().provideGeneratePhase(generatePhase);
+		c.central().provideDeducePhase(dp);
 	}
 
 	public void subscribeMods(final AccessBus.AB_ModuleListListener l) {
