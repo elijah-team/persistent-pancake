@@ -6,7 +6,7 @@ import tripleo.elijah.comp.i.ICompilationAccess;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 
 public class ProcessRecord {
-	public final AccessBus ab;
+	private final AccessBus ab;
 
 	public ProcessRecord(final @NotNull ICompilationAccess ca0) {
 		ab = new AccessBus(ca0);
@@ -23,5 +23,9 @@ public class ProcessRecord {
 	public void writeLogs(final @NotNull ICompilationAccess ca) {
 		//ab.writeLogs();
 		ca.getStage().writeLogs(ca);
+	}
+
+	public AccessBus getAccessBus() {
+		return ab;
 	}
 }

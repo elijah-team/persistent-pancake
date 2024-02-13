@@ -73,13 +73,13 @@ public interface RuntimeProcess {
 
 			env = new stepA_mal.MalEnv2(null); // TODO what does null mean?
 
-			Preconditions.checkNotNull(pr.ab);
-			env.set(new types.MalSymbol("add-pipeline"), new _AddPipeline__MAL(pr.ab));
+			Preconditions.checkNotNull(pr.getAccessBus());
+			env.set(new types.MalSymbol("add-pipeline"), new _AddPipeline__MAL(pr.getAccessBus()));
 		}
 
 		@Override
 		public void run() {
-			final AccessBus ab = pr.ab;
+			final AccessBus ab = pr.getAccessBus();
 
 			ab.subscribePipelineLogic((pl) -> {
 				final Compilation comp = ca.getCompilation();
@@ -103,9 +103,9 @@ public interface RuntimeProcess {
 		@Override
 		public void prepare() throws Exception {
 			Preconditions.checkNotNull(pr);
-			Preconditions.checkNotNull(pr.ab.gr);
+			Preconditions.checkNotNull(pr.getAccessBus().gr);
 
-			final AccessBus ab = pr.ab;
+			final AccessBus ab = pr.getAccessBus();
 
 //		env.re("(def! GeneratePipeline 'native)");
 			env.re("(add-pipeline 'DeducePipeline)"); // FIXME note moved from ...

@@ -33,7 +33,7 @@ public class Boilerplate {
 
 //		final RuntimeProcesses rt = StageToRuntime.get(ca.getStage(), ca, pr);
 
-		pipelineLogic = pr.ab.__getPL(); // FIXME make ab private
+		pipelineLogic = pr.getAccessBus().__getPL(); // FIXME make ab private
 		//getGenerateFiles(mod);
 
 		if (module != null) {
