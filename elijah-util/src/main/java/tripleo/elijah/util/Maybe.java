@@ -1,7 +1,6 @@
 package tripleo.elijah.util;
 
 import org.jetbrains.annotations.*;
-//import tripleo.elijah.comp.diagnostic.*;
 import tripleo.elijah.diagnostic.*;
 
 public class Maybe<T> {
