@@ -6,20 +6,21 @@ import tripleo.elijah.comp.CompilationAlways;
 import tripleo.elijah.comp.i.ICompilationAccess;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.OutputFileFactory;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
-import tripleo.elijah_durable_pancake.comp.impl.IO_;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
+import tripleo.elijah_durable_pancake.comp.impl.IO_;
 import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 import tripleo.elijah_pancake.feb24.comp.ProcessRecord;
 
+import java.util.function.Consumer;
+
 public class Boilerplate {
-	public Compilation       comp;
+	public Compilation        comp;
 	public ICompilationAccess aca;
 	public ProcessRecord      pr;
 	public PipelineLogic      pipelineLogic;
@@ -33,7 +34,8 @@ public class Boilerplate {
 
 //		final RuntimeProcesses rt = StageToRuntime.get(ca.getStage(), ca, pr);
 
-		pipelineLogic = pr.getAccessBus().__getPL(); // FIXME make ab private
+		pr.getAccessBus().getCompilation().central().waitPipelineLogic(pl -> pipelineLogic = pl);
+
 		//getGenerateFiles(mod);
 
 		if (module != null) {
@@ -60,35 +62,34 @@ public class Boilerplate {
 		return module;
 	}
 
-	public DeducePhase getDeducePhase() {
-		return pipelineLogic.dp;
-	}
-
 	public BoilerplateModuleBuilder withModBuilder(final OS_Module aMod) {
 		return new BoilerplateModuleBuilder(aMod);
 	}
 
-	public DeduceTypes2 simpleDeduceModule3(final OS_Module aMod) {
-		final ElLog.Verbosity verbosity = CompilationAlways.gitlabCIVerbosity();
-		@NotNull final String s         = CompilationAlways.defaultPrelude();
-		return simpleDeduceModule2(aMod, s, verbosity);
+	public void simpleDeduceModule3(final OS_Module aMod, Consumer<DeduceTypes2> cb) {
+		final @NotNull ElLog.Verbosity verbosity = CompilationAlways.gitlabCIVerbosity();
+		final @NotNull String          s         = CompilationAlways.defaultPrelude();
+		simpleDeduceModule2(aMod, s, verbosity, cb);
 	}
 
-	public DeduceTypes2 simpleDeduceModule2(final OS_Module mod, final @NotNull String aS, final ElLog.Verbosity aVerbosity) {
+	public void simpleDeduceModule2(final OS_Module mod,
+	                                final @NotNull String aS,
+	                                final ElLog.Verbosity aVerbosity,
+	                                final Consumer<DeduceTypes2> cb) {
 		final Compilation c = mod.getCompilation();
 
 		mod.prelude = c.findPrelude(aS).success();
 
-		return simpleDeduceModule(aVerbosity);
+		simpleDeduceModule(aVerbosity, cb);
 	}
 
-	public DeduceTypes2 simpleDeduceModule(final ElLog.Verbosity verbosity) {
-//		final PipelineLogic pl = new PipelineLogic(new AccessBus(module.getCompilation()));
-//		final DeduceTypes2  d  = pl.dp.deduceModule(module, verbosity);
+	public void simpleDeduceModule(final ElLog.Verbosity verbosity, Consumer<DeduceTypes2> cons) {
+		pr.getAccessBus().getCompilation().central().waitDeducePhase(dp -> {
+			final DeduceTypes2 d = dp.deduceModule(module, verbosity);
 
-		final DeduceTypes2 d = getDeducePhase().deduceModule(module, verbosity);
+//	    	d.processWachers();
 
-//		d.processWachers();
-		return d;
+			cons.accept(d);
+		});
 	}
 }

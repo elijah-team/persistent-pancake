@@ -63,14 +63,14 @@ public class DeduceTypesTest {
 		x1.setContext(fc);
 */
 
-		final DeduceTypes2 d = b.simpleDeduceModule3(mod);
-
-		final IdentExpression nameToken = ((VariableStatement) dtw.element()).getNameToken();
-		this.xx = DeduceLookupUtils.deduceExpression_p(d, nameToken, nameToken/*dtw.element()*/.getContext());
-		xx.then(a -> this.x = a);
-		xx.fail(e -> c.getErrSink().reportDiagnostic(e));
-		dtw.onType(a -> this.x = a);
-		System.out.println(this.x);
+		b.simpleDeduceModule3(mod, (final DeduceTypes2 d) -> {
+			final IdentExpression nameToken = ((VariableStatement) dtw.element()).getNameToken();
+			this.xx = DeduceLookupUtils.deduceExpression_p(d, nameToken, nameToken/*dtw.element()*/.getContext());
+			xx.then(a -> this.x = a);
+			xx.fail(e -> c.getErrSink().reportDiagnostic(e));
+			dtw.onType(a -> this.x = a);
+			System.out.println(this.x);
+		});
 	}
 
 	/**
