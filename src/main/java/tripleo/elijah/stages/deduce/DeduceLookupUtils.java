@@ -18,6 +18,7 @@ import tripleo.elijah.lang.types.OS_UnknownType;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2;
+import tripleo.elijah.stages.deduce.percy.DeduceTypeResolve2Context;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
@@ -25,6 +26,7 @@ import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.Collections;
 import java.util.Stack;
+import java.util.function.Supplier;
 
 /**
  * Created 3/7/21 1:13 AM
@@ -362,20 +364,55 @@ public class DeduceLookupUtils {
 		private final DeferredObject<GenType, ResolveError, Void> typePromise = new DeferredObject<>();
 
 		public void do_deduceIdentExpression(final DeduceTypes2 aDeduceTypes2, final IdentExpression ident, final Context ctx) {
-			try {
-				@Nullable GenType       result = null;
-				@Nullable final GenType R      = new GenType(aDeduceTypes2.resolver());
+			// is this right?
+			// README 24/02/13 we still question this as
+			// this is the same code
 
-				// is this right?
-				final LookupResultList lrl  = ctx.lookup(ident.getText());
-				@Nullable OS_Element   best = lrl.chooseBest(null);
-				while (best instanceof AliasStatement) {
+			final DeduceTypeResolve2 resolver = aDeduceTypes2.resolver();
+
+//			resolver.resolveIdentImmediately(
+//			  ident.getText(), ctx,
+//			  (final LookupResultList lrl, final DeduceTypeResolve2Context ctx11) -> {
+//				  __do_deduceIdentExpression_cb(aDeduceTypes2, ident, ctx, lrl, ctx11);
+//			  });
+			resolver.resolveIdentImmediatelyBest(
+			  ident.getText(), ctx, null,
+			  (final @Nullable OS_Element el, final DeduceTypeResolve2Context ctx11) -> {
+				  __do_deduceIdentExpression_cb(aDeduceTypes2, ident, ctx, ctx11.getLrl(), ctx11);
+			  });
+		}
+
+		private void __do_deduceIdentExpression_cb(final DeduceTypes2 aDeduceTypes2,
+		                                           final IdentExpression ident,
+		                                           final Context ctx,
+		                                           final LookupResultList lrl,
+		                                           final DeduceTypeResolve2Context ctx11) {
+			@Nullable OS_Element   best = lrl.chooseBest(null);
+
+			__do_deduceIdentExpression_cb2(aDeduceTypes2, ctx, () -> new ResolveError(ident, lrl), ctx11, best);
+		}
+
+		private void __do_deduceIdentExpression_cb2(final DeduceTypes2 aDeduceTypes2,
+		                                            final Context ctx,
+		                                            final Supplier<ResolveError> lrl,
+		                                            final DeduceTypeResolve2Context ctx11,
+		                                            @Nullable OS_Element best) {
+			@Nullable GenType        result   = null;
+			final GenType R = ctx11.createGenType();
+
+			while (best instanceof AliasStatement) {
+				try {
 					best = _resolveAlias2((AliasStatement) best, aDeduceTypes2);
+				} catch (ResolveError aE) {
+					typePromise.reject(aE);
+					return;
 				}
-				if (best instanceof ClassStatement) {
-					R.setResolved(((ClassStatement) best).getOS_Type());
-					result     = R;
-				} else {
+			}
+			if (best instanceof ClassStatement) {
+				R.setResolved(((ClassStatement) best).getOS_Type());
+				result     = R;
+			} else {
+				try {
 					switch (DecideElObjectType.getElObjectType(best)) {
 					case VAR:
 						final @Nullable VariableStatement vs = (VariableStatement) best;
@@ -390,16 +427,18 @@ public class DeduceLookupUtils {
 						result = do_deduceIdentExpression__fali(aDeduceTypes2, ctx, R, fali);
 						break;
 					}
-					if (result == null) {
-						final ResolveError e = new ResolveError(ident, lrl);
-						typePromise.reject(e);
-						return;
-					}
+				} catch (ResolveError e) {
+					typePromise.reject(e);
+					return;
 				}
-				typePromise.resolve(result);
-			} catch (final ResolveError e) {
-				typePromise.reject(e);
+				if (result == null) {
+					final ResolveError e = lrl.get();
+					typePromise.reject(e);
+					return;
+				}
 			}
+			typePromise.resolve(result);
+			ctx11.set("result", result);
 		}
 
 		@Nullable

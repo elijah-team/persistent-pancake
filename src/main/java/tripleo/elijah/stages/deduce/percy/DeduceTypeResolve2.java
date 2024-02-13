@@ -1,7 +1,9 @@
 package tripleo.elijah.stages.deduce.percy;
 
 import org.jetbrains.annotations.NotNull;
-
+import tripleo.elijah.lang.Context;
+import tripleo.elijah.lang.LookupResultList;
+import tripleo.elijah.lang.OS_Element;
 import tripleo.elijah.lang.TypeName;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.ClassInvocation;
@@ -11,6 +13,13 @@ import tripleo.elijah.stages.deduce.ResolveError;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.Operation;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 public class DeduceTypeResolve2 {
 	private final DeduceTypes2 deduceTypes2;
@@ -42,5 +51,81 @@ public class DeduceTypeResolve2 {
 
 	public RCI2 registerClassInvocation(ClassInvocation clsinv) {
 		return deduceTypes2._phase().registerClassInvocation2(clsinv);
+	}
+
+	public void resolveIdentImmediately(final String aText, final Context aCtx, final BiConsumer<LookupResultList, DeduceTypeResolve2Context> cons) {
+		resolveIdentImmediatelyReturningContext(aText, aCtx, cons);
+	}
+
+	public DeduceTypeResolve2Context resolveIdentImmediatelyReturningContext(final String aText, final Context aCtx, final BiConsumer<LookupResultList, DeduceTypeResolve2Context> cons) {
+		//new GenType(resolver)
+		final LookupResultList lrl = aCtx.lookup(aText);
+		final var ctx = new DeduceTypeResolve2Context() {
+			private final Map<String, Object> m = new HashMap<>();
+
+			@Override
+			public <T> void set(final String aKey, final T aValue) {
+				assert !m.containsKey(aKey);
+				m.put(aKey, aValue);
+			}
+
+			@Override
+			public <T> Optional<T> get(final String aKey) {
+				if (!m.containsKey(aKey))
+					return Optional.empty();
+
+				//noinspection unchecked
+				return Optional.of((T) m.get(aKey));
+			}
+
+			@Override
+			public GenType createGenType() {
+				// TODO dt2._inj() ??
+				return new GenType(DeduceTypeResolve2.this);
+			}
+
+			@Override
+			public LookupResultList getLrl() {
+				return lrl;
+			}
+		};
+		cons.accept(lrl, ctx);
+		return ctx;
+	}
+
+	public void resolveIdentImmediatelyBest(final String aText, final Context aCtx, final List<Predicate<OS_Element>> l, final BiConsumer<OS_Element, DeduceTypeResolve2Context> cons) {
+		//new GenType(resolver)
+		final LookupResultList lrl = aCtx.lookup(aText);
+		final var ctx = new DeduceTypeResolve2Context() {
+			private final Map<String, Object> m = new HashMap<>();
+
+			@Override
+			public <T> void set(final String aKey, final T aValue) {
+				assert !m.containsKey(aKey);
+				m.put(aKey, aValue);
+			}
+
+			@Override
+			public <T> Optional<T> get(final String aKey) {
+				if (!m.containsKey(aKey))
+					return Optional.empty();
+
+				//noinspection unchecked
+				return Optional.of((T) m.get(aKey));
+			}
+
+			@Override
+			public GenType createGenType() {
+				// TODO dt2._inj() ??
+				return new GenType(DeduceTypeResolve2.this);
+			}
+
+			@Override
+			public LookupResultList getLrl() {
+				return lrl;
+			}
+		};
+		var best = lrl.chooseBest(l);
+		cons.accept(best, ctx);
 	}
 }
