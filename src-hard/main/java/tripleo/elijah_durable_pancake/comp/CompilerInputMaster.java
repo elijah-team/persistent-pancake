@@ -1,7 +1,9 @@
 package tripleo.elijah_durable_pancake.comp;
 
+import tripleo.elijah_durable_pancake.comp.internal.CompilerInputListener;
+
 public interface CompilerInputMaster {
-	void addListener(tripleo.elijah.comp.internal.CompilerInputListener compilerInputListener);
+	void addListener(CompilerInputListener compilerInputListener);
 
 	void notifyChange(CompilerInput compilerInput, CompilerInput.CompilerInputField compilerInputField);
 }
