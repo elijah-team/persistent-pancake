@@ -48,4 +48,12 @@ public class CentralControllerImpl implements CentralController {
 	public void waitPipelineLogic(final DoneCallback<PipelineLogic> cb) {
 		_p_PipelineLogic.then(cb);
 	}
+	@Override
+	public void waitDeducePhase(final DoneCallback<DeducePhase> cb) {
+		_p_DeducePhase.then(cb);
+	}
+	@Override
+	public void waitGeneratePhase(final DoneCallback<GeneratePhase> cb) {
+		_p_GeneratePhase.then(cb);
+	}
 }

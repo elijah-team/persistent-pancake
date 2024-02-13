@@ -20,4 +20,6 @@ public interface CentralController {
 	void provideDeducePhase(DeducePhase p);
 
 	void waitPipelineLogic(DoneCallback<PipelineLogic> cb);
+	void waitDeducePhase(DoneCallback<DeducePhase> cb);
+	void waitGeneratePhase(DoneCallback<GeneratePhase> cb);
 }
