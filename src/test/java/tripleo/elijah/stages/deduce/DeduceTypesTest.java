@@ -77,19 +77,18 @@ public class DeduceTypesTest {
 	 * TODO This test fails beacause we are comparing a BUILT_IN vs a USER OS_Type.
 	 *   It fails because Integer is an interface and not a BUILT_IN
 	 */
-	@Disabled
 	@Test
 	void testDeduceIdentExpression1() {
 //		assert x == null;
 
 		Assertions.assertTrue(xx.isResolved(), "Promise not resolved");
 
-		xx.then(xxx -> {
-//			Assert.assertEquals(OS_Type.Type.USER, xxx.resolved.getType());
+		xx.then((GenType aGenType) -> {
+//			Assert.assertEquals(OS_Type.Type.USER, aGenType.resolved.getType());
 			System.out.println("1 " + new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType());
-			System.out.println("2 " + xxx.getResolved().getBType());
-			System.out.println("2.5 " + xxx.getResolved());
-			Assertions.assertNotEquals(new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType(), xxx.getResolved().getBType());
+			System.out.println("2 " + aGenType.getResolved().getBType());
+			System.out.println("2.5 " + aGenType.getResolved());
+			Assertions.assertNotEquals(new OS_BuiltinType(BuiltInTypes.SystemInteger).getBType(), aGenType.getResolved().getBType());
 
 			assert false; // never reached
 		});
@@ -101,7 +100,7 @@ public class DeduceTypesTest {
 	/**
 	 * Now comparing {@link RegularTypeName} to {@link VariableTypeName} works
 	 */
-@Disabled
+	@Disabled
 	@Test
 	void testDeduceIdentExpression2() {
 		final RegularTypeName tn  = new RegularTypeName(null); // README 11/18 better than nothing?
@@ -133,7 +132,6 @@ public class DeduceTypesTest {
 		Assertions.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
 	}
 
-	@Disabled
 	@Test
 	void testDeduceIdentExpression4() {
 		final VariableTypeName tn  = new VariableTypeName();
