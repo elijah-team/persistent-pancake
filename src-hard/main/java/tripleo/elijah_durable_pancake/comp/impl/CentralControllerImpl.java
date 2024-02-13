@@ -3,13 +3,14 @@ package tripleo.elijah_durable_pancake.comp.impl;
 import org.jdeferred2.DoneCallback;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.CentralController;
+import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
 import tripleo.elijah.util.EventualExtract;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 
 public class CentralControllerImpl implements CentralController {
 	private final Eventual<GeneratePhase> _p_GeneratePhase = new Eventual<>();
-	private final Eventual<PipelineLogic> _p_PipelineLogic = new Eventual<>();
+	private final Eventual<DeducePhase>   _p_DeducePhase   = new Eventual<>();
 
 	@Override
 	public boolean hasGeneratePhase() {
@@ -36,6 +37,10 @@ public class CentralControllerImpl implements CentralController {
 	@Override
 	public void providePipelineLogic(PipelineLogic p) {
 		_p_PipelineLogic.resolve(p);
+	}
+	@Override
+	public void provideDeducePhase(final DeducePhase p) {
+		_p_DeducePhase.resolve(p);
 	}
 
 	@Override
