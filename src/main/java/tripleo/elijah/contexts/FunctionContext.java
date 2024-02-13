@@ -46,7 +46,7 @@ public class FunctionContext extends Context {
 					Result.add(name, level, item, this);
 				}
 			}
-			case VAR -> {
+			case VAR_SEQ -> {
 				SimplePrintLoggerToRemoveSoon.println2("[FunctionContext#lookup] VariableSequence " + item);
 				for (final VariableStatement vs : ((VariableSequence) item).items()) {
 					if (vs.getName().equals(name)) {
