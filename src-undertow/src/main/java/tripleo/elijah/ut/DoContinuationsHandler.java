@@ -3,7 +3,8 @@ package tripleo.elijah.ut;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
-import tripleo.elijah.comp.ICompilationBus;
+import tripleo.elijah.comp.bus.CB_Action;
+import tripleo.elijah.comp.bus.CB_OutputString;
 
 public class DoContinuationsHandler implements HttpHandler {
 
@@ -20,12 +21,12 @@ public class DoContinuationsHandler implements HttpHandler {
 		final StringBuilder sb  = new StringBuilder();
 		final String        num = (exchange.getRequestPath().substring(4));
 
-		final ICompilationBus.CB_Action x = utr.dcs(num);
+		final CB_Action x = utr.dcs(num);
 		x.execute();
 
 		sb.append("<html><body><pre>\n");
 
-		for (final ICompilationBus.OutputString outputString : x.outputStrings()) {
+		for (final CB_OutputString outputString : x.outputStrings()) {
 			sb.append("" + outputString.getText() + "\n");
 		}
 

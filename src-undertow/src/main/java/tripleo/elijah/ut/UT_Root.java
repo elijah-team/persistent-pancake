@@ -1,6 +1,6 @@
 package tripleo.elijah.ut;
 
-import tripleo.elijah.comp.ICompilationBus;
+import tripleo.elijah.comp.bus.CB_Action;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,7 +17,7 @@ import static tripleo.elijah.util.Helpers.List_of;
 class UT_Root {
 	List<Path> paths = List_of();
 
-	private final Map<String, ICompilationBus.CB_Action> dcs = new HashMap<>();
+	private final Map<String, CB_Action> dcs = new HashMap<>();
 
 	public UT_Root() {
 		final Path path = Paths.get("test");
@@ -43,11 +43,11 @@ class UT_Root {
 		return result;
 	}
 
-	public void dcs(final String aF, final ICompilationBus.CB_Action aAction) {
+	public void dcs(final String aF, final CB_Action aAction) {
 		dcs.put(aF, aAction);
 	}
 
-	public ICompilationBus.CB_Action dcs(final String aF) {
+	public CB_Action dcs(final String aF) {
 		return dcs.get(aF);
 	}
 }
