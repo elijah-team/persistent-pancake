@@ -15,10 +15,10 @@ import tripleo.elijah.ci.CiIndexingStatement;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.GenerateStatement;
 import tripleo.elijah.ci.LibraryStatementPart;
-import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.lang.IExpression;
 import tripleo.elijah.lang.StringExpression;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah_durable_pancake.comp.CompilerInput;
 
 import java.io.File;
 import java.util.ArrayList;

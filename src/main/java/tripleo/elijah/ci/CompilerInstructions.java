@@ -3,7 +3,7 @@ package tripleo.elijah.ci;
 import antlr.Token;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci_impl.LibraryStatementPartImpl;
-import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah_durable_pancake.comp.CompilerInput;
 
 import java.io.File;
 import java.util.List;
