@@ -34,7 +34,7 @@ public class LCM_Event_RootCI implements LCM_Event {
 			c.cr().start(rootCI);
 
 			CompilationImpl cc = (CompilationImpl) c.c();
-			cc.pipelineLogic.dp.checkFinishEventuals();
+			cc.central().waitPipelineLogic(pl -> pl.dp.checkFinishEventuals());
 		} catch (Exception aE) {
 			aHandleEvent.lcm().exception(aHandleEvent, aE);
 		}

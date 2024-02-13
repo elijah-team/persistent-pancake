@@ -1,5 +1,6 @@
 package tripleo.elijah.comp;
 
+import org.jdeferred2.DoneCallback;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 
@@ -16,4 +17,6 @@ public interface CentralController {
 	void provideGeneratePhase(GeneratePhase p);
 
 	void providePipelineLogic(PipelineLogic p);
+
+	void waitPipelineLogic(DoneCallback<PipelineLogic> cb);
 }

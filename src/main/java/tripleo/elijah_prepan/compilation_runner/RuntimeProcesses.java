@@ -24,7 +24,10 @@ public class RuntimeProcesses {
 
 	public void run_better() throws Exception {
 		// do nothing. job over
-		if (ca.getStage() == Stages.E) return;
+		if (ca.getStage() == Stages.E) {
+			logProgress("***** RuntimeProcess [E-stage early exit] ");
+			return;
+		}
 
 		// rt.prepare();
 		logProgress("***** RuntimeProcess [prepare] named " + process);
@@ -42,7 +45,7 @@ public class RuntimeProcesses {
 		pr.writeLogs(ca);
 	}
 
-	private void logProgress(final String aS) {
-//		System.err.println(aS);
+	private void logProgress(final String message) {
+		System.err.println("[RuntimeProcess] "+message);
 	}
 }

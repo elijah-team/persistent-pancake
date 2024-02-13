@@ -19,11 +19,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.comp.CentralController;
 import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.CompilerController;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.i.ICompilationAccess;
+import tripleo.elijah.comp.i.LCM_CompilerAccess;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.lang.OS_Package;
@@ -49,27 +52,25 @@ import tripleo.elijah.world.i.LivingRepo;
 import tripleo.elijah.world.impl.DefaultLivingRepo;
 import tripleo.elijah_durable_pancake.comp.Compilation0101;
 import tripleo.elijah_durable_pancake.comp.CompilationRunner;
-import tripleo.elijah.comp.CompilerController;
 import tripleo.elijah_durable_pancake.comp.CompilerInstructionsObserver;
-import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
-import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilerController;
 import tripleo.elijah_durable_pancake.comp.ModuleBuilder;
 import tripleo.elijah_durable_pancake.comp.Pipeline;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
-import tripleo.elijah_durable_pancake.input.MOD;
-import tripleo.elijah_durable_pancake.input.USE;
 import tripleo.elijah_durable_pancake.comp.functionality.f202.F202;
-import tripleo.elijah.comp.i.LCM_CompilerAccess ;
+import tripleo.elijah_durable_pancake.comp.impl.CentralControllerImpl;
+import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
+import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilerController;
 import tripleo.elijah_durable_pancake.comp.impl.LCM_Event_RootCI;
 import tripleo.elijah_durable_pancake.comp.queries.QueryEzFileToModule;
 import tripleo.elijah_durable_pancake.comp.queries.QueryEzFileToModuleParams;
+import tripleo.elijah_durable_pancake.input.MOD;
+import tripleo.elijah_durable_pancake.input.USE;
 import tripleo.elijah_pancake.feb24.comp.CR_State;
 import tripleo.elijah_pancake.feb24.comp.CompilationSignalTarget;
 import tripleo.elijah_pancake.feb24.comp.Providing;
 import tripleo.elijah_pancake.sep1011.modeltransition.ElSystemSink;
 import tripleo.elijah_prepan.compilation_runner.CK_Monitor;
 import tripleo.elijah_prepan.compilation_runner.CR_CK_Monitor;
-import tripleo.elijah_prepan.compilation_runner.CS_RunBetter;
 import tripleo.elijah_prepan.compilation_runner.RuntimeProcesses;
 import tripleo.elijah_prepan.compilation_runner.Stages;
 
@@ -90,18 +91,19 @@ import java.util.stream.Stream;
 
 public class CompilationImpl implements Compilation0101, ElSystemSink, Compilation {
 
-	public final  List<ElLog>       elLogs = new LinkedList<ElLog>();
-	public final  CompilationConfig cfg    = new CompilationConfig();
-	public final  CIS               _cis   = new CIS();
-	private final Pipeline          pipelines;
-	private final int               _compilationNumber;
-	private final ErrSink           errSink;
+	public final  List<ElLog>          elLogs = new LinkedList<ElLog>();
+	public final  CompilationConfig    cfg    = new CompilationConfig();
+	public final  CIS                  _cis   = new CIS();
+	private final Pipeline             pipelines;
+	private final int                  _compilationNumber;
+	private final ErrSink              errSink;
 	//
-	public final  DefaultLivingRepo _repo = new DefaultLivingRepo();
+	public final  DefaultLivingRepo    _repo  = new DefaultLivingRepo();
 	//
-	final         MOD               mod   = new MOD(this);
-	private final IO                io;
-	private final USE               use    = new USE(this);
+	final         MOD                  mod    = new MOD(this);
+	private final IO                   io;
+	private final USE                  use    = new USE(this);
+	private       CentralController    central;
 	//
 	//
 	//
@@ -413,6 +415,13 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 		getOutputTree().addGenerateResultItem(aGenerateResultItem, aFileNameProviderSupplier);
 	}
 
+	@Override public CentralController central() {
+		//JavaCompiler.CompilationTask
+		if (this.central == null)
+			this.central = new CentralControllerImpl();
+		return this.central;
+	}
+
 	//
 	//
 	//
@@ -464,7 +473,7 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 			return _cio;
 		}
 
-		public void set_cio(CompilerInstructionsObserver a_cio) {
+		public void set_cio(final CompilerInstructionsObserver a_cio) {
 			_cio = a_cio;
 		}
 	}
@@ -519,39 +528,39 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 
 	public <T> void provide(final Class<T> aClass, final Function<Providing, T> cb, final Class<?>[] aClasses) {
 		if (provided.containsKey(aClass)) {
-			var o = provided.get(aClass);
-			var m = new HashMap<>();
+			final var o = provided.get(aClass);
+			final var m = new HashMap<>();
 			m.put(aClass, o);
-			var p = new Providing() {
+			final var p = new Providing() {
 				@Override
 				public Object get(final Class<?> c) {
 					return m.get(c);
 				}
 			};
-			var o2 = cb.apply(p);
+			final var o2 = cb.apply(p);
 			System.err.println("9997-573 " + o2.getClass().getName());
 			return;
 		}
 
 		if (Objects.equals(aClass, RuntimeProcesses.class)) {
-			int y = 2;
+			final int y = 2;
 			{
-				var m = new HashMap<>();
-				for (Class<?> aClass1 : aClasses) {
+				final var m = new HashMap<>();
+				for (final Class<?> aClass1 : aClasses) {
 					System.err.println("9997-581 " + aClass1.getName());
-					for (Map.Entry<Class<?>, Object> classObjectEntry : provided.entrySet()) {
+					for (final Map.Entry<Class<?>, Object> classObjectEntry : provided.entrySet()) {
 						if (Objects.equals(aClass1, classObjectEntry.getKey())) {
 							m.put(aClass1, classObjectEntry.getValue());
 						}
 					}
 				}
-				var p = new Providing() {
+				final var p = new Providing() {
 					@Override
 					public Object get(final Class<?> c) {
 						return m.get(c);
 					}
 				};
-				T o = cb.apply(p);
+				final T o = cb.apply(p);
 				provided.put(aClass, o);
 				System.err.println("9997-573 Called Provider for " + o.getClass().getName());
 			}
@@ -559,13 +568,13 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 			if (provided.containsKey(aClass)) {
 				System.err.println("9997-597 Already " + aClass.getName());
 			} else {
-				var p = new Providing() {
+				final var p = new Providing() {
 					@Override
 					public Object get(final Class<?> c) {
 						throw new UnintendedUseException("why are you calling this?");//m.get(c);
 					}
 				};
-				var o = cb.apply(p);
+				final var o = cb.apply(p);
 				provided.put(aClass, o);
 				System.err.println("9997-607 Record single " + o.getClass().getName());
 			}
@@ -575,16 +584,16 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 	}
 
 	public void waitProviders(final Class[] aClasses, final Consumer<Providing> cb) {
-		for (Class<?> aClass : aClasses) {
-			if (!(provided.containsKey(aClass))) throw new UnintendedUseException("lazy ");
+		for (final Class<?> aClass : aClasses) {
+			if (!(provided.containsKey(aClass))) throw new UnintendedUseException("lazy (Providing not ready)");
 		}
 
-		var p = new Providing() {
+		final var p = new Providing() {
 			@Override
 			public Object get(final Class<?> c) {
-				if (provided.containsKey(c)) return provided.get(c);
+				if (provided.containsKey(c))
+					return provided.get(c);
 				throw new UnintendedUseException("lazy, asked what i don't know");
-				//return null;
 			}
 		};
 
@@ -592,19 +601,43 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 	}
 
 	public void trigger(final Class<?> aSignalClass) {
-		throw new UnintendedUseException("implement signals");
-	}
-
-	public void onTrigger(final Class<?> aSignalClass, final CompilationSignalTarget aSignalTarget) {
-		if (Objects.equals(aSignalClass, CS_RunBetter.class)) {
-			_CS_RunBetter();
+//		throw new UnintendedUseException("implement signals");
+		if (!(triggers.containsKey(aSignalClass))) {
+			//triggers.put(aSignalClass, aSignalTarget);
+			// README nice intention when you use getClass here
+			System.err.println("9997-597 Dead trigger for " + aSignalClass.getName());
 		} else {
-			throw new UnintendedUseException("un-implemented signal");
+//			triggers.get(aSignalClass);
+			final Collection<CompilationSignalTarget> trs = triggers.get(aSignalClass);
+			for (final CompilationSignalTarget target : trs) {
+				// TODO run only once...
+				target.run();
+			}
 		}
 	}
 
+	public void onTrigger(final Class<?> aSignalClass, final CompilationSignalTarget aSignalTarget) {
+//		if (Objects.equals(aSignalClass, CS_RunBetter.class)) {
+//			_CS_RunBetter();
+//		} else {
+//			throw new UnintendedUseException("un-implemented signal");
+//		}
+
+		if (!(triggers.containsEntry(aSignalClass, aSignalTarget))) {
+			triggers.put(aSignalClass, aSignalTarget);
+		} else {
+			final Collection<CompilationSignalTarget> trs = triggers.get(aSignalClass);
+			for (final CompilationSignalTarget target : trs) {
+				// TODO run only once...
+				target.run();
+			}
+		}
+	}
+
+	private final Multimap<Class<?>, CompilationSignalTarget> triggers = ArrayListMultimap.create();
+
 	private void _CS_RunBetter() {
-		CR_State st = null;
+		final CR_State st = null;
 		this.waitProviders(
 		  new Class[]{RuntimeProcesses.class, CompilationRunner.class}
 		  , (o) -> {

@@ -34,6 +34,7 @@ public class CR_State {
 	}
 
 	public void provide(final RuntimeProcesses aRt) {
+		assert rt == null; // being lazy here (forgot spec)
 		rt = aRt;
 	}
 }

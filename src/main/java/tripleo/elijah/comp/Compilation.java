@@ -60,6 +60,8 @@ public interface Compilation extends Compilation0101 {
 
 	ElLog.Verbosity testSilence();
 
+	CentralController central();
+
 	LivingRepo _repo();
 
 	LCM_CompilerAccess getLCMAccess();

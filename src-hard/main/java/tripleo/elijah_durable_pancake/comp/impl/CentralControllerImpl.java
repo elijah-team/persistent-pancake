@@ -1,5 +1,6 @@
 package tripleo.elijah_durable_pancake.comp.impl;
 
+import org.jdeferred2.DoneCallback;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.CentralController;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
@@ -35,5 +36,10 @@ public class CentralControllerImpl implements CentralController {
 	@Override
 	public void providePipelineLogic(PipelineLogic p) {
 		_p_PipelineLogic.resolve(p);
+	}
+
+	@Override
+	public void waitPipelineLogic(final DoneCallback<PipelineLogic> cb) {
+		_p_PipelineLogic.then(cb);
 	}
 }
