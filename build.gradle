@@ -125,7 +125,7 @@ sourceSets {
 }
 
 group = 'tripleo.elijah'
-version = '2023.10.0-wont-stop'
+version = '2024.persistent.try4'
 description = 'elijah-persistent-pancake'
 //java.sourceCompatibility = JavaVersion.VERSION_17
 
