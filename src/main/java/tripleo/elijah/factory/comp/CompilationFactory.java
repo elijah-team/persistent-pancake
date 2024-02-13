@@ -2,19 +2,21 @@ package tripleo.elijah.factory.comp;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.testing.comp.IFunctionMapHook;
+import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import java.util.List;
 
 public class CompilationFactory {
 
-	public static CompilationImpl mkCompilation2(final List<IFunctionMapHook> aMapHooks) {
+	public static Compilation mkCompilation2(final List<IFunctionMapHook> aMapHooks) {
 		final StdErrSink errSink = new StdErrSink();
-		final IO         io      = new IO();
+		final IO         io      = new IO_();
 
 		final @NotNull CompilationImpl c = mkCompilation(errSink, io);
 
@@ -30,7 +32,7 @@ public class CompilationFactory {
 
 	public static @NotNull CompilationImpl mkCompilationDefault() {
 		var eee1 = new StdErrSink();
-		var io1  = new IO();
+		var io1  = new IO_();
 
 		return mkCompilation(eee1, io1);
 	}
