@@ -16,13 +16,13 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.factory.comp.CompilationFactory;
 import tripleo.elijah.nextgen.outputstatement.EG_SequenceStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
+import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,7 +30,9 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tripleo.elijah.util.Helpers.List_of;
 
 /**
@@ -47,7 +49,7 @@ public class TestBasic {
 		args.addAll(ez_files);
 		args.add("-sE");
 		final ErrSink     eee = new StdErrSink();
-		final Compilation c   = new CompilationImpl(eee, new IO());
+		final Compilation c   = new CompilationImpl(eee, new IO_());
 
 		c.feedCmdLine(args);
 
@@ -59,7 +61,7 @@ public class TestBasic {
 		final String s = "test/basic/listfolders3/listfolders3.ez";
 
 		final ErrSink     eee = new StdErrSink();
-		final Compilation c   = new CompilationImpl(eee, new IO());
+		final Compilation c   = new CompilationImpl(eee, new IO_());
 
 		c.feedCmdLine(List_of(s, "-sO"));
 
@@ -95,7 +97,7 @@ public class TestBasic {
 		final String s = "test/basic/listfolders4/listfolders4.ez";
 
 		final ErrSink     eee = new StdErrSink();
-		final Compilation c   = new CompilationImpl(eee, new IO());
+		final Compilation c   = new CompilationImpl(eee, new IO_());
 
 		c.feedCmdLine(List_of(s, "-sO"));
 
@@ -112,7 +114,7 @@ public class TestBasic {
 	@Test
 	final void testBasic_fact1() {
 		final String        s  = "test/basic/fact1/main2";
-		final Compilation   c  = CompilationFactory.mkCompilation(new StdErrSink(), new IO());
+		final Compilation   c  = CompilationFactory.mkCompilation(new StdErrSink(), new IO_());
 
 //		final CompilerInput i1 = new CompilerInput_(s);
 //		final CompilerInput i2 = new CompilerInput_("-sO");

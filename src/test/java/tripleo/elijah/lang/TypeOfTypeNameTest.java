@@ -11,16 +11,16 @@ package tripleo.elijah.lang;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.DefaultCompilationAccess;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah_durable_pancake.comp.AccessBus;
+import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
+import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
+import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import static org.easymock.EasyMock.*;
 
@@ -34,7 +34,7 @@ public class TypeOfTypeNameTest {
 		//
 		final Context     ctx = mock(Context.class);
 		final OS_Module   mod = mock(OS_Module.class);
-		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO_());
 
 		//
 		// CREATE VARIABLES
@@ -85,7 +85,7 @@ public class TypeOfTypeNameTest {
 		//
 		final Context     ctx = mock(Context.class);
 		final OS_Module   mod = mock(OS_Module.class);
-		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO_());
 
 		//
 		// CREATE VARIABLES
@@ -209,7 +209,7 @@ public class TypeOfTypeNameTest {
 		final String typeNameString  = "SystemInteger";
 
 		final OS_Module mod = new OS_Module();
-		mod.parent = new CompilationImpl(new StdErrSink(), new IO());
+		mod.parent = new CompilationImpl(new StdErrSink(), new IO_());
 		final Context mod_ctx = mod.getContext();
 
 		final ClassStatement st_af = new ClassStatement(mod, mod_ctx);

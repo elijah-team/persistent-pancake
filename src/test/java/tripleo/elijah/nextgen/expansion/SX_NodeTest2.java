@@ -3,8 +3,9 @@ package tripleo.elijah.nextgen.expansion;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 import tripleo.elijah.nextgen.model.SM_ClassBody;
 import tripleo.elijah.nextgen.model.SM_ClassDeclaration;
 import tripleo.elijah.nextgen.model.SM_ClassInheritance;
@@ -33,7 +34,7 @@ public class SX_NodeTest2 {
 	@Test
 	void testFullText() {
 		final StdErrSink      errSink = new StdErrSink();
-		final IO              io      = new IO();
+		final IO              io      = new IO_();
 		final CompilationImpl comp    = new CompilationImpl(errSink, io);
 //		final AccessBus       ab            = new AccessBus(comp);
 //		final PipelineLogic   pipelineLogic = new PipelineLogic(ab);

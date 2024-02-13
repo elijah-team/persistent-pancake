@@ -1,6 +1,6 @@
 package tripleo.elijah_pancake.crib;
 
-import tripleo.elijah.comp.USE;
+import tripleo.elijah_durable_pancake.input.USE;
 import tripleo.elijah_pancake.cribbonacci.JavaParser;
 import tripleo.elijah_pancake.cribbonacci.ast.visitor.VoidVisitorAdapter;
 import tripleo.elijah_pancake.crib.me.tomassetti.support.DirExplorer;

@@ -10,9 +10,9 @@ package tripleo.elijah.stages.deduce;
 
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,7 +26,7 @@ public class Feb2021 {
 
 	@Test
 	void testProperty() {
-		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation c = new CompilationImpl(new StdErrSink(), new IO_());
 
 		c.feedCmdLine(List_of("test/feb2021/property/"));
 
@@ -55,7 +55,7 @@ public class Feb2021 {
 
 	@Test
 	void testFunction() {
-		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation c = new CompilationImpl(new StdErrSink(), new IO_());
 
 		c.feedCmdLine(List_of("test/feb2021/function/"));
 
@@ -73,7 +73,7 @@ public class Feb2021 {
 
 	@Test
 	void testHier() {
-		final Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation c = new CompilationImpl(new StdErrSink(), new IO_());
 
 		c.feedCmdLine(List_of("test/feb2021/hier/"));
 

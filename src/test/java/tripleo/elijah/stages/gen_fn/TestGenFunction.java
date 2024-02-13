@@ -10,9 +10,9 @@ package tripleo.elijah.stages.gen_fn;
 
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,7 +28,7 @@ public class TestGenFunction {
 //	@Test
 //	public void testDemoElNormalFact1Elijah() throws Exception {
 //		final StdErrSink   eee = new StdErrSink();
-//		final Compilation c   = new CompilationImpl(eee, new IO());
+//		final Compilation c   = new CompilationImpl(eee, new IO_());
 //
 //		final String f = "test/demo-el-normal/fact1.elijah";
 //		final File file = new File(f);
@@ -202,7 +202,7 @@ public class TestGenFunction {
 //	@Test
 //	public void testGenericA() {
 //		final StdErrSink errSink = new StdErrSink();
-//		final Compilation c = new CompilationImpl(errSink, new IO());
+//		final Compilation c = new CompilationImpl(errSink, new IO_());
 //
 //		final String f = "test/basic1/genericA/";
 //
@@ -212,7 +212,7 @@ public class TestGenFunction {
 ////	@Test // ignore because of generateAllTopLevelClasses
 //	public void testBasic1Backlink1Elijah() {
 ////		final StdErrSink eee = new StdErrSink();
-////		final Compilation c = new CompilationImpl(eee, new IO());
+////		final Compilation c = new CompilationImpl(eee, new IO_());
 ////
 ////		final String f = "test/basic1/backlink1.elijah";
 ////		final File file = new File(f);
@@ -293,7 +293,7 @@ public class TestGenFunction {
 	@Test
 	public void testBasic1Backlink3Elijah() {
 		final StdErrSink  eee = new StdErrSink();
-		final Compilation c   = new CompilationImpl(eee, new IO());
+		final Compilation c   = new CompilationImpl(eee, new IO_());
 
 		final String ff = "test/basic1/backlink3/";
 		c.feedCmdLine(List_of(ff));

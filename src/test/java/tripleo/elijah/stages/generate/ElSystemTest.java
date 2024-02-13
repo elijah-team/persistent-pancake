@@ -11,13 +11,13 @@ package tripleo.elijah.stages.generate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.DefaultCompilationAccess;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah_durable_pancake.comp.AccessBus;
+import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
+import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,7 +30,7 @@ public class ElSystemTest {
 
 	@BeforeEach
 	public void setUp() {
-		c  = new CompilationImpl(new StdErrSink(), new IO());
+		c  = new CompilationImpl(new StdErrSink(), new IO_());
 		ab           = new AccessBus(new DefaultCompilationAccess(c));
 
 		final String f = "test/basic1/backlink3";

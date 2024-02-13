@@ -18,10 +18,11 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.AccessBus;
+import tripleo.elijah.comp.CompilationAlways;
+import tripleo.elijah_durable_pancake.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.DefaultCompilationAccess;
-import tripleo.elijah.comp.PipelineLogic;
+import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
 import tripleo.elijah.lang.DotExpression;
@@ -66,7 +67,7 @@ public class TestIdentNormal {
 		final Context     ctx1 = mock(Context.class);
 		final Context     ctx2 = mock(Context.class);
 
-		final ElLog.Verbosity verbosity1    = Compilation.CompilationAlways.gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity1    = CompilationAlways.gitlabCIVerbosity();
 		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(comp));
 		final PipelineLogic   pl            = new PipelineLogic(ab);
 		final GeneratePhase   generatePhase = pl.generatePhase;
@@ -130,7 +131,7 @@ public class TestIdentNormal {
 //		FunctionDef fd = mock(FunctionDef.class);
 		final Context ctx2 = mock(Context.class);
 
-		final ElLog.Verbosity verbosity1    = Compilation.CompilationAlways.gitlabCIVerbosity();
+		final ElLog.Verbosity verbosity1    = CompilationAlways.gitlabCIVerbosity();
 		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(comp));
 		final PipelineLogic   pl            = new PipelineLogic(ab);
 		final GeneratePhase   generatePhase = pl.generatePhase;
