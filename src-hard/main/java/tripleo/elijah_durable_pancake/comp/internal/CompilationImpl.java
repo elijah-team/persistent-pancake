@@ -116,7 +116,7 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 
 	@Override
 	public void hasInstructions(final @NotNull List<CompilerInstructions> cis) {
-		assert cis.size() > 0;
+		assert !cis.isEmpty();
 
 		// don't inline yet b/c getProjectName
 		rootCI = cis.get(0);
@@ -298,7 +298,7 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 
 	@Override
 	public void feedCmdLine(final List<String> args, final CompilerController ctl) {
-		if (args.size() == 0) {
+		if (args.isEmpty()) {
 			ctl.printUsage();
 			return; // ab
 		}
@@ -379,6 +379,8 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 		pipelines          = new Pipeline(aErrSink);
 		_fluffyComp        = new FluffyCompImpl(this);
 		lcm                = new LCM(this);
+
+		P.starting(null);
 	}
 
 	public void testMapHooks(final List<IFunctionMapHook> aMapHooks) {
@@ -568,11 +570,8 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 			if (provided.containsKey(aClass)) {
 				System.err.println("9997-597 Already " + aClass.getName());
 			} else {
-				final var p = new Providing() {
-					@Override
-					public Object get(final Class<?> c) {
-						throw new UnintendedUseException("why are you calling this?");//m.get(c);
-					}
+				final Providing p = c -> {
+					throw new UnintendedUseException("why are you calling this?");//m.get(c);
 				};
 				final var o = cb.apply(p);
 				provided.put(aClass, o);
@@ -588,13 +587,10 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 			if (!(provided.containsKey(aClass))) throw new UnintendedUseException("lazy (Providing not ready)");
 		}
 
-		final var p = new Providing() {
-			@Override
-			public Object get(final Class<?> c) {
-				if (provided.containsKey(c))
-					return provided.get(c);
-				throw new UnintendedUseException("lazy, asked what i don't know");
-			}
+		final Providing p = c -> {
+			if (provided.containsKey(c))
+				return provided.get(c);
+			throw new UnintendedUseException("lazy, asked what i don't know");
 		};
 
 		cb.accept(p);
@@ -636,7 +632,7 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 
 	private final Multimap<Class<?>, CompilationSignalTarget> triggers = ArrayListMultimap.create();
 
-	private void _CS_RunBetter() {
+	public void _CS_RunBetter() {
 		final CR_State st = null;
 		this.waitProviders(
 		  new Class[]{RuntimeProcesses.class, CompilationRunner.class}

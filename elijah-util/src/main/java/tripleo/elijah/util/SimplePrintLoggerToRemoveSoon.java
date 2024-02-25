@@ -2,8 +2,7 @@ package tripleo.elijah.util;
 
 import org.jetbrains.annotations.Contract;
 
-public enum SimplePrintLoggerToRemoveSoon {
-	;
+public enum SimplePrintLoggerToRemoveSoon {;
 
 	@Contract(pure = true)
 	public static void println_err(final String aS) {
@@ -42,4 +41,13 @@ public enum SimplePrintLoggerToRemoveSoon {
 	public static void println2(final String aS) {
 //		System.out.println(""+aS);
 	}
+
+	public static void println_err_5(final String aString) {
+		System.err.println("println_err_5 " + aString);
+	}
+
+	public static void println_out_5(final String aString) {
+		System.out.println("println_out_5 " + aString);
+	}
+
 }

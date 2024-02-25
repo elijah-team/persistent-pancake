@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'io.smallrye.reactive:mutiny:2.5.1'
+
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.2'
     testImplementation 'org.jetbrains.kotlin:kotlin-test:1.9.22'

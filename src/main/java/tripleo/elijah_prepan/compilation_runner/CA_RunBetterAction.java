@@ -67,24 +67,12 @@ public class CA_RunBetterAction implements CB_Action {
 			);
 
 			// FIXME Not sure where this should run ("the UI thread") or where it should be placed (can we xml this?)
-			compilation.onTrigger(CS_RunBetter.class, new CompilationSignalTarget(){
-				@Override public void run() {
-					compilation.waitProviders(
-					  new Class[]{RuntimeProcesses.class}
-					  , (o) -> {
-						  final RuntimeProcesses rt = (RuntimeProcesses) o.get(RuntimeProcesses.class);
-
-						  st.provide(rt);
-
-						  try {
-							  rt.run_better();
-						  } catch (final Exception aE) {
-							  monitor.reportFailure(CK_Monitor.PLACEHOLDER_CODE_2, "" + aE);
-						  }
-					  }
-					);
-				}
-			});
+			compilation.onTrigger(CS_RunBetter.class, () -> compilation.waitProviders(
+			  new Class[]{RuntimeProcesses.class} // not used below
+			  , (o) -> {
+				  compilation._CS_RunBetter();
+			  }
+			));
 
 			compilation.trigger(CS_RunBetter.class);
 		}

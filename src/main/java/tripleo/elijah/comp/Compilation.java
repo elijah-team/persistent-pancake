@@ -75,4 +75,6 @@ public interface Compilation extends Compilation0101 {
 	void onTrigger(Class<? /*super CompilationSignal*/> aSignalClass, CompilationSignalTarget aSignalTarget);
 
 	String getProjectName();
+
+	void _CS_RunBetter();
 }

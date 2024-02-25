@@ -1,12 +1,12 @@
 package tripleo.elijah_durable_pancake.comp.internal;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.bus.CB_Action;
-import tripleo.elijah.comp.bus.CB_Process;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ICompilationBus;
-import tripleo.elijah_durable_pancake.compilation_runner.CompilationChange;
+import tripleo.elijah.comp.bus.CB_Action;
+import tripleo.elijah.comp.bus.CB_Process;
 import tripleo.elijah_durable_pancake.comp.ILazyCompilerInstructions;
+import tripleo.elijah_durable_pancake.compilation_runner.CompilationChange;
 
 // scala actors, xtend async,
 public class CompilationBus implements ICompilationBus {
