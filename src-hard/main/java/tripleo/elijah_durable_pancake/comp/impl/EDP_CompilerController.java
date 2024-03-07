@@ -7,7 +7,7 @@ import tripleo.elijah_durable_pancake.comp.ApacheOptionsProcessor;
 import tripleo.elijah_durable_pancake.comp.CompilationRunner;
 import tripleo.elijah_durable_pancake.comp.CompilerInstructionsObserver;
 import tripleo.elijah_durable_pancake.comp.OptionsProcessor;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationBus;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_CompilationBus;
 import tripleo.elijah_pancake.feb24.comp.Startup;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class EDP_CompilerController implements CompilerController {
 	public void processOptions() {
 		final OptionsProcessor             op  = new ApacheOptionsProcessor();
 		final CompilerInstructionsObserver cio = new CompilerInstructionsObserver(c, op, c.get_cis());
-		cb = new CompilationBus(c);
+		cb = new EDP_CompilationBus(c);
 
 		try {
 			args2 = op.process(c, args, cb);

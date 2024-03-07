@@ -9,10 +9,10 @@ import tripleo.elijah_durable_pancake.comp.ILazyCompilerInstructions;
 import tripleo.elijah_durable_pancake.compilation_runner.CompilationChange;
 
 // scala actors, xtend async,
-public class CompilationBus implements ICompilationBus {
+public class EDP_CompilationBus implements ICompilationBus {
 	private final Compilation c;
 
-	public CompilationBus(final Compilation aC) {
+	public EDP_CompilationBus(final Compilation aC) {
 		c = aC;
 	}
 
