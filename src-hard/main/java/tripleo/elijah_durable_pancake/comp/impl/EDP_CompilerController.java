@@ -13,7 +13,7 @@ import tripleo.elijah_pancake.feb24.comp.Startup;
 import java.util.List;
 
 public class EDP_CompilerController implements CompilerController {
-	List<String>   args;
+	List<String>    args;
 	String[]        args2;
 	ICompilationBus cb;
 	private Compilation c;
@@ -39,10 +39,18 @@ public class EDP_CompilerController implements CompilerController {
 
 	@Override
 	public void runner() {
-		var startup = new Startup(c);
 		try {
-			c.setRunner(new CompilationRunner(c, c.get_cis(), cb, startup));
-			c.getRunner().doFindCIs(args2, cb);
+//			c.setRunner(new CompilationRunner(c, c.get_cis(), cb, startup));
+
+			c.provide(CPP_InputList.class, (o) -> {
+				return new CPP_InputList(args2, cb);
+			}, new Class[]{});
+			c.provide(CPP_Runner.class, (o) -> {
+				var startup = new Startup(c);
+				return new CPP_Runner(startup, new CompilationRunner(c, c.get_cis(), cb, startup));
+			}, new Class[]{});
+
+			c.trigger(CS_FindCIs.class);
 		} catch (final Exception e) {
 			c.getErrSink().exception(e);
 			throw new RuntimeException(e);
@@ -52,5 +60,25 @@ public class EDP_CompilerController implements CompilerController {
 	public void _set(final Compilation aCompilation, final List<String> aArgs) {
 		c    = aCompilation;
 		args = aArgs;
+
+		c.onTrigger(CS_FindCIs.class, () -> c.waitProviders(
+		  new Class[]{CPP_InputList.class, CPP_Runner.class} // be lazy/don't overspecify
+		  , (o) -> {
+			  c.getRunner().doFindCIs(args2, cb);
+		  }));
+		c.onTrigger(CPP_Runner.class, () -> c.waitProviders(
+		  new Class[]{}
+		  , (o) -> {
+			  c.getRunner().doFindCIs(args2, cb);
+		  }));
+	}
+
+	interface CS_FindCIs {
+	}
+
+	record CPP_InputList(String[] aArgs2, ICompilationBus aCb) {
+	}
+
+	record CPP_Runner(Startup st, CompilationRunner cr) {
 	}
 }
