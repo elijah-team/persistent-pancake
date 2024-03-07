@@ -7,7 +7,7 @@ import tripleo.elijah.comp.i.ProgressSinkComponent;
 import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
 import tripleo.elijah.comp.i.IProgressSink;
 import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
-import tripleo.elijah_durable_pancake.comp.internal.DefaultProgressSink;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_ProgressSink;
 
 class CCI {
 	//private final @NotNull Compilation compilation;
@@ -16,7 +16,7 @@ class CCI {
 
 	@Contract(pure = true)
 	CCI(final @NotNull Compilation0101 aCompilation, final CompilationImpl.CIS aCis) {
-		this(aCompilation, aCis, new DefaultProgressSink());
+		this(aCompilation, aCis, new EDP_ProgressSink());
 	}
 
 	@Contract(pure = true)

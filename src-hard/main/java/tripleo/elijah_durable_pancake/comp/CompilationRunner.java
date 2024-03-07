@@ -17,7 +17,7 @@ import tripleo.elijah.util.Operation;
 import tripleo.elijah.util.Operation2;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
-import tripleo.elijah_durable_pancake.comp.internal.DefaultProgressSink;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_ProgressSink;
 import tripleo.elijah_durable_pancake.comp.queries.QueryEzFileToModule;
 import tripleo.elijah_durable_pancake.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah_pancake.feb24.comp.CR_State;
@@ -54,7 +54,7 @@ public class CompilationRunner {
 	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb, final Startup startup) {
 		compilation = aCompilation;
 		cis         = a_cis;
-		final DefaultProgressSink ps1 = new DefaultProgressSink();
+		final EDP_ProgressSink ps1 = new EDP_ProgressSink();
 		cci = new CCI(compilation, a_cis, ps1);
 		cb  = aCb;
 
