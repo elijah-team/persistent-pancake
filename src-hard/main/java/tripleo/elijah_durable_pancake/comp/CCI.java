@@ -35,6 +35,6 @@ class CCI {
 		_ps.note(131, ProgressSinkComponent.CCI, -1, new Object[]{ci.getName()});
 
 		_cis.onNext(ci);
-		//compilation.pushItem(ci);
+//		new EDP_Compilation(null,null).pushItem(ci);
 	}
 }
