@@ -21,7 +21,7 @@ import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
  * @author tripleo(sb)
  *
  */
-public class StdErrSink implements ErrSink {
+public class EDP_ErrSink implements ErrSink {
 
 	private int _errorCount;
 

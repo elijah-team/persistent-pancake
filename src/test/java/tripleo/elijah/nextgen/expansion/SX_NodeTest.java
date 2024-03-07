@@ -14,10 +14,10 @@ import tripleo.elijah.stages.gen_generic.OutputFileFactory;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah_durable_pancake.comp.AccessBus;
-import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
-import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
-import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import java.util.List;
@@ -28,10 +28,10 @@ public class SX_NodeTest {
 
 	@Test
 	public void testFullText() {
-		final StdErrSink      errSink       = new StdErrSink();
-		final IO              io            = new IO_();
+		final EDP_ErrSink errSink = new EDP_ErrSink();
+		final IO          io      = new EDP_IO();
 		final CompilationImpl comp          = new CompilationImpl(errSink, io);
-		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(comp));
+		final AccessBus     ab           = new AccessBus(new EDP_CompilationAccess(comp));
 		final PipelineLogic   pipelineLogic = new PipelineLogic(ab);
 		final OS_Module mod = comp.moduleBuilder()
 		                          .withFileName("filename.elijah")

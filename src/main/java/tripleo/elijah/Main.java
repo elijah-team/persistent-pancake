@@ -9,8 +9,8 @@
 package tripleo.elijah;
 
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah_durable_pancake.comp.impl.IO_;
-import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import java.util.ArrayList;
@@ -20,8 +20,8 @@ import java.util.List;
 public class Main {
 
 	public static void main(final String[] args) throws Exception {
-		final StdErrSink   errSink = new StdErrSink();
-		final Compilation  cc      = new CompilationImpl(errSink, new IO_());
+		final EDP_ErrSink errSink = new EDP_ErrSink();
+		final Compilation cc      = new CompilationImpl(errSink, new EDP_IO());
 		final List<String> ls      = new ArrayList<String>();
 		ls.addAll(Arrays.asList(args));
 		cc.feedCmdLine(ls);

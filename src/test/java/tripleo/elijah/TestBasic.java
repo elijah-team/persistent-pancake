@@ -20,8 +20,8 @@ import tripleo.elijah.factory.comp.CompilationFactory;
 import tripleo.elijah.nextgen.outputstatement.EG_SequenceStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
-import tripleo.elijah_durable_pancake.comp.impl.IO_;
-import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import java.io.File;
@@ -48,8 +48,8 @@ public class TestBasic {
 		final List<String> args     = new ArrayList<String>();
 		args.addAll(ez_files);
 		args.add("-sE");
-		final ErrSink     eee = new StdErrSink();
-		final Compilation c   = new CompilationImpl(eee, new IO_());
+		final ErrSink     eee = new EDP_ErrSink();
+		final Compilation c   = new CompilationImpl(eee, new EDP_IO());
 
 		c.feedCmdLine(args);
 
@@ -60,8 +60,8 @@ public class TestBasic {
 	final void testBasic_listfolders3() {
 		final String s = "test/basic/listfolders3/listfolders3.ez";
 
-		final ErrSink     eee = new StdErrSink();
-		final Compilation c   = new CompilationImpl(eee, new IO_());
+		final ErrSink     eee = new EDP_ErrSink();
+		final Compilation c   = new CompilationImpl(eee, new EDP_IO());
 
 		c.feedCmdLine(List_of(s, "-sO"));
 
@@ -96,8 +96,8 @@ public class TestBasic {
 	final void testBasic_listfolders4() {
 		final String s = "test/basic/listfolders4/listfolders4.ez";
 
-		final ErrSink     eee = new StdErrSink();
-		final Compilation c   = new CompilationImpl(eee, new IO_());
+		final ErrSink     eee = new EDP_ErrSink();
+		final Compilation c   = new CompilationImpl(eee, new EDP_IO());
 
 		c.feedCmdLine(List_of(s, "-sO"));
 
@@ -114,7 +114,7 @@ public class TestBasic {
 	@Test
 	final void testBasic_fact1() {
 		final String        s  = "test/basic/fact1/main2";
-		final Compilation   c  = CompilationFactory.mkCompilation(new StdErrSink(), new IO_());
+		final Compilation   c  = CompilationFactory.mkCompilation(new EDP_ErrSink(), new EDP_IO());
 
 //		final CompilerInput i1 = new CompilerInput_(s);
 //		final CompilerInput i2 = new CompilerInput_("-sO");

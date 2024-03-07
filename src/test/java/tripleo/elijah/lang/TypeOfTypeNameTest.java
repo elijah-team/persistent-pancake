@@ -16,10 +16,10 @@ import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah_durable_pancake.comp.AccessBus;
-import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
-import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
-import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import static org.easymock.EasyMock.*;
@@ -34,7 +34,7 @@ public class TypeOfTypeNameTest {
 		//
 		final Context     ctx = mock(Context.class);
 		final OS_Module   mod = mock(OS_Module.class);
-		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO_());
+		final Compilation c   = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
 
 		//
 		// CREATE VARIABLES
@@ -69,7 +69,7 @@ public class TypeOfTypeNameTest {
 		//
 		// VERIFY EXPECTATIONS
 		//
-		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(c));
+		final AccessBus     ab           = new AccessBus(new EDP_CompilationAccess(c));
 		final PipelineLogic pl           = new PipelineLogic(ab);
 		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
@@ -85,7 +85,7 @@ public class TypeOfTypeNameTest {
 		//
 		final Context     ctx = mock(Context.class);
 		final OS_Module   mod = mock(OS_Module.class);
-		final Compilation c   = new CompilationImpl(new StdErrSink(), new IO_());
+		final Compilation c   = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
 
 		//
 		// CREATE VARIABLES
@@ -121,7 +121,7 @@ public class TypeOfTypeNameTest {
 		//
 		// VERIFY EXPECTATIONS
 		//
-		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(c));
+		final AccessBus     ab           = new AccessBus(new EDP_CompilationAccess(c));
 		final PipelineLogic pl           = new PipelineLogic(ab);
 		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
@@ -209,7 +209,7 @@ public class TypeOfTypeNameTest {
 		final String typeNameString  = "SystemInteger";
 
 		final OS_Module mod = new OS_Module();
-		mod.parent = new CompilationImpl(new StdErrSink(), new IO_());
+		mod.parent = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
 		final Context mod_ctx = mod.getContext();
 
 		final ClassStatement st_af = new ClassStatement(mod, mod_ctx);
@@ -254,7 +254,7 @@ public class TypeOfTypeNameTest {
 //		expect(mod.parent.getSilence()).andReturn(true); //ElLog.Verbosity.SILENT); // TODO is this *really* correct
 //		expect(mod.parent.getSilence()).andReturn(true); //ElLog.Verbosity.SILENT); // TODO is this *really* correct
 
-		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(mod.parent));
+		final AccessBus     ab           = new AccessBus(new EDP_CompilationAccess(mod.parent));
 		final PipelineLogic pl           = new PipelineLogic(ab);
 		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
 //		expect(mod.getFileName()).andReturn("foo.elijah");

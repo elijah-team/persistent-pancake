@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tripleo.elijah_durable_pancake.comp.AccessBus;
 import tripleo.elijah.comp.Compilation;
-import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 import tripleo.elijah.lang.ClassStatement;
 import tripleo.elijah.lang.Context;
@@ -111,7 +111,7 @@ public class GetIdentIAPathTest_ForC {
 		final Compilation c = b.comp;
 //		final OS_Module mod = b.defaultMod();
 
-		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(c));
+		final AccessBus     ab           = new AccessBus(new EDP_CompilationAccess(c));
 		final PipelineLogic     pl            = new PipelineLogic(ab);
 		final GeneratePhase     generatePhase = pl.generatePhase;
 		final GenerateFunctions gen           = generatePhase.getGenerateFunctions(mod);
@@ -142,7 +142,7 @@ public class GetIdentIAPathTest_ForC {
 		final Compilation c = b.comp;
 //		final OS_Module mod = b.defaultMod();
 
-		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(c));
+		final AccessBus     ab           = new AccessBus(new EDP_CompilationAccess(c));
 		final PipelineLogic     pl            = new PipelineLogic(ab);
 		final GeneratePhase     generatePhase = pl.generatePhase;
 		final GenerateFunctions gen           = generatePhase.getGenerateFunctions(mod);
@@ -228,7 +228,7 @@ public class GetIdentIAPathTest_ForC {
 		final Compilation c = b.comp;
 //		final OS_Module mod = b.defaultMod();
 
-		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(c));
+		final AccessBus     ab           = new AccessBus(new EDP_CompilationAccess(c));
 		final PipelineLogic       pl            = new PipelineLogic(ab);
 		final GeneratePhase       generatePhase = pl.generatePhase;
 		final GenerateFunctions   gen           = generatePhase.getGenerateFunctions(mod);

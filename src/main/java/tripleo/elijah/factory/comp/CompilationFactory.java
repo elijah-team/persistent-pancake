@@ -6,8 +6,8 @@ import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.testing.comp.IFunctionMapHook;
-import tripleo.elijah_durable_pancake.comp.impl.IO_;
-import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import java.util.List;
@@ -15,8 +15,8 @@ import java.util.List;
 public class CompilationFactory {
 
 	public static Compilation mkCompilation2(final List<IFunctionMapHook> aMapHooks) {
-		final StdErrSink errSink = new StdErrSink();
-		final IO         io      = new IO_();
+		final EDP_ErrSink errSink = new EDP_ErrSink();
+		final IO          io      = new EDP_IO();
 
 		final @NotNull CompilationImpl c = mkCompilation(errSink, io);
 
@@ -31,8 +31,8 @@ public class CompilationFactory {
 	}
 
 	public static @NotNull CompilationImpl mkCompilationDefault() {
-		var eee1 = new StdErrSink();
-		var io1  = new IO_();
+		var eee1 = new EDP_ErrSink();
+		var io1  = new EDP_IO();
 
 		return mkCompilation(eee1, io1);
 	}

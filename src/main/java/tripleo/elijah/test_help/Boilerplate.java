@@ -12,8 +12,8 @@ import tripleo.elijah.stages.gen_generic.OutputFileFactory;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
-import tripleo.elijah_durable_pancake.comp.impl.IO_;
-import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 import tripleo.elijah_pancake.feb24.comp.ProcessRecord;
 
@@ -28,7 +28,7 @@ public class Boilerplate {
 	OS_Module module;
 
 	public void get() {
-		comp = new CompilationImpl(new StdErrSink(), new IO_());
+		comp = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
 		aca  = ((CompilationImpl) comp)._access();
 		pr   = new ProcessRecord(aca);
 

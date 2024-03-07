@@ -2,8 +2,8 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tripleo.elijah.comp.Compilation
 import tripleo.elijah.factory.comp.CompilationFactory
-import tripleo.elijah_durable_pancake.comp.impl.IO_
-import tripleo.elijah_durable_pancake.comp.impl.StdErrSink
+import tripleo.elijah_durable_pancake.comp.impl.EDP_IO
+import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink
 
 class ClassInstantiationSpec extends Specification {
 	def "errorCount"() {
@@ -119,7 +119,7 @@ class ClassInstantiationSpec extends Specification {
 	def setupSpec() {
 		def f = "test/basic1/class_instantiation/"
 
-		def cc = CompilationFactory.mkCompilation(new StdErrSink(), new IO_())
+		def cc = CompilationFactory.mkCompilation(new EDP_ErrSink(), new EDP_IO())
 		cc.feedCmdLine([f])
 
 		this.cc = cc
@@ -152,7 +152,7 @@ class ClassInstantiationSpec extends Specification {
 
 	Compilation cf(String rootCI) {
 		if (!m.containsKey(rootCI)) {
-			def cc = CompilationFactory.mkCompilation(new StdErrSink(), new IO_())
+			def cc = CompilationFactory.mkCompilation(new EDP_ErrSink(), new EDP_IO())
 			cc.feedCmdLine([rootCI])
 			m.put(rootCI, cc)
 		}

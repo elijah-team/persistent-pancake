@@ -9,7 +9,7 @@ import tripleo.elijah.util.EventualExtract;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 
 // TODO apt for this
-public class CentralControllerImpl implements CentralController {
+public class EDP_CentralController implements CentralController {
 	private final Eventual<PipelineLogic> _p_PipelineLogic = new Eventual<>();
 	private final Eventual<GeneratePhase> _p_GeneratePhase = new Eventual<>();
 	private final Eventual<DeducePhase>   _p_DeducePhase   = new Eventual<>();

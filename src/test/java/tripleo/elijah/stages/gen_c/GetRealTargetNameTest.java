@@ -27,10 +27,10 @@ import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah_durable_pancake.comp.AccessBus;
-import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
-import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
-import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import static org.easymock.EasyMock.mock;
@@ -64,10 +64,10 @@ public class GetRealTargetNameTest {
 		final IdentIA        ident_ia  = new IdentIA(ite_index, gf);
 		ident_ia.setPrev(new IntegerIA(int_index, gf));
 		//
-		final CompilationImpl         c = new CompilationImpl(new StdErrSink(), new IO_());
-		final AccessBus     ab           = new AccessBus(new DefaultCompilationAccess(c));
+		final CompilationImpl         c = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
+		final AccessBus     ab           = new AccessBus(new EDP_CompilationAccess(c));
 		final PipelineLogic           pl          = new PipelineLogic(ab);
-		final OutputFileFactoryParams p           = new OutputFileFactoryParams(mod, new StdErrSink(), ElLog.Verbosity.SILENT, pl);  // TODO do we want silent?
+		final OutputFileFactoryParams p           = new OutputFileFactoryParams(mod, new EDP_ErrSink(), ElLog.Verbosity.SILENT, pl);  // TODO do we want silent?
 		final GenerateC               gc           = new GenerateC(p);
 		//
 		Emit.emitting = false;

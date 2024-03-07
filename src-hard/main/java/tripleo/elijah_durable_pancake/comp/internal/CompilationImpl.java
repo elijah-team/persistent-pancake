@@ -57,9 +57,9 @@ import tripleo.elijah_durable_pancake.comp.ModuleBuilder;
 import tripleo.elijah_durable_pancake.comp.Pipeline;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 import tripleo.elijah_durable_pancake.comp.functionality.f202.F202;
-import tripleo.elijah_durable_pancake.comp.impl.CentralControllerImpl;
-import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
-import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilerController;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_CentralController;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilerController;
 import tripleo.elijah_durable_pancake.comp.impl.LCM_Event_RootCI;
 import tripleo.elijah_durable_pancake.comp.queries.QueryEzFileToModule;
 import tripleo.elijah_durable_pancake.comp.queries.QueryEzFileToModuleParams;
@@ -125,7 +125,7 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 	}
 
 	public void feedCmdLine(final @NotNull List<String> args) {
-		feedCmdLine(args, new DefaultCompilerController());
+		feedCmdLine(args, new EDP_CompilerController());
 	}
 
 	public String getProjectName() {
@@ -303,8 +303,8 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 			return; // ab
 		}
 
-		if (ctl instanceof DefaultCompilerController) {
-			final DefaultCompilerController dctl = (DefaultCompilerController) ctl;
+		if (ctl instanceof EDP_CompilerController) {
+			final EDP_CompilerController dctl = (EDP_CompilerController) ctl;
 			dctl._set(this, args);
 		} else if (ctl instanceof UT_Controller) {
 			final UT_Controller uctl = (UT_Controller) ctl;
@@ -404,7 +404,7 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 	private final @NotNull FluffyCompImpl _fluffyComp;
 
 	public ICompilationAccess _access() {
-		return new DefaultCompilationAccess(this);
+		return new EDP_CompilationAccess(this);
 	}
 
 	@Override
@@ -420,7 +420,7 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 	@Override public CentralController central() {
 		//JavaCompiler.CompilationTask
 		if (this.central == null)
-			this.central = new CentralControllerImpl();
+			this.central = new EDP_CentralController();
 		return this.central;
 	}
 

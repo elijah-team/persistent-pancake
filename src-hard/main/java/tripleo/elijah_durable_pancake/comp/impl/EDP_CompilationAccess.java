@@ -10,10 +10,10 @@ import tripleo.elijah_prepan.compilation_runner.Stages;
 
 import java.util.List;
 
-public class DefaultCompilationAccess implements ICompilationAccess {
+public class EDP_CompilationAccess implements ICompilationAccess {
 	protected final Compilation compilation;
 
-	public DefaultCompilationAccess(final Compilation aCompilation) {
+	public EDP_CompilationAccess(final Compilation aCompilation) {
 		compilation = aCompilation;
 	}
 

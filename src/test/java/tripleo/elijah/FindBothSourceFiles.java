@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah_durable_pancake.comp.impl.IO_;
-import tripleo.elijah_durable_pancake.comp.impl.StdErrSink;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
 
 import java.io.File;
@@ -38,8 +38,8 @@ public class FindBothSourceFiles {
 	final void compilerShouldFindBothParseFiles() throws Exception {
 		final List<String> args = List_of("test/demo-el-normal", "test/demo-el-normal/main2", "-sE");
 //		ErrSink eee = JMock.of(ErrSink.class);
-		final ErrSink     eee = new StdErrSink();
-		final Compilation c   = new CompilationImpl(eee, new IO_());
+		final ErrSink     eee = new EDP_ErrSink();
+		final Compilation c   = new CompilationImpl(eee, new EDP_IO());
 
 		c.feedCmdLine(args);
 

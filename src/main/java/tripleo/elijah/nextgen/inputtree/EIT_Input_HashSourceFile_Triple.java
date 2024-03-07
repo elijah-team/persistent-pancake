@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
-import tripleo.elijah_durable_pancake.comp.impl.IO_;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 
 public record EIT_Input_HashSourceFile_Triple(String hash, EIT_SourceOrigin source, String filename)
         implements EIT_Input {
@@ -37,7 +37,7 @@ public record EIT_Input_HashSourceFile_Triple(String hash, EIT_SourceOrigin sour
         throw new IllegalStateException("hash failure"); // Operation??
     }
 
-    public static EIT_Input_HashSourceFile_Triple decode(IO_._IO_ReadFile aFile) {
+    public static EIT_Input_HashSourceFile_Triple decode(EDP_IO._IO_ReadFile aFile) {
         final String            fn  = aFile.getFileName();
         final Operation<String> op2 = aFile.hash();
 

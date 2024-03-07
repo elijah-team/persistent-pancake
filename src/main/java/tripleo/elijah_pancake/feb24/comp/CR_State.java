@@ -2,7 +2,7 @@ package tripleo.elijah_pancake.feb24.comp;
 
 import tripleo.elijah.comp.bus.CB_Action;
 import tripleo.elijah_durable_pancake.comp.CompilationRunner;
-import tripleo.elijah_durable_pancake.comp.impl.DefaultCompilationAccess;
+import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
 import tripleo.elijah.comp.i.ICompilationAccess;
 import tripleo.elijah_prepan.compilation_runner.RuntimeProcesses;
 
@@ -23,7 +23,7 @@ public class CR_State {
 
 	public ICompilationAccess ca() {
 		if (ca == null) {
-			ca = new DefaultCompilationAccess(compilationRunner._accessCompilation());
+			ca = new EDP_CompilationAccess(compilationRunner._accessCompilation());
 			pr = new ProcessRecord(ca);
 
 			startup.provide(ca);

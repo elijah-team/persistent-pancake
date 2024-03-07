@@ -12,7 +12,7 @@ import tripleo.elijah_pancake.feb24.comp.Startup;
 
 import java.util.List;
 
-public class DefaultCompilerController implements CompilerController {
+public class EDP_CompilerController implements CompilerController {
 	List<String>   args;
 	String[]        args2;
 	ICompilationBus cb;
