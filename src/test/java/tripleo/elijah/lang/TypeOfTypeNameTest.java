@@ -20,7 +20,7 @@ import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 
 import static org.easymock.EasyMock.*;
 
@@ -34,7 +34,7 @@ public class TypeOfTypeNameTest {
 		//
 		final Context     ctx = mock(Context.class);
 		final OS_Module   mod = mock(OS_Module.class);
-		final Compilation c   = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
+		final Compilation c   = new EDP_Compilation(new EDP_ErrSink(), new EDP_IO());
 
 		//
 		// CREATE VARIABLES
@@ -85,7 +85,7 @@ public class TypeOfTypeNameTest {
 		//
 		final Context     ctx = mock(Context.class);
 		final OS_Module   mod = mock(OS_Module.class);
-		final Compilation c   = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
+		final Compilation c   = new EDP_Compilation(new EDP_ErrSink(), new EDP_IO());
 
 		//
 		// CREATE VARIABLES
@@ -209,7 +209,7 @@ public class TypeOfTypeNameTest {
 		final String typeNameString  = "SystemInteger";
 
 		final OS_Module mod = new OS_Module();
-		mod.parent = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
+		mod.parent = new EDP_Compilation(new EDP_ErrSink(), new EDP_IO());
 		final Context mod_ctx = mod.getContext();
 
 		final ClassStatement st_af = new ClassStatement(mod, mod_ctx);

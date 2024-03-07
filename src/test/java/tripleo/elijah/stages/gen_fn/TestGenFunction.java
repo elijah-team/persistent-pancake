@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -293,7 +293,7 @@ public class TestGenFunction {
 	@Test
 	public void testBasic1Backlink3Elijah() {
 		final EDP_ErrSink eee = new EDP_ErrSink();
-		final Compilation c   = new CompilationImpl(eee, new EDP_IO());
+		final Compilation c   = new EDP_Compilation(eee, new EDP_IO());
 
 		final String ff = "test/basic1/backlink3/";
 		c.feedCmdLine(List_of(ff));

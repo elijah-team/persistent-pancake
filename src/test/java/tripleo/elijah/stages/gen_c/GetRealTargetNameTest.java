@@ -31,7 +31,7 @@ import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 
 import static org.easymock.EasyMock.mock;
 
@@ -64,8 +64,8 @@ public class GetRealTargetNameTest {
 		final IdentIA        ident_ia  = new IdentIA(ite_index, gf);
 		ident_ia.setPrev(new IntegerIA(int_index, gf));
 		//
-		final CompilationImpl         c = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
-		final AccessBus     ab           = new AccessBus(new EDP_CompilationAccess(c));
+		final EDP_Compilation c  = new EDP_Compilation(new EDP_ErrSink(), new EDP_IO());
+		final AccessBus       ab = new AccessBus(new EDP_CompilationAccess(c));
 		final PipelineLogic           pl          = new PipelineLogic(ab);
 		final OutputFileFactoryParams p           = new OutputFileFactoryParams(mod, new EDP_ErrSink(), ElLog.Verbosity.SILENT, pl);  // TODO do we want silent?
 		final GenerateC               gc           = new GenerateC(p);

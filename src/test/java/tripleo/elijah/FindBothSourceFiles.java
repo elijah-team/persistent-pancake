@@ -14,7 +14,7 @@ import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.ErrSink;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 
 import java.io.File;
 import java.util.List;
@@ -39,7 +39,7 @@ public class FindBothSourceFiles {
 		final List<String> args = List_of("test/demo-el-normal", "test/demo-el-normal/main2", "-sE");
 //		ErrSink eee = JMock.of(ErrSink.class);
 		final ErrSink     eee = new EDP_ErrSink();
-		final Compilation c   = new CompilationImpl(eee, new EDP_IO());
+		final Compilation c   = new EDP_Compilation(eee, new EDP_IO());
 
 		c.feedCmdLine(args);
 

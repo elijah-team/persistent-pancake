@@ -22,7 +22,7 @@ import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class TestBasic {
 		args.addAll(ez_files);
 		args.add("-sE");
 		final ErrSink     eee = new EDP_ErrSink();
-		final Compilation c   = new CompilationImpl(eee, new EDP_IO());
+		final Compilation c   = new EDP_Compilation(eee, new EDP_IO());
 
 		c.feedCmdLine(args);
 
@@ -61,7 +61,7 @@ public class TestBasic {
 		final String s = "test/basic/listfolders3/listfolders3.ez";
 
 		final ErrSink     eee = new EDP_ErrSink();
-		final Compilation c   = new CompilationImpl(eee, new EDP_IO());
+		final Compilation c   = new EDP_Compilation(eee, new EDP_IO());
 
 		c.feedCmdLine(List_of(s, "-sO"));
 
@@ -97,7 +97,7 @@ public class TestBasic {
 		final String s = "test/basic/listfolders4/listfolders4.ez";
 
 		final ErrSink     eee = new EDP_ErrSink();
-		final Compilation c   = new CompilationImpl(eee, new EDP_IO());
+		final Compilation c   = new EDP_Compilation(eee, new EDP_IO());
 
 		c.feedCmdLine(List_of(s, "-sO"));
 

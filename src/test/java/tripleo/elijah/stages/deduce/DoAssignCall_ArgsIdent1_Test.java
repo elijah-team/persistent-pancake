@@ -27,7 +27,7 @@ import tripleo.elijah_durable_pancake.comp.AccessBus;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 
 import java.util.ArrayList;
 
@@ -42,8 +42,8 @@ public class DoAssignCall_ArgsIdent1_Test {
 
 	@Test
 	void f1_eq_factorial_b1() {
-		final CompilationImpl c             = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
-		final OS_Module       mod           = mock(OS_Module.class);
+		final EDP_Compilation c   = new EDP_Compilation(new EDP_ErrSink(), new EDP_IO());
+		final OS_Module       mod = mock(OS_Module.class);
 		final AccessBus       accessBus           = new AccessBus(c._access());
 		final PipelineLogic   pipelineLogic = new PipelineLogic(accessBus);
 		final GeneratePhase   generatePhase = new GeneratePhase(accessBus, pipelineLogic);

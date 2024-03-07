@@ -17,7 +17,7 @@ import tripleo.elijah_durable_pancake.comp.AccessBus;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,7 +30,7 @@ public class ElSystemTest {
 
 	@BeforeEach
 	public void setUp() {
-		c  = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
+		c  = new EDP_Compilation(new EDP_ErrSink(), new EDP_IO());
 		ab           = new AccessBus(new EDP_CompilationAccess(c));
 
 		final String f = "test/basic1/backlink3";

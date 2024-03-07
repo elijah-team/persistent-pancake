@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 import tripleo.elijah.nextgen.model.SM_ClassBody;
 import tripleo.elijah.nextgen.model.SM_ClassDeclaration;
 import tripleo.elijah.nextgen.model.SM_ClassInheritance;
@@ -34,8 +34,8 @@ public class SX_NodeTest2 {
 	@Test
 	void testFullText() {
 		final EDP_ErrSink errSink = new EDP_ErrSink();
-		final IO          io      = new EDP_IO();
-		final CompilationImpl comp    = new CompilationImpl(errSink, io);
+		final IO              io   = new EDP_IO();
+		final EDP_Compilation comp = new EDP_Compilation(errSink, io);
 //		final AccessBus       ab            = new AccessBus(comp);
 //		final PipelineLogic   pipelineLogic = new PipelineLogic(ab);
 //		final OS_Module mod = comp.moduleBuilder()
