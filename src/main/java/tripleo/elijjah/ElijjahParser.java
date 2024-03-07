@@ -9025,7 +9025,7 @@ inputState.guessing--;
 		"MINUS",
 		"STAR",
 		"DIV",
-		"MOD",
+		"EDP_MOD",
 		"INC",
 		"DEC",
 		"BNOT",

@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class CompilerInputImpl extends __Extensionable implements CompilerInput {
+public class EDP_CompilerInput extends __Extensionable implements CompilerInput {
     @Override public File makeFile() {
 	    return switch (ty) {
 		    case SOURCE_ROOT -> dir_carrier;
@@ -35,7 +35,7 @@ public class CompilerInputImpl extends __Extensionable implements CompilerInput 
     @SuppressWarnings("unchecked") // README squiggly line in idea
     private List<Operation2<CompilerInstructions>> directoryResults = Collections.EMPTY_LIST;
 
-    public CompilerInputImpl(final String aS) {
+    public EDP_CompilerInput(final String aS) {
         inp = aS;
         ty  = Ty.NULL;
     }

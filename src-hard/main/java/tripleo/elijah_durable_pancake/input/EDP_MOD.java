@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MOD {
+public class EDP_MOD {
 	public final List<OS_Module>        modules = new ArrayList<OS_Module>();
 	public final Map<String, OS_Module> fn2m    = new HashMap<String, OS_Module>();
 //		private final Compilation            c;
 
-	public MOD(final Compilation0101 aCompilation) {
+	public EDP_MOD(final Compilation0101 aCompilation) {
 //			c = aCompilation;
 	}
 

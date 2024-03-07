@@ -63,8 +63,8 @@ import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilerController;
 import tripleo.elijah_durable_pancake.comp.impl.LCM_Event_RootCI;
 import tripleo.elijah_durable_pancake.comp.queries.QueryEzFileToModule;
 import tripleo.elijah_durable_pancake.comp.queries.QueryEzFileToModuleParams;
-import tripleo.elijah_durable_pancake.input.MOD;
-import tripleo.elijah_durable_pancake.input.USE;
+import tripleo.elijah_durable_pancake.input.EDP_MOD;
+import tripleo.elijah_durable_pancake.input.EDP_USE;
 import tripleo.elijah_pancake.feb24.comp.CR_State;
 import tripleo.elijah_pancake.feb24.comp.CompilationSignalTarget;
 import tripleo.elijah_pancake.feb24.comp.Providing;
@@ -98,12 +98,12 @@ public class EDP_Compilation implements Compilation0101, ElSystemSink, Compilati
 	private final int                  _compilationNumber;
 	private final ErrSink              errSink;
 	//
-	public final  DefaultLivingRepo    _repo  = new DefaultLivingRepo();
+	public final  DefaultLivingRepo _repo = new DefaultLivingRepo();
 	//
-	final         MOD                  mod    = new MOD(this);
-	private final IO                   io;
-	private final USE                  use    = new USE(this);
-	private       CentralController    central;
+	final         EDP_MOD           mod   = new EDP_MOD(this);
+	private final IO                io;
+	private final EDP_USE           use = new EDP_USE(this);
+	private       CentralController central;
 	//
 	//
 	//

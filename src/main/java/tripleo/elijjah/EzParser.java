@@ -1878,7 +1878,7 @@ public EzParser(final ParserSharedInputState state) {
 		"MINUS",
 		"STAR",
 		"DIV",
-		"MOD",
+		"EDP_MOD",
 		"INC",
 		"DEC",
 		"BNOT",

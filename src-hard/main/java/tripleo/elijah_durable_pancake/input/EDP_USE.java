@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class USE {
+public class EDP_USE {
 	public static final FilenameFilter accept_source_files = (directory, file_name) -> {
 		final boolean matches = Pattern.matches(".+\\.elijah$", file_name)
 		  || Pattern.matches(".+\\.elijjah$", file_name);
@@ -47,7 +47,7 @@ public class USE {
 	private final       Map<String, OS_Module> fn2m                = new HashMap<String, OS_Module>();
 
 	@Contract(pure = true)
-	public USE(final Compilation aCompilation) {
+	public EDP_USE(final Compilation aCompilation) {
 		c       = aCompilation;
 		errSink = c.getErrSink();
 	}
