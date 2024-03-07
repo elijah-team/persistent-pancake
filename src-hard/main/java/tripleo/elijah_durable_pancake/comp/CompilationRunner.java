@@ -16,7 +16,7 @@ import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah.util.Operation2;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 import tripleo.elijah_durable_pancake.comp.internal.EDP_ProgressSink;
 import tripleo.elijah_durable_pancake.comp.queries.QueryEzFileToModule;
 import tripleo.elijah_durable_pancake.comp.queries.QueryEzFileToModuleParams;
@@ -43,15 +43,15 @@ import static tripleo.elijah.util.Helpers.List_of;
  */
 public class CompilationRunner {
 	final         Map<String, CompilerInstructions> fn2ci = new HashMap<>();
-	private final Compilation                       compilation;
-	private final CompilationImpl.CIS               cis;
-	private final CCI                               cci;
+	private final Compilation         compilation;
+	private final EDP_Compilation.CIS cis;
+	private final CCI                 cci;
 	private final ICompilationBus                   cb;
 
 	private final CR_State st1;
 
 	@Contract(pure = true)
-	public CompilationRunner(final Compilation aCompilation, final CompilationImpl.CIS a_cis, final ICompilationBus aCb, final Startup startup) {
+	public CompilationRunner(final Compilation aCompilation, final EDP_Compilation.CIS a_cis, final ICompilationBus aCb, final Startup startup) {
 		compilation = aCompilation;
 		cis         = a_cis;
 		final EDP_ProgressSink ps1 = new EDP_ProgressSink();

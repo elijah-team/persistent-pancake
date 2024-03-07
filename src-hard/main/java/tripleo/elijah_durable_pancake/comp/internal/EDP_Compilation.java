@@ -89,7 +89,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class CompilationImpl implements Compilation0101, ElSystemSink, Compilation {
+public class EDP_Compilation implements Compilation0101, ElSystemSink, Compilation {
 
 	public final  List<ElLog>          elLogs = new LinkedList<ElLog>();
 	public final  CompilationConfig    cfg    = new CompilationConfig();
@@ -372,7 +372,7 @@ public class CompilationImpl implements Compilation0101, ElSystemSink, Compilati
 		elLogs.add(aLog);
 	}
 
-	public CompilationImpl(final ErrSink aErrSink, final IO aIo) {
+	public EDP_Compilation(final ErrSink aErrSink, final IO aIo) {
 		errSink            = aErrSink;
 		io                 = aIo;
 		_compilationNumber = new Random().nextInt(Integer.MAX_VALUE);

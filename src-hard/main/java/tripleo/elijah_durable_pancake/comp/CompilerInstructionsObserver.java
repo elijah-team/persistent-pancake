@@ -6,7 +6,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class CompilerInstructionsObserver implements Observer<CompilerInstructio
 		compilation = aCompilation;
 	}
 
-	public CompilerInstructionsObserver(final Compilation aCompilation, final OptionsProcessor ignoredAOp, final CompilationImpl.CIS cis) {
+	public CompilerInstructionsObserver(final Compilation aCompilation, final OptionsProcessor ignoredAOp, final EDP_Compilation.CIS cis) {
 		compilation = aCompilation;
 		cis.set_cio(this);
 

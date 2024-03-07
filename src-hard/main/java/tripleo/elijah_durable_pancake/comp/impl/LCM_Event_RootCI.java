@@ -4,7 +4,7 @@ import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.i.LCM_CompilerAccess;
 import tripleo.elijah.comp.i.LCM_Event;
 import tripleo.elijah.comp.i.LCM_HandleEvent;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 import tripleo.elijah_pancake.feb24.googly.P;
 
 public class LCM_Event_RootCI implements LCM_Event {
@@ -33,7 +33,7 @@ public class LCM_Event_RootCI implements LCM_Event {
 //			c.c().setRootCI(rootCI);
 			c.cr().start(rootCI);
 
-			CompilationImpl cc = (CompilationImpl) c.c();
+			EDP_Compilation cc = (EDP_Compilation) c.c();
 			cc.central().waitPipelineLogic(pl -> pl.dp.checkFinishEventuals());
 		} catch (Exception aE) {
 			aHandleEvent.lcm().exception(aHandleEvent, aE);

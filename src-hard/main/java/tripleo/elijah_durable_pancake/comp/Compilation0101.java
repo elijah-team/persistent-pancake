@@ -13,7 +13,7 @@ import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.testing.comp.IFunctionMapHook;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah.util.Operation2;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 
 import java.io.File;
 import java.util.List;
@@ -66,7 +66,7 @@ public interface Compilation0101 {
 
 	void acceptElLog(ElLog aLog);
 
-	CompilationImpl.CIS get_cis();
+	EDP_Compilation.CIS get_cis();
 
 	void setRunner(CompilationRunner aCompilationRunner);
 
