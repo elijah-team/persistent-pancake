@@ -11,7 +11,7 @@ import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.world.i.LivingRepo;
 import tripleo.elijah_durable_pancake.comp.Compilation0101;
 import tripleo.elijah.comp.i.LCM_CompilerAccess;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 import tripleo.elijah_pancake.feb24.comp.CompilationSignalTarget;
 import tripleo.elijah_pancake.feb24.comp.Providing;
 
@@ -56,7 +56,7 @@ public interface Compilation extends Compilation0101 {
 
 	void writeLogs();
 
-	CompilationImpl.CompilationConfig _cfg();
+	EDP_Compilation.CompilationConfig _cfg();
 
 	ElLog.Verbosity testSilence();
 

@@ -14,7 +14,7 @@ import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 import tripleo.elijah_pancake.feb24.comp.ProcessRecord;
 
 import java.util.function.Consumer;
@@ -28,8 +28,8 @@ public class Boilerplate {
 	OS_Module module;
 
 	public void get() {
-		comp = new CompilationImpl(new EDP_ErrSink(), new EDP_IO());
-		aca  = ((CompilationImpl) comp)._access();
+		comp = new EDP_Compilation(new EDP_ErrSink(), new EDP_IO());
+		aca  = ((EDP_Compilation) comp)._access();
 		pr   = new ProcessRecord(aca);
 
 //		final RuntimeProcesses rt = StageToRuntime.get(ca.getStage(), ca, pr);

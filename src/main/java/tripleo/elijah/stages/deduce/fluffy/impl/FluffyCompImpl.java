@@ -1,7 +1,7 @@
 package tripleo.elijah.stages.deduce.fluffy.impl;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah_durable_pancake.comp.internal.CompilationImpl;
+import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 import tripleo.elijah.entrypoints.MainClassEntryPoint;
 import tripleo.elijah.lang.ClassItem;
 import tripleo.elijah.lang.FunctionDef;
@@ -14,10 +14,10 @@ import java.util.Map;
 
 public class FluffyCompImpl implements FluffyComp {
 
-	private final CompilationImpl              _comp;
+	private final EDP_Compilation              _comp;
 	private final Map<OS_Module, FluffyModule> fluffyModuleMap = new HashMap<>();
 
-	public FluffyCompImpl(final CompilationImpl aComp) {
+	public FluffyCompImpl(final EDP_Compilation aComp) {
 		_comp = aComp;
 	}
 
