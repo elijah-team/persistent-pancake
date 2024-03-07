@@ -7,12 +7,9 @@
  */
 package tripleo.elijah.comp;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
-import tripleo.elijah.lang.OS_Module;
 import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
@@ -31,6 +28,9 @@ import tripleo.elijah_durable_pancake.comp.AccessBus;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 import tripleo.elijah_durable_pancake.comp.PipelineMember;
 import tripleo.elijah_durable_pancake.comp.functionality.f203.F203;
+import tripleo.elijah_pancake.pipelines.write.MB;
+import tripleo.elijah_pancake.pipelines.write.MB.S0;
+import tripleo.elijah_pancake.pipelines.write.MBB;
 import tripleo.elijah_pancake.sep1011.modeltransition.ElSystemSink;
 import tripleo.util.buffer.Buffer;
 import tripleo.util.buffer.DefaultBuffer;
@@ -48,7 +48,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -161,7 +160,7 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 			final EG_SingleStatement beginning = new EG_SingleStatement("", new EX_Explanation() {
 			});
 
-			var s0 = new tripleo.elijah_pancake.pipelines.write.MB.S0(key, entry.getValue());
+			var s0 = new S0(key, entry.getValue());
 
 			final EG_Statement middle = new GE_BuffersStatement(s0);
 			final EG_SingleStatement ending = new EG_SingleStatement("", new EX_Explanation() {
@@ -243,75 +242,6 @@ public class WritePipeline implements PipelineMember, AccessBus.AB_GenerateResul
 			}
 		};
 	}
-
-	static class MBB {
-		private final String fileName;
-		private final Buffer buffer;
-		private MB _up;
-
-		public MBB(final String aFileName, final Buffer aBuffer) {
-			fileName = aFileName;
-			buffer   = aBuffer;
-		}
-
-		public String getFileName() {
-			return fileName;
-		}
-
-		public Buffer getBuffer() {
-			return buffer;
-		}
-
-		public Collection<Buffer> getBuffers() {
-			return _up.getBuffers(this);
-		}
-
-		public void set_up(final MB a_up) {
-			_up = a_up;
-		}
-
-		public OS_Module getModule() {
-			return _up.getModule(this);
-		}
-	}
-
-	static class MB {
-		final Multimap<String, Buffer> mb = ArrayListMultimap.create();
-		final         Map<String, OS_Module> modmap = new HashMap<String, OS_Module>();
-		private final List<MBB>              bz     = new ArrayList<>();
-
-		public void add(final MBB aMBB) {
-			bz.add(aMBB);
-			mb.put(aMBB.getFileName(), aMBB.getBuffer());
-		}
-
-		public void put(final String aFileName, final Buffer aBuffer) {
-			final MBB mbb = new MBB(aFileName, aBuffer);
-			mbb.set_up(this);
-			add(mbb);
-		}
-
-		public void modmap_put(final String aFileName, final OS_Module aModule) {
-			modmap.put(aFileName, aModule);
-		}
-
-		public @NotNull Iterable<Map.Entry<String, Collection<Buffer>>> entries() {
-			return mb.asMap().entrySet();
-		}
-
-		public Iterable<? extends MBB> bz() {
-			return this.bz;
-		}
-
-		public Collection<Buffer> getBuffers(final MBB aMBB) {
-			return mb.asMap().get(aMBB.getFileName());
-		}
-
-		public OS_Module getModule(final MBB aMBB) {
-			return modmap.get(aMBB.getFileName());
-		}
-	}
-
 }
 
 //
