@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static tripleo.elijah.util.Helpers.*;
+import static tripleo.eljiah_pancake_durable.util.Helpers.*;
 
 
 /**
