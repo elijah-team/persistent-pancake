@@ -3,7 +3,7 @@ header {
 }
 
 {
-import tripleo.elijah.lang.*;
+
 import tripleo.elijah.contexts.*;
 import tripleo.elijah.ci.*;
 import tripleo.elijah.ci.IndexingStatement;

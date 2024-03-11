@@ -24,8 +24,17 @@ import tripleo.eljiah_pancake_durable.contexts.NamespaceContext;
 import tripleo.eljiah_pancake_durable.contexts.PackageContext;
 import tripleo.eljiah_pancake_durable.contexts.SyntacticBlockContext;
 import tripleo.eljiah_pancake_durable.contexts.WithContext;
-import tripleo.elijah.lang.*;
+import tripleo.eljiah_pancake_durable.lang.AnnotationClause;
+import tripleo.eljiah_pancake_durable.lang.Context;
 import tripleo.eljiah_pancake_durable.lang.*;
+import tripleo.eljiah_pancake_durable.lang.ImportStatement;
+import tripleo.eljiah_pancake_durable.lang.IndexingStatement;
+import tripleo.eljiah_pancake_durable.lang.OS_Element;
+import tripleo.eljiah_pancake_durable.lang.OS_Package;
+import tripleo.eljiah_pancake_durable.lang.ParserClosure;
+import tripleo.eljiah_pancake_durable.lang.ProgramClosure;
+import tripleo.eljiah_pancake_durable.lang.Qualident;
+import tripleo.eljiah_pancake_durable.lang.Scope3;
 import tripleo.eljiah_pancake_durable.lang.builder.*;
 import tripleo.eljiah_pancake_durable.lang.imports.AssigningImportStatement;
 import tripleo.eljiah_pancake_durable.lang.imports.NormalImportStatement;
@@ -43,8 +52,8 @@ public class ElijjahParser extends antlr.LLkParser       implements ElijjahToken
 Qualident xy;
 public Out out;
 IExpression expr;
-Context cur;
-Scope3 sco;
+Context     cur;
+Scope3      sco;
 
 protected ElijjahParser(final TokenBuffer tokenBuf, final int k) {
   super(tokenBuf,k);
@@ -71,8 +80,8 @@ public ElijjahParser(final ParserSharedInputState state) {
 
 	public final void program() throws RecognitionException, TokenStreamException {
 		
-		final ParserClosure pc = out.closure();
-		final ModuleContext mctx=new ModuleContext(out.module());
+		final ParserClosure pc   = out.closure();
+		final ModuleContext mctx =new ModuleContext(out.module());
 		out.module().setContext(mctx);cur=mctx;
 		IndexingStatement idx =null;
 		OS_Package        pkg;
@@ -263,7 +272,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 	}
 	
 	public final void programStatement(
-            final ProgramClosure pc, final OS_Element cont
+	  final ProgramClosure pc, final OS_Element cont
 	) throws RecognitionException, TokenStreamException {
 		
 		ImportStatement              imp =null;AnnotationClause a =null;

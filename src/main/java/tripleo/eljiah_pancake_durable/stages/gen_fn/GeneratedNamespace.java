@@ -10,7 +10,7 @@ package tripleo.eljiah_pancake_durable.stages.gen_fn;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.eljiah_pancake_durable.lang.AccessNotation;
 import tripleo.eljiah_pancake_durable.lang.ConstructStatement;
 import tripleo.eljiah_pancake_durable.lang.ExpressionBuilder;
@@ -25,7 +25,6 @@ import tripleo.eljiah_pancake_durable.lang.StatementWrapper;
 import tripleo.eljiah_pancake_durable.stages.gen_generic.CodeGenerator;
 import tripleo.eljiah_pancake_durable.stages.gen_generic.GenerateResult;
 import tripleo.eljiah_pancake_durable.util.Helpers;
-import tripleo.elijah.util.NotImplementedException;
 
 /**
  * Created 12/22/20 5:39 PM

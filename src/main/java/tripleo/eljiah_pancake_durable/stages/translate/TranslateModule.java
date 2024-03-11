@@ -1,10 +1,9 @@
 package tripleo.eljiah_pancake_durable.stages.translate;
 
-import tripleo.elijah.lang.*;
-import tripleo.eljiah_pancake_durable.lang.*;
-import tripleo.eljiah_pancake_durable.lang2.BuiltInTypes;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.util.TabbedOutputStream;
+import tripleo.eljiah_pancake_durable.lang.*;
+import tripleo.eljiah_pancake_durable.lang2.BuiltInTypes;
 
 import java.io.File;
 import java.io.FileNotFoundException;

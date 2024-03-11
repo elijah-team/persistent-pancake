@@ -1,13 +1,14 @@
 package tripleo.eljiah_pancake_durable.ci_impl;
 
-import com.google.common.base.*;
-import org.jetbrains.annotations.*;
-import tripleo.elijah.ci.*;
+import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
 import tripleo.eljiah_pancake_durable.ci.CiExpressionList;
 import tripleo.eljiah_pancake_durable.lang.IExpression;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public class CiExpressionListImpl implements CiExpressionList {
 	private final List<IExpression> exprs = new ArrayList<>();

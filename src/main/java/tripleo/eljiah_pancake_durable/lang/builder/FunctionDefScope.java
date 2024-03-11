@@ -8,7 +8,7 @@
  */
 package tripleo.eljiah_pancake_durable.lang.builder;
 
-import tripleo.elijah.lang.*;
+
 import tripleo.eljiah_pancake_durable.lang.Documentable;
 import tripleo.eljiah_pancake_durable.lang.ExpressionList;
 import tripleo.eljiah_pancake_durable.lang.IExpression;

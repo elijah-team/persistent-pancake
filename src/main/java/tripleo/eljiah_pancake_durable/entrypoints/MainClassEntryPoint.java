@@ -9,7 +9,7 @@
 package tripleo.eljiah_pancake_durable.entrypoints;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.lang.*;
+
 import tripleo.eljiah_pancake_durable.lang.ClassItem;
 import tripleo.eljiah_pancake_durable.lang.ClassStatement;
 import tripleo.eljiah_pancake_durable.lang.FunctionDef;

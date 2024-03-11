@@ -16,7 +16,7 @@
 //import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 //import tripleo.elijah.entrypoints.EntryPoint;
 //import tripleo.elijah.entrypoints.EntryPointList;
-//import tripleo.elijah.lang.*;
+//
 //import tripleo.elijah.lang2.BuiltInTypes;
 //import tripleo.elijah.lang2.SpecialFunctions;
 //import tripleo.elijah.stages.deduce.ClassInvocation;
@@ -1802,9 +1802,12 @@ import com.google.common.collect.Collections2;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.work.WorkManager;
+import tripleo.elijah_durable_pancake.comp.PipelineLogic;
+import tripleo.eljiah_pancake_durable.comp.CentralController;
 import tripleo.eljiah_pancake_durable.entrypoints.EntryPoint;
 import tripleo.eljiah_pancake_durable.entrypoints.EntryPointList;
-import tripleo.elijah.lang.*;
 import tripleo.eljiah_pancake_durable.lang.*;
 import tripleo.eljiah_pancake_durable.lang.types.OS_BuiltinType;
 import tripleo.eljiah_pancake_durable.lang.types.OS_FuncExprType;
@@ -1815,6 +1818,7 @@ import tripleo.eljiah_pancake_durable.lang2.SpecialFunctions;
 import tripleo.eljiah_pancake_durable.stages.deduce.ClassInvocation;
 import tripleo.eljiah_pancake_durable.stages.deduce.DeduceConstructStatement;
 import tripleo.eljiah_pancake_durable.stages.deduce.DeducePhase;
+import tripleo.eljiah_pancake_durable.stages.deduce.DeduceTypes2;
 import tripleo.eljiah_pancake_durable.stages.deduce.FunctionInvocation;
 import tripleo.eljiah_pancake_durable.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.eljiah_pancake_durable.stages.instructions.ConstTableIA;
@@ -1832,11 +1836,6 @@ import tripleo.eljiah_pancake_durable.stages.instructions.VariableTableType;
 import tripleo.eljiah_pancake_durable.stages.logging.ElLog;
 import tripleo.eljiah_pancake_durable.stages.stage1.S1_Constructor;
 import tripleo.eljiah_pancake_durable.util.Helpers;
-import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.work.WorkManager;
-import tripleo.eljiah_pancake_durable.comp.CentralController;
-import tripleo.elijah_durable_pancake.comp.PipelineLogic;
-import tripleo.eljiah_pancake_durable.stages.deduce.DeduceTypes2;
 import tripleo.util.range.Range;
 
 import java.util.ArrayList;
@@ -2084,9 +2083,10 @@ public class GenerateFunctions {
 //		return Result;
 //	}
 
-	@NotNull GeneratedFunction generateFunction(@NotNull final FunctionDef fd,
-	                                            final OS_Element parent,
-	                                            @NotNull final FunctionInvocation aFunctionInvocation) {
+	@NotNull
+	public GeneratedFunction generateFunction(@NotNull final FunctionDef fd,
+	                                          final OS_Element parent,
+	                                          @NotNull final FunctionInvocation aFunctionInvocation) {
 		final DeduceTypeResolve2 aResolver = null ; // TODO this will fail later (use provided/fix_tables)
 
 //		LOG.err("601.1 fn "+fd.name() + " " + parent);
@@ -2271,7 +2271,7 @@ public class GenerateFunctions {
 	}
 */
 
-	InstructionArgument simplify_expression(@NotNull final IExpression expression, final @NotNull BaseGeneratedFunction gf, final Context cctx) {
+	public InstructionArgument simplify_expression(@NotNull final IExpression expression, final @NotNull BaseGeneratedFunction gf, final Context cctx) {
 		final ExpressionKind expressionKind = expression.getKind();
 		switch (expressionKind) {
 			case PROCEDURE_CALL:

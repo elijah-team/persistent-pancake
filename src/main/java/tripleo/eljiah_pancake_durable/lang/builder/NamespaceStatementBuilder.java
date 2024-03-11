@@ -9,7 +9,7 @@
 package tripleo.eljiah_pancake_durable.lang.builder;
 
 import antlr.Token;
-import tripleo.elijah.lang.*;
+
 import tripleo.eljiah_pancake_durable.lang.AnnotationClause;
 import tripleo.eljiah_pancake_durable.lang.Context;
 import tripleo.eljiah_pancake_durable.lang.Documentable;

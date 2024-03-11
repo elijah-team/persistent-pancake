@@ -8,7 +8,6 @@
  */
 package tripleo.eljiah_pancake_durable.contexts;
 
-import tripleo.elijah.lang.*;
 import tripleo.eljiah_pancake_durable.util.Helpers;
 import tripleo.eljiah_pancake_durable.lang.Context;
 import tripleo.eljiah_pancake_durable.lang.IdentExpression;

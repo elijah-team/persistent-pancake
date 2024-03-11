@@ -9,7 +9,7 @@
 package tripleo.eljiah_pancake_durable.lang.builder;
 
 import tripleo.eljiah_pancake_durable.contexts.ImportContext;
-import tripleo.elijah.lang.*;
+
 import tripleo.eljiah_pancake_durable.lang.Context;
 import tripleo.eljiah_pancake_durable.lang.IdentExpression;
 import tripleo.eljiah_pancake_durable.lang.IdentList;

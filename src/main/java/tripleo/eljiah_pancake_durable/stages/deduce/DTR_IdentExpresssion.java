@@ -3,7 +3,6 @@ package tripleo.eljiah_pancake_durable.stages.deduce;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import tripleo.eljiah_pancake_durable.lang.IdentExpression;
-import tripleo.elijah.stages.gen_fn.*;
 import tripleo.eljiah_pancake_durable.stages.instructions.IntegerIA;
 import tripleo.eljiah_pancake_durable.stages.gen_fn.BaseTableEntry;
 import tripleo.eljiah_pancake_durable.stages.gen_fn.GenType;

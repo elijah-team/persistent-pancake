@@ -1994,14 +1994,14 @@ public class DeduceTypes2 {
 //		return null;
 //	}
 
-	void do_assign_call_args_ident(@NotNull final BaseGeneratedFunction generatedFunction,
-	                               @NotNull final Context ctx,
-	                               @NotNull final VariableTableEntry vte,
-	                               final int aInstructionIndex,
-	                               @NotNull final ProcTableEntry aPte,
-	                               final int aI,
-	                               @NotNull final TypeTableEntry aTte,
-	                               @NotNull final IdentExpression aExpression) {
+	public void do_assign_call_args_ident(@NotNull final BaseGeneratedFunction generatedFunction,
+	                                      @NotNull final Context ctx,
+	                                      @NotNull final VariableTableEntry vte,
+	                                      final int aInstructionIndex,
+	                                      @NotNull final ProcTableEntry aPte,
+	                                      final int aI,
+	                                      @NotNull final TypeTableEntry aTte,
+	                                      @NotNull final IdentExpression aExpression) {
 		final String                        e_text = aExpression.getText();
 		final @Nullable InstructionArgument vte_ia = generatedFunction.vte_lookup(e_text);
 //		LOG.info("10000 "+vte_ia);

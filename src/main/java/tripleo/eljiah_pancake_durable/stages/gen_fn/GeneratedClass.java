@@ -9,8 +9,26 @@
 package tripleo.eljiah_pancake_durable.stages.gen_fn;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.lang.*;
-import tripleo.eljiah_pancake_durable.lang.*;
+import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
+import tripleo.eljiah_pancake_durable.lang.AccessNotation;
+import tripleo.eljiah_pancake_durable.lang.AliasStatement;
+import tripleo.eljiah_pancake_durable.lang.ClassStatement;
+import tripleo.eljiah_pancake_durable.lang.ConstructStatement;
+import tripleo.eljiah_pancake_durable.lang.ConstructorDef;
+import tripleo.eljiah_pancake_durable.lang.Context;
+import tripleo.eljiah_pancake_durable.lang.ExpressionBuilder;
+import tripleo.eljiah_pancake_durable.lang.ExpressionKind;
+import tripleo.eljiah_pancake_durable.lang.FunctionDef;
+import tripleo.eljiah_pancake_durable.lang.IExpression;
+import tripleo.eljiah_pancake_durable.lang.LookupResultList;
+import tripleo.eljiah_pancake_durable.lang.NormalTypeName;
+import tripleo.eljiah_pancake_durable.lang.OS_Element;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.lang.OS_Type;
+import tripleo.eljiah_pancake_durable.lang.Scope3;
+import tripleo.eljiah_pancake_durable.lang.StatementWrapper;
+import tripleo.eljiah_pancake_durable.lang.TypeName;
 import tripleo.eljiah_pancake_durable.lang.types.OS_GenericTypeNameType;
 import tripleo.eljiah_pancake_durable.stages.deduce.ClassInvocation;
 import tripleo.eljiah_pancake_durable.stages.deduce.DeduceLookupUtils;
@@ -21,8 +39,6 @@ import tripleo.eljiah_pancake_durable.stages.deduce.percy.DeduceTypeResolve2;
 import tripleo.eljiah_pancake_durable.stages.gen_generic.CodeGenerator;
 import tripleo.eljiah_pancake_durable.stages.gen_generic.GenerateResult;
 import tripleo.eljiah_pancake_durable.util.Helpers;
-import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.eljiah_pancake_durable.world.i.LivingClass;
 
 import java.util.ArrayList;

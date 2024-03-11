@@ -10,7 +10,6 @@ package tripleo.eljiah_pancake_durable.stages.instructions;
 
 import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.stages.gen_fn.*;
 import tripleo.eljiah_pancake_durable.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.eljiah_pancake_durable.stages.gen_fn.Constructable;
 import tripleo.eljiah_pancake_durable.stages.gen_fn.GenType;

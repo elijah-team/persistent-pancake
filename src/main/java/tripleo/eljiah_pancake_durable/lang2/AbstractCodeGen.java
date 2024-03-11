@@ -10,7 +10,6 @@
 package tripleo.eljiah_pancake_durable.lang2;
 
 import tripleo.eljiah_pancake_durable.contexts.ClassContext;
-import tripleo.elijah.lang.*;
 import tripleo.eljiah_pancake_durable.lang.*;
 
 /**

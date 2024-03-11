@@ -8,15 +8,14 @@
  */
 package tripleo.eljiah_pancake_durable.stages.deduce;
 
-import java.util.ArrayList;
-
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
+import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.work.WorkList;
+import tripleo.elijah.work.WorkManager;
 import tripleo.eljiah_pancake_durable.comp.ErrSink;
 import tripleo.eljiah_pancake_durable.contexts.FunctionContext;
-import tripleo.elijah.lang.*;
 import tripleo.eljiah_pancake_durable.lang.*;
 import tripleo.eljiah_pancake_durable.lang.types.OS_FuncExprType;
 import tripleo.eljiah_pancake_durable.stages.deduce.percy.DeduceTypeResolve2;
@@ -36,9 +35,8 @@ import tripleo.eljiah_pancake_durable.stages.gen_fn.WlGenerateFunction;
 import tripleo.eljiah_pancake_durable.stages.gen_fn.WlGenerateNamespace;
 import tripleo.eljiah_pancake_durable.stages.instructions.IdentIA;
 import tripleo.eljiah_pancake_durable.stages.logging.ElLog;
-import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.work.WorkList;
-import tripleo.elijah.work.WorkManager;
+
+import java.util.ArrayList;
 
 /**
  * Created 9/5/21 2:54 AM

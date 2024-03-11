@@ -1,10 +1,8 @@
 package tripleo.eljiah_pancake_durable.nextgen.outputtree;
 
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
 import tripleo.eljiah_pancake_durable.comp.Compilation;
 import tripleo.eljiah_pancake_durable.lang.OS_Module;
-import tripleo.elijah.nextgen.inputtree.*;
-import tripleo.elijah.nextgen.outputstatement.*;
 import tripleo.eljiah_pancake_durable.nextgen.inputtree.EIT_Input;
 import tripleo.eljiah_pancake_durable.nextgen.inputtree.EIT_Input_HashSourceFile_Triple;
 import tripleo.eljiah_pancake_durable.nextgen.inputtree.EIT_ModuleInput;
@@ -15,7 +13,9 @@ import tripleo.eljiah_pancake_durable.nextgen.outputstatement.EG_Statement;
 import tripleo.eljiah_pancake_durable.nextgen.outputstatement.EX_Explanation;
 import tripleo.util.buffer.Buffer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static tripleo.eljiah_pancake_durable.util.Helpers.List_of;

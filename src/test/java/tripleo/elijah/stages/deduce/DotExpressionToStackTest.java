@@ -11,7 +11,6 @@ package tripleo.elijah.stages.deduce;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tripleo.eljiah_pancake_durable.lang.DotExpression;
 import tripleo.eljiah_pancake_durable.lang.IExpression;
@@ -23,9 +22,9 @@ import java.util.Stack;
 
 public class DotExpressionToStackTest {
 
-	@BeforeEach
-	public void setUp() throws Exception {
-	}
+//	@BeforeEach
+//	public void setUp() {
+//	}
 
 	@Test
 	void test_dot_expression_to_stack() {

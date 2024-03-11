@@ -14,7 +14,7 @@ import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.*;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.eljiah_pancake_durable.lang.*;
 import tripleo.eljiah_pancake_durable.lang.types.OS_UserType;
 import tripleo.eljiah_pancake_durable.lang2.AbstractCodeGen;
@@ -32,7 +32,6 @@ import tripleo.eljiah_pancake_durable.stages.instructions.IdentIA;
 import tripleo.eljiah_pancake_durable.stages.instructions.InstructionArgument;
 import tripleo.eljiah_pancake_durable.stages.instructions.IntegerIA;
 import tripleo.eljiah_pancake_durable.stages.instructions.ProcIA;
-import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 /**
  * Created 11/18/21 12:02 PM

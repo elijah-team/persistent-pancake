@@ -9,8 +9,14 @@
 package tripleo.eljiah_pancake_durable.stages.gen_c;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.util.BufferTabbedOutputStream;
+import tripleo.elijah.util.IFixedList;
+import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
+import tripleo.elijah.work.WorkJob;
+import tripleo.elijah.work.WorkList;
+import tripleo.elijah.work.WorkManager;
 import tripleo.eljiah_pancake_durable.comp.ErrSink;
-import tripleo.elijah.lang.*;
 import tripleo.eljiah_pancake_durable.lang.*;
 import tripleo.eljiah_pancake_durable.lang.types.OS_FuncExprType;
 import tripleo.eljiah_pancake_durable.lang2.BuiltInTypes;
@@ -18,6 +24,7 @@ import tripleo.eljiah_pancake_durable.lang2.SpecialVariables;
 import tripleo.eljiah_pancake_durable.nextgen.model.SM_ClassDeclaration;
 import tripleo.eljiah_pancake_durable.nextgen.model.SM_Node;
 import tripleo.eljiah_pancake_durable.stages.deduce.ClassInvocation;
+import tripleo.eljiah_pancake_durable.stages.deduce.DeduceTypes2;
 import tripleo.eljiah_pancake_durable.stages.deduce.FunctionInvocation;
 import tripleo.eljiah_pancake_durable.stages.gen_fn.BaseGeneratedFunction;
 import tripleo.eljiah_pancake_durable.stages.gen_fn.BaseTableEntry;
@@ -46,16 +53,7 @@ import tripleo.eljiah_pancake_durable.stages.instructions.IntegerIA;
 import tripleo.eljiah_pancake_durable.stages.instructions.ProcIA;
 import tripleo.eljiah_pancake_durable.stages.instructions.VariableTableType;
 import tripleo.eljiah_pancake_durable.stages.logging.ElLog;
-//import tripleo.elijah.util.BufferTabbedOutputStream;
-import tripleo.elijah.util.BufferTabbedOutputStream;
 import tripleo.eljiah_pancake_durable.util.Helpers;
-import tripleo.elijah.util.IFixedList;
-import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
-import tripleo.elijah.work.WorkJob;
-import tripleo.elijah.work.WorkList;
-import tripleo.elijah.work.WorkManager;
-import tripleo.eljiah_pancake_durable.stages.deduce.DeduceTypes2;
 import tripleo.util.buffer.Buffer;
 
 import java.util.ArrayList;
@@ -563,7 +561,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles {
 		return getRealTargetName(gf, varTableEntry);
 	}
 
-	String getRealTargetName(final @NotNull BaseGeneratedFunction gf, final @NotNull IdentIA target, final Generate_Code_For_Method.AOG aog, final String value) {
+	public String getRealTargetName(final @NotNull BaseGeneratedFunction gf, final @NotNull IdentIA target, final Generate_Code_For_Method.AOG aog, final String value) {
 		int                      state           = 0, code = -1;
 		final IdentTableEntry    identTableEntry = gf.getIdentTableEntry(target.getIndex());
 		final LinkedList<String> ls              = new LinkedList<String>();

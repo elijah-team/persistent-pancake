@@ -8,7 +8,7 @@
  */
 package tripleo.eljiah_pancake_durable.lang.builder;
 
-import tripleo.elijah.lang.*;
+
 import tripleo.eljiah_pancake_durable.lang.AnnotationClause;
 import tripleo.eljiah_pancake_durable.lang.ClassInheritance;
 import tripleo.eljiah_pancake_durable.lang.ClassStatement;
