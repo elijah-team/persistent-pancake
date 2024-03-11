@@ -10,21 +10,20 @@ import antlr.TokenBuffer;
 import antlr.TokenStream;
 import antlr.TokenStreamException;
 import antlr.collections.impl.BitSet;
-import tripleo.elijah.ci.CiExpressionList;
-import tripleo.elijah.ci.CiIndexingStatement;
-import tripleo.elijah.ci.CiListExpression;
-import tripleo.elijah.ci.CiProcedureCallExpression;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.ci.GenerateStatement;
-import tripleo.elijah.ci.IndexingStatement;
-import tripleo.elijah.ci_impl.CiExpressionListImpl;
-import tripleo.elijah.ci_impl.CiProcedureCallExpressionImpl;
-import tripleo.elijah.ci_impl.CompilerInstructionsImpl;
-import tripleo.elijah.ci_impl.GenerateStatementImpl;
-import tripleo.elijah.ci_impl.LibraryStatementPartImpl;
+import tripleo.eljiah_pancake_durable.ci.CiExpressionList;
+import tripleo.eljiah_pancake_durable.ci.CiIndexingStatement;
+import tripleo.eljiah_pancake_durable.ci.CiProcedureCallExpression;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.ci.GenerateStatement;
+import tripleo.eljiah_pancake_durable.ci_impl.CiExpressionListImpl;
+import tripleo.eljiah_pancake_durable.ci_impl.CiProcedureCallExpressionImpl;
+import tripleo.eljiah_pancake_durable.ci_impl.CompilerInstructionsImpl;
+import tripleo.eljiah_pancake_durable.ci_impl.GenerateStatementImpl;
+import tripleo.eljiah_pancake_durable.ci_impl.LibraryStatementPartImpl;
 import tripleo.elijah.lang.*;
-import tripleo.elijah.lang.types.OS_BuiltinType;
-import tripleo.elijah.lang2.BuiltInTypes;
+import tripleo.eljiah_pancake_durable.lang.*;
+import tripleo.eljiah_pancake_durable.lang.types.OS_BuiltinType;
+import tripleo.eljiah_pancake_durable.lang2.BuiltInTypes;
 
 public class EzParser extends antlr.LLkParser       implements EzTokenTypes
  {
@@ -452,7 +451,7 @@ public EzParser(final ParserSharedInputState state) {
 		return e;
 	}
 	
-	public final Qualident  qualident() throws RecognitionException, TokenStreamException {
+	public final Qualident qualident() throws RecognitionException, TokenStreamException {
 		final Qualident q;
 		
 		Token  d1 = null;
@@ -641,8 +640,9 @@ public EzParser(final ParserSharedInputState state) {
 		IExpression ee;
 		
 		ee=null;
-        final IExpression e=null;
-        final IExpression e2;ExpressionKind ek=null;
+        final IExpression e  =null;
+        final IExpression e2;
+		ExpressionKind    ek =null;
 		
 		try {      // for error handling
 			ee=conditionalExpression();
@@ -815,8 +815,8 @@ public EzParser(final ParserSharedInputState state) {
 	public final IExpression  variableReference() throws RecognitionException, TokenStreamException {
 		IExpression ee;
 		
-		Token  lp = null;
-		ProcedureCallExpression pcx;CiExpressionList el=null;ee=null;IdentExpression r1=null, r2=null;
+		Token                   lp                      = null;
+		ProcedureCallExpression pcx;CiExpressionList el =null;ee =null;IdentExpression r1 =null, r2 =null;
 		
 		try {      // for error handling
 			r1=ident();
@@ -1155,8 +1155,8 @@ public EzParser(final ParserSharedInputState state) {
 		
 		ee=null;
 				ExpressionKind e2=null; // should never be null (below)
-				IExpression e3=null;
-				final TypeName tn=null;
+				IExpression    e3 =null;
+				final TypeName tn =null;
 		
 		try {      // for error handling
 			ee=shiftExpression();
@@ -1544,8 +1544,8 @@ public EzParser(final ParserSharedInputState state) {
 		Token  in = null;
 		Token  de = null;
 		ee=null;
-        final TypeCastExpression tc=null;
-        final TypeName tn=null;
+        final TypeCastExpression tc =null;
+        final TypeName           tn =null;
 				final IExpression e3=null;CiExpressionList el=null;
 		
 		try {      // for error handling
@@ -1664,7 +1664,7 @@ public EzParser(final ParserSharedInputState state) {
 		IExpression ee;
 		
 		ee=null;
-        final FuncExpr ppc=null;IdentExpression e=null;CiExpressionList el=null;
+        final FuncExpr ppc =null;IdentExpression e =null;CiExpressionList el =null;
 		
 		try {      // for error handling
 			switch ( LA(1)) {

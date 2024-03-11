@@ -10,28 +10,29 @@ import antlr.TokenBuffer;
 import antlr.TokenStream;
 import antlr.TokenStreamException;
 import antlr.collections.impl.BitSet;
-import tripleo.elijah.Out;
-import tripleo.elijah.contexts.CaseContext;
-import tripleo.elijah.contexts.ClassContext;
-import tripleo.elijah.contexts.FuncExprContext;
-import tripleo.elijah.contexts.FunctionContext;
-import tripleo.elijah.contexts.IfConditionalContext;
-import tripleo.elijah.contexts.ImportContext;
-import tripleo.elijah.contexts.LoopContext;
-import tripleo.elijah.contexts.MatchContext;
-import tripleo.elijah.contexts.ModuleContext;
-import tripleo.elijah.contexts.NamespaceContext;
-import tripleo.elijah.contexts.PackageContext;
-import tripleo.elijah.contexts.SyntacticBlockContext;
-import tripleo.elijah.contexts.WithContext;
+import tripleo.eljiah_pancake_durable.Out;
+import tripleo.eljiah_pancake_durable.contexts.CaseContext;
+import tripleo.eljiah_pancake_durable.contexts.ClassContext;
+import tripleo.eljiah_pancake_durable.contexts.FuncExprContext;
+import tripleo.eljiah_pancake_durable.contexts.FunctionContext;
+import tripleo.eljiah_pancake_durable.contexts.IfConditionalContext;
+import tripleo.eljiah_pancake_durable.contexts.ImportContext;
+import tripleo.eljiah_pancake_durable.contexts.LoopContext;
+import tripleo.eljiah_pancake_durable.contexts.MatchContext;
+import tripleo.eljiah_pancake_durable.contexts.ModuleContext;
+import tripleo.eljiah_pancake_durable.contexts.NamespaceContext;
+import tripleo.eljiah_pancake_durable.contexts.PackageContext;
+import tripleo.eljiah_pancake_durable.contexts.SyntacticBlockContext;
+import tripleo.eljiah_pancake_durable.contexts.WithContext;
 import tripleo.elijah.lang.*;
-import tripleo.elijah.lang.builder.*;
-import tripleo.elijah.lang.imports.AssigningImportStatement;
-import tripleo.elijah.lang.imports.NormalImportStatement;
-import tripleo.elijah.lang.imports.QualifiedImportStatement;
-import tripleo.elijah.lang.imports.RootedImportStatement;
-import tripleo.elijah.lang.types.OS_BuiltinType;
-import tripleo.elijah.lang2.BuiltInTypes;
+import tripleo.eljiah_pancake_durable.lang.*;
+import tripleo.eljiah_pancake_durable.lang.builder.*;
+import tripleo.eljiah_pancake_durable.lang.imports.AssigningImportStatement;
+import tripleo.eljiah_pancake_durable.lang.imports.NormalImportStatement;
+import tripleo.eljiah_pancake_durable.lang.imports.QualifiedImportStatement;
+import tripleo.eljiah_pancake_durable.lang.imports.RootedImportStatement;
+import tripleo.eljiah_pancake_durable.lang.types.OS_BuiltinType;
+import tripleo.eljiah_pancake_durable.lang2.BuiltInTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,8 +74,8 @@ public ElijjahParser(final ParserSharedInputState state) {
 		final ParserClosure pc = out.closure();
 		final ModuleContext mctx=new ModuleContext(out.module());
 		out.module().setContext(mctx);cur=mctx;
-		IndexingStatement idx=null;
-		OS_Package pkg;
+		IndexingStatement idx =null;
+		OS_Package        pkg;
 		
 		try {      // for error handling
 			{
@@ -265,8 +266,8 @@ public ElijjahParser(final ParserSharedInputState state) {
             final ProgramClosure pc, final OS_Element cont
 	) throws RecognitionException, TokenStreamException {
 		
-		ImportStatement imp=null;AnnotationClause a=null;
-        final List<AnnotationClause> as=new ArrayList<AnnotationClause>();AliasStatement als=null;
+		ImportStatement              imp =null;AnnotationClause a =null;
+        final List<AnnotationClause> as  =new ArrayList<AnnotationClause>();AliasStatement als =null;
 		
 		try {      // for error handling
 			switch ( LA(1)) {
@@ -462,12 +463,13 @@ public ElijjahParser(final ParserSharedInputState state) {
 		return id;
 	}
 	
-	public final ClassStatement  classStatement(
+	public final ClassStatement classStatement(
             final OS_Element parent, final Context cctx, final List<AnnotationClause> as
 	) throws RecognitionException, TokenStreamException {
 		ClassStatement cls;
 		
-		cls=null;ClassContext ctx=null;IdentExpression i1=null;ClassBuilder cb=null;TypeNameList tnl=null;
+		cls=null;ClassContext ctx =null;IdentExpression i1 =null;
+		ClassBuilder          cb  =null;TypeNameList tnl =null;
 		
 		try {      // for error handling
 			{
@@ -666,7 +668,7 @@ public ElijjahParser(final ParserSharedInputState state) {
 	public final TypeNameList  typeNameList2() throws RecognitionException, TokenStreamException {
 		final TypeNameList cr;
 		
-		TypeName tn=null;cr=new TypeNameList();
+		TypeName tn =null;cr =new TypeNameList();
 		
 		try {      // for error handling
 			tn=typeName2();
@@ -2508,7 +2510,7 @@ inputState.guessing--;
             final ClassScope cr
 	) throws RecognitionException, TokenStreamException {
 		
-		final ConstructorDefBuilder cd=new ConstructorDefBuilder();IdentExpression x1=null;FormalArgList fal=null;
+		final ConstructorDefBuilder cd =new ConstructorDefBuilder();IdentExpression x1 =null;FormalArgList fal =null;
 		
 		try {      // for error handling
 			{
@@ -2707,7 +2709,7 @@ inputState.guessing--;
             final BaseScope cs
 	) throws RecognitionException, TokenStreamException {
 		
-		final VariableSequenceBuilder vsqb=new VariableSequenceBuilder();TypeName tn=null;
+		final VariableSequenceBuilder vsqb =new VariableSequenceBuilder();TypeName tn =null;
 		
 		try {      // for error handling
 			{
@@ -3059,7 +3061,7 @@ inputState.guessing--;
             final ClassScope cr
 	) throws RecognitionException, TokenStreamException {
 		
-		final PropertyStatementBuilder ps=new PropertyStatementBuilder();IdentExpression prop_name=null;TypeName tn=null;
+		final PropertyStatementBuilder ps =new PropertyStatementBuilder();IdentExpression prop_name =null;TypeName tn =null;
 		
 		try {      // for error handling
 			{
@@ -3420,8 +3422,8 @@ inputState.guessing--;
             final BaseScope sc
 	) throws RecognitionException, TokenStreamException {
 		
-		final NamespaceStatementBuilder cls = new NamespaceStatementBuilder();AnnotationClause a=null;
-        final NamespaceContext ctx=null;IdentExpression i1=null;
+		final NamespaceStatementBuilder cls = new NamespaceStatementBuilder();AnnotationClause a =null;
+        final NamespaceContext          ctx =null;IdentExpression i1 =null;
 		
 		try {      // for error handling
 			{
@@ -3816,7 +3818,7 @@ inputState.guessing--;
             final BaseScope sc
 	) throws RecognitionException, TokenStreamException {
 		
-		final ImportStatementBuilder ib=new ImportStatementBuilder(); final ImportStatement pc=null; QualidentList qil=null;
+		final ImportStatementBuilder ib =new ImportStatementBuilder(); final ImportStatement pc =null; QualidentList qil =null;
 		
 		try {      // for error handling
 			switch ( LA(1)) {
@@ -4821,7 +4823,7 @@ inputState.guessing--;
             final BaseScope sc
 	) throws RecognitionException, TokenStreamException {
 		
-		final SyntacticBlockBuilder sbb=new SyntacticBlockBuilder();
+		final SyntacticBlockBuilder sbb =new SyntacticBlockBuilder();
 		
 		try {      // for error handling
 			scope2(sbb.scope());
@@ -6118,7 +6120,7 @@ inputState.guessing--;
 	}
 	
 	public final void matchConditional(
-            final MatchConditional mc, final OS_Element aParent
+	  final MatchConditional mc, final OS_Element aParent
 	) throws RecognitionException, TokenStreamException {
 		
 		MatchConditional.MatchArm_TypeMatch mcp1=null;
@@ -7748,8 +7750,9 @@ inputState.guessing--;
 		Token  lp = null;
 		Token  in = null;
 		Token  de = null;
-		ee=null;TypeCastExpression tc=null;TypeName tn=null;
-				final IExpression e3=null;ExpressionList el=null;
+		ee=null;
+		TypeCastExpression        tc =null;TypeName tn =null;
+				final IExpression e3 =null;ExpressionList el =null;
 		
 		try {      // for error handling
 			ee=primaryExpression();
@@ -8339,7 +8342,7 @@ inputState.guessing--;
 		}
 	}
 	
-	public final TypeOfTypeName  typeOfTypeName2() throws RecognitionException, TokenStreamException {
+	public final TypeOfTypeName typeOfTypeName2() throws RecognitionException, TokenStreamException {
 		final TypeOfTypeName tn;
 		
 		tn=new TypeOfTypeName(cur);
@@ -8362,7 +8365,7 @@ inputState.guessing--;
 		return tn;
 	}
 	
-	public final NormalTypeName  normalTypeName2() throws RecognitionException, TokenStreamException {
+	public final NormalTypeName normalTypeName2() throws RecognitionException, TokenStreamException {
 		final NormalTypeName tn;
 		
 		tn=new RegularTypeName(cur); TypeNameList rtn=null;
