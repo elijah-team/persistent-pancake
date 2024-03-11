@@ -1,7 +1,7 @@
 package tripleo.elijah_pancake.sep1011.lang;
 
-import tripleo.elijah.lang.OS_Element;
-import tripleo.elijah.lang.ClassStatement;
+import tripleo.eljiah_pancake_durable.lang.OS_Element;
+import tripleo.eljiah_pancake_durable.lang.ClassStatement;
 
 import java.util.ArrayList;
 import java.util.List;

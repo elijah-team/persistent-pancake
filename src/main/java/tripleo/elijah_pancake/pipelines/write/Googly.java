@@ -3,16 +3,16 @@ package tripleo.elijah_pancake.pipelines.write;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 
-import tripleo.elijah.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
 import tripleo.elijah.util.Ok;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah.util.io.CharSink;
 import tripleo.elijah.util.io.FileCharSink;
 
-import tripleo.elijah.comp.WritePipeline;
+import tripleo.eljiah_pancake_durable.comp.WritePipeline;
 
-import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
+import tripleo.eljiah_pancake_durable.nextgen.outputstatement.EG_CompoundStatement;
+import tripleo.eljiah_pancake_durable.nextgen.outputtree.EOT_OutputTree;
 
 import java.io.File;
 import java.io.IOException;

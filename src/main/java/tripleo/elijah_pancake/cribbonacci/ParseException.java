@@ -1,6 +1,6 @@
 package tripleo.elijah_pancake.cribbonacci;
 
-import tripleo.elijah.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
 import tripleo.elijah.util.Operation;
 
 public class ParseException extends Throwable {

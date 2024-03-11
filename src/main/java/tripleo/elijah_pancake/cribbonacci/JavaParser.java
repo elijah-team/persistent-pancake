@@ -1,9 +1,9 @@
 package tripleo.elijah_pancake.cribbonacci;
 
 import org.jetbrains.annotations.Contract;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.factory.comp.CompilationFactory;
-import tripleo.elijah.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.factory.comp.CompilationFactory;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah_durable_pancake.comp.queries.QuerySourceFileToModule;

@@ -1,9 +1,9 @@
 package tripleo.elijah_pancake.feb24.comp;
 
-import tripleo.elijah.comp.bus.CB_Action;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Action;
 import tripleo.elijah_durable_pancake.comp.CompilationRunner;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
-import tripleo.elijah.comp.i.ICompilationAccess;
+import tripleo.eljiah_pancake_durable.comp.i.ICompilationAccess;
 import tripleo.elijah_prepan.compilation_runner.RuntimeProcesses;
 
 public class CR_State {

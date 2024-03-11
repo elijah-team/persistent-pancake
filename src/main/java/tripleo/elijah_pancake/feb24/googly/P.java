@@ -1,6 +1,6 @@
 package tripleo.elijah_pancake.feb24.googly;
 
-import tripleo.elijah.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
 
 public class P {
 	public static final int PL_ADD_MODULE = 100;

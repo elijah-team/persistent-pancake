@@ -1,6 +1,6 @@
 package tripleo.elijah_pancake.pipelines.write;
 
-import tripleo.elijah.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
 import tripleo.util.buffer.Buffer;
 
 import java.util.Collection;

@@ -2,7 +2,7 @@ package tripleo.elijah_pancake.sep1011.modeltransition;
 
 import org.jdeferred2.DoneCallback;
 import tripleo.elijah.Eventual;
-import tripleo.elijah.stages.deduce.percy.Provided;
+import tripleo.eljiah_pancake_durable.stages.deduce.percy.Provided;
 
 public class EventualProvider<T> implements Provided<T> {
 	private final Eventual<T> prom = new Eventual<>();

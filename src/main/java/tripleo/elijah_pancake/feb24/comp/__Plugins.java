@@ -1,10 +1,10 @@
 package tripleo.elijah_pancake.feb24.comp;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.DeducePipeline;
-import tripleo.elijah.comp.GeneratePipeline;
-import tripleo.elijah.comp.WriteMesonPipeline;
-import tripleo.elijah.comp.WritePipeline;
+import tripleo.eljiah_pancake_durable.comp.DeducePipeline;
+import tripleo.eljiah_pancake_durable.comp.GeneratePipeline;
+import tripleo.eljiah_pancake_durable.comp.WriteMesonPipeline;
+import tripleo.eljiah_pancake_durable.comp.WritePipeline;
 import tripleo.elijah_durable_pancake.comp.AccessBus;
 import tripleo.elijah_durable_pancake.comp.PipelineMember;
 import tripleo.elijah_durable_pancake.comp.internal.PipelinePlugin;

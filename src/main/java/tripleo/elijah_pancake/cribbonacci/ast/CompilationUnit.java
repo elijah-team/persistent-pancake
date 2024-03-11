@@ -1,8 +1,8 @@
 package tripleo.elijah_pancake.cribbonacci.ast;
 
-import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.ModuleItem;
-import tripleo.elijah.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.lang.ClassStatement;
+import tripleo.eljiah_pancake_durable.lang.ModuleItem;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
 import tripleo.elijah_pancake.cribbonacci.ast.body.ClassOrInterfaceDeclaration;
 
 /**

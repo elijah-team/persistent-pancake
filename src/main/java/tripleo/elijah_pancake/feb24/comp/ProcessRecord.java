@@ -2,7 +2,7 @@ package tripleo.elijah_pancake.feb24.comp;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah_durable_pancake.comp.AccessBus;
-import tripleo.elijah.comp.i.ICompilationAccess;
+import tripleo.eljiah_pancake_durable.comp.i.ICompilationAccess;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 
 public class ProcessRecord {

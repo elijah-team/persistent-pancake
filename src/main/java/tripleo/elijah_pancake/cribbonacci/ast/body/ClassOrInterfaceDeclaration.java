@@ -1,6 +1,6 @@
 package tripleo.elijah_pancake.cribbonacci.ast.body;
 
-import tripleo.elijah.lang.ClassStatement;
+import tripleo.eljiah_pancake_durable.lang.ClassStatement;
 import tripleo.elijah_pancake.cribbonacci.ast.___Node;
 import tripleo.elijah_pancake.cribbonacci.ast.expr.SimpleName;
 import tripleo.elijah_pancake.cribbonacci.ast.visitor.VoidVisitorAdapter;

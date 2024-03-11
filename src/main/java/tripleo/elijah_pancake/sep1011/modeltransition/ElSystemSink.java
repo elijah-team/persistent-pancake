@@ -1,10 +1,10 @@
 package tripleo.elijah_pancake.sep1011.modeltransition;
 
-import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
-import tripleo.elijah.stages.gen_generic.GenerateResultItem;
-import tripleo.elijah.stages.generate.ElSystem;
-import tripleo.elijah.stages.generate.OutputStrategy;
-import tripleo.elijah.stages.generate.OutputStrategyC;
+import tripleo.eljiah_pancake_durable.nextgen.outputtree.EOT_FileNameProvider;
+import tripleo.eljiah_pancake_durable.stages.gen_generic.GenerateResultItem;
+import tripleo.eljiah_pancake_durable.stages.generate.ElSystem;
+import tripleo.eljiah_pancake_durable.stages.generate.OutputStrategy;
+import tripleo.eljiah_pancake_durable.stages.generate.OutputStrategyC;
 
 import java.util.function.Supplier;
 
