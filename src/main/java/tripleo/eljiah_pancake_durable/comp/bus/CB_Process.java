@@ -1,0 +1,9 @@
+package tripleo.eljiah_pancake_durable.comp.bus;
+
+import java.util.List;
+
+public interface CB_Process {
+//		void execute();
+
+	List<CB_Action> steps();
+}
