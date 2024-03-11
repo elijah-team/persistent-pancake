@@ -4,13 +4,13 @@ import com.google.common.base.Preconditions;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
-import tripleo.elijah.comp.bus.CB_Action;
-import tripleo.elijah.comp.bus.CB_Process;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.CompilerController;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Action;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Process;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.CompilerController;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
-import tripleo.elijah.factory.comp.CompilationFactory;
+import tripleo.eljiah_pancake_durable.factory.comp.CompilationFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +20,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static tripleo.elijah.util.Helpers.List_of;
+import static tripleo.eljiah_pancake_durable.util.Helpers.List_of;
 
 public class CompilationsStartHandler implements HttpHandler {
 

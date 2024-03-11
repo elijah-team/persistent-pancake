@@ -1,11 +1,11 @@
 package tripleo.elijah.ut;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.bus.CB_Action;
-import tripleo.elijah.comp.bus.CB_Process;
-import tripleo.elijah.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Action;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Process;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
 import tripleo.elijah_durable_pancake.compilation_runner.CompilationChange;
-import tripleo.elijah.comp.ICompilationBus;
+import tripleo.eljiah_pancake_durable.comp.ICompilationBus;
 import tripleo.elijah_durable_pancake.comp.ILazyCompilerInstructions;
 
 import java.util.ArrayList;

@@ -13,11 +13,11 @@ import tripleo.elijah_durable_pancake.comp.i.ProgressSinkComponent;
 */
 
 import tripleo.elijah.UnintendedUseException;
-import tripleo.elijah.comp.bus.CB_Action;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Action;
 import tripleo.elijah_durable_pancake.comp.ApacheOptionsProcessor;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.CompilerController;
-import tripleo.elijah.comp.ICompilationBus;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.CompilerController;
+import tripleo.eljiah_pancake_durable.comp.ICompilationBus;
 import tripleo.elijah_durable_pancake.comp.OptionsProcessor;
 
 import java.util.List;

@@ -3,8 +3,8 @@ package tripleo.elijah.ut;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
-import tripleo.elijah.comp.bus.CB_Action;
-import tripleo.elijah.comp.bus.CB_OutputString;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Action;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_OutputString;
 
 public class DoContinuationsHandler implements HttpHandler {
 

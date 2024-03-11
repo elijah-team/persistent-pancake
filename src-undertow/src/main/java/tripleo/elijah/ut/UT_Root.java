@@ -1,6 +1,6 @@
 package tripleo.elijah.ut;
 
-import tripleo.elijah.comp.bus.CB_Action;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Action;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static tripleo.elijah.util.Helpers.List_of;
+import static tripleo.eljiah_pancake_durable.util.Helpers.List_of;
 
 class UT_Root {
 	List<Path> paths = List_of();
