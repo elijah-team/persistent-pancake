@@ -1,8 +1,8 @@
 package tripleo.elijah_durable_pancake.comp;
 
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.contexts.ModuleContext;
-import tripleo.elijah.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.contexts.ModuleContext;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation2;
 

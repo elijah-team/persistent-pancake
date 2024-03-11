@@ -3,7 +3,7 @@ package tripleo.elijah_durable_pancake.comp;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.diagnostic.Locatable;
-import tripleo.elijah.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
 import tripleo.elijah.util.Operation2;
 
 import java.io.PrintStream;

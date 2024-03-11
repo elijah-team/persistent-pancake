@@ -2,7 +2,7 @@ package tripleo.elijah_durable_pancake.comp;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
 import tripleo.elijah.util.Operation;
 
 import java.io.File;

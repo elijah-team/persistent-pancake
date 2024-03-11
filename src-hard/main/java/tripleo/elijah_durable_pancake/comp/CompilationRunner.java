@@ -2,16 +2,16 @@ package tripleo.elijah_durable_pancake.comp;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.bus.CB_Action;
-import tripleo.elijah.comp.bus.CB_OutputString;
-import tripleo.elijah.comp.bus.CB_Process;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.ICompilationBus;
-import tripleo.elijah.nextgen.inputtree.EIT_InputType;
-import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Action;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_OutputString;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Process;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.ErrSink;
+import tripleo.eljiah_pancake_durable.comp.IO;
+import tripleo.eljiah_pancake_durable.comp.ICompilationBus;
+import tripleo.eljiah_pancake_durable.nextgen.inputtree.EIT_InputType;
+import tripleo.eljiah_pancake_durable.stages.deduce.post_bytecode.Maybe;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah.util.Operation2;
@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static tripleo.elijah.util.Helpers.List_of;
+import static tripleo.eljiah_pancake_durable.util.Helpers.List_of;
 
 /**
  * NOTE 24/01/12 I like how all CR_ stuff is here

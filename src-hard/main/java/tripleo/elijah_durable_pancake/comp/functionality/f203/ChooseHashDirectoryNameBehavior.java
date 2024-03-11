@@ -3,7 +3,7 @@ package tripleo.elijah_durable_pancake.comp.functionality.f203;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
 
 import java.io.File;
 import java.time.LocalDateTime;

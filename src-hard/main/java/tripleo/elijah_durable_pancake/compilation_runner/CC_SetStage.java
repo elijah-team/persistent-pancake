@@ -2,7 +2,7 @@ package tripleo.elijah_durable_pancake.compilation_runner;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
 import tripleo.elijah_prepan.compilation_runner.Stages;
 
 public class CC_SetStage implements CompilationChange {

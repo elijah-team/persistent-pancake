@@ -1,6 +1,6 @@
 package tripleo.elijah_durable_pancake.input;
 
-import tripleo.elijah.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
 import tripleo.elijah_durable_pancake.comp.Compilation0101;
 
 import java.util.ArrayList;

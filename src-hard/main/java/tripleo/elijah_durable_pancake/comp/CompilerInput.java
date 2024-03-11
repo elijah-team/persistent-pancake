@@ -1,9 +1,9 @@
 package tripleo.elijah_durable_pancake.comp;
 
-import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
 import tripleo.elijah.util.Maybe;
 import tripleo.elijah.util.Operation2;
-import tripleo.elijah.util._Extensionable;
+import tripleo.eljiah_pancake_durable.util._Extensionable;
 
 import java.io.File;
 import java.util.List;

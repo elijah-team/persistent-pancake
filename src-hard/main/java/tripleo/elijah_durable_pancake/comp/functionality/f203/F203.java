@@ -1,8 +1,8 @@
 package tripleo.elijah_durable_pancake.comp.functionality.f203;
 
 import org.jetbrains.annotations.Contract;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.ErrSink;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.ErrSink;
 
 import java.io.File;
 import java.time.LocalDateTime;

@@ -1,8 +1,8 @@
 package tripleo.elijah_durable_pancake.comp.impl;
 
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.CompilerController;
-import tripleo.elijah.comp.ICompilationBus;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.CompilerController;
+import tripleo.eljiah_pancake_durable.comp.ICompilationBus;
 import tripleo.elijah_durable_pancake.comp.ApacheOptionsProcessor;
 import tripleo.elijah_durable_pancake.comp.CompilationRunner;
 import tripleo.elijah_durable_pancake.comp.CompilerInstructionsObserver;

@@ -1,8 +1,8 @@
 package tripleo.elijah_durable_pancake.input;
 
 import com.google.common.base.Preconditions;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.util.__Extensionable;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.util.__Extensionable;
 import tripleo.elijah.util.Maybe;
 import tripleo.elijah.util.Operation2;
 import tripleo.elijah_durable_pancake.comp.CompilerInput;

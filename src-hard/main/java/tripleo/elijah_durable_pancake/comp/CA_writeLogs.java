@@ -2,8 +2,8 @@ package tripleo.elijah_durable_pancake.comp;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.stages.logging.ElLog;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.stages.logging.ElLog;
 import tripleo.elijah_durable_pancake.comp.functionality.f202.F202;
 
 import java.util.Collection;

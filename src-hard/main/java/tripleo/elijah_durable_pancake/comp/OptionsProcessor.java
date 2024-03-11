@@ -1,7 +1,7 @@
 package tripleo.elijah_durable_pancake.comp;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.ICompilationBus;
+import tripleo.eljiah_pancake_durable.comp.ICompilationBus;
 
 import java.util.List;
 

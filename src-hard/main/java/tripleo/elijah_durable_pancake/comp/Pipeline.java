@@ -8,8 +8,7 @@
  */
 package tripleo.elijah_durable_pancake.comp;
 
-import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah_durable_pancake.comp.PipelineMember;
+import tripleo.eljiah_pancake_durable.comp.ErrSink;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,10 +2,10 @@ package tripleo.elijah_durable_pancake.comp;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.i.ProgressSinkComponent;
-import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
-import tripleo.elijah.comp.i.IProgressSink;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.comp.i.ProgressSinkComponent;
+import tripleo.eljiah_pancake_durable.stages.deduce.post_bytecode.Maybe;
+import tripleo.eljiah_pancake_durable.comp.i.IProgressSink;
 import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 import tripleo.elijah_durable_pancake.comp.internal.EDP_ProgressSink;
 

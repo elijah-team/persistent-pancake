@@ -2,10 +2,10 @@ package tripleo.elijah_durable_pancake.comp.queries;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
-import tripleo.elijah.Out;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.nextgen.query.QueryDatabase;
+import tripleo.eljiah_pancake_durable.Out;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.nextgen.query.QueryDatabase;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.Operation;
 import tripleo.elijjah.ElijjahLexer;

@@ -9,7 +9,7 @@
 package tripleo.elijah_durable_pancake.comp.functionality.f202;
 
 import org.jetbrains.annotations.Contract;
-import tripleo.elijah.stages.logging.ElLog;
+import tripleo.eljiah_pancake_durable.stages.logging.ElLog;
 
 /**
  * Created 8/11/21 5:58 AM

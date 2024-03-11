@@ -8,7 +8,7 @@
  */
 package tripleo.elijah_durable_pancake.comp.functionality.f202;
 
-import tripleo.elijah.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
 import tripleo.elijah_durable_pancake.comp.functionality.f203.F203;
 
 import java.io.File;

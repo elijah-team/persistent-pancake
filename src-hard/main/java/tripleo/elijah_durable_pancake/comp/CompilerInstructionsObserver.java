@@ -3,8 +3,8 @@ package tripleo.elijah_durable_pancake.comp;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.Compilation;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 

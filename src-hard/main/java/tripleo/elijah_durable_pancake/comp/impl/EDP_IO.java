@@ -10,10 +10,10 @@ package tripleo.elijah_durable_pancake.comp.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.comp.FileOption;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.nextgen.inputtree.EIT_SourceOrigin;
-import tripleo.elijah.util.Helpers;
+import tripleo.eljiah_pancake_durable.comp.FileOption;
+import tripleo.eljiah_pancake_durable.comp.IO;
+import tripleo.eljiah_pancake_durable.nextgen.inputtree.EIT_SourceOrigin;
+import tripleo.eljiah_pancake_durable.util.Helpers;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah.util.io.CharSource;
 import tripleo.elijah.util.io.DisposableCharSink;

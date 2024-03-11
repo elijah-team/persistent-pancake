@@ -12,8 +12,8 @@
  */
 package tripleo.elijah_durable_pancake.comp.impl;
 
-import tripleo.elijah.DebugFlags;
-import tripleo.elijah.comp.ErrSink;
+import tripleo.eljiah_pancake_durable.DebugFlags;
+import tripleo.eljiah_pancake_durable.comp.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 

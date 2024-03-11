@@ -2,9 +2,9 @@ package tripleo.elijah_durable_pancake.comp.impl;
 
 import org.jdeferred2.DoneCallback;
 import tripleo.elijah.Eventual;
-import tripleo.elijah.comp.CentralController;
-import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.gen_fn.GeneratePhase;
+import tripleo.eljiah_pancake_durable.comp.CentralController;
+import tripleo.eljiah_pancake_durable.stages.deduce.DeducePhase;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratePhase;
 import tripleo.elijah.util.EventualExtract;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
 

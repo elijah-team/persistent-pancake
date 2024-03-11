@@ -1,16 +1,16 @@
 package tripleo.elijah_durable_pancake.comp;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.FunctionDef;
-import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.stages.gen_fn.BaseGeneratedFunction;
-import tripleo.elijah.stages.gen_fn.GeneratedClass;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
-import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
-import tripleo.elijah.stages.gen_fn.IdentTableEntry;
-import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
+import tripleo.eljiah_pancake_durable.lang.ClassStatement;
+import tripleo.eljiah_pancake_durable.lang.FunctionDef;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.BaseGeneratedFunction;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratedClass;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratedFunction;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratedNamespace;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratedNode;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.IdentTableEntry;
+import tripleo.eljiah_pancake_durable.stages.gen_generic.ICodeRegistrar;
 
 import java.util.List;
 import java.util.Map;

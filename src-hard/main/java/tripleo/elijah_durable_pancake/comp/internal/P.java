@@ -4,8 +4,8 @@ import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.subscription.BackPressureStrategy;
 import io.smallrye.mutiny.subscription.MultiEmitter;
 
-import tripleo.elijah.comp.nextgen.pw.PW_Controller;
-import tripleo.elijah.comp.nextgen.pw.PW_PushWork;
+import tripleo.eljiah_pancake_durable.comp.nextgen.pw.PW_Controller;
+import tripleo.eljiah_pancake_durable.comp.nextgen.pw.PW_PushWork;
 
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 

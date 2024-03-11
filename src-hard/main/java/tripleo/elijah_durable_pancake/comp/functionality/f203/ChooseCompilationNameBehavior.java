@@ -1,6 +1,6 @@
 package tripleo.elijah_durable_pancake.comp.functionality.f203;
 
-import tripleo.elijah.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
 
 import java.io.File;
 

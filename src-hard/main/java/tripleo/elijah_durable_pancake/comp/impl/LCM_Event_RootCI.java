@@ -1,9 +1,9 @@
 package tripleo.elijah_durable_pancake.comp.impl;
 
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.i.LCM_CompilerAccess;
-import tripleo.elijah.comp.i.LCM_Event;
-import tripleo.elijah.comp.i.LCM_HandleEvent;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.comp.i.LCM_CompilerAccess;
+import tripleo.eljiah_pancake_durable.comp.i.LCM_Event;
+import tripleo.eljiah_pancake_durable.comp.i.LCM_HandleEvent;
 import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 import tripleo.elijah_pancake.feb24.googly.P;
 

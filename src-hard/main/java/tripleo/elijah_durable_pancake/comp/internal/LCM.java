@@ -6,9 +6,9 @@ import com.google.common.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.i.LCM_HandleEvent;
-import tripleo.elijah.comp.i.LCM_Event;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.i.LCM_HandleEvent;
+import tripleo.eljiah_pancake_durable.comp.i.LCM_Event;
 
 public class LCM {
 	private final EventBus          eventBus;

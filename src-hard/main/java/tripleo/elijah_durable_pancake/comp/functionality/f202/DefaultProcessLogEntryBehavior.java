@@ -8,8 +8,8 @@
  */
 package tripleo.elijah_durable_pancake.comp.functionality.f202;
 
-import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.stages.logging.LogEntry;
+import tripleo.eljiah_pancake_durable.comp.ErrSink;
+import tripleo.eljiah_pancake_durable.stages.logging.LogEntry;
 
 import java.io.File;
 import java.io.FileNotFoundException;

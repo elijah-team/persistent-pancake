@@ -9,18 +9,18 @@
 package tripleo.elijah_durable_pancake.comp;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
-import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.gen_fn.GenerateFunctions;
-import tripleo.elijah.stages.gen_fn.GeneratePhase;
-import tripleo.elijah.stages.gen_fn.GeneratedClass;
-import tripleo.elijah.stages.gen_fn.GeneratedFunction;
-import tripleo.elijah.stages.gen_fn.GeneratedNamespace;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
-import tripleo.elijah.stages.gen_generic.GenerateResult;
-import tripleo.elijah.stages.gen_generic.GenerateResultItem;
-import tripleo.elijah.stages.logging.ElLog;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.nextgen.inputtree.EIT_ModuleList;
+import tripleo.eljiah_pancake_durable.stages.deduce.DeducePhase;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GenerateFunctions;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratePhase;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratedClass;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratedFunction;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratedNamespace;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratedNode;
+import tripleo.eljiah_pancake_durable.stages.gen_generic.GenerateResult;
+import tripleo.eljiah_pancake_durable.stages.gen_generic.GenerateResultItem;
+import tripleo.eljiah_pancake_durable.stages.logging.ElLog;
 import tripleo.elijah_pancake.feb24.googly.P;
 
 import java.io.PrintStream;

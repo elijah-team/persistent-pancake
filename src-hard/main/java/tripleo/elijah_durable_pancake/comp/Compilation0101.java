@@ -1,16 +1,16 @@
 package tripleo.elijah_durable_pancake.comp;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.CompilerController;
-import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.lang.OS_Package;
-import tripleo.elijah.lang.Qualident;
-import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.gen_fn.GeneratedNode;
-import tripleo.elijah.stages.logging.ElLog;
-import tripleo.elijah.testing.comp.IFunctionMapHook;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.comp.CompilerController;
+import tripleo.eljiah_pancake_durable.lang.ClassStatement;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.lang.OS_Package;
+import tripleo.eljiah_pancake_durable.lang.Qualident;
+import tripleo.eljiah_pancake_durable.stages.deduce.DeducePhase;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratedNode;
+import tripleo.eljiah_pancake_durable.stages.logging.ElLog;
+import tripleo.eljiah_pancake_durable.testing.comp.IFunctionMapHook;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah.util.Operation2;
 import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
