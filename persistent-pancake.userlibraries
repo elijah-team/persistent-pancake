@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="groovy-5.0.0-alpha-1" />
+  <library name="Gradle: com.squareup.okhttp3:okhttp:4.10.0">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/4.10.0/cd63657ac15770ed1420647154c9f44645533bef/okhttp-4.10.0.jar" />
+  </library>
+  <library name="Gradle: com.codahale.metrics:metrics-healthchecks:3.0.2">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/com.codahale.metrics/metrics-healthchecks/3.0.2/d99c34c33eceb7bc0e23c5b63fc517b0a53871c4/metrics-healthchecks-3.0.2.jar" />
+  </library>
+  <library name="Gradle: com.codahale.metrics:metrics-core:3.0.2">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/com.codahale.metrics/metrics-core/3.0.2/c6a7fb32776e984b64ff1a548e3044238ea5a931/metrics-core-3.0.2.jar" />
+  </library>
+  <library name="Gradle: org.jooq:jool:0.9.15">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/org.jooq/jool/0.9.15/2b162c4251820479b336a7437b88fa047ed3e82e/jool-0.9.15.jar" />
+  </library>
+  <library name="Gradle: org.hashids:hashids:1.0.3">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/org.hashids/hashids/1.0.3/3ee66bd8b466a2d3e4ae42a636421f367b12e1c4/hashids-1.0.3.jar" />
+  </library>
+  <library name="Gradle: com.typesafe:config:1.4.2">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/com.typesafe/config/1.4.2/4c40a633e7994cfb0354244efb6d03fcb11c3ecf/config-1.4.2.jar" />
+  </library>
+  <library name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.15.1">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.15.1/ac9ba74d208faf356e4719a49e59c6ea9237c01d/jackson-databind-2.15.1.jar" />
+  </library>
+  <library name="Gradle: io.undertow:undertow-servlet:2.3.7.Final">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/io.undertow/undertow-servlet/2.3.7.Final/317cd37877185c79e51b33d44d9f2e2f521b51dc/undertow-servlet-2.3.7.Final.jar" />
+  </library>
+  <library name="Gradle: io.undertow:undertow-core:2.3.9.Final">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/io.undertow/undertow-core/2.3.9.Final/55c93edeb668af84ae494321466c63ec1c80517a/undertow-core-2.3.9.Final.jar" />
+  </library>
+  <library name="Gradle: org.apache.commons:commons-lang3:3.14.0">
+    <archive path="/home/generic/.m2/repository/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.jar" />
+  </library>
+  <library name="Gradle: net.java.dev.jna:jna:5.13.0">
+    <archive path="/home/generic/.m2/repository/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar" />
+  </library>
+  <library name="Gradle: me.friwi:jcefmaven:110.0.25">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/me.friwi/jcefmaven/110.0.25/591e5de39e070c9853573e78e5a75c982b1652e/jcefmaven-110.0.25.jar" />
+  </library>
+  <library name="Gradle: io.reactivex.rxjava3:rxjava:3.1.8">
+    <archive path="/home/generic/.m2/repository/io/reactivex/rxjava3/rxjava/3.1.8/rxjava-3.1.8.jar" />
+  </library>
+  <library name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.2">
+    <archive path="/home/generic/.m2/repository/org/jetbrains/kotlinx/kotlinx-coroutines-reactor/1.7.2/kotlinx-coroutines-reactor-1.7.2.jar" />
+  </library>
+  <library name="Gradle: org.reactivestreams:reactive-streams:1.0.4">
+    <archive path="/home/generic/.m2/repository/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar" />
+  </library>
+  <library name="Gradle: commons-codec:commons-codec:1.15">
+    <archive path="/home/generic/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar" />
+  </library>
+  <library name="Gradle: org.slf4j:slf4j-simple:2.0.12">
+    <archive path="/home/generic/.m2/repository/org/slf4j/slf4j-simple/2.0.12/slf4j-simple-2.0.12.jar" />
+  </library>
+  <library name="Gradle: org.jdeferred.v2:jdeferred-core:2.0.0">
+    <archive path="/home/generic/.m2/repository/org/jdeferred/v2/jdeferred-core/2.0.0/jdeferred-core-2.0.0.jar" />
+  </library>
+  <library name="Gradle: tripleo.buffers:buffers-v1:0.0.3">
+    <archive path="/home/generic/.m2/repository/tripleo/buffers/buffers-v1/0.0.3/buffers-v1-0.0.3.jar" />
+  </library>
+  <library name="Gradle: tripleo.util.range:range-v1:0.0.3b">
+    <archive path="/home/generic/.m2/repository/tripleo/util/range/range-v1/0.0.3b/range-v1-0.0.3b.jar" />
+  </library>
+  <library name="Gradle: org.eclipse.jdt:org.eclipse.jdt.annotation:2.2.800">
+    <archive path="/home/generic/.m2/repository/org/eclipse/jdt/org.eclipse.jdt.annotation/2.2.800/org.eclipse.jdt.annotation-2.2.800.jar" />
+  </library>
+  <library name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22">
+    <archive path="/home/generic/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.9.22/kotlin-stdlib-jdk8-1.9.22.jar" />
+  </library>
+  <library name="Gradle: org.jetbrains:annotations:24.0.1">
+    <archive path="/home/generic/.m2/repository/org/jetbrains/annotations/24.0.1/annotations-24.0.1.jar" />
+  </library>
+  <library name="Gradle: com.github.spotbugs:spotbugs-annotations:4.8.3">
+    <archive path="/home/generic/.m2/repository/com/github/spotbugs/spotbugs-annotations/4.8.3/spotbugs-annotations-4.8.3.jar" />
+  </library>
+  <library name="Gradle: antlr:antlr:2.7.7">
+    <archive path="/home/generic/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar" />
+  </library>
+  <library name="Gradle: commons-cli:commons-cli:1.4">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/commons-cli/commons-cli/1.4/c51c00206bb913cd8612b24abd9fa98ae89719b1/commons-cli-1.4.jar" />
+  </library>
+  <library name="Gradle: com.google.guava:guava:33.0.0-jre">
+    <archive path="/home/generic/.m2/repository/com/google/guava/guava/33.0.0-jre/guava-33.0.0-jre.jar" />
+  </library>
+  <library name="Gradle: io.smallrye.reactive:mutiny:2.5.1">
+    <archive path="/home/generic/.m2/repository/io/smallrye/reactive/mutiny/2.5.1/mutiny-2.5.1.jar" />
+  </library>
+  <library name="Gradle: org.apache.groovy:groovy:4.0.15">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/org.apache.groovy/groovy/4.0.15/1fa486007f31bd7f245ba4674fb8afb173bea745/groovy-4.0.15.jar" />
+  </library>
+  <library name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.9.22">
+    <archive path="/home/generic/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.9.22/kotlin-stdlib-1.9.22.jar" />
+  </library>
+  <library name="Gradle: org.slf4j:slf4j-api:2.0.12">
+    <archive path="/home/generic/.m2/repository/org/slf4j/slf4j-api/2.0.12/slf4j-api-2.0.12.jar" />
+  </library>
+  <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.15.1">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.15.1/92a90d3739e970e03b5971839e4fe51f13c1fa3/jackson-annotations-2.15.1.jar" />
+  </library>
+  <library name="Gradle: com.fasterxml.jackson.core:jackson-core:2.15.1">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.15.1/241c054ba8503de092a12acad9f083dd39935cc0/jackson-core-2.15.1.jar" />
+  </library>
+  <library name="Gradle: jakarta.servlet:jakarta.servlet-api:6.0.0">
+    <archive path="/home/generic/.m2/repository/jakarta/servlet/jakarta.servlet-api/6.0.0/jakarta.servlet-api-6.0.0.jar" />
+  </library>
+  <library name="Gradle: jakarta.annotation:jakarta.annotation-api:2.1.1">
+    <archive path="/home/generic/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar" />
+  </library>
+  <library name="Gradle: org.jboss.threads:jboss-threads:3.5.0.Final">
+    <archive path="/home/generic/.m2/repository/org/jboss/threads/jboss-threads/3.5.0.Final/jboss-threads-3.5.0.Final.jar" />
+  </library>
+  <library name="Gradle: org.jboss.xnio:xnio-api:3.8.8.Final">
+    <archive path="/home/generic/.m2/repository/org/jboss/xnio/xnio-api/3.8.8.Final/xnio-api-3.8.8.Final.jar" />
+  </library>
+  <library name="Gradle: org.jboss.logging:jboss-logging:3.4.3.Final">
+    <archive path="/home/generic/.m2/repository/org/jboss/logging/jboss-logging/3.4.3.Final/jboss-logging-3.4.3.Final.jar" />
+  </library>
+  <library name="Gradle: me.friwi:jcef-api:jcef-87476e9+cef-110.0.25+g75b1c96+chromium-110.0.5481.78">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/me.friwi/jcef-api/jcef-87476e9+cef-110.0.25+g75b1c96+chromium-110.0.5481.78/2daaecf95da9e3b52758efeba8810cd58831baf/jcef-api-jcef-87476e9+cef-110.0.25+g75b1c96+chromium-110.0.5481.78.jar" />
+  </library>
+  <library name="Gradle: org.apache.commons:commons-compress:1.21">
+    <archive path="/home/generic/.m2/repository/org/apache/commons/commons-compress/1.21/commons-compress-1.21.jar" />
+  </library>
+  <library name="Gradle: com.google.code.gson:gson:2.10">
+    <archive path="/home/generic/.m2/repository/com/google/code/gson/gson/2.10/gson-2.10.jar" />
+  </library>
+  <library name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm:1.7.2">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-test-jvm/1.7.2/87c2cb3c9d2f72527cd68f2f2bf479d5413c281f/kotlinx-coroutines-test-jvm-1.7.2.jar" />
+  </library>
+  <library name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.2">
+    <archive path="/home/generic/.m2/repository/org/jetbrains/kotlinx/kotlinx-coroutines-reactive/1.7.2/kotlinx-coroutines-reactive-1.7.2.jar" />
+  </library>
+  <library name="Gradle: io.projectreactor:reactor-core:3.4.1">
+    <archive path="/home/generic/.m2/repository/io/projectreactor/reactor-core/3.4.1/reactor-core-3.4.1.jar" />
+  </library>
+  <library name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.22">
+    <archive path="/home/generic/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.9.22/kotlin-stdlib-jdk7-1.9.22.jar" />
+  </library>
+  <library name="Gradle: com.google.code.findbugs:jsr305:3.0.2">
+    <archive path="/home/generic/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar" />
+  </library>
+  <library name="Gradle: com.google.guava:failureaccess:1.0.2">
+    <archive path="/home/generic/.m2/repository/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar" />
+  </library>
+  <library name="Gradle: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava">
+    <archive path="/home/generic/.m2/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar" />
+  </library>
+  <library name="Gradle: org.checkerframework:checker-qual:3.41.0">
+    <archive path="/home/generic/.m2/repository/org/checkerframework/checker-qual/3.41.0/checker-qual-3.41.0.jar" />
+  </library>
+  <library name="Gradle: com.google.errorprone:error_prone_annotations:2.23.0">
+    <archive path="/home/generic/.m2/repository/com/google/errorprone/error_prone_annotations/2.23.0/error_prone_annotations-2.23.0.jar" />
+  </library>
+  <library name="Gradle: com.google.j2objc:j2objc-annotations:2.8">
+    <archive path="/home/generic/.m2/repository/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.jar" />
+  </library>
+  <library name="Gradle: io.smallrye.common:smallrye-common-annotation:2.1.2">
+    <archive path="/home/generic/.m2/repository/io/smallrye/common/smallrye-common-annotation/2.1.2/smallrye-common-annotation-2.1.2.jar" />
+  </library>
+  <library name="Gradle: com.squareup.okio:okio-jvm:3.0.0">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio-jvm/3.0.0/ab5a73fa2ccb4a36b0b5c69fe10b16d0255bcf8/okio-jvm-3.0.0.jar" />
+  </library>
+  <library name="Gradle: org.wildfly.client:wildfly-client-config:1.0.1.Final">
+    <archive path="/home/generic/.m2/repository/org/wildfly/client/wildfly-client-config/1.0.1.Final/wildfly-client-config-1.0.1.Final.jar" />
+  </library>
+  <library name="Gradle: org.wildfly.common:wildfly-common:1.5.4.Final">
+    <archive path="/home/generic/.m2/repository/org/wildfly/common/wildfly-common/1.5.4.Final/wildfly-common-1.5.4.Final.jar" />
+  </library>
+  <library name="Gradle: me.friwi:jogl-all:v2.4.0-rc-20210111">
+    <archive path="/home/generic/.m2/repository/me/friwi/jogl-all/v2.4.0-rc-20210111/jogl-all-v2.4.0-rc-20210111.jar" />
+  </library>
+  <library name="Gradle: me.friwi:gluegen-rt:v2.4.0-rc-20210111">
+    <archive path="/home/generic/.m2/repository/me/friwi/gluegen-rt/v2.4.0-rc-20210111/gluegen-rt-v2.4.0-rc-20210111.jar" />
+  </library>
+  <library name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.2">
+    <archive path="/home/generic/.m2/repository/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.7.2/kotlinx-coroutines-core-jvm-1.7.2.jar" />
+  </library>
+  <library name="Gradle: org.jboss.xnio:xnio-nio:3.8.8.Final">
+    <archive path="/home/generic/.m2/repository/org/jboss/xnio/xnio-nio/3.8.8.Final/xnio-nio-3.8.8.Final.jar" />
+  </library>
+  <library name="Gradle: org.jetbrains.kotlin:kotlin-test:1.9.22">
+    <archive path="/home/generic/.m2/repository/org/jetbrains/kotlin/kotlin-test/1.9.22/kotlin-test-1.9.22.jar" />
+  </library>
+  <library name="Gradle: com.google.truth.extensions:truth-java8-extension:1.4.0">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/com.google.truth.extensions/truth-java8-extension/1.4.0/807a8226b465e5df74cc0591762f729195c3f144/truth-java8-extension-1.4.0.jar" />
+  </library>
+  <library name="Gradle: com.google.truth:truth:1.4.0">
+    <archive path="/home/generic/.m2/repository/com/google/truth/truth/1.4.0/truth-1.4.0.jar" />
+  </library>
+  <library name="Gradle: org.spockframework:spock-core:2.3-groovy-4.0">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/org.spockframework/spock-core/2.3-groovy-4.0/8861b2590bb8e4709b052fb4ed6da3de98e734d9/spock-core-2.3-groovy-4.0.jar" />
+  </library>
+  <library name="Gradle: org.hamcrest:hamcrest-core:2.2">
+    <archive path="/home/generic/.m2/repository/org/hamcrest/hamcrest-core/2.2/hamcrest-core-2.2.jar" />
+  </library>
+  <library name="Gradle: org.junit.jupiter:junit-jupiter:5.10.2">
+    <archive path="/home/generic/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.2/junit-jupiter-5.10.2.jar" />
+  </library>
+  <library name="Gradle: org.easymock:easymock:5.1.0">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/org.easymock/easymock/5.1.0/b699beae4f519f06c587674b62dcfe5fb437f1c/easymock-5.1.0.jar" />
+  </library>
+  <library name="Gradle: org.checkerframework:checker-qual:3.42.0">
+    <archive path="/home/generic/.m2/repository/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0.jar" />
+  </library>
+  <library name="Gradle: junit:junit:4.13.2">
+    <archive path="/home/generic/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar" />
+  </library>
+  <library name="Gradle: com.google.errorprone:error_prone_annotations:2.24.1">
+    <archive path="/home/generic/.m2/repository/com/google/errorprone/error_prone_annotations/2.24.1/error_prone_annotations-2.24.1.jar" />
+  </library>
+  <library name="Gradle: com.google.auto.value:auto-value-annotations:1.10.4">
+    <archive path="/home/generic/.m2/repository/com/google/auto/value/auto-value-annotations/1.10.4/auto-value-annotations-1.10.4.jar" />
+  </library>
+  <library name="Gradle: org.ow2.asm:asm:9.6">
+    <archive path="/home/generic/.m2/repository/org/ow2/asm/asm/9.6/asm-9.6.jar" />
+  </library>
+  <library name="Gradle: org.junit.platform:junit-platform-engine:1.9.0">
+    <archive path="/home/generic/.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-engine/1.9.0/bd46891f01817b5ffdd368cb0482a34746610acb/junit-platform-engine-1.9.0.jar" />
+  </library>
+  <library name="Gradle: org.hamcrest:hamcrest:2.2">
+    <archive path="/home/generic/.m2/repository/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar" />
+  </library>
+  <library name="Gradle: org.junit.jupiter:junit-jupiter-params:5.10.2">
+    <archive path="/home/generic/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar" />
+  </library>
+  <library name="Gradle: org.junit.jupiter:junit-jupiter-api:5.10.2">
+    <archive path="/home/generic/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar" />
+  </library>
+  <library name="Gradle: org.objenesis:objenesis:3.3">
+    <archive path="/home/generic/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar" />
+  </library>
+  <library name="Gradle: org.opentest4j:opentest4j:1.3.0">
+    <archive path="/home/generic/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar" />
+  </library>
+  <library name="Gradle: org.junit.platform:junit-platform-commons:1.10.2">
+    <archive path="/home/generic/.m2/repository/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2.jar" />
+  </library>
+  <library name="Gradle: org.apiguardian:apiguardian-api:1.1.2">
+    <archive path="/home/generic/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar" />
+  </library>
+  <library name="Gradle: org.junit.platform:junit-platform-engine:1.10.2">
+    <archive path="/home/generic/.m2/repository/org/junit/platform/junit-platform-engine/1.10.2/junit-platform-engine-1.10.2.jar" />
+  </library>
+  <library name="Gradle: org.junit.jupiter:junit-jupiter-engine:5.10.2">
+    <archive path="/home/generic/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar" />
+  </library>
+  <library name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.8.20">
+    <archive path="/home/generic/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.8.20/kotlin-stdlib-common-1.8.20.jar" />
+  </library>
+</eclipse-userlibraries>
+

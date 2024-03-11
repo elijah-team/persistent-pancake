@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inheritJdk="true">
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$/../../elijah-ek"/>
+	<contentEntry url="file://$MODULE_DIR$/../../elijah-good-api"/>
+	<contentEntry url="file://$MODULE_DIR$/../../elijah-util"/>
+	<contentEntry url="file://$MODULE_DIR$/../../src-hard"/>
+	<contentEntry url="file://$MODULE_DIR$/../../src-mal"/>
+	<contentEntry url="file://$MODULE_DIR$/../../src-undertow"/>
+	<contentEntry url="file://$MODULE_DIR$/../../src/main"/>
+	<contentEntry url="file://$MODULE_DIR$/../../tripleo-small"/>
+	<lib name="Gradle: org.jboss.xnio:xnio-nio:3.8.8.Final" scope="RUNTIME"/>
+	<levels>
+		<level name="Gradle: com.squareup.okhttp3:okhttp:4.10.0" value="project"/>
+		<level name="Gradle: com.codahale.metrics:metrics-healthchecks:3.0.2" value="project"/>
+		<level name="Gradle: com.codahale.metrics:metrics-core:3.0.2" value="project"/>
+		<level name="Gradle: org.jooq:jool:0.9.15" value="project"/>
+		<level name="Gradle: org.hashids:hashids:1.0.3" value="project"/>
+		<level name="Gradle: com.typesafe:config:1.4.2" value="project"/>
+		<level name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.15.1" value="project"/>
+		<level name="Gradle: io.undertow:undertow-servlet:2.3.7.Final" value="project"/>
+		<level name="Gradle: io.undertow:undertow-core:2.3.9.Final" value="project"/>
+		<level name="Gradle: org.apache.commons:commons-lang3:3.14.0" value="project"/>
+		<level name="Gradle: net.java.dev.jna:jna:5.13.0" value="project"/>
+		<level name="Gradle: me.friwi:jcefmaven:110.0.25" value="project"/>
+		<level name="Gradle: io.reactivex.rxjava3:rxjava:3.1.8" value="project"/>
+		<level name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.2" value="project"/>
+		<level name="Gradle: org.reactivestreams:reactive-streams:1.0.4" value="project"/>
+		<level name="Gradle: commons-codec:commons-codec:1.15" value="project"/>
+		<level name="Gradle: org.slf4j:slf4j-simple:2.0.12" value="project"/>
+		<level name="Gradle: org.jdeferred.v2:jdeferred-core:2.0.0" value="project"/>
+		<level name="Gradle: tripleo.buffers:buffers-v1:0.0.3" value="project"/>
+		<level name="Gradle: tripleo.util.range:range-v1:0.0.3b" value="project"/>
+		<level name="Gradle: org.eclipse.jdt:org.eclipse.jdt.annotation:2.2.800" value="project"/>
+		<level name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22" value="project"/>
+		<level name="Gradle: org.jetbrains:annotations:24.0.1" value="project"/>
+		<level name="Gradle: com.github.spotbugs:spotbugs-annotations:4.8.3" value="project"/>
+		<level name="Gradle: antlr:antlr:2.7.7" value="project"/>
+		<level name="Gradle: commons-cli:commons-cli:1.4" value="project"/>
+		<level name="Gradle: com.google.guava:guava:33.0.0-jre" value="project"/>
+		<level name="Gradle: io.smallrye.reactive:mutiny:2.5.1" value="project"/>
+		<level name="Gradle: org.apache.groovy:groovy:4.0.15" value="project"/>
+		<level name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.9.22" value="project"/>
+		<level name="Gradle: org.slf4j:slf4j-api:2.0.12" value="project"/>
+		<level name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.15.1" value="project"/>
+		<level name="Gradle: com.fasterxml.jackson.core:jackson-core:2.15.1" value="project"/>
+		<level name="Gradle: jakarta.servlet:jakarta.servlet-api:6.0.0" value="project"/>
+		<level name="Gradle: jakarta.annotation:jakarta.annotation-api:2.1.1" value="project"/>
+		<level name="Gradle: org.jboss.threads:jboss-threads:3.5.0.Final" value="project"/>
+		<level name="Gradle: org.jboss.xnio:xnio-api:3.8.8.Final" value="project"/>
+		<level name="Gradle: org.jboss.logging:jboss-logging:3.4.3.Final" value="project"/>
+		<level name="Gradle: me.friwi:jcef-api:jcef-87476e9+cef-110.0.25+g75b1c96+chromium-110.0.5481.78" value="project"/>
+		<level name="Gradle: org.apache.commons:commons-compress:1.21" value="project"/>
+		<level name="Gradle: com.google.code.gson:gson:2.10" value="project"/>
+		<level name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm:1.7.2" value="project"/>
+		<level name="Gradle: io.projectreactor:reactor-core:3.4.1" value="project"/>
+		<level name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.2" value="project"/>
+		<level name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.2" value="project"/>
+		<level name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.22" value="project"/>
+		<level name="Gradle: com.google.code.findbugs:jsr305:3.0.2" value="project"/>
+		<level name="Gradle: com.google.guava:failureaccess:1.0.2" value="project"/>
+		<level name="Gradle: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" value="project"/>
+		<level name="Gradle: org.checkerframework:checker-qual:3.41.0" value="project"/>
+		<level name="Gradle: com.google.errorprone:error_prone_annotations:2.23.0" value="project"/>
+		<level name="Gradle: com.google.j2objc:j2objc-annotations:2.8" value="project"/>
+		<level name="Gradle: io.smallrye.common:smallrye-common-annotation:2.1.2" value="project"/>
+		<level name="Gradle: com.squareup.okio:okio-jvm:3.0.0" value="project"/>
+		<level name="Gradle: org.wildfly.client:wildfly-client-config:1.0.1.Final" value="project"/>
+		<level name="Gradle: org.wildfly.common:wildfly-common:1.5.4.Final" value="project"/>
+		<level name="Gradle: me.friwi:jogl-all:v2.4.0-rc-20210111" value="project"/>
+		<level name="Gradle: me.friwi:gluegen-rt:v2.4.0-rc-20210111" value="project"/>
+		<level name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.8.20" value="project"/>
+		<level name="Gradle: org.jboss.xnio:xnio-nio:3.8.8.Final" value="project"/>
+	</levels>
+</component>
