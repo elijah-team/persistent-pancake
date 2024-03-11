@@ -25,6 +25,10 @@ Much work is needed.
 
 ## Build
 
-```
+```shell
 ./gradlew test
+```
+
+```shell
+nix-shell -p jdk17_headless maven gradle --command "gradle test"
 ```
