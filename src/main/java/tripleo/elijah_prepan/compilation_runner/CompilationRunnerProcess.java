@@ -1,14 +1,14 @@
 package tripleo.elijah_prepan.compilation_runner;
 
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.bus.CB_Action;
-import tripleo.elijah.comp.bus.CB_Process;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Action;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Process;
 import tripleo.elijah_durable_pancake.comp.CompilationRunner;
 import tripleo.elijah_pancake.feb24.comp.CR_State;
 
 import java.util.List;
 
-import static tripleo.elijah.util.Helpers.List_of;
+import static tripleo.eljiah_pancake_durable.util.Helpers.List_of;
 
 public class CompilationRunnerProcess implements CB_Process {
 	private final CompilationRunner compilationRunner;

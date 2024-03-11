@@ -1,6 +1,6 @@
 package tripleo.elijah_prepan.compilation_runner;
 
-import tripleo.elijah.comp.bus.CB_Action;
+import tripleo.eljiah_pancake_durable.comp.bus.CB_Action;
 
 import java.util.List;
 

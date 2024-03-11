@@ -2,10 +2,10 @@ package tripleo.elijah_prepan.compilation_runner;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Contract;
-import tripleo.elijah.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
 import tripleo.elijah_durable_pancake.comp.AccessBus;
 import tripleo.elijah_durable_pancake.comp.Compilation0101;
-import tripleo.elijah.comp.i.ICompilationAccess;
+import tripleo.eljiah_pancake_durable.comp.i.ICompilationAccess;
 import tripleo.elijah_durable_pancake.comp.Pipeline;
 import tripleo.elijah_durable_pancake.comp.internal.PipelinePlugin;
 import tripleo.elijah_pancake.feb24.comp.ProcessRecord;

@@ -2,19 +2,19 @@ package tripleo.elijah_prepan.compilation_runner;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.UnintendedUseException;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.ICompilationBus;
-import tripleo.elijah.comp.i.ProgressSinkComponent;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.ErrSink;
+import tripleo.eljiah_pancake_durable.comp.IO;
+import tripleo.eljiah_pancake_durable.comp.ICompilationBus;
+import tripleo.eljiah_pancake_durable.comp.i.ProgressSinkComponent;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.diagnostic.TooManyEz_ActuallyNone;
 import tripleo.elijah.diagnostic.TooManyEz_BeSpecific;
-import tripleo.elijah.stages.deduce.post_bytecode.Maybe;
+import tripleo.eljiah_pancake_durable.stages.deduce.post_bytecode.Maybe;
 import tripleo.elijah_durable_pancake.comp.CompilationRunner;
 import tripleo.elijah_durable_pancake.comp.ILazyCompilerInstructions;
-import tripleo.elijah.comp.i.IProgressSink;
+import tripleo.eljiah_pancake_durable.comp.i.IProgressSink;
 import tripleo.elijah_pancake.feb24.comp.CR_State;
 
 import java.io.File;

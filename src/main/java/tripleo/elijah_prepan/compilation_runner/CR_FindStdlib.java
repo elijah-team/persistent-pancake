@@ -2,7 +2,7 @@ package tripleo.elijah_prepan.compilation_runner;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.UnintendedUseException;
-import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
 import tripleo.elijah_pancake.feb24.comp.CR_State;
 import tripleo.elijah_durable_pancake.comp.CompilationRunner;
 import tripleo.elijah.util.Mode;

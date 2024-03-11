@@ -1,7 +1,7 @@
 package tripleo.elijah_prepan.compilation_runner;
 
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.CompilationAlways;
+import tripleo.eljiah_pancake_durable.ci.CompilerInstructions;
+import tripleo.eljiah_pancake_durable.comp.CompilationAlways;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
 import tripleo.elijah_durable_pancake.comp.CompilationRunner;
