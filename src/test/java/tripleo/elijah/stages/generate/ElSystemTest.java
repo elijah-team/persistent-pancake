@@ -11,8 +11,10 @@ package tripleo.elijah.stages.generate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.util.Helpers;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.stages.generate.ElSystem;
+import tripleo.eljiah_pancake_durable.stages.generate.OutputStrategy;
+import tripleo.eljiah_pancake_durable.util.Helpers;
 import tripleo.elijah_durable_pancake.comp.AccessBus;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
@@ -24,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ElSystemTest {
 
-	ElSystem     sys;
+	ElSystem    sys;
 	Compilation c;
 	private AccessBus ab;
 

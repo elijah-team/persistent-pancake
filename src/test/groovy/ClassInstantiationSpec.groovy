@@ -1,7 +1,7 @@
 import spock.lang.Shared
 import spock.lang.Specification
-import tripleo.elijah.comp.Compilation
-import tripleo.elijah.factory.comp.CompilationFactory
+import tripleo.eljiah_pancake_durable.comp.Compilation
+import tripleo.eljiah_pancake_durable.factory.comp.CompilationFactory
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink
 

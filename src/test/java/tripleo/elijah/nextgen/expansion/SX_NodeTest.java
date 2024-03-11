@@ -1,18 +1,18 @@
 package tripleo.elijah.nextgen.expansion;
 
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.CompilationAlways;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.nextgen.model.SM_ClassBody;
-import tripleo.elijah.nextgen.model.SM_ClassDeclaration;
-import tripleo.elijah.nextgen.model.SM_ClassInheritance;
-import tripleo.elijah.nextgen.model.SM_ClassSubtype;
-import tripleo.elijah.nextgen.model.SM_Name;
-import tripleo.elijah.stages.gen_generic.GenerateFiles;
-import tripleo.elijah.stages.gen_generic.OutputFileFactory;
-import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
-import tripleo.elijah.stages.logging.ElLog;
+import tripleo.eljiah_pancake_durable.comp.CompilationAlways;
+import tripleo.eljiah_pancake_durable.comp.IO;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.nextgen.model.SM_ClassBody;
+import tripleo.eljiah_pancake_durable.nextgen.model.SM_ClassDeclaration;
+import tripleo.eljiah_pancake_durable.nextgen.model.SM_ClassInheritance;
+import tripleo.eljiah_pancake_durable.nextgen.model.SM_ClassSubtype;
+import tripleo.eljiah_pancake_durable.nextgen.model.SM_Name;
+import tripleo.eljiah_pancake_durable.stages.gen_generic.GenerateFiles;
+import tripleo.eljiah_pancake_durable.stages.gen_generic.OutputFileFactory;
+import tripleo.eljiah_pancake_durable.stages.gen_generic.OutputFileFactoryParams;
+import tripleo.eljiah_pancake_durable.stages.logging.ElLog;
 import tripleo.elijah_durable_pancake.comp.AccessBus;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
@@ -22,7 +22,7 @@ import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 
 import java.util.List;
 
-import static tripleo.elijah.util.Helpers.List_of;
+import static tripleo.eljiah_pancake_durable.util.Helpers.List_of;
 
 public class SX_NodeTest {
 

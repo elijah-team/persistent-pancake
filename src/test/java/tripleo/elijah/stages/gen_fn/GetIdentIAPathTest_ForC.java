@@ -13,39 +13,47 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tripleo.elijah_durable_pancake.comp.AccessBus;
-import tripleo.elijah.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_CompilationAccess;
 import tripleo.elijah_durable_pancake.comp.PipelineLogic;
-import tripleo.elijah.lang.ClassStatement;
-import tripleo.elijah.lang.Context;
-import tripleo.elijah.lang.DotExpression;
-import tripleo.elijah.lang.FunctionDef;
-import tripleo.elijah.lang.IdentExpression;
-import tripleo.elijah.lang.LookupResultList;
-import tripleo.elijah.lang.OS_Element;
-import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.lang.OS_Package;
-import tripleo.elijah.lang.OS_Type;
-import tripleo.elijah.lang.VariableSequence;
-import tripleo.elijah.lang.VariableStatement;
-import tripleo.elijah.lang.types.OS_UserClassType;
-import tripleo.elijah.stages.gen_c.CReference;
-import tripleo.elijah.stages.gen_c.Emit;
-import tripleo.elijah.stages.gen_c.Generate_Code_For_Method;
-import tripleo.elijah.stages.instructions.IdentIA;
-import tripleo.elijah.stages.instructions.InstructionArgument;
-import tripleo.elijah.stages.instructions.IntegerIA;
-import tripleo.elijah.stages.instructions.VariableTableType;
-import tripleo.elijah.test_help.Boilerplate;
-import tripleo.elijah.util.Helpers;
+import tripleo.eljiah_pancake_durable.lang.ClassStatement;
+import tripleo.eljiah_pancake_durable.lang.Context;
+import tripleo.eljiah_pancake_durable.lang.DotExpression;
+import tripleo.eljiah_pancake_durable.lang.FunctionDef;
+import tripleo.eljiah_pancake_durable.lang.IdentExpression;
+import tripleo.eljiah_pancake_durable.lang.LookupResultList;
+import tripleo.eljiah_pancake_durable.lang.OS_Element;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.lang.OS_Package;
+import tripleo.eljiah_pancake_durable.lang.OS_Type;
+import tripleo.eljiah_pancake_durable.lang.VariableSequence;
+import tripleo.eljiah_pancake_durable.lang.VariableStatement;
+import tripleo.eljiah_pancake_durable.lang.types.OS_UserClassType;
+import tripleo.eljiah_pancake_durable.stages.gen_c.CReference;
+import tripleo.eljiah_pancake_durable.stages.gen_c.Emit;
+import tripleo.eljiah_pancake_durable.stages.gen_c.Generate_Code_For_Method;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.BaseTableEntry;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GenerateFunctions;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratePhase;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GeneratedFunction;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GenericElementHolder;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.IdentTableEntry;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.ProcTableEntry;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.TypeTableEntry;
+import tripleo.eljiah_pancake_durable.stages.instructions.IdentIA;
+import tripleo.eljiah_pancake_durable.stages.instructions.InstructionArgument;
+import tripleo.eljiah_pancake_durable.stages.instructions.IntegerIA;
+import tripleo.eljiah_pancake_durable.stages.instructions.VariableTableType;
+import tripleo.eljiah_pancake_durable.test_help.Boilerplate;
+import tripleo.eljiah_pancake_durable.util.Helpers;
 
 import static org.easymock.EasyMock.*;
-import static tripleo.elijah.util.Helpers.List_of;
+import static tripleo.eljiah_pancake_durable.util.Helpers.List_of;
 
 public class GetIdentIAPathTest_ForC {
 
 	GeneratedFunction gf;
-	OS_Module mod;
+	OS_Module         mod;
 
 	@BeforeEach
 	public void setUp() throws Exception {

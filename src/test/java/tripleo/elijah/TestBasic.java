@@ -14,12 +14,12 @@ import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.ErrSink;
-import tripleo.elijah.factory.comp.CompilationFactory;
-import tripleo.elijah.nextgen.outputstatement.EG_SequenceStatement;
-import tripleo.elijah.nextgen.outputstatement.EG_Statement;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.ErrSink;
+import tripleo.eljiah_pancake_durable.factory.comp.CompilationFactory;
+import tripleo.eljiah_pancake_durable.nextgen.outputstatement.EG_SequenceStatement;
+import tripleo.eljiah_pancake_durable.nextgen.outputstatement.EG_Statement;
+import tripleo.eljiah_pancake_durable.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static tripleo.elijah.util.Helpers.List_of;
+import static tripleo.eljiah_pancake_durable.util.Helpers.List_of;
 
 /**
  * @author Tripleo(envy)

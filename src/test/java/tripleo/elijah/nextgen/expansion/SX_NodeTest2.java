@@ -2,24 +2,24 @@ package tripleo.elijah.nextgen.expansion;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.IO;
+import tripleo.eljiah_pancake_durable.comp.IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
-import tripleo.elijah.nextgen.model.SM_ClassBody;
-import tripleo.elijah.nextgen.model.SM_ClassDeclaration;
-import tripleo.elijah.nextgen.model.SM_ClassInheritance;
-import tripleo.elijah.nextgen.model.SM_ClassSubtype;
-import tripleo.elijah.nextgen.model.SM_Name;
-import tripleo.elijah.nextgen.outputstatement.EG_Naming;
-import tripleo.elijah.nextgen.outputstatement.EG_SequenceStatement;
-import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
-import tripleo.elijah.nextgen.outputstatement.EG_Statement;
-import tripleo.elijah.nextgen.outputstatement.EG_SyntheticStatement;
-import tripleo.elijah.nextgen.outputstatement.EX_Rule;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
-import tripleo.elijah.util.Helpers;
+import tripleo.eljiah_pancake_durable.nextgen.model.SM_ClassBody;
+import tripleo.eljiah_pancake_durable.nextgen.model.SM_ClassDeclaration;
+import tripleo.eljiah_pancake_durable.nextgen.model.SM_ClassInheritance;
+import tripleo.eljiah_pancake_durable.nextgen.model.SM_ClassSubtype;
+import tripleo.eljiah_pancake_durable.nextgen.model.SM_Name;
+import tripleo.eljiah_pancake_durable.nextgen.outputstatement.EG_Naming;
+import tripleo.eljiah_pancake_durable.nextgen.outputstatement.EG_SequenceStatement;
+import tripleo.eljiah_pancake_durable.nextgen.outputstatement.EG_SingleStatement;
+import tripleo.eljiah_pancake_durable.nextgen.outputstatement.EG_Statement;
+import tripleo.eljiah_pancake_durable.nextgen.outputstatement.EG_SyntheticStatement;
+import tripleo.eljiah_pancake_durable.nextgen.outputstatement.EX_Rule;
+import tripleo.eljiah_pancake_durable.nextgen.outputtree.EOT_OutputFile;
+import tripleo.eljiah_pancake_durable.nextgen.outputtree.EOT_OutputTree;
+import tripleo.eljiah_pancake_durable.util.Helpers;
 import tripleo.small.ES_Symbol;
 
 import java.util.HashSet;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static tripleo.elijah.util.Helpers.List_of;
+import static tripleo.eljiah_pancake_durable.util.Helpers.List_of;
 
 public class SX_NodeTest2 {
 

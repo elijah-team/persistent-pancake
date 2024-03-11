@@ -10,8 +10,9 @@ package tripleo.elijah;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.ErrSink;
+import tripleo.eljiah_pancake_durable.Main;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.comp.ErrSink;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_IO;
 import tripleo.elijah_durable_pancake.comp.impl.EDP_ErrSink;
 import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
@@ -19,7 +20,7 @@ import tripleo.elijah_durable_pancake.comp.internal.EDP_Compilation;
 import java.io.File;
 import java.util.List;
 
-import static tripleo.elijah.util.Helpers.List_of;
+import static tripleo.eljiah_pancake_durable.util.Helpers.List_of;
 
 /**
  * @author Tripleo(sb)
@@ -30,7 +31,7 @@ public class FindBothSourceFiles {
 	/**
 	 * Compiler should find both parse files
 	 * <p>
-	 * Test method for {@link tripleo.elijah.Main#parseFile(java.lang.String, java.io.InputStream)}.
+	 * Test method for {@link Main#parseFile(java.lang.String, java.io.InputStream)}.
 	 *
 	 * @throws Exception
 	 */

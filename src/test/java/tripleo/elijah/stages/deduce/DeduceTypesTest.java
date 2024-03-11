@@ -15,20 +15,24 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.lang.IdentExpression;
-import tripleo.elijah.lang.OS_Module;
-import tripleo.elijah.lang.OS_Type;
-import tripleo.elijah.lang.Qualident;
-import tripleo.elijah.lang.RegularTypeName;
-import tripleo.elijah.lang.VariableStatement;
-import tripleo.elijah.lang.VariableTypeName;
-import tripleo.elijah.lang.types.OS_BuiltinType;
-import tripleo.elijah.lang.types.OS_UserType;
-import tripleo.elijah.lang2.BuiltInTypes;
-import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.test_help.Boilerplate;
-import tripleo.elijah.util.Helpers;
+import tripleo.eljiah_pancake_durable.comp.Compilation;
+import tripleo.eljiah_pancake_durable.lang.IdentExpression;
+import tripleo.eljiah_pancake_durable.lang.OS_Module;
+import tripleo.eljiah_pancake_durable.lang.OS_Type;
+import tripleo.eljiah_pancake_durable.lang.Qualident;
+import tripleo.eljiah_pancake_durable.lang.RegularTypeName;
+import tripleo.eljiah_pancake_durable.lang.VariableStatement;
+import tripleo.eljiah_pancake_durable.lang.VariableTypeName;
+import tripleo.eljiah_pancake_durable.lang.types.OS_BuiltinType;
+import tripleo.eljiah_pancake_durable.lang.types.OS_UserType;
+import tripleo.eljiah_pancake_durable.lang2.BuiltInTypes;
+import tripleo.eljiah_pancake_durable.stages.deduce.DeduceLookupUtils;
+import tripleo.eljiah_pancake_durable.stages.deduce.DeduceTypeWatcher;
+import tripleo.eljiah_pancake_durable.stages.deduce.DeduceTypes2;
+import tripleo.eljiah_pancake_durable.stages.deduce.ResolveError;
+import tripleo.eljiah_pancake_durable.stages.gen_fn.GenType;
+import tripleo.eljiah_pancake_durable.test_help.Boilerplate;
+import tripleo.eljiah_pancake_durable.util.Helpers;
 
 /**
  * Useless tests. We really want to know if a TypeName will resolve to the same types

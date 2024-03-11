@@ -13,10 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tripleo.elijah.lang.DotExpression;
-import tripleo.elijah.lang.IExpression;
-import tripleo.elijah.lang.IdentExpression;
-import tripleo.elijah.util.Helpers;
+import tripleo.eljiah_pancake_durable.lang.DotExpression;
+import tripleo.eljiah_pancake_durable.lang.IExpression;
+import tripleo.eljiah_pancake_durable.lang.IdentExpression;
+import tripleo.eljiah_pancake_durable.stages.deduce.DeduceLookupUtils;
+import tripleo.eljiah_pancake_durable.util.Helpers;
 
 import java.util.Stack;
 
