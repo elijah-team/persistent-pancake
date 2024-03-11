@@ -1,5 +1,6 @@
 package tripleo.elijah_durable_pancake.comp.impl;
 
+import tripleo.elijah_durable_pancake.comp.CompilerSignal;
 import tripleo.eljiah_pancake_durable.comp.Compilation;
 import tripleo.eljiah_pancake_durable.comp.CompilerController;
 import tripleo.eljiah_pancake_durable.comp.ICompilationBus;
@@ -62,23 +63,30 @@ public class EDP_CompilerController implements CompilerController {
 		args = aArgs;
 
 		c.onTrigger(CS_FindCIs.class, () -> c.waitProviders(
-		  new Class[]{CPP_InputList.class, CPP_Runner.class} // be lazy/don't overspecify
+		  new Class[]{CPP_InputList.class, CPP_Runner.class, CompilationRunner.class} // be lazy/don't overspecify
 		  , (o) -> {
-			  c.getRunner().doFindCIs(args2, cb);
+//			  final CompilationRunner r = c.getRunner();
+//			  final CompilationRunner r = (CompilationRunner) o.get(CompilationRunner.class);
+			  final CPP_Runner        cpprunner = (CPP_Runner) o.get(CPP_Runner.class);
+			  final CompilationRunner r         = cpprunner.cr();
+			  r.doFindCIs(args2, cb);
 		  }));
 		c.onTrigger(CPP_Runner.class, () -> c.waitProviders(
-		  new Class[]{}
+		  new Class[]{CompilationRunner.class}
 		  , (o) -> {
-			  c.getRunner().doFindCIs(args2, cb);
+//			  var r = c.getRunner();
+			  CompilationRunner r = ((CompilationRunner) o.get(CompilationRunner.class));
+
+			  r.doFindCIs(args2, cb);
 		  }));
 	}
 
-	interface CS_FindCIs {
+	interface CS_FindCIs extends CompilerSignal {
 	}
 
-	record CPP_InputList(String[] aArgs2, ICompilationBus aCb) {
+	record CPP_InputList(String[] aArgs2, ICompilationBus aCb) implements CompilerSignal {
 	}
 
-	record CPP_Runner(Startup st, CompilationRunner cr) {
+	record CPP_Runner(Startup st, CompilationRunner cr) implements CompilerSignal {
 	}
 }
